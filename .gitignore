@@ -1,0 +1,23 @@
+# Build output (python3 build_pwa.py)
+pwa/
+*.zip
+
+# Never commit personal data: exports, backups, or a copy with a starter log
+cradle-*.json
+*.backup.json
+personal/
+*.local.html
+
+# Never commit your Supabase address or keys (see .env.example)
+.env
+.env.*
+!.env.example
+cloud-config.json
+*.secret*
+
+# Editor and OS clutter
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/

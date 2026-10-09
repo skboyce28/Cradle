@@ -1,0 +1,16 @@
+# Netlify builds Cradle from this repo: runs the build script and publishes pwa/
+# Set CRADLE_SUPABASE_URL and CRADLE_SUPABASE_KEY under Site configuration > Environment variables.
+[build]
+  command = "python3 build_pwa.py"
+  publish = "pwa"
+
+# Always check for a new service worker so updates roll out
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"

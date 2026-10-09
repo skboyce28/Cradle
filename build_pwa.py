@@ -1,0 +1,93 @@
+# Builds the installable (PWA) version of Cradle into ./pwa
+#   python3 build_pwa.py
+# - Removes any built-in starter log (hosted files are public)
+# - Bakes in the database address and publishable key from environment variables
+#   (CRADLE_SUPABASE_URL, CRADLE_SUPABASE_KEY) or a local .env file, which git ignores
+# - Adds the manifest, icons, and an offline service worker
+# Deploy the pwa/ folder (Netlify: drag it in, or let netlify.toml run this script).
+import json, re, hashlib, shutil, os
+here = os.path.dirname(os.path.abspath(__file__))
+src = open(os.path.join(here, 'cradle.html')).read()
+out = os.path.join(here, 'pwa')
+os.makedirs(os.path.join(out, 'icons'), exist_ok=True)
+for f in ('icon-192.png', 'icon-512.png', 'maskable-512.png', 'apple-touch-icon.png'):
+    shutil.copy(os.path.join(here, 'icons', f), os.path.join(out, 'icons', f))
+
+# 1) strip any built-in starter log (personal copies may have one; hosted files must not)
+html, n = re.subn(r'<script type="application/json" id="baseData">.*?</script>\n?', '', src, count=1, flags=re.S)
+assert n == 1, 'baseData block not found'
+assert 'id="baseData"' not in html
+
+# 1b) bake the database address + publishable key, if provided.
+#     Real environment variables win (Netlify sets these); otherwise read .env.
+def load_env_file(path):
+    vals = {}
+    if os.path.exists(path):
+        for line in open(path):
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            k, v = line.split('=', 1)
+            vals[k.strip()] = v.strip().strip('"').strip("'")
+    return vals
+
+env = load_env_file(os.path.join(here, '.env'))
+url = (os.environ.get('CRADLE_SUPABASE_URL') or env.get('CRADLE_SUPABASE_URL') or '').rstrip('/')
+key = os.environ.get('CRADLE_SUPABASE_KEY') or env.get('CRADLE_SUPABASE_KEY') or ''
+if key.startswith('sb_secret_') or 'service_role' in key:
+    raise SystemExit('CRADLE_SUPABASE_KEY is a SECRET key. Use the publishable key (sb_publishable_...) instead.')
+if url or key:
+    assert url.startswith('https://') and len(key) > 20, 'set both CRADLE_SUPABASE_URL and CRADLE_SUPABASE_KEY'
+    html = html.replace('<script type="application/json" id="cloudConfig">{}</script>',
+                        '<script type="application/json" id="cloudConfig">' + json.dumps({'url': url, 'key': key}) + '</script>', 1)
+    print('baked database config for', url)
+else:
+    print('no CRADLE_SUPABASE_URL / CRADLE_SUPABASE_KEY: each phone enters the database address once at sign-in')
+
+# 2) head tags
+head = '''<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#d0683a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Cradle">
+<meta name="description" content="Offline triple-feeding log for newborns">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">'''
+html = html.replace('<meta name="viewport" content="width=device-width, initial-scale=1">', head, 1)
+assert 'manifest.webmanifest' in html
+open(os.path.join(out, 'index.html'), 'w').write(html)
+
+# 3) manifest
+manifest = {
+  "name": "Cradle Feeding Log", "short_name": "Cradle",
+  "description": "Offline triple-feeding log for newborns",
+  "start_url": "./", "scope": "./", "display": "standalone", "orientation": "portrait",
+  "background_color": "#f6f1ea", "theme_color": "#d0683a",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
+json.dump(manifest, open(os.path.join(out, 'manifest.webmanifest'), 'w'), indent=2)
+
+# 4) service worker: cache name tied to file contents so updates roll out
+ver = hashlib.sha1(html.encode()).hexdigest()[:10]
+sw = f"""// Cradle offline helper. Cache version changes whenever index.html changes.
+const CACHE='cradle-{ver}';
+const FILES=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./icons/apple-touch-icon.png'];
+self.addEventListener('install',e=>{{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))}});
+self.addEventListener('activate',e=>{{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))}});
+self.addEventListener('fetch',e=>{{
+  const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==location.origin)return;
+  if(r.mode==='navigate'){{
+    // Try the network first so updates arrive; fall back to the saved copy offline
+    e.respondWith(fetch(r).then(res=>{{const cp=res.clone();caches.open(CACHE).then(c=>c.put('./index.html',cp));return res}}).catch(()=>caches.match('./index.html')));
+    return;
+  }}
+  e.respondWith(caches.match(r).then(hit=>hit||fetch(r).then(res=>{{const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp));return res}})));
+}});
+"""
+open(os.path.join(out, 'sw.js'), 'w').write(sw)
+print('built pwa/ with cache', ver)

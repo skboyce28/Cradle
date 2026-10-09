@@ -1,0 +1,70 @@
+# Changelog
+
+## v1.5
+
+**Accounts and families**
+- Family sharing: everyone has their own login, and a family shares one log
+- Create an account from the sign-in screen, with a share key (like `K7QM-4XPD`) to join a family
+- Family screen: share key, **Share** invite text, **New key**, add by email, remove people, leave
+- Welcome screen for new family members
+- Change password
+- A share key entered at sign-up is remembered if Supabase still requires email confirmation
+- The sign-in screen offers a backup when the phone already has a log
+- When a different account signs in on a phone, the phone starts fresh so logs never mix
+
+**Layout and alarms**
+- Tabs reordered: Log, Night shift, Dashboard, History
+- Calm is now the 🌙 button at the top right
+- **⏰ Phone alarm** shows the time to set (Android blocks web apps from creating Clock alarms)
+
+**Build**
+- The Supabase address and publishable key come from environment variables (`CRADLE_SUPABASE_URL`, `CRADLE_SUPABASE_KEY`) or a git-ignored `.env`, never the repo
+- The build refuses a secret key
+
+**Database** (rerun `supabase/2-family.sql`)
+- Families, members, invites, and share keys
+- 10 wrong share keys in an hour locks joining for that hour
+- Invites can only be claimed by accounts that existed when invited
+- Deleting an account no longer deletes the family entries it last edited
+- Both scripts are safe to rerun in any order
+
+## v1.4
+- Splash screen and sign-in
+- Shared log that syncs between phones through your own Supabase project
+- Works offline and catches up when back online
+- Installable app (manifest, icons, offline service worker) via `build_pwa.py`
+- Sign out from the profile menu
+
+## v1.3
+- Guide moved to the profile menu
+- Next feed due time with an in-app alarm, snooze, and dismiss
+- Weighted feeds with before and after weights
+- Weight tracking with a chart against birth weight
+- Doctor report from the Dashboard
+- Night shift with big night controls and Warm, Moonlight, and Red colors
+- Calm screen with spa music, ocean, rain, and white noise
+- Minutes on each feed with a nursing timer
+
+## v1.2
+- Send updates by text message as a short `CRADLE1:` code, and paste it into Import
+- Enlarge any dashboard chart to explore days and feeds
+- Today is shown as in progress on the dashboard
+- Vitamin D start date, so earlier days aren't counted as missed
+- Achievements with progress and badges
+- Optional built-in starter log for personal copies
+- Erase all data from the profile menu
+- Diaper-only rows (🧷) that don't count as feeds
+- Birth date counts as Day 0
+- In-app confirm dialogs, plus help when printing or downloading is blocked
+- Profile menu with Auto, Light, and Dark themes, and Dalmatian mode (experimental)
+- Merge or replace when importing
+- Print button on every tab
+- Dashboard insights, Vitamin D tracking, side balance, and longest stretch
+- History table view
+
+## v1.1
+- Vitamin D on each feed
+- Diaper goals follow the baby's day of life
+
+## v1.0
+- Feed log, pump timer, dashboard, history, and guide

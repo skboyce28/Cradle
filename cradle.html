@@ -1,0 +1,2339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cradle Feeding Log</title>
+<style>
+:root{
+  --bg:#f6f1ea;--panel:#fffaf4;--panel2:#f1e9df;--ink:#2b2420;--muted:#7d7066;--line:#e6dbcf;
+  --accent:#d0683a;--accent-soft:#f6dccd;--bottle:#2f78c4;--pump:#c2569a;--wet:#1a93b0;--stool:#b07c0c;
+  --good:#3f8a57;--warn:#c4602a;--shadow:0 1px 2px rgba(60,40,20,.06),0 6px 20px rgba(60,40,20,.06);
+  --r:14px;--hdr:color-mix(in srgb,var(--bg) 88%,transparent);--pagebg:none;--cardb:1px solid var(--line);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){
+  --bg:#171311;--panel:#221c19;--panel2:#2b2420;--ink:#efe6dc;--muted:#a3958a;--line:#3a312b;
+  --accent:#d4703c;--accent-soft:#4a2f22;--bottle:#5893d6;--pump:#cc66a4;--wet:#2a9ab5;--stool:#b3851c;
+  --good:#5fae78;--warn:#e07f45;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}}
+:root[data-theme="dark"]{
+  --bg:#171311;--panel:#221c19;--panel2:#2b2420;--ink:#efe6dc;--muted:#a3958a;--line:#3a312b;
+  --accent:#d4703c;--accent-soft:#4a2f22;--bottle:#5893d6;--pump:#cc66a4;--wet:#2a9ab5;--stool:#b3851c;
+  --good:#5fae78;--warn:#e07f45;--shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}
+:root[data-theme="dalmatian"]{
+  --bg:#fbfaf7;--panel:#ffffff;--panel2:#f1f0ec;--ink:#141414;--muted:#5d5a55;--line:#d8d5cf;
+  --accent:#c8312b;--accent-soft:#f7dcda;--bottle:#2f78c4;--pump:#c2569a;--wet:#1a93b0;--stool:#b07c0c;
+  --good:#3f8a57;--warn:#c4602a;--shadow:0 2px 0 #141414;--hdr:#ffffff;--cardb:1.5px solid #141414;
+  --pagebg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='280' height='280'%3E%3Cg fill='%23141414'%3E%3Cellipse cx='34' cy='42' rx='16' ry='11' transform='rotate(24 34 42)'/%3E%3Cellipse cx='140' cy='26' rx='8' ry='6'/%3E%3Cellipse cx='222' cy='64' rx='19' ry='13' transform='rotate(-18 222 64)'/%3E%3Cellipse cx='96' cy='118' rx='10' ry='8' transform='rotate(40 96 118)'/%3E%3Cellipse cx='186' cy='148' rx='6' ry='5'/%3E%3Cellipse cx='256' cy='182' rx='11' ry='8' transform='rotate(12 256 182)'/%3E%3Cellipse cx='40' cy='196' rx='12' ry='17' transform='rotate(-30 40 196)'/%3E%3Cellipse cx='134' cy='226' rx='18' ry='12' transform='rotate(8 134 226)'/%3E%3Cellipse cx='214' cy='252' rx='7' ry='5'/%3E%3Cellipse cx='12' cy='120' rx='5' ry='4'/%3E%3Cellipse cx='160' cy='92' rx='4' ry='3'/%3E%3C/g%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{background-image:var(--pagebg);background-attachment:fixed}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px 60px}
+
+/* Header */
+header{position:sticky;top:0;z-index:20;background:var(--hdr);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+:root[data-theme="dalmatian"] header{border-bottom:2px solid #141414}
+.hrow{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:.2px}
+.brand svg{width:30px;height:30px}
+.brand small{display:block;font-weight:500;font-size:12px;color:var(--muted);letter-spacing:0}
+.spots{display:none}
+:root[data-theme="dalmatian"] .spots{display:inline}
+.spacer{flex:1}
+.calmbtn{margin-left:4px}
+@media (max-width:640px){
+  .hrow>*{order:3}
+  .hrow>.brand{order:0}
+  .hrow>.calmbtn{order:1;margin-left:auto}
+  .hrow>.menu{order:1}
+  .hrow>.spacer{order:2;flex-basis:100%;height:0}
+}
+.datenav{display:flex;align-items:center;gap:4px;background:var(--panel);border:var(--cardb);border-radius:999px;padding:3px}
+.datenav button{border:0;background:none;width:30px;height:30px;border-radius:50%}
+.datenav button:hover{background:var(--panel2)}
+.datenav input{border:0;background:none;padding:4px 6px;min-width:0;width:140px}
+.pill{border:var(--cardb);background:var(--panel);border-radius:999px;padding:6px 12px;font-size:13px}
+.pill:hover{border-color:var(--accent)}
+nav.tabs{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;gap:4px;overflow-x:auto}
+nav.tabs button{border:0;background:none;padding:10px 14px;border-bottom:2px solid transparent;color:var(--muted);font-weight:600;white-space:nowrap}
+nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
+@media (max-width:520px){nav.tabs{gap:0;padding:0 6px}nav.tabs button{padding:10px 7px;font-size:13.5px;flex:1 1 auto}nav.tabs .ti{display:none}}
+@media (max-width:375px){nav.tabs button{padding:10px 5px;font-size:12.5px}}
+.saved{font-size:12px;color:var(--muted);opacity:0;transition:opacity .3s}
+.saved.show{opacity:1}
+
+/* Profile menu */
+.menu{position:relative}
+.avatar{width:38px;height:38px;border-radius:50%;border:2px solid var(--accent);background:var(--accent-soft);display:grid;place-items:center;font-weight:800;color:var(--ink);padding:0}
+.avatar svg{width:20px;height:20px}
+.calmbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);display:grid;place-items:center;padding:0;flex:none;cursor:pointer}
+.calmbtn svg{width:18px;height:18px;opacity:.85}
+.calmbtn:hover{border-color:var(--accent)}
+@media print{.calmbtn{display:none!important}}
+.menu .dd{position:absolute;right:0;top:46px;background:var(--panel);border:var(--cardb);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;width:290px;max-width:calc(100vw - 24px);display:none;z-index:30}
+.menu.open .dd{display:block;animation:pop .18s ease}
+.ddhead{padding:6px 8px 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.ddhead b{display:block}
+.ddlabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:6px 8px 4px}
+.seg{display:flex;background:var(--panel2);border-radius:10px;padding:3px;margin:0 6px 6px}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:6px 8px;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+.seg button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.dalm{white-space:nowrap;display:flex;align-items:center;gap:8px;width:calc(100% - 12px);margin:0 6px 6px;border:1px dashed var(--line);background:none;border-radius:10px;padding:7px 10px;text-align:left;font-size:13px;font-weight:600}
+.dalm.on{border:1.5px solid #141414;background:#fff;color:#141414}
+.beta{margin-left:auto;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;background:var(--accent);color:#fff;border-radius:999px;padding:2px 7px}
+.dd .item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px}
+.dd .item:hover{background:var(--panel2)}
+.dd .item span{width:18px;text-align:center}
+.dd hr{border:0;border-top:1px solid var(--line);margin:6px 0}
+
+/* Cards */
+.grid{display:grid;gap:14px;margin-top:16px}
+.stats{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.card{background:var(--panel);border:var(--cardb);border-radius:var(--r);box-shadow:var(--shadow);padding:14px}
+.card h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700}
+.big{font-size:26px;font-weight:700;line-height:1.1}
+.sub{color:var(--muted);font-size:13px}
+.stat{display:flex;align-items:center;gap:12px}
+.ring{width:56px;height:56px;flex:none}
+.ring circle{fill:none;stroke-width:6}
+.ring .bgc{stroke:var(--panel2)}
+.ring .fg{stroke-linecap:round;transition:stroke-dashoffset .5s}
+.ring text{font-size:15px;font-weight:700;fill:var(--ink)}
+.vitd{display:flex;align-items:center;gap:10px;width:100%;border:1px dashed var(--line);background:none;border-radius:12px;padding:10px;text-align:left}
+.vitd.on{border-style:solid;border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,transparent)}
+.vitd .box{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;flex:none}
+.vitd.on .box{background:var(--good);border-color:var(--good);color:#fff}
+
+/* Section toolbar */
+.bar0{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.bar0 h2{margin:0;font-size:20px}
+.sm{padding:6px 12px!important;font-size:13px}
+
+/* Top row */
+.top{grid-template-columns:1.2fr 1fr}
+@media (max-width:760px){.top{grid-template-columns:1fr}}
+.since .big{font-size:34px}
+.nextside{display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.sidechip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;background:var(--accent-soft);font-weight:600;font-size:13px}
+.primary{border:0;background:var(--accent);color:#fff;border-radius:12px;padding:10px 16px;font-weight:700}
+.primary:hover{filter:brightness(1.05)}
+.ghost{border:var(--cardb);background:var(--panel);border-radius:12px;padding:9px 14px;font-weight:600}
+.ghost:hover{border-color:var(--accent)}
+.timer{display:flex;align-items:center;gap:16px}
+.timer svg{width:110px;height:110px;flex:none}
+.timer .tbg{stroke:var(--panel2);fill:none;stroke-width:9}
+.timer .tfg{fill:none;stroke-width:9;stroke-linecap:round;transform:rotate(-90deg);transform-origin:55px 55px}
+.timer .zone{fill:none;stroke-width:3;transform:rotate(-90deg);transform-origin:55px 55px;stroke:var(--good);opacity:.55}
+.ttime{font-size:22px;font-weight:700;fill:var(--ink)}
+.tlab{font-size:10px;fill:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+
+/* Feed log */
+.loghead{display:flex;align-items:center;gap:10px;margin:22px 0 8px;flex-wrap:wrap}
+.loghead h2{margin:0;font-size:18px}
+.cols,.feed{display:grid;grid-template-columns:44px 118px 104px 112px 1fr 1fr 48px 48px 48px 48px 1.3fr 32px;gap:8px;align-items:center}
+.cols{padding:0 12px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.feed{background:var(--panel);border:var(--cardb);border-radius:12px;padding:8px 12px;margin-bottom:8px;box-shadow:var(--shadow);animation:pop .25s ease}
+@keyframes pop{from{transform:translateY(4px);opacity:0}to{transform:none;opacity:1}}
+.feed .n{font-weight:700;color:var(--accent)}
+.feed input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px;min-width:0}
+.feed input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+.ml{position:relative}
+.ml input{padding-right:34px}
+.ml span{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none}
+.meter{height:4px;border-radius:4px;background:var(--panel2);margin-top:4px;overflow:hidden}
+.meter i{display:block;height:100%;border-radius:4px;transition:width .3s}
+.sides{display:flex;gap:6px}
+.side{width:44px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-weight:700;color:var(--muted);position:relative}
+.side.on{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.side.start::after{content:"";position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid var(--panel)}
+.chk{width:40px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--bg);filter:grayscale(1);opacity:.45;font-size:16px}
+.chk.on{filter:none;opacity:1}
+.chk.wet.on{border-color:var(--wet);background:color-mix(in srgb,var(--wet) 15%,transparent)}
+.chk.stool.on{border-color:var(--stool);background:color-mix(in srgb,var(--stool) 15%,transparent)}
+.chk.vit.on{border-color:var(--good);background:color-mix(in srgb,var(--good) 15%,transparent)}
+.del{border:0;background:none;color:var(--muted);font-size:20px;border-radius:8px;height:32px}
+.del:hover{color:var(--warn);background:var(--panel2)}
+.empty{border:2px dashed var(--line);border-radius:var(--r);padding:28px;text-align:center;color:var(--muted);background:var(--panel)}
+@media (max-width:820px){
+  .cols{display:none}
+  .feed{grid-template-columns:auto 1fr auto;grid-template-areas:"n time del" "sides sides min" "bottle pump pump" "dia dia dia" "wf wf wf" "note note note"}
+  .feed>.n{grid-area:n}.feed>.c-time{grid-area:time}.feed>.c-side{grid-area:sides}.feed>.c-min{grid-area:min}.feed>.c-bottle{grid-area:bottle}
+  .feed>.c-pump{grid-area:pump}.feed>.c-wet,.feed>.c-stool,.feed>.c-vit{display:none}.feed>.c-dia{display:flex!important;grid-area:dia;gap:8px}
+  .feed>.c-note{grid-area:note}.feed>.del{grid-area:del}
+  .feed .lbl{display:block!important}
+}
+.c-dia{display:none}
+.c-min .mrow2{display:flex;gap:4px;align-items:center}
+.c-min input{width:52px!important;text-align:center;padding:6px 4px!important}
+.tbtn{height:34px;min-width:38px;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-weight:700;font-size:13px;padding:0 8px;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.tbtn:hover{border-color:var(--accent)}
+.tbtn.run{background:var(--accent);border-color:var(--accent);color:#fff;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}50%{box-shadow:0 0 0 5px transparent}}
+.nursebar{display:none;align-items:center;gap:10px;margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--accent-soft);border:1px solid var(--accent);font-weight:600}
+.nursebar.on{display:flex}
+.nursebar .t{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.lbl{display:none;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:2px}
+textarea{width:100%;min-height:70px;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;resize:vertical}
+
+/* Dashboard */
+.kpis{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.kpi .big{font-size:24px}
+.kpi .sub b{color:var(--ink)}
+.charts{grid-template-columns:1fr 1fr}
+@media (max-width:860px){.charts{grid-template-columns:1fr}}
+.wide{grid-column:1/-1}
+svg.chart{width:100%;height:auto;display:block}
+.chart .ax{stroke:var(--line)}
+.chart text{fill:var(--muted);font-size:11px}
+.chart .val{fill:var(--ink);font-size:11px;font-weight:600}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.bar{transition:opacity .2s}.bar:hover{opacity:.75}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);padding:5px 9px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .15s;z-index:50;white-space:nowrap}
+.chead{display:flex;align-items:center;gap:8px}.chead h3{flex:1}
+.xbtn{border:var(--cardb);background:var(--panel);border-radius:8px;width:30px;height:28px;font-size:15px;line-height:1;color:var(--muted);margin:-6px 0 2px}
+.xbtn:hover{border-color:var(--accent);color:var(--ink)}
+.chartbox{cursor:zoom-in}
+#chartModal .card{width:min(1100px,100%);max-height:94vh}
+.cmhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.cmhead h3{margin:0;flex:1}
+#cmChart{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media (max-width:700px){#cmChart svg{min-width:680px}.cmhead .sub{display:none}#chartModal .card{padding:12px}}
+#cmChart .hit{cursor:pointer}
+#cmChart .hit.sel{fill:color-mix(in srgb,var(--accent) 16%,transparent);stroke:var(--accent);stroke-width:1.5}
+.cmsel{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:12px 0;padding:12px;border-radius:12px;background:var(--panel2)}
+.cmsel .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.cmsel .v{font-size:17px;font-weight:700}
+.cmsel .wide2{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tbl tr.sel td{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.insights{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.insights li{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;background:var(--panel2)}
+.insights li span:first-child{flex:none;width:22px;text-align:center}
+.vstrip{display:grid;gap:6px}
+.vday{border:1px solid var(--line);border-radius:10px;padding:8px 2px;text-align:center;font-size:12px;background:var(--bg);min-width:0}
+.vday .s{font-size:20px;line-height:1.2;filter:grayscale(1);opacity:.35}
+.vday.on{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,transparent)}
+.vday.on .s{filter:none;opacity:1}
+.vday.na{opacity:.45;border-style:dashed}
+.vday.cur{outline:2px solid var(--accent);outline-offset:1px}
+.vday b{display:block;font-size:12px}
+.vday .sub{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.sidebar{display:flex;height:34px;border-radius:10px;overflow:hidden;gap:2px;background:var(--panel)}
+.sidebar div{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;min-width:0}
+
+/* History */
+.hist{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.hday{cursor:pointer;text-align:left;transition:transform .15s,border-color .15s}
+.hday:hover{transform:translateY(-2px);border-color:var(--accent)}
+.hday .d{font-weight:700;font-size:16px}
+.spark{display:flex;gap:3px;align-items:flex-end;height:34px;margin:10px 0 6px}
+.spark i{flex:1;border-radius:3px 3px 0 0;background:var(--bottle);min-height:2px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:12px;border-radius:999px;padding:2px 8px;background:var(--panel2)}
+.tag.good{background:color-mix(in srgb,var(--good) 18%,transparent)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th,.tbl td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.tbl th{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl tr.click{cursor:pointer}.tbl tr.click:hover td{background:var(--panel2)}
+.tblwrap{overflow-x:auto}
+.ok{color:var(--good);font-weight:700}
+
+/* Guide */
+.guide{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.guide .card p{margin:0;color:var(--ink)}
+.guide .ico{font-size:24px;margin-bottom:6px}
+.guide .wide-guide{grid-column:1/-1}
+.steps{margin:8px 0 0;padding-left:22px;display:grid;gap:6px}
+.steps li{padding-left:4px}
+.disc{margin-top:18px;font-size:12px;color:var(--muted);text-align:center}
+
+/* Modal + toast */
+.modal{position:fixed;inset:0;background:rgba(20,12,8,.45);display:none;place-items:center;z-index:150;padding:16px}
+#askModal{z-index:260}
+body.night-on .modal{background:rgba(0,0,0,.6)}
+body.night-on .modal .card{background:#1d1916;color:#d9c3a5;border-color:#2c2621;box-shadow:none}
+body.night-on .modal .ghost{background:#1d1916;color:#d9c3a5;border-color:#3a322a}
+body.night-on .modal .primary{background:#5a4430;color:#f0d7b4}
+body.night-on .toast{background:#2c2621;color:#d9c3a5}
+.modal.open{display:grid}
+.modal .card{width:min(460px,100%);max-height:90vh;overflow:auto}
+.field{display:grid;grid-template-columns:1fr 150px;gap:10px;align-items:center;margin:10px 0}
+.field input{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px;width:100%}
+.mrow{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:all .25s;z-index:240;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.cl{margin:6px 0 0;padding-left:18px}.cl li{margin:3px 0}
+/* Achievements */
+#achModal .card{width:min(760px,100%)}
+.achtop{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.achtop .trophy{font-size:34px;line-height:1}
+.achbar{height:8px;border-radius:8px;background:var(--panel2);overflow:hidden;margin-top:6px}
+.achbar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#e8b93c,#d0683a)}
+.achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:14px}
+.ach{border:var(--cardb);border-radius:14px;padding:12px;display:flex;gap:12px;align-items:flex-start;background:var(--bg)}
+.ach .badge{width:52px;height:52px;flex:none;border-radius:50%;display:grid;place-items:center;font-size:26px;background:var(--panel2);filter:grayscale(1);opacity:.55;position:relative}
+.ach.on{background:color-mix(in srgb,#e8b93c 10%,var(--panel))}
+.ach.on .badge{filter:none;opacity:1;background:radial-gradient(circle at 35% 30%,#fff3c4,#e8b93c 60%,#c98a12);box-shadow:0 0 0 3px color-mix(in srgb,#e8b93c 35%,transparent),0 4px 10px rgba(200,140,20,.35)}
+.ach.on .badge::after{content:"✓";position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:var(--good);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;border:2px solid var(--panel)}
+.ach b{display:block;font-size:14px}
+.ach .sub{font-size:12px}
+.ach .achbar{height:6px}
+.ach .meta{font-size:11px;color:var(--muted);margin-top:4px;font-weight:600}
+.ach.on .meta{color:var(--good)}
+.toast.gold{background:linear-gradient(90deg,#c98a12,#d0683a);color:#fff;font-weight:700}
+.achchip{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}
+
+/* Weighted feed sub-row */
+.c-wf{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:var(--panel2);font-size:13px}
+.c-wf input{width:120px!important}
+.c-wf .wfres{font-weight:700}
+.chk.wf.on{border-color:var(--bottle);background:color-mix(in srgb,var(--bottle) 15%,transparent)}
+@media (max-width:820px){.feed>.c-wf{grid-area:wf}.feed>.c-wtd{display:none}}
+/* Next feed due */
+.dueline{margin-top:6px;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dueline .due{font-weight:700}
+.dueline.over .due{color:var(--warn)}
+.mini{border:var(--cardb);background:var(--panel);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+/* Alarm banner */
+.alarmbar{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:200;display:none;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;
+  background:var(--warn);color:#fff;padding:12px 16px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);font-weight:700;max-width:calc(100% - 24px)}
+.alarmbar.on{display:flex;animation:ring 1s ease-in-out infinite}
+.alarmbar button{border:2px solid #fff;background:transparent;color:#fff;border-radius:10px;padding:6px 12px;font-weight:700}
+.alarmbar button.solid{background:#fff;color:var(--warn)}
+@keyframes ring{0%,100%{box-shadow:0 10px 30px rgba(0,0,0,.35),0 0 0 0 rgba(196,96,42,.7)}50%{box-shadow:0 10px 30px rgba(0,0,0,.35),0 0 0 10px rgba(196,96,42,0)}}
+/* Weight card */
+.wstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px}
+.wstats .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+.wstats .v{font-size:16px;font-weight:700}
+.wlist{margin-top:12px;display:grid;gap:6px}
+.wrow{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:10px;background:var(--bg);font-size:14px}
+.wrow .src{font-size:12px;color:var(--muted)}
+.field select,.field input[type=checkbox]{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px;width:100%;color:var(--ink)}
+.field input[type=checkbox]{width:22px;height:22px;justify-self:start}
+.fsec{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin:16px 0 0;border-top:1px solid var(--line);padding-top:12px}
+/* Night shift */
+#night{--nbg:#14110f;--npanel:#1d1916;--nline:#2c2621;--nink:#d9c3a5;--nmuted:#857563;--nonbg:#33281d;--nonline:#a8835a;--nonink:#f0d7b4;--ndot:#c99a62;
+  position:fixed;inset:0;z-index:120;background:var(--nbg);color:var(--nink);display:none;overflow:auto;-webkit-tap-highlight-color:transparent}
+#night.pal-moon{--nbg:#0f131a;--npanel:#161c25;--nline:#232b37;--nink:#b9c6d8;--nmuted:#6d7b8f;--nonbg:#1f2c3d;--nonline:#6f8db3;--nonink:#dbe6f5;--ndot:#86a6cf}
+#night.pal-red{--nbg:#0d0505;--npanel:#160909;--nline:#2a0f0c;--nink:#b8503e;--nmuted:#6e2e24;--nonbg:#2c0e09;--nonline:#a8432f;--nonink:#d9634c;--ndot:#b8503e}
+#night.open{display:block}
+#night .nw{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+#night .ntop{display:flex;align-items:center;gap:10px}
+#night .nclock{font-size:32px;font-weight:600;letter-spacing:.5px}
+#night .nsub{color:var(--nmuted);font-size:15px;margin:4px 0 14px}
+#night button{font:inherit;color:var(--nink);background:var(--npanel);border:1.5px solid var(--nline);border-radius:18px;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s}
+#night button.on{background:var(--nonbg);border-color:var(--nonline);color:var(--nonink)}
+#night .nx{width:48px;height:48px;font-size:20px;border-radius:50%}
+#night .npal{display:flex;gap:6px;margin-left:auto}
+#night .npal button{width:30px;height:30px;border-radius:50%;padding:0;border-width:2px}
+#night .npal button.on{border-color:var(--nink)}
+#night .nbig{width:100%;padding:26px 10px;font-size:26px;margin-top:10px}
+#night .nrow{display:grid;gap:10px;margin-top:10px}
+#night .n2{grid-template-columns:1fr 1fr}#night .n3{grid-template-columns:1fr 1fr 1fr}
+#night .nbtn{padding:22px 6px;font-size:22px;position:relative}
+#night .nbtn.start::after{content:"";position:absolute;top:10px;right:12px;width:12px;height:12px;border-radius:50%;background:var(--ndot)}
+#night .ntimer{font-size:60px;font-weight:300;text-align:center;font-variant-numeric:tabular-nums;margin:6px 0 0;line-height:1.1;color:var(--nonink)}
+#night .nlab{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--nmuted);font-weight:700;margin-top:16px}
+#night .nml{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:10px;align-items:center;margin-top:8px}
+#night .nml .val{text-align:center;font-size:32px;font-weight:600}
+#night .nml button{padding:18px 0;font-size:22px}
+#night .nfeed{background:color-mix(in srgb,var(--npanel) 60%,transparent);border:1px solid var(--nline);border-radius:22px;padding:14px;margin-top:12px}
+#night .nhead{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:600}
+#night .nhint{font-size:14px;color:var(--nmuted);font-weight:500}
+/* Calm screen */
+#calm{position:fixed;inset:0;z-index:110;background:#070b18;overflow:hidden;display:none;color:#e8ecff;cursor:pointer}
+#calm.open{display:block}
+#calm .orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;mix-blend-mode:screen}
+#calm .o1{width:60vmax;height:60vmax;background:#3b4fd8;left:-15vmax;top:-20vmax;animation:drift1 38s ease-in-out infinite alternate}
+#calm .o2{width:50vmax;height:50vmax;background:#9a3fb8;right:-18vmax;top:10vmax;animation:drift2 46s ease-in-out infinite alternate}
+#calm .o3{width:45vmax;height:45vmax;background:#1f8fa0;left:10vmax;bottom:-22vmax;animation:drift3 52s ease-in-out infinite alternate}
+#calm .o4{width:30vmax;height:30vmax;background:#d0683a;right:5vmax;bottom:-10vmax;opacity:.25;animation:drift1 60s ease-in-out infinite alternate-reverse}
+@keyframes drift1{to{transform:translate(18vmax,14vmax) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-20vmax,12vmax) scale(.9)}}
+@keyframes drift3{to{transform:translate(14vmax,-16vmax) scale(1.1)}}
+#calm .stars{position:absolute;inset:0;background-image:radial-gradient(1.5px 1.5px at 20% 30%,#fff8 50%,transparent 51%),radial-gradient(1px 1px at 70% 20%,#fff6 50%,transparent 51%),radial-gradient(1.5px 1.5px at 40% 80%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 85% 65%,#fff7 50%,transparent 51%),radial-gradient(1px 1px at 10% 70%,#fff5 50%,transparent 51%),radial-gradient(1.5px 1.5px at 55% 45%,#fff4 50%,transparent 51%);animation:tw 6s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.4}}
+#calmInfo{position:absolute;text-align:center;text-shadow:0 2px 20px rgba(0,0,0,.5);transition:all .6s ease}
+#calmInfo.pos-center{left:50%;top:50%;transform:translate(-50%,-50%)}
+#calmInfo.pos-tr{right:22px;top:18px;text-align:right;transform:none}
+#calmInfo .ct{font-size:clamp(56px,14vw,120px);font-weight:200;letter-spacing:2px;line-height:1}
+#calmInfo.pos-tr .ct{font-size:42px;font-weight:300}
+#calmInfo .cl{font-size:18px;opacity:.85;margin-top:10px;font-weight:300}
+#calmInfo.pos-tr .cl{font-size:14px;margin-top:4px}
+#calmInfo .cn{display:inline-block;margin-top:12px;padding:6px 14px;border-radius:999px;background:rgba(255,255,255,.12);font-weight:600}
+#calmInfo.pos-tr .cn{font-size:13px;margin-top:6px}
+#calmCtl{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;max-width:calc(100% - 24px);
+  background:rgba(10,14,30,.6);backdrop-filter:blur(10px);padding:10px 12px;border-radius:18px;border:1px solid rgba(255,255,255,.12);transition:opacity .5s;cursor:default}
+#calmCtl.hide{opacity:0;pointer-events:none}
+#calmCtl button{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#e8ecff;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:600}
+#calmCtl button.on{background:#e8ecff;color:#0b1024}
+#calmCtl input[type=range]{width:110px;accent-color:#e8ecff}
+#calmCtl .sep{width:1px;height:22px;background:rgba(255,255,255,.2)}
+.modebtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+
+/* Splash + sign-in */
+#gate{position:fixed;inset:0;z-index:300;background:var(--bg);background-image:var(--pagebg);display:none;align-items:center;justify-content:center;padding:20px;opacity:1;transition:opacity .35s}
+#gate.open{display:flex}
+#gate.fade{opacity:0}
+.gwrap{width:min(380px,100%);text-align:center}
+.glogo{width:112px;height:112px;margin:0 auto;border-radius:30px;background:linear-gradient(135deg,#e07a48,#c65a2e);display:grid;place-items:center;box-shadow:0 12px 30px rgba(198,90,46,.35);animation:gbob 2.4s ease-in-out infinite}
+.glogo svg{width:72px;height:72px}
+@keyframes gbob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}
+.gname{font-size:30px;font-weight:800;margin-top:16px;letter-spacing:.3px}
+.gtag{color:var(--muted);font-size:14px;margin-top:2px}
+.gdots{display:flex;gap:7px;justify-content:center;margin-top:22px}
+.gdots i{width:9px;height:9px;border-radius:50%;background:var(--accent);opacity:.3;animation:gdot 1.2s infinite}
+.gdots i:nth-child(2){animation-delay:.2s}.gdots i:nth-child(3){animation-delay:.4s}
+@keyframes gdot{0%,100%{opacity:.25;transform:scale(.85)}40%{opacity:1;transform:scale(1)}}
+#gLogin{margin-top:22px;text-align:left;padding:18px}
+#gLogin label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 4px}
+#gLogin input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 12px;font-size:16px;color:var(--ink)}
+#gLogin input:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:transparent}
+#gGo{width:100%;margin-top:16px;padding:13px;font-size:16px}
+#gMsg{color:var(--warn);font-size:14px;min-height:20px;margin-top:10px;font-weight:600}
+.glink{border:0;background:none;color:var(--muted);font-size:13px;text-decoration:underline;margin-top:6px;padding:4px 0}
+#gDb{margin-top:8px;padding-top:6px;border-top:1px solid var(--line)}
+#gDb .sub{margin-top:6px}
+.syncdot{font-size:14px;color:var(--muted);min-width:16px;text-align:center}
+.syncdot.s-ok{color:var(--good)}.syncdot.s-syncing{color:var(--accent);animation:spin 1.2s linear infinite;display:inline-block}
+.syncdot.s-offline,.syncdot.s-error{color:var(--warn)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.hidden{display:none!important}
+#print,#ptitle{display:none}
+@media print{
+  :root,:root[data-theme]{
+    --bg:#fff;--panel:#fff;--panel2:#f2f2f2;--ink:#111;--muted:#555;--line:#ccc;
+    --accent:#d0683a;--accent-soft:#f6dccd;--bottle:#2f78c4;--pump:#c2569a;--wet:#1a93b0;--stool:#b07c0c;
+    --good:#3f8a57;--warn:#c4602a;--shadow:none;--pagebg:none;--cardb:1px solid #ccc;
+  }
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff!important;background-image:none!important}
+  header,.modal,.tip,.toast,.noprint{display:none!important}
+  .wrap{max-width:none;padding:0}
+  .card{break-inside:avoid}
+  .hday:hover{transform:none}
+  #ptitle{display:block;margin:0 0 6px}
+  #ptitle h1{font-size:20px;margin:0}
+  .charts{grid-template-columns:1fr 1fr}
+  .kpis{grid-template-columns:repeat(4,1fr)}
+  .hist{grid-template-columns:repeat(3,1fr)}
+  .guide{grid-template-columns:1fr 1fr}
+  body.print-sheet main{display:none!important}
+  body.print-sheet #print{display:block;color:#000;font:12px system-ui,sans-serif}
+  #print table{width:100%;border-collapse:collapse;margin-top:10px}
+  #print th,#print td{border:1px solid #999;padding:6px;text-align:left}
+  #print h1{font-size:18px;margin:0}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--accent-soft)"/><path d="M7 15h18a9 9 0 0 1-18 0z" fill="var(--accent)"/><circle cx="16" cy="9.5" r="3.5" fill="var(--accent)"/><path d="M5 15h22" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/><g class="spots" fill="#141414"><circle cx="11" cy="19" r="1.6"/><circle cx="19" cy="21.5" r="1.3"/><circle cx="21.5" cy="17.5" r="1"/></g></svg>
+      <div>Cradle<small id="brandSub">Triple-feeding log</small></div>
+    </div>
+    <div class="spacer"></div>
+    <span class="saved" id="saved">Saved</span>
+    <span class="syncdot" id="syncDot" aria-live="polite"></span>
+    <div class="datenav">
+      <button id="prevDay" title="Previous day">&#8249;</button>
+      <input type="date" id="dateIn" aria-label="Day">
+      <button id="nextDay" title="Next day">&#8250;</button>
+    </div>
+    <button class="pill" id="todayBtn">Today</button>
+    <button class="calmbtn" id="calmBtn" title="Calm mode" aria-label="Calm mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="currentColor"/><circle cx="17.5" cy="5.5" r="1.1" fill="currentColor"/><circle cx="20.5" cy="9" r=".8" fill="currentColor"/></svg></button>
+    <div class="menu" id="menu">
+      <button class="avatar" id="menuBtn" title="Profile" aria-haspopup="true"></button>
+      <div class="dd" id="dd">
+        <div class="ddhead"><b id="ddName">Cradle</b><span class="sub" id="ddSub">Triple-feeding log</span><div class="sub" style="margin-top:4px">☁︎ <span id="ddSync">Not signed in</span></div></div>
+        <div class="ddlabel">Appearance</div>
+        <div class="seg" id="themeSeg">
+          <button data-theme="auto">Auto</button><button data-theme="light">Light</button><button data-theme="dark">Dark</button>
+        </div>
+        <button class="dalm" data-theme="dalmatian">🐾 Dalmatian mode <span class="beta">Experimental</span></button>
+        <hr>
+        <button class="item" data-act="ach"><span>🏆</span>Achievements<span class="achchip" id="achChip"></span></button>
+        <button class="item" data-addweight><span>⚖️</span>Weights</button>
+        <button class="item" data-act="settings"><span>⚙️</span>Settings</button>
+        <button class="item" data-act="export"><span>⬇️</span>Export data</button>
+        <button class="item" data-act="import"><span>⬆️</span>Import data</button>
+        <button class="item" data-act="erase" style="color:var(--warn)"><span>🗑️</span>Erase all data</button>
+        <button class="item" data-act="print"><span>🖨️</span>Print this tab</button>
+        <hr>
+        <button class="item" data-act="help"><span>📖</span>Guide</button>
+        <button class="item hidden" data-act="install" id="installItem"><span>📲</span>Install app</button>
+        <button class="item" data-act="about"><span>ℹ️</span>About</button>
+        <hr>
+        <button class="item" data-act="family"><span>👪</span>Family<span class="achchip" id="ddFam"></span></button>
+        <button class="item" data-act="password"><span>🔑</span>Change password</button>
+        <button class="item" data-act="signout"><span>🚪</span>Sign out</button>
+      </div>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-tab="today" class="on">Log</button>
+    <button data-tab="night"><span class="ti">🌙 </span>Night shift</button>
+    <button data-tab="dash">Dashboard</button>
+    <button data-tab="hist">History</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div id="ptitle"><h1 id="ptitleH">Cradle</h1><div class="sub" id="ptitleS"></div></div>
+
+  <!-- LOG -->
+  <section id="tab-today">
+    <div class="bar0 noprint">
+      <h2 id="logTitle">Today</h2>
+      <div class="spacer"></div>
+      <button class="ghost sm" data-print>🖨️ Print sheet</button>
+    </div>
+    <div class="grid top">
+      <div class="card since">
+        <h3>Since last feed</h3>
+        <div class="big" id="sinceVal">--</div>
+        <div class="sub" id="sinceSub">No feeds logged yet</div>
+        <div class="nextside" id="nextSide"></div>
+        <div class="dueline" id="dueLine"></div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="primary" id="logNow">+ Log feed now</button>
+          <button class="ghost" id="addDiaper">🧷 Diaper only</button>
+          <button class="ghost" id="addBlank">Add blank row</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Pump timer</h3>
+        <div class="timer">
+          <svg viewBox="0 0 110 110">
+            <circle class="tbg" cx="55" cy="55" r="44"/>
+            <circle class="zone" id="tzone" cx="55" cy="55" r="52"/>
+            <circle class="tfg" id="tfg" cx="55" cy="55" r="44"/>
+            <text class="ttime" id="ttime" x="55" y="58" text-anchor="middle">00:00</text>
+            <text class="tlab" id="tlab" x="55" y="74" text-anchor="middle">ready</text>
+          </svg>
+          <div>
+            <div class="sub" id="tgoal">Goal 15 to 20 min</div>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+              <button class="primary" id="tStart">Start</button>
+              <button class="ghost" id="tReset">Reset</button>
+            </div>
+            <div class="sub" id="tlast" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nursebar" id="nurseBar"><span>⏱ Nursing</span><span class="t" id="nurseT">0:00</span><span class="sub" id="nurseWhich"></span><span class="spacer"></span><button class="primary sm" id="nurseStop">Stop</button></div>
+    <div class="grid stats" id="stats"></div>
+
+    <div class="loghead">
+      <h2>Feeds</h2>
+      <span class="sub">Tap L or R for sides used. The dot marks the side you started on.</span>
+    </div>
+    <div class="cols"><div>#</div><div>Time</div><div>Breast</div><div>Minutes</div><div>Bottle</div><div>Pump</div><div>Wet</div><div>Stool</div><div>Vit D</div><div title="Weighted feed">Wtd</div><div>Note</div><div></div></div>
+    <div id="feeds"></div>
+
+    <div class="grid" style="grid-template-columns:1fr">
+      <div class="card">
+        <h3>Day notes</h3>
+        <textarea id="dayNotes" placeholder="Spit up, sleep, pump comfort"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="tab-dash" class="hidden">
+    <div class="bar0 noprint">
+      <h2>Dashboard</h2>
+      <div class="spacer"></div>
+      <div class="seg" id="rangeSeg" style="margin:0"><button data-n="7">7 days</button><button data-n="14">14 days</button></div>
+      <button class="ghost sm" data-report>🩺 Doctor report</button>
+      <button class="ghost sm" data-print>🖨️ Print</button>
+    </div>
+    <div class="grid kpis" id="kpis"></div>
+    <div class="grid charts">
+      <div class="card wide">
+        <div class="chead"><h3>Weight</h3><button class="ghost sm noprint" data-addweight style="margin:-6px 0 2px">+ Add weight</button></div>
+        <div id="wChart"></div>
+        <div class="legend"><span><i style="background:var(--bottle);border-radius:50%"></i>Weigh-in</span><span><i style="background:var(--panel);border:2px solid var(--bottle);border-radius:50%"></i>Weighted feed (before)</span><span><i style="background:var(--good);height:3px;vertical-align:3px"></i>Birth weight</span><span><i style="background:var(--warn);height:3px;vertical-align:3px"></i>10% below birth</span></div>
+        <div class="wstats" id="wStats"></div>
+      </div>
+      <div class="card wide">
+        <h3>Insights</h3>
+        <ul class="insights" id="insights"></ul>
+      </div>
+      <div class="card wide">
+        <h3>Vitamin D</h3>
+        <div class="sub" id="vitSum" style="margin-bottom:10px"></div>
+        <div class="vstrip" id="vitStrip"></div>
+      </div>
+      <div class="card wide">
+        <div class="chead"><h3 id="c1title">This day by feed</h3><button class="xbtn noprint" data-chart="c1" title="Enlarge and explore">⤢</button></div>
+        <div id="chart1" class="chartbox" data-chart="c1" title="Tap to enlarge"></div>
+        <div class="legend"><span><i style="background:var(--bottle)"></i>Bottle</span><span><i style="background:repeating-linear-gradient(45deg,var(--pump) 0 2px,transparent 2px 4px);border:1px solid var(--pump)"></i>Pump output</span><span><i style="background:var(--accent);height:3px;vertical-align:3px"></i>Bottle target</span></div>
+      </div>
+      <div class="card">
+        <div class="chead"><h3>Daily volume</h3><button class="xbtn noprint" data-chart="c2" title="Enlarge and explore">⤢</button></div>
+        <div id="chart2" class="chartbox" data-chart="c2" title="Tap to enlarge"></div>
+        <div class="legend"><span><i style="background:var(--bottle)"></i>Bottle total</span><span><i style="background:var(--pump)"></i>Pump total (dashed)</span></div>
+      </div>
+      <div class="card">
+        <div class="chead"><h3>Daily diapers</h3><button class="xbtn noprint" data-chart="c3" title="Enlarge and explore">⤢</button></div>
+        <div id="chart3" class="chartbox" data-chart="c3" title="Tap to enlarge"></div>
+        <div class="legend"><span><i style="background:var(--wet)"></i>Wet</span><span><i style="background:var(--stool)"></i>Stool</span><span>Dashes mark each day's goal. Faded bars are today, still in progress.</span></div>
+      </div>
+      <div class="card">
+        <div class="chead"><h3>Longest stretch between feeds</h3><button class="xbtn noprint" data-chart="c5" title="Enlarge and explore">⤢</button></div>
+        <div id="chart5" class="chartbox" data-chart="c5" title="Tap to enlarge"></div>
+        <div class="legend"><span>Hours per day. The dot shows the average gap.</span></div>
+      </div>
+      <div class="card">
+        <h3>Breast side balance</h3>
+        <div id="sideBal"></div>
+      </div>
+      <div class="card wide">
+        <div class="chead"><h3>Feeding rhythm</h3><button class="xbtn noprint" data-chart="c4" title="Enlarge and explore">⤢</button></div>
+        <div id="chart4" class="chartbox" data-chart="c4" title="Tap to enlarge"></div>
+        <div class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>Feed (bigger dot means more bottle)</span><span>☀️ Vitamin D</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="tab-hist" class="hidden">
+    <div class="bar0 noprint">
+      <h2>History</h2>
+      <div class="spacer"></div>
+      <div class="seg" id="histSeg" style="margin:0"><button data-v="cards">Cards</button><button data-v="table">Table</button></div>
+      <button class="ghost sm" data-print>🖨️ Print</button>
+    </div>
+    <div id="histBody"></div>
+  </section>
+
+  <!-- GUIDE -->
+  <section id="tab-guide" class="hidden">
+    <div class="bar0 noprint">
+      <h2>Guide</h2>
+      <div class="spacer"></div>
+      <button class="ghost sm" data-print>🖨️ Print</button>
+    </div>
+    <div class="grid guide">
+      <div class="card"><div class="ico">🔁</div><h3>The triple-feed cycle</h3><p>Each session has three parts: nurse at the breast, offer a bottle top-up, then pump. Log all three on one row.</p></div>
+      <div class="card"><div class="ico">🤱</div><h3>Breast tracking</h3><p>If you nurse on both sides, tap both. The first side you tap gets the dot, so you know where to start next time. To time a feed, tap <b>▶</b> next to Minutes when you start and <b>■</b> when you finish. The minutes fill in for you, or you can type them.</p></div>
+      <div class="card"><div class="ico">💧</div><h3>Diaper checks</h3><p>If a diaper has both urine and stool, mark both on that feed. For a change between feeds, tap <b>🧷 Diaper only</b>; those rows don't count as feeds. Goals follow the baby's age: 1 of each on the birth day (Day 0), then 1 on day 1, up to 5 on day 5, then at least 4 of each per day.</p></div>
+      <div class="card"><div class="ico">☀️</div><h3>Vitamin D</h3><p>Tap ☀️ on the feed where you gave the drops. Giving them at the same feed each day, like the first morning feed, makes it easier to remember. You'll get a heads-up if it's already logged that day.</p></div>
+      <div class="card"><div class="ico">⏱️</div><h3>Pump timer</h3><p>Start the timer when you start pumping. The green arc shows your target window.</p></div>
+      <div class="card"><div class="ico">📊</div><h3>Dashboard</h3><p>Shows the last 7 or 14 days ending on the day you have selected. Tap any chart to enlarge it, then tap a day or feed for details. Today counts as in progress until midnight.</p></div>
+      <div class="card wide-guide"><div class="ico">💬</div><h3>Send updates by text</h3>
+        <p>Each phone keeps its own copy of the log. To catch the other person up:</p>
+        <ol class="steps">
+          <li><b>On your phone:</b> tap the profile button, then <b>Export data</b>.</li>
+          <li>Pick <b>Last 2 days</b> for a quick shift handoff, or <b>Everything</b> for a full copy.</li>
+          <li>Tap <b>💬 Text message</b>. Your messages app opens with the update ready. Send it.</li>
+          <li><b>On their phone:</b> long-press the message and tap <b>Copy</b>.</li>
+          <li>Open Cradle, tap the profile button, then <b>Import data</b>. Paste into the box and tap <b>Continue</b>.</li>
+          <li>Tap <b>Merge</b>. New entries are added and matching times are updated. Nothing already logged is removed.</li>
+        </ol>
+        <p class="sub" style="margin-top:8px">If the text button doesn’t open your messages app, use <b>📋 Copy code</b> and paste it into any message instead. Paste the whole message, including the line that starts with CRADLE.</p></div>
+      <div class="card"><div class="ico">☁︎</div><h3>Sign-in and sharing</h3><p>Sign in with your Cradle username (or email) and password. Everyone in your family shares one log: feeds, diapers, notes, weights, and goals sync automatically, usually within about 15 seconds. Each phone also keeps its own copy, so Cradle works offline and catches up when it reconnects. The cloud icon in the header shows the sync status. Sign out from the profile menu; your log stays saved in your account.</p></div>
+      <div class="card"><div class="ico">👪</div><h3>Family</h3><p>Everyone has their own login and a family shares one log. <b>New here?</b> On the sign-in screen tap <b>Create an account</b>, pick a username (or use your email) and a password. To share someone’s log, enter their <b>share key</b> (like K7QM-4XPD); leave it blank to start your own. Your share key is under <b>Family</b> in the profile menu, with a <b>Share</b> button that writes the invite text for you. The family owner can make a <b>New key</b> at any time, which stops the old one working, and can remove people. Members can leave. Other families never see your log.</p></div>
+      <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Export</b> in the profile menu saves a backup file you can keep, or sends a short code by text message. <b>Import</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so export first if you want a copy. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
+      <div class="card"><div class="ico">🖨️</div><h3>Printing</h3><p>Every tab has a Print button. The Log tab prints a paper sheet for the selected day. Printing needs Cradle open in a browser like Chrome or Safari, not in a file preview.</p></div>
+      <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On Android, <b>⏰ Phone alarm</b> shows the exact time to set in your Clock app. Android doesn’t let web apps create Clock alarms themselves, so this one is a quick manual step.</p></div>
+      <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Set the birth weight in Settings.</p></div>
+      <div class="card"><div class="ico">🩺</div><h3>Doctor report</h3><p>On the Dashboard, <b>🩺 Doctor report</b> prints one page for appointments: weight against birth weight, daily feeds, nursing minutes, bottle and pump volumes, diapers against goals, Vitamin D, weighted feeds, your day notes, and lines for questions. It covers the 7 or 14 days shown on the Dashboard.</p></div>
+      <div class="card"><div class="ico">🌙</div><h3>Night shift</h3><p>Tap the <b>Night shift</b> tab for a dim, low-glare screen with huge buttons for one-handed night feeds. The three dots at the top switch colors: Warm, Moonlight, or Red. <b>Start feed</b> logs the time and starts the timer. Then tap L or R, adjust the bottle by 5 mL, mark wet, stool, or Vitamin D, and tap <b>Done</b>. Everything saves as you go.</p></div>
+      <div class="card"><div class="ico">🌌</div><h3>Calm screen</h3><p>A slow, soothing screensaver with the time, time since the last feed, and the next feed due. Open it with the moon button at the top right, next to your profile. Tap the screen to show controls: spa music, ocean, rain, or white noise, volume, and whether the clock sits in the center or the corner. The feed alarm still works here. When Cradle is installed as an app, the screen stays on while Calm or Night shift is open. Opened as a file, your phone may still turn the screen off on its own timer.</p></div>
+      <div class="card"><div class="ico">🏆</div><h3>Achievements</h3><p>Ten badges based on your goals, like Sunshine Streak for 7 days of Vitamin D and Diaper Pro for 7 days of diaper goals. Open them from the profile menu to see progress. Streaks aren’t broken by a day that isn’t over yet.</p></div>
+      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Settings, Export, Import, Print, Erase all data, this Guide, About, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
+    </div>
+    <p class="disc">This tracker is for keeping records only. Volumes, goals, and supplements should follow your pediatrician or lactation consultant. If you're worried about feeding, diapers, or weight gain, call your baby's doctor.</p>
+  </section>
+</main>
+
+<div id="print"></div>
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept="application/json,.json,.txt" class="hidden">
+
+<div class="modal" id="settingsModal">
+  <div class="card">
+    <h3>Settings</h3>
+    <p class="sub" style="margin:0 0 6px">Use the amounts your care team gave you.</p>
+    <div class="field"><label for="sName">Baby's name</label><input id="sName" type="text" placeholder="Optional"></div>
+    <div class="field"><label for="sBirth">Baby's birth date</label><input id="sBirth" type="date"></div>
+    <div class="field"><label for="sVitD">Vitamin D started</label><input id="sVitD" type="date"></div>
+    <div class="field"><label for="sBW">Birth weight</label><input id="sBW" type="text" placeholder="e.g. 7 lb 4 oz"></div>
+    <div class="field"><label for="sWU">Show weights in</label><select id="sWU"><option value="lb">lb and oz</option><option value="g">grams</option></select></div>
+    <div class="fsec">Next feed</div>
+    <div class="field"><label for="sInt">Feed every (hours)</label><input id="sInt" type="number" min="1" max="8" step="0.25"></div>
+    <div class="field"><label for="sAlarm">Alarm when a feed is due (while Cradle is open)</label><input id="sAlarm" type="checkbox"></div>
+    <div class="fsec">Goals</div>
+    <p class="sub" style="margin:4px 0">The birth date is Day 0 (goal 1 of each). Days 1 to 5, the goal matches the day: 1 on day 1, up to 5 on day 5. After that, the goals below apply.</p>
+    <div class="field"><label for="sWet">Wet goal after day 5</label><input id="sWet" type="number" min="0" step="1"></div>
+    <div class="field"><label for="sStool">Stool goal after day 5</label><input id="sStool" type="number" min="0" step="1"></div>
+    <div class="field"><label for="sTarget">Bottle target (mL)</label><input id="sTarget" type="number" min="0" step="1"></div>
+    <div class="field"><label for="sPMin">Pump time min (minutes)</label><input id="sPMin" type="number" min="1" step="1"></div>
+    <div class="field"><label for="sPMax">Pump time max (minutes)</label><input id="sPMax" type="number" min="1" step="1"></div>
+    <div class="mrow"><button class="ghost" data-close>Cancel</button><button class="primary" id="sSave">Save</button></div>
+  </div>
+</div>
+
+<div class="modal" id="exportModal">
+  <div class="card">
+    <h3>Export data</h3>
+    <div class="seg" id="expRange" style="margin:4px 0 8px"><button data-r="all" class="on">Everything</button><button data-r="2">Last 2 days</button></div>
+    <p class="sub" style="margin:0 0 12px" id="expSum"></p>
+    <div style="display:grid;gap:8px">
+      <button class="primary" id="expText">💬 Text message</button>
+      <button class="ghost hidden" id="expShare">📤 Share file</button>
+      <button class="ghost" id="expCopy">📋 Copy code</button>
+      <button class="ghost" id="expDownload">⬇️ Download file</button>
+    </div>
+    <p class="sub" style="margin:12px 0 0"><b>Text message</b> opens your messages app with a short code. On the other phone, copy the whole message, then open Cradle and choose <b>Import data</b>, then paste it.</p>
+    <div class="mrow"><button class="ghost" data-close>Cancel</button></div>
+  </div>
+</div>
+
+<div class="modal" id="importChoose">
+  <div class="card">
+    <h3>Import data</h3>
+    <button class="primary" id="impFile" style="width:100%">📁 Choose a file</button>
+    <p class="sub" style="margin:12px 0 6px">Or paste a Cradle message someone texted you:</p>
+    <textarea id="pasteIn" placeholder="Paste the whole Cradle message here" style="min-height:110px;font:12px ui-monospace,monospace"></textarea>
+    <div class="mrow"><button class="ghost" data-close>Cancel</button><button class="primary" id="impPaste">Continue</button></div>
+  </div>
+</div>
+
+<div class="modal" id="importModal">
+  <div class="card">
+    <h3>Import data</h3>
+    <div id="impSum"></div>
+    <p class="sub" style="margin-top:10px"><b>Merge</b> adds new feeds and updates feeds with the same time. Nothing already logged is removed.<br><b>Replace</b> clears this log first and uses only the file.</p>
+    <div class="mrow"><button class="ghost" data-close>Cancel</button><button class="ghost" id="impReplace">Replace</button><button class="primary" id="impMerge">Merge</button></div>
+  </div>
+</div>
+
+<div class="modal" id="askModal">
+  <div class="card">
+    <p id="askMsg" style="margin:0 0 4px;font-size:16px;white-space:pre-line"></p>
+    <div class="mrow"><button class="ghost" id="askCancel">Cancel</button><button class="primary" id="askOk">OK</button></div>
+  </div>
+</div>
+
+<div class="modal" id="blockedModal">
+  <div class="card">
+    <h3 id="blkTitle">Blocked</h3>
+    <p id="blkMsg" style="margin:0"></p>
+    <div id="blkData" class="hidden" style="margin-top:10px"><textarea id="blkText" readonly style="min-height:140px;font:12px ui-monospace,monospace"></textarea>
+      <div class="mrow" style="margin-top:8px"><button class="ghost" id="blkCopy">Copy data</button></div></div>
+    <div class="mrow"><button class="primary" data-close>Got it</button></div>
+  </div>
+</div>
+
+<div id="gate" class="open" role="dialog" aria-label="Sign in to Cradle">
+  <div class="gwrap">
+    <div class="glogo"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 15h18a9 9 0 0 1-18 0z" fill="#fff5ea"/><circle cx="16" cy="9.5" r="3.5" fill="#fff5ea"/><path d="M5 15h22" stroke="#fff5ea" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+    <div class="gname">Cradle</div>
+    <div class="gtag">Triple-feeding log</div>
+    <div id="gLoading" class="gdots"><i></i><i></i><i></i></div>
+    <form id="gForm" autocomplete="on"><div id="gLogin" class="card hidden">
+      <label for="gUser">Username or email</label><input id="gUser" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+      <label for="gPass">Password</label><input id="gPass" name="password" type="password" autocomplete="current-password">
+      <div id="gNew" class="hidden">
+        <label for="gPass2">Type the password again</label><input id="gPass2" type="password" autocomplete="new-password">
+        <label for="gShare">Share key <span style="font-weight:400;opacity:.7">(optional)</span></label><input id="gShare" placeholder="K7QM-4XPD" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false">
+        <div class="sub" style="margin-top:4px">Got a key from family or a friend? Enter it to share their log. Leave it blank to start your own.</div>
+      </div>
+      <button class="primary" id="gGo" type="submit">Sign in</button>
+      <div id="gMsg" role="alert"></div>
+      <div id="gHas" class="sub hidden" style="margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--soft,rgba(0,0,0,.04))"></div>
+      <button type="button" class="glink" id="gMode">New here? Create an account</button>
+      <button type="button" class="glink" id="gDbOpen">Database settings</button>
+      <div id="gDb" class="hidden">
+        <label for="gUrl">Database address</label><input id="gUrl" placeholder="https://xxxx.supabase.co" autocapitalize="none" spellcheck="false">
+        <label for="gKey">Publishable key</label><input id="gKey" placeholder="sb_publishable_..." autocapitalize="none" spellcheck="false">
+        <div class="sub">From your Supabase project. You only enter these once per phone.</div>
+      </div>
+    </div></form>
+  </div>
+</div>
+
+<div class="alarmbar" id="alarmBar"><span id="alarmTxt">🍼 Feed due</span><button id="alarmSnooze">Snooze 10 min</button><button class="solid" id="alarmDismiss">Dismiss</button></div>
+
+<div id="night" role="dialog" aria-label="Night shift"><div class="nw">
+  <div class="ntop"><div class="nclock" id="nClock"></div><div class="npal" aria-label="Colors"><button data-pal="warm" title="Warm" style="background:#33281d"></button><button data-pal="moon" title="Moonlight" style="background:#1f2c3d"></button><button data-pal="red" title="Red" style="background:#2c0e09"></button></div><button class="nx" data-n="exit" aria-label="Close Night shift">✕</button></div>
+  <div class="nsub" id="nSub"></div>
+  <div id="nBody"></div>
+</div></div>
+
+<div id="calm" role="dialog" aria-label="Calm screen">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div><div class="stars"></div>
+  <div id="calmInfo" class="pos-center"><div class="ct" id="calmTime"></div><div class="cl" id="calmLine"></div><div class="cn" id="calmNurse" style="display:none"></div></div>
+  <div id="calmCtl">
+    <button data-snd="off">🔇 Off</button><button data-snd="spa">🎐 Spa</button><button data-snd="ocean">🌊 Ocean</button><button data-snd="rain">🌧️ Rain</button><button data-snd="white">〰️ White noise</button>
+    <span class="sep"></span><input type="range" id="calmVol" min="0" max="1" step="0.05" aria-label="Volume">
+    <span class="sep"></span><button data-pos="center">Center</button><button data-pos="tr">Corner</button>
+    <span class="sep"></span><button data-calm="exit">✕ Exit</button>
+  </div>
+</div>
+
+<div class="modal" id="weightModal">
+  <div class="card">
+    <h3>Weights</h3>
+    <div class="field"><label for="wDate">Date</label><input id="wDate" type="date"></div>
+    <div class="field"><label for="wTime">Time</label><input id="wTime" type="time"></div>
+    <div class="field"><label for="wVal">Weight</label><input id="wVal" type="text" placeholder="e.g. 7 lb 3.5 oz"></div>
+    <div class="field"><label for="wSrc">Where</label><select id="wSrc"><option>Pediatrician</option><option>Lactation consultant</option><option>Hospital</option><option>Home scale</option></select></div>
+    <div class="field"><label for="wNote">Note</label><input id="wNote" type="text" placeholder="Optional"></div>
+    <div class="mrow" style="margin-top:4px"><button class="primary" id="wAdd">Save weight</button></div>
+    <p class="sub" style="margin:8px 0 0">Type it the way the scale shows it: 7 lb 3.5 oz, 3270 g, or 3.27 kg. Weighted feeds add their before weight here automatically.</p>
+    <div class="fsec">History</div>
+    <div class="wlist" id="wList"></div>
+    <div class="mrow"><button class="ghost" data-close>Close</button></div>
+  </div>
+</div>
+
+<div class="modal" id="chartModal">
+  <div class="card">
+    <div class="cmhead"><h3 id="cmTitle">Chart</h3><span class="sub">Tap a bar, point, or row to see details</span><button class="ghost sm" data-close>Close</button></div>
+    <div id="cmChart"></div>
+    <div id="cmLegend"></div>
+    <div class="cmsel" id="cmSel"></div>
+    <div class="tblwrap" id="cmTable"></div>
+  </div>
+</div>
+
+<div class="modal" id="familyModal">
+  <div class="card">
+    <h3>👪 Family</h3>
+    <div id="famBody"></div>
+    <div class="mrow"><button class="ghost" data-close>Close</button></div>
+  </div>
+</div>
+
+<div class="modal" id="welcomeModal">
+  <div class="card" style="text-align:left">
+    <div style="text-align:center;margin-bottom:8px"><div class="glogo" style="width:72px;height:72px;border-radius:20px;animation:none"><svg viewBox="0 0 32 32" style="width:46px;height:46px" aria-hidden="true"><path d="M7 15h18a9 9 0 0 1-18 0z" fill="#fff5ea"/><circle cx="16" cy="9.5" r="3.5" fill="#fff5ea"/><path d="M5 15h22" stroke="#fff5ea" stroke-width="1.8" stroke-linecap="round"/></svg></div></div>
+    <h2 id="welTitle" style="text-align:center;margin:6px 0 12px;font-size:22px">Welcome to Cradle</h2>
+    <div id="welBody"></div>
+    <div class="mrow"><button class="primary" data-close>Let’s go</button></div>
+  </div>
+</div>
+
+<div class="modal" id="pwModal">
+  <div class="card">
+    <h3>🔑 Change password</h3>
+    <div class="field"><label for="pwNew">New password</label><input id="pwNew" type="password" autocomplete="new-password"></div>
+    <div class="field"><label for="pwNew2">Type it again</label><input id="pwNew2" type="password" autocomplete="new-password"></div>
+    <div id="pwMsg" class="sub" style="color:var(--warn);min-height:18px"></div>
+    <div class="mrow"><button class="ghost" data-close>Cancel</button><button class="primary" id="pwSave">Save</button></div>
+  </div>
+</div>
+
+<div class="modal" id="achModal">
+  <div class="card">
+    <div class="achtop"><div class="trophy">🏆</div><div style="flex:1"><h3 style="margin:0">Achievements</h3><div class="sub" id="achSum"></div><div class="achbar"><i id="achFill"></i></div></div></div>
+    <div class="achgrid" id="achGrid"></div>
+    <div class="mrow"><button class="primary" data-close>Close</button></div>
+  </div>
+</div>
+
+<div class="modal" id="aboutModal">
+  <div class="card">
+    <h3>About Cradle</h3>
+    <p style="margin:0 0 8px"><b>Cradle v1.5</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
+    <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.5</b>
+    <ul class="cl"><li>Family sharing: everyone has their own login, and a family shares one log</li><li>Create an account from the sign-in screen, with share keys to join a family</li><li>Family screen: share key, Share invite text, New key, add by email, remove people, leave</li><li>Welcome screen for new family members</li><li>Change password</li><li>Sign-in screen offers a backup when the phone already has a log</li><li>Tabs reordered: Log, Night shift, Dashboard, History</li><li>Calm is now the moon button at the top right</li><li>Phone alarm button shows the time to set (Android blocks web apps from setting Clock alarms)</li></ul>
+    <b>v1.4</b>
+    <ul class="cl"><li>Splash screen and sign-in</li><li>Shared log that syncs between phones</li><li>Works offline and catches up when back online</li><li>Installable app</li><li>Sign out from the profile menu</li></ul>
+    <b>v1.3</b>
+    <ul class="cl"><li>Guide moved to the profile menu</li><li>Next feed due time with an in-app alarm, snooze, and a phone alarm button on Android</li><li>Weighted feeds with before and after weights</li><li>Weight tracking with a chart against birth weight</li><li>Doctor report from the Dashboard</li><li>Night shift tab with big night controls</li><li>Calm tab with spa music and sounds</li><li>Calm screen sounds: spa, ocean, rain, and white noise</li><li>Minutes on each feed with a nursing timer</li></ul>
+    <b>v1.2</b>
+    <ul class="cl"><li>Feed length: Minutes on each feed, with a ▶ timer</li><li>Send updates by text message as a short code, and paste it into Import</li><li>Enlarge any dashboard chart to explore days and feeds</li><li>Today is shown as in progress on the dashboard</li><li>Vitamin D start date, so earlier days aren't counted as missed</li><li>Achievements with progress and badges</li><li>Optional built-in starter log for personal copies</li><li>Erase all data from the profile menu</li><li>Diaper-only rows (🧷) that don't count as feeds</li><li>Birth date counts as Day 0</li><li>In-app confirm dialogs, plus help when printing or downloading is blocked</li><li>Profile menu with Auto, Light, and Dark themes</li><li>Dalmatian mode (experimental)</li><li>Merge or replace when importing</li><li>Print button on every tab</li><li>Dashboard insights, Vitamin D tracking, side balance, and longest stretch</li><li>History table view</li></ul>
+    <b>v1.1</b>
+    <ul class="cl"><li>Vitamin D on each feed</li><li>Diaper goals follow the baby's day of life</li></ul>
+    <b>v1.0</b>
+    <ul class="cl"><li>Feed log, pump timer, dashboard, history, and guide</li></ul>
+    <div class="mrow"><button class="primary" data-close>Close</button></div>
+  </div>
+</div>
+
+<script type="application/json" id="cloudConfig">{}</script>
+<script type="application/json" id="baseData">{}</script>
+<script>
+(function(){
+const VERSION='1.5';
+const LS='cradle-feeding-v1';
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+const pad=n=>String(n).padStart(2,'0');
+const key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parseK=k=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=v=>{const n=parseFloat(v);return isFinite(n)?n:null};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const longDate=k=>parseK(k).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});
+const hm=mins=>{mins=Math.round(mins);return Math.floor(mins/60)+'h '+pad(mins%60)+'m'};
+
+function migrate(s){
+  s=s&&typeof s==='object'?s:{};
+  s.settings=Object.assign({target:30,pumpMin:15,pumpMax:20,wetGoal:4,stoolGoal:4,theme:'auto',birthDate:'',babyName:'',vitDStart:'',feedInterval:3,alarmOn:true,birthWeight:null,weightUnit:'lb'},s.settings||{});
+  if(!s.settings.v2){s.settings.wetGoal=4;s.settings.stoolGoal=4;s.settings.v2=1}
+  s.days=s.days&&typeof s.days==='object'?s.days:{};
+  for(const k in s.days){const d=s.days[k];d.feeds=Array.isArray(d.feeds)?d.feeds:[];d.feeds.forEach(f=>{if(!f.id)f.id=uid();if(f.mins===undefined){const m=String(f.note||'').match(/^(\d+) min(?:\.\s*|$)/);f.mins=m?+m[1]:null;if(m)f.note=f.note.slice(m[0].length)}})}
+  s.timer=s.timer||{start:null,last:null};
+  s.nurse=s.nurse||null;
+  s.ui=Object.assign({range:7,hist:'cards'},s.ui||{});
+  s.ui.calm=Object.assign({sound:'off',vol:0.6,pos:'center'},s.ui.calm||{});
+  s.weights=Array.isArray(s.weights)?s.weights:[];
+  return s;
+}
+let S;
+try{S=migrate(JSON.parse(localStorage.getItem(LS)||'null'))}catch(e){S=migrate(null)}
+let savedT;
+let achT;
+function save(){
+  try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+  try{cloudAfterSave()}catch(e){}
+  clearTimeout(achT);achT=setTimeout(()=>{if(typeof checkAch==='function')checkAch()},600);
+  const el=$('#saved');el.classList.add('show');clearTimeout(savedT);savedT=setTimeout(()=>el.classList.remove('show'),900);
+}
+let toastT;
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3200)}
+let cur=key(new Date()), tab='today';
+const day=k=>S.days[k]||(S.days[k]={feeds:[],vitD:false,notes:''});
+const peek=k=>S.days[k]||{feeds:[],vitD:false,notes:''};
+const sum=(a,f)=>a.reduce((t,x)=>t+(num(x[f])||0),0);
+const isFeed=f=>!!(f.wf||f.left||f.right||num(f.bottle)!=null||num(f.pump)!=null||num(f.mins)>0||(S&&S.nurse&&S.nurse.id===f.id));
+function totals(d){
+  return {n:d.feeds.filter(isFeed).length,bottle:sum(d.feeds,'bottle'),pump:sum(d.feeds,'pump'),
+    wet:d.feeds.filter(f=>f.urine).length,stool:d.feeds.filter(f=>f.stool).length};
+}
+function goals(k){const st=S.settings;if(!st.birthDate)return{wet:st.wetGoal,stool:st.stoolGoal,dol:null};
+  const dol=Math.round((parseK(k)-parseK(st.birthDate))/864e5);
+  if(dol<0)return{wet:0,stool:0,dol};if(dol===0)return{wet:1,stool:1,dol};if(dol<=5)return{wet:dol,stool:dol,dol};return{wet:st.wetGoal,stool:st.stoolGoal,dol}}
+const vitDue=k=>!S.settings.vitDStart||k>=S.settings.vitDStart;
+const vitStartS=()=>S.settings.vitDStart?parseK(S.settings.vitDStart).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
+function vitGiven(d){const f=d.feeds.find(x=>x.vitD);return f?{given:true,time:f.time,feed:f}:{given:!!d.vitD,time:''}}
+const fmt12=t=>{if(!t)return '';let[h,m]=t.split(':').map(Number);const ap=h<12?'am':'pm';h=h%12||12;return h+':'+pad(m)+ap};
+const babyName=()=>(S.settings.babyName||'').trim();
+
+/* Theme + profile */
+function applyTheme(){
+  const t=S.settings.theme;
+  if(t==='auto')document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme',t);
+  $$('#themeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.theme===t));
+  $('.dalm').classList.toggle('on',t==='dalmatian');
+}
+function renderProfile(){
+  const n=babyName();
+  $('#menuBtn').innerHTML=n?esc(n[0].toUpperCase()):'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
+  $('#brandSub').textContent=n?n+'’s feeding log':'Triple-feeding log';
+  $('#ddName').textContent=n||'Cradle';
+  const g=goals(key(new Date()));
+  $('#ddSub').textContent=g.dol!=null&&g.dol>=0?'Day '+g.dol+' of life':(S.settings.birthDate?'Triple-feeding log':'Add a birth date in Settings');
+}
+$('#menuBtn').onclick=e=>{e.stopPropagation();$('#menu').classList.toggle('open')};
+document.addEventListener('click',e=>{if(!e.target.closest('#menu'))$('#menu').classList.remove('open')});
+$('#dd').addEventListener('click',e=>{
+  const tb=e.target.closest('#dd [data-theme]');
+  if(tb){S.settings.theme=tb.dataset.theme;applyTheme();save();if(tab==='dash')renderDash();return}
+  const a=e.target.closest('[data-act]');if(!a)return;$('#menu').classList.remove('open');
+  ({settings:openSettings,export:openExport,import:openImport,erase:eraseAll,ach:openAch,print:printTab,
+    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account.','Sign out'))clSignOut()}})[a.dataset.act]();
+});
+$$('.modal:not(#askModal)').forEach(m=>m.addEventListener('click',e=>{if(e.target===m||e.target.closest('[data-close]'))m.classList.remove('open')}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(nightOpen||calmOpen)){nightOpen?closeNight():closeCalm();return}if(e.key==='Escape'){if($('#askModal').classList.contains('open')){$('#askCancel').click();return}$$('.modal.open').forEach(m=>m.classList.remove('open'));$('#menu').classList.remove('open')}});
+
+
+/* In-app dialogs (work even where browser pop-ups are blocked) */
+const framed=()=>{try{return window.self!==window.top}catch(e){return true}};
+function ask(msg,okLabel='OK',danger=false){return new Promise(res=>{
+  $('#askMsg').textContent=msg;const ok=$('#askOk');ok.textContent=okLabel;ok.style.background=danger?'var(--warn)':'';
+  const m=$('#askModal');m.classList.add('open');
+  const done=v=>{m.classList.remove('open');ok.onclick=null;$('#askCancel').onclick=null;res(v)};
+  ok.onclick=()=>done(true);$('#askCancel').onclick=()=>done(false);
+  m.onclick=e=>{if(e.target===m)done(false)};ok.focus();
+})}
+function showBlocked(kind,text){
+  const m=$('#blockedModal');
+  if(kind==='print'){
+    $('#blkTitle').textContent='Printing is blocked here';
+    $('#blkMsg').innerHTML='The print window didn’t open. This happens when Cradle is opened inside a preview, like a file viewer in another app. <b>Download cradle.html and open it in Safari, Chrome, or Edge</b>, then tap Print again.';
+    $('#blkData').classList.add('hidden');
+  }else{
+    $('#blkTitle').textContent='Didn’t get a file?';
+    $('#blkMsg').innerHTML='If no file downloaded, this preview may be blocking downloads. You can copy your data below and paste it into a note or message, or open Cradle in your browser and export again.';
+    const ta=$('#blkText');ta.value=text;$('#blkData').classList.remove('hidden');
+  }
+  m.classList.add('open');
+}
+$('#blkCopy').onclick=async()=>{const ta=$('#blkText');ta.select();let ok=false;
+  try{await navigator.clipboard.writeText(ta.value);ok=true}catch(e){try{ok=document.execCommand('copy')}catch(x){}}
+  toast(ok?'Copied':'Select the text and copy it manually')};
+
+/* Tabs and date */
+$('#calmBtn').onclick=()=>openCalm();
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.tab==='night'){openNight();return}tab=b.dataset.tab;renderAll()};
+function setDay(k){cur=k;renderAll()}
+$('#prevDay').onclick=()=>setDay(key(addDays(parseK(cur),-1)));
+$('#nextDay').onclick=()=>setDay(key(addDays(parseK(cur),1)));
+$('#todayBtn').onclick=()=>setDay(key(new Date()));
+$('#dateIn').onchange=e=>{if(e.target.value)setDay(e.target.value)};
+
+/* Feed rows */
+function sideBtns(f){
+  return ['L','R'].map(s=>{const on=s==='L'?f.left:f.right;
+    return `<button class="side ${on?'on':''} ${f.start===s?'start':''}" data-side="${s}" title="${s==='L'?'Left':'Right'}${f.start===s?' (started here)':''}">${s}</button>`}).join('');
+}
+function meter(v,col){
+  const t=S.settings.target||1;const p=Math.min(100,(num(v)||0)/t*100);
+  return `<div class="meter"><i style="width:${p}%;background:${col}"></i></div>`;
+}
+function feedRow(f,i,lab){
+  return `<div class="feed" data-id="${f.id}">
+    <div class="n" title="${isFeed(f)?'Feed':'Diaper or note only, not counted as a feed'}">${lab}</div>
+    <div class="c-time"><input type="time" data-k="time" value="${esc(f.time)}" aria-label="Time"></div>
+    <div class="c-side"><span class="lbl">Breast</span><div class="sides">${sideBtns(f)}</div></div>
+    <div class="c-min"><span class="lbl">Minutes</span><div class="mrow2"><input type="text" inputmode="numeric" data-k="mins" value="${f.mins??''}" placeholder="min" aria-label="Minutes nursing"><button class="tbtn" data-timer title="Time this feed">▶</button></div></div>
+    <div class="c-bottle"><span class="lbl">Bottle</span><div class="ml"><input type="text" inputmode="decimal" data-k="bottle" value="${f.bottle??''}" placeholder="0"><span>mL</span></div>${meter(f.bottle,'var(--bottle)')}</div>
+    <div class="c-pump"><span class="lbl">Pump</span><div class="ml"><input type="text" inputmode="decimal" data-k="pump" value="${f.pump??''}" placeholder="0"><span>mL</span></div></div>
+    <div class="c-wet"><button class="chk wet ${f.urine?'on':''}" data-t="urine" title="Wet">💧</button></div>
+    <div class="c-stool"><button class="chk stool ${f.stool?'on':''}" data-t="stool" title="Stool">💩</button></div>
+    <div class="c-vit"><button class="chk vit ${f.vitD?'on':''}" data-t="vitD" title="Vitamin D given">☀️</button></div>
+    <div class="c-wtd"><button class="chk wf ${f.wf?'on':''}" data-t="wf" title="Weighted feed (weigh before and after)">⚖️</button></div>
+    <div class="c-dia"><button class="chk wet ${f.urine?'on':''}" data-t="urine" title="Wet">💧</button><button class="chk stool ${f.stool?'on':''}" data-t="stool" title="Stool">💩</button><button class="chk vit ${f.vitD?'on':''}" data-t="vitD" title="Vitamin D given">☀️</button><button class="chk wf ${f.wf?'on':''}" data-t="wf" title="Weighted feed">⚖️</button></div>
+    <div class="c-note"><input type="text" data-k="note" value="${esc(f.note)}" placeholder="Note"></div>
+    <button class="del" title="Delete feed">&times;</button>
+    <div class="c-wf ${f.wf?'':'hidden'}"><b>⚖️ Weighted feed</b><span>Before</span><input type="text" data-k="wPre" value="${f.wPre?fmtW(f.wPre):''}" placeholder="${S.settings.weightUnit==='g'?'grams':'lb oz'}"><span>After</span><input type="text" data-k="wPost" value="${f.wPost?fmtW(f.wPost):''}" placeholder="${S.settings.weightUnit==='g'?'grams':'lb oz'}"><span class="wfres">${wfRes(f)}</span></div>
+  </div>`;
+}
+function sortFeeds(d){d.feeds.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.time||'99')>(b.time||'99')?1:0)}
+function renderFeeds(){
+  setTimeout(tickNurse,0);
+  const d=peek(cur);
+  $('#feeds').innerHTML=d.feeds.length?(()=>{let c=0;return d.feeds.map((f,i)=>feedRow(f,i,isFeed(f)?'#'+(++c):'🧷')).join('')})():`<div class="empty">No feeds logged for this day yet.<br>Tap <b>Log feed now</b> to start.</div>`;
+}
+const findFeed=el=>{const row=el.closest('.feed');if(!row)return{};const d=day(cur);return{row,d,f:d.feeds.find(x=>x.id===row.dataset.id)}};
+$('#feeds').addEventListener('input',e=>{
+  const k=e.target.dataset.k;if(!k)return;const{row,f}=findFeed(e.target);if(!f)return;
+  if(k==='mins'){const v=e.target.value.trim();f.mins=v===''?null:num(v);save();return}
+  if(k==='bottle'||k==='pump'){
+    const v=e.target.value.replace(',','.');f[k]=v.trim()===''?null:num(v);
+    if(k==='bottle'){row.querySelector('.c-bottle .meter i').style.width=Math.min(100,(f.bottle||0)/(S.settings.target||1)*100)+'%'}
+  }else if(k==='wPre'||k==='wPost'){return}else if(k!=='time')f[k]=e.target.value;
+  save();renderStats();
+});
+$('#feeds').addEventListener('change',e=>{
+  if(e.target.dataset.k!=='time')return;const{d,f}=findFeed(e.target);if(!f)return;
+  f.time=e.target.value;sortFeeds(d);save();renderFeeds();renderStats();renderSince();
+});
+$('#feeds').addEventListener('click',async e=>{
+  const{row,d,f}=findFeed(e.target);if(!f)return;
+  if(e.target.closest('[data-timer]')){S.nurse&&S.nurse.id===f.id?stopNurse():startNurse(cur,f.id);return}
+  const sb=e.target.closest('.side'),cb=e.target.closest('.chk');
+  if(sb){
+    const s=sb.dataset.side,p=s==='L'?'left':'right';f[p]=!f[p];
+    if(f[p]&&!f.start)f.start=s;
+    if(!f[p]&&f.start===s)f.start=f.left?'L':f.right?'R':'';
+    row.querySelector('.sides').innerHTML=sideBtns(f);save();renderSince();
+  }else if(cb){
+    const t=cb.dataset.t;
+    if(t==='vitD'&&!f.vitD){const g=vitGiven(d);if(g.given&&!await ask('Vitamin D is already logged today'+(g.time?' at '+fmt12(g.time):'')+'. Log it again?','Log again'))return;d.vitD=false}
+    f[t]=!f[t];
+    if(t==='wf'){save();renderFeeds();renderStats();const r2=document.querySelector(`.feed[data-id="${f.id}"]`);if(r2&&f.wf)r2.querySelector('input[data-k=wPre]').focus();return}
+    row.querySelectorAll(`.chk[data-t="${t}"]`).forEach(b=>b.classList.toggle('on',f[t]));save();renderStats();
+  }else if(e.target.closest('.del')){
+    if(!await ask('Delete this feed?','Delete',true))return;
+    if(S.nurse&&S.nurse.id===f.id)S.nurse=null;d.feeds=d.feeds.filter(x=>x!==f);save();renderFeeds();renderStats();renderSince();
+  }
+});
+function addFeed(withTime,focusSel){
+  const d=day(cur);const now=new Date();
+  const f={id:uid(),time:withTime&&cur===key(now)?pad(now.getHours())+':'+pad(now.getMinutes()):'',left:false,right:false,start:'',mins:null,bottle:null,pump:null,urine:false,stool:false,vitD:false,note:''};
+  d.feeds.push(f);sortFeeds(d);save();renderFeeds();renderStats();renderSince();
+  const row=document.querySelector(`.feed[data-id="${f.id}"]`);
+  if(row){row.scrollIntoView({behavior:'smooth',block:'center'});(row.querySelector(focusSel||(withTime?'.side':'input[type=time]'))||row.querySelector('.side')).focus({preventScroll:true})}
+}
+$('#logNow').onclick=()=>addFeed(true);
+$('#addBlank').onclick=()=>addFeed(false);
+$('#addDiaper').onclick=()=>addFeed(true,'.chk.wet');
+$('#dayNotes').addEventListener('input',e=>{day(cur).notes=e.target.value;save()});
+
+/* Stats */
+function ring(v,goal,col){
+  const r=24,c=2*Math.PI*r,p=goal?Math.min(1,v/goal):0;
+  return `<svg class="ring" viewBox="0 0 56 56"><circle class="bgc" cx="28" cy="28" r="${r}"/><circle class="fg" cx="28" cy="28" r="${r}" stroke="${p>=1?'var(--good)':col}" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}" transform="rotate(-90 28 28)"/><text x="28" y="33" text-anchor="middle">${v}</text></svg>`;
+}
+function renderStats(){
+  const d=peek(cur),t=totals(d),st=S.settings,vg=vitGiven(d),G=goals(cur),gl=G.dol!=null&&G.dol>=0?'Day '+G.dol+' goal ':'Goal ';
+  const bottled=d.feeds.filter(f=>num(f.bottle)!=null);
+  const avgB=bottled.length?Math.round(t.bottle/bottled.length):0;
+  const times=d.feeds.filter(isFeed).map(f=>f.time).filter(Boolean).sort().map(x=>{const[h,m]=x.split(':').map(Number);return h*60+m});
+  let gap='--';if(times.length>1)gap=hm((times[times.length-1]-times[0])/(times.length-1));
+  $('#stats').innerHTML=`
+    <div class="card"><h3>Feeds</h3><div class="big">${t.n}</div><div class="sub">Avg gap ${gap}</div></div>
+    <div class="card"><h3>Bottle</h3><div class="big" style="color:var(--bottle)">${t.bottle} <span class="sub">mL</span></div><div class="sub">Avg ${avgB} / ${st.target} mL target</div></div>
+    <div class="card"><h3>Pumped</h3><div class="big" style="color:var(--pump)">${t.pump} <span class="sub">mL</span></div><div class="sub">${!d.feeds.some(f=>num(f.pump)!=null)?'No pump output logged yet':t.pump>=t.bottle?'Covering bottle use':'Bottle minus pump: '+Math.round(t.bottle-t.pump)+' mL'}</div></div>
+    <div class="card stat">${ring(t.wet,G.wet,'var(--wet)')}<div><h3>Wet</h3><div class="sub">${gl}${G.wet}+${G.dol==null?'<br>Add birth date in Settings for day-by-day goals':''}</div></div></div>
+    <div class="card stat">${ring(t.stool,G.stool,'var(--stool)')}<div><h3>Stool</h3><div class="sub">${gl}${G.stool}+</div></div></div>
+    <div class="card"><h3>Vitamin D</h3><button class="vitd ${vg.given?'on':''}" id="vitBtn"><span class="box">${vg.given?'✓':''}</span><span>${vg.given?(vg.time?'Given at '+fmt12(vg.time):'Given today'):vitDue(cur)?'Not yet given':'Not started (began '+vitStartS()+')'}</span></button></div>`;
+  $('#vitBtn').onclick=()=>{const dd=day(cur),g=vitGiven(dd);if(g.given){dd.vitD=false;dd.feeds.forEach(x=>x.vitD=false)}else dd.vitD=true;save();renderStats();renderFeeds()};
+}
+
+/* Since last feed + next side */
+function feedTimes(k){return peek(k).feeds.filter(f=>f.time&&isFeed(f)).map(f=>{const[h,m]=f.time.split(':').map(Number);const dt=parseK(k);dt.setHours(h,m,0,0);return{dt,f,k}}).sort((a,b)=>a.dt-b.dt)}
+function renderSince(){
+  renderDue();
+  const now=new Date(),r=[];for(let i=0;i<3;i++)r.push(...feedTimes(key(addDays(now,-i))).filter(x=>x.dt<=now));
+  r.sort((a,b)=>b.dt-a.dt);
+  if(!r.length){$('#sinceVal').textContent='--';$('#sinceSub').textContent='No recent feeds logged';$('#nextSide').innerHTML='';return}
+  $('#sinceVal').textContent=hm(Math.floor((now-r[0].dt)/60000));
+  $('#sinceSub').textContent='Last feed at '+fmt12(r[0].f.time)+(r[0].k===key(now)?'':r[0].k===key(addDays(now,-1))?' yesterday':' on '+dlong(parseK(r[0].k)));
+  const ls=r.find(x=>x.f.start);
+  $('#nextSide').innerHTML=ls?`<span class="sidechip">Start on ${ls.f.start==='L'?'Right':'Left'} next</span><span class="sub">Last started ${ls.f.start==='L'?'Left':'Right'}</span>`:'';
+}
+
+
+/* Nursing timer: one feed at a time, survives reloads */
+let nInt=null;
+const nEl=()=>S.nurse?Math.floor((Date.now()-S.nurse.start)/1000):0;
+const mmss=sec=>Math.floor(sec/60)+':'+pad(sec%60);
+function tickNurse(){
+  const on=!!S.nurse;$('#nurseBar').classList.toggle('on',on);
+  $$('.tbtn[data-timer]').forEach(b=>{const id=b.closest('.feed').dataset.id,run=on&&S.nurse.id===id;b.classList.toggle('run',run);b.textContent=run?'■ '+mmss(nEl()):'▶';b.title=run?'Stop timing':'Time this feed'});
+  if(on){$('#nurseT').textContent=mmss(nEl());const f=(peek(S.nurse.k).feeds||[]).find(x=>x.id===S.nurse.id);$('#nurseWhich').textContent=f?(S.nurse.k===cur?'':longDate(S.nurse.k)+', ')+'feed at '+(fmt12(f.time)||'no time'):''}
+  if(on&&!nInt)nInt=setInterval(tickNurse,1000);if(!on&&nInt){clearInterval(nInt);nInt=null}
+}
+function startNurse(k,id){
+  if(S.nurse)stopNurse(true);
+  S.nurse={k,id,start:Date.now()};save();if(k===cur&&tab==='today'){renderFeeds();renderStats();renderSince()}tickNurse();toast('Timing this feed. Tap ■ or Stop when done.');
+}
+function stopNurse(quiet){
+  if(!S.nurse)return;const sec=nEl(),{k,id}=S.nurse;S.nurse=null;
+  const d=S.days[k],f=d&&d.feeds.find(x=>x.id===id);
+  if(f){const add=Math.max(sec>=20?1:0,Math.round(sec/60));f.mins=(num(f.mins)||0)+add;if(!f.mins)f.mins=null}
+  save();if(k===cur&&tab==='today'){renderFeeds();renderStats();renderSince()}tickNurse();
+  if(!quiet)toast(f?`Logged ${Math.max(1,Math.round(sec/60))} min (${mmss(sec)})`:'Timer stopped');
+}
+$('#nurseStop').onclick=()=>stopNurse();
+
+/* Pump timer */
+let tInt;
+function renderTimer(){
+  const st=S.settings,T=S.timer,r=44,c=2*Math.PI*r,max=st.pumpMax*60;
+  const el=T.start?Math.floor((Date.now()-T.start)/1000):0;
+  const p=Math.min(1,el/max);
+  const fg=$('#tfg');fg.setAttribute('stroke-dasharray',c);fg.setAttribute('stroke-dashoffset',c*(1-p));
+  fg.setAttribute('stroke',el<st.pumpMin*60?'var(--pump)':el<=max?'var(--good)':'var(--warn)');
+  const zc=2*Math.PI*52,a=st.pumpMin/st.pumpMax;
+  $('#tzone').setAttribute('stroke-dasharray',`0 ${zc*a} ${zc*(1-a)} 0`);
+  $('#ttime').textContent=pad(Math.floor(el/60))+':'+pad(el%60);
+  $('#tlab').textContent=!T.start?'ready':el<st.pumpMin*60?'pumping':el<=max?'in window':'past goal';
+  $('#tgoal').textContent=`Goal ${st.pumpMin} to ${st.pumpMax} min`;
+  $('#tStart').textContent=T.start?'Stop':'Start';
+  $('#tlast').textContent=T.last?'Last session: '+T.last:'';
+}
+$('#tStart').onclick=()=>{
+  const T=S.timer;
+  if(T.start){const el=Math.floor((Date.now()-T.start)/1000);T.last=Math.floor(el/60)+'m '+pad(el%60)+'s';T.start=null;clearInterval(tInt)}
+  else{T.start=Date.now();tInt=setInterval(renderTimer,1000)}
+  save();renderTimer();
+};
+$('#tReset').onclick=()=>{S.timer.start=null;clearInterval(tInt);save();renderTimer()};
+
+/* Tooltip (mouse + touch) */
+const tip=$('#tip');let tipT;
+function showTip(t,x,y){tip.textContent=t.dataset.tip;tip.style.opacity=1;tip.style.left=Math.max(8,Math.min(x+12,innerWidth-tip.offsetWidth-8))+'px';tip.style.top=(y-38)+'px'}
+document.addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;const t=e.target.closest&&e.target.closest('[data-tip]');if(t)showTip(t,e.clientX,e.clientY);else tip.style.opacity=0});
+document.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')return;const t=e.target.closest&&e.target.closest('[data-tip]');if(t){showTip(t,e.clientX,e.clientY);clearTimeout(tipT);tipT=setTimeout(()=>tip.style.opacity=0,2200)}else tip.style.opacity=0});
+
+/* Charts */
+let W=640;const H=230,P={l:40,r:12,t:16,b:28};const WIDE=1000,HALF=480;
+function niceMax(v){if(v<=0)return 10;const p=Math.pow(10,Math.floor(Math.log10(v)));const n=v/p;return(n<=1?1:n<=2?2:n<=5?5:10)*p}
+function axes(max,fmt=v=>Math.round(v*10)/10,ticks=5){
+  let s='';for(let i=0;i<=ticks;i++){const v=max/ticks*i,y=H-P.b-(H-P.t-P.b)*i/ticks;
+    s+=`<line class="ax" x1="${P.l}" x2="${W-P.r}" y1="${y}" y2="${y}" ${i?'stroke-dasharray="2 4"':''}/><text x="${P.l-6}" y="${y+4}" text-anchor="end">${fmt(v)}</text>`}
+  return s;
+}
+const yOf=(v,max)=>H-P.b-(H-P.t-P.b)*(v/max);
+const defs=`<defs><pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="var(--pump)" opacity=".35"/><rect width="2.5" height="5" fill="var(--pump)"/></pattern></defs>`;
+const svgWrap=(s,h=H)=>`<svg class="chart" viewBox="0 0 ${W} ${h}" role="img">${defs}${s}</svg>`;
+function barPath(x,y,w,h){if(h<=0)return 'M0,0';const r=Math.min(4,w/2,h);return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`}
+function rangeDays(){const n=S.ui.range,end=parseK(cur);return Array.from({length:n},(_,i)=>{const dt=addDays(end,i-n+1),k=key(dt),d=peek(k);return{k,dt,d,t:totals(d),g:goals(k),v:vitGiven(d)}})}
+const isTodayDt=dt=>key(dt)===key(new Date());
+const xlab=dt=>isTodayDt(dt)?'Today':S.ui.range>7?(dt.getMonth()+1)+'/'+dt.getDate():dt.toLocaleDateString(undefined,{weekday:'short'});
+const xl=(x,i,n)=>n>7&&W<WIDE&&i%2&&i!==n-1?'':xlab(x.dt);
+const dlong=dt=>dt.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+let forceW=null;
+const tdy=k=>k===key(new Date());
+const soFar=k=>tdy(k)?' (so far)':'';
+const curStyle=k=>k===cur?'style="fill:var(--ink);font-weight:700"':'';
+
+function chartFeeds(){
+  W=WIDE;const d=peek(cur),f=d.feeds.filter(isFeed),tg=S.settings.target;
+  if(!f.length)return `<div class="empty">No feeds on this day.</div>`;
+  const max=niceMax(Math.max(tg,...f.map(x=>num(x.bottle)||0),...f.map(x=>num(x.pump)||0))*1.1);
+  const cw=(W-P.l-P.r)/f.length,bw=Math.min(22,cw*0.34);
+  let s=axes(max);
+  f.forEach((x,i)=>{const cx=P.l+cw*(i+.5),b=num(x.bottle)||0,p=num(x.pump)||0,lab=x.time?fmt12(x.time):'#'+(i+1);
+    s+=`<path class="bar" d="${barPath(cx-bw-1,yOf(b,max),bw,H-P.b-yOf(b,max))}" fill="var(--bottle)"/>`;
+    s+=`<path class="bar" d="${barPath(cx+1,yOf(p,max),bw,H-P.b-yOf(p,max))}" fill="url(#hatch)" stroke="var(--pump)" stroke-width="1"/>`;
+    s+=`<rect x="${cx-cw/2}" y="${P.t}" width="${cw}" height="${H-P.b-P.t}" fill="transparent" class="hit" data-fi="${x.id}" data-tip="${lab}: bottle ${b} mL, pumped ${p} mL${x.vitD?', Vitamin D':''}"/>`;
+    if(f.length<=10||i%2===0)s+=`<text x="${cx}" y="${H-P.b+16}" text-anchor="middle">${lab}</text>`;
+  });
+  s+=`<line x1="${P.l}" x2="${W-P.r}" y1="${yOf(tg,max)}" y2="${yOf(tg,max)}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 5" pointer-events="none"/><text class="val" x="${P.l+4}" y="${yOf(tg,max)-5}">${tg} mL target</text>`;
+  return svgWrap(s);
+}
+function chartVolume(L){
+  W=forceW||HALF;
+  const max=niceMax(Math.max(...L.map(x=>Math.max(x.t.bottle,x.t.pump)))*1.1||10),cw=(W-P.l-P.r)/L.length;
+  let s=axes(max);
+  const line=(f,col,dash)=>{const pts=L.map((x,i)=>[P.l+cw*(i+.5),yOf(x.t[f],max)]);
+    const area=`M${pts[0][0]},${H-P.b} `+pts.map(p=>'L'+p.join(',')).join(' ')+` L${pts[pts.length-1][0]},${H-P.b}Z`;
+    return `<path d="${area}" fill="${col}" opacity=".10"/><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" ${dash?'stroke-dasharray="6 4"':''}/>`+
+      pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="var(--panel)" stroke="${col}" stroke-width="2"/>`).join('')};
+  s+=line('pump','var(--pump)',true)+line('bottle','var(--bottle)',false);
+  L.forEach((x,i)=>{const cx=P.l+cw*(i+.5);
+    s+=`<rect x="${cx-cw/2}" y="${P.t}" width="${cw}" height="${H-P.b-P.t}" fill="transparent" class="hit" data-k="${x.k}" data-tip="${dlong(x.dt)}${soFar(x.k)}: bottle ${x.t.bottle} mL, pumped ${x.t.pump} mL"/>`;
+    s+=`<text x="${cx}" y="${H-P.b+16}" text-anchor="middle" ${curStyle(x.k)}>${xl(x,i,L.length)}</text>`});
+  return svgWrap(s);
+}
+function chartDiapers(L){
+  W=forceW||HALF;
+  const max=niceMax(Math.max(...L.map(x=>Math.max(x.g.wet,x.g.stool,x.t.wet,x.t.stool)))*1.15||5),cw=(W-P.l-P.r)/L.length,bw=Math.min(18,cw*.3);
+  let s=axes(max);
+  L.forEach((x,i)=>{const cx=P.l+cw*(i+.5);
+    s+=`<path class="bar" d="${barPath(cx-bw-1,yOf(x.t.wet,max),bw,H-P.b-yOf(x.t.wet,max))}" fill="var(--wet)" ${tdy(x.k)?'opacity=".45"':''}/>`;
+    s+=`<path class="bar" d="${barPath(cx+1,yOf(x.t.stool,max),bw,H-P.b-yOf(x.t.stool,max))}" fill="var(--stool)" ${tdy(x.k)?'opacity=".45"':''}/>`;
+    s+=`<line x1="${cx-bw-4}" x2="${cx}" y1="${yOf(x.g.wet,max)}" y2="${yOf(x.g.wet,max)}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 2" opacity=".55"/><line x1="${cx}" x2="${cx+bw+4}" y1="${yOf(x.g.stool,max)}" y2="${yOf(x.g.stool,max)}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 2" opacity=".55"/>`;
+    s+=`<rect x="${cx-cw/2}" y="${P.t}" width="${cw}" height="${H-P.b-P.t}" fill="transparent" class="hit" data-k="${x.k}" data-tip="${dlong(x.dt)}${soFar(x.k)}: ${x.t.wet} wet, ${x.t.stool} stool (goal ${x.g.wet} and ${x.g.stool})"/>`;
+    s+=`<text x="${cx}" y="${H-P.b+16}" text-anchor="middle" ${curStyle(x.k)}>${xl(x,i,L.length)}</text>`});
+  return svgWrap(s);
+}
+function gapStats(L){
+  const all=[...feedTimes(key(addDays(L[0].dt,-1))),...L.flatMap(x=>feedTimes(x.k))].sort((a,b)=>a.dt-b.dt);
+  const per={};L.forEach(x=>per[x.k]=[]);
+  for(let i=1;i<all.length;i++){const g=(all[i].dt-all[i-1].dt)/60000;if(g>0&&g<=12*60&&per[all[i].k])per[all[i].k].push({g,at:all[i].f.time})}
+  return per;
+}
+function chartGaps(L,per){
+  W=forceW||HALF;
+  const vals=L.map(x=>{const a=per[x.k];return{long:a.length?Math.max(...a.map(y=>y.g)):0,avg:a.length?a.reduce((t,y)=>t+y.g,0)/a.length:0}});
+  const max=Math.max(1,niceMax(Math.max(...vals.map(v=>v.long))/60*1.15)),cw=(W-P.l-P.r)/L.length,bw=Math.min(26,cw*.45);
+  let s=axes(max,v=>(Math.round(v*10)/10)+'h');
+  L.forEach((x,i)=>{const cx=P.l+cw*(i+.5),v=vals[i],h=v.long/60;
+    s+=`<path class="bar" d="${barPath(cx-bw/2,yOf(h,max),bw,H-P.b-yOf(h,max))}" fill="var(--accent)" ${tdy(x.k)?'opacity=".45"':''}/>`;
+    if(v.avg)s+=`<circle cx="${cx}" cy="${yOf(v.avg/60,max)}" r="4.5" fill="var(--panel)" stroke="var(--ink)" stroke-width="2"/>`;
+    s+=`<rect x="${cx-cw/2}" y="${P.t}" width="${cw}" height="${H-P.b-P.t}" fill="transparent" class="hit" data-k="${x.k}" data-tip="${dlong(x.dt)}${soFar(x.k)}: ${v.long?'longest '+hm(v.long)+', avg '+hm(v.avg):'not enough feeds'}"/>`;
+    s+=`<text x="${cx}" y="${H-P.b+16}" text-anchor="middle" ${curStyle(x.k)}>${xl(x,i,L.length)}</text>`});
+  return svgWrap(s);
+}
+function chartRhythm(L){
+  W=WIDE;
+  const top=12,rowH=26,h=top+rowH*L.length+26,x0=64,x1=W-P.r,xs=m=>x0+(x1-x0)*m/1440;
+  let s='';
+  [0,3,6,9,12,15,18,21,24].forEach(hr=>{const x=xs(hr*60);s+=`<line class="ax" x1="${x}" x2="${x}" y1="${top}" y2="${h-24}" stroke-dasharray="2 4"/><text x="${x}" y="${h-8}" text-anchor="middle">${hr%24===0?'12a':hr===12?'12p':hr<12?hr+'a':(hr-12)+'p'}</text>`});
+  L.forEach((x,i)=>{const y=top+rowH*(i+.5);
+    s+=`<text x="${x0-10}" y="${y+4}" text-anchor="end" ${curStyle(x.k)}>${xlab(x.dt)}</text><line class="ax" x1="${x0}" x2="${x1}" y1="${y}" y2="${y}"/>`;
+    x.d.feeds.forEach(f=>{if(!f.time||!isFeed(f))return;const[hh,mm]=f.time.split(':').map(Number);const b=num(f.bottle)||0;const r=4+Math.min(6,b/(S.settings.target||30)*4);const cx=xs(hh*60+mm);
+      s+=`<circle cx="${cx}" cy="${y}" r="${r}" fill="var(--accent)" stroke="var(--panel)" stroke-width="2"/>`;
+      if(f.vitD)s+=`<text x="${cx}" y="${y-8}" text-anchor="middle" font-size="12">☀️</text>`;
+      s+=`<circle cx="${cx}" cy="${y}" r="${Math.max(r,11)}" fill="transparent" class="hit" data-k="${x.k}" data-tip="${dlong(x.dt)} ${fmt12(f.time)}: bottle ${b} mL, pump ${num(f.pump)||0} mL${f.vitD?', Vitamin D':''}"/>`})});
+  return svgWrap(s,h);
+}
+function renderDash(){
+  const L=rangeDays(),n=L.length,logged=L.filter(x=>x.t.n>0),st=S.settings;
+  $$('#rangeSeg button').forEach(b=>b.classList.toggle('on',+b.dataset.n===n));
+  $('#c1title').textContent=longDate(cur)+' by feed';
+  const per=gapStats(L);
+  const todayK=key(new Date()),todayX=L.find(x=>x.k===todayK&&x.t.n>0),done=logged.filter(x=>x.k!==todayK),base=done.length?done:logged;
+  const ld=base.length||1,allFeeds=logged.flatMap(x=>x.d.feeds.filter(isFeed)),baseFeeds=base.flatMap(x=>x.d.feeds.filter(isFeed)),totBd=base.reduce((t,x)=>t+x.t.bottle,0);
+  const dl=done.length?'completed day'+(done.length>1?'s':''):'day so far';
+  const bottled=allFeeds.filter(f=>num(f.bottle)!=null),totB=logged.reduce((t,x)=>t+x.t.bottle,0),pDays=logged.filter(x=>x.d.feeds.some(f=>num(f.pump)!=null)),totP=pDays.reduce((t,x)=>t+x.t.pump,0),totBp=pDays.reduce((t,x)=>t+x.t.bottle,0);
+  const hit=bottled.filter(f=>num(f.bottle)>=st.target).length;
+  const gaps=L.flatMap(x=>per[x.k]),avgGap=gaps.length?gaps.reduce((t,y)=>t+y.g,0)/gaps.length:0;
+  let longest=null;L.forEach(x=>per[x.k].forEach(y=>{if(!longest||y.g>longest.g)longest={...y,dt:x.dt}}));
+  const wetMet=done.filter(x=>x.t.wet>=x.g.wet).length,stoolMet=done.filter(x=>x.t.stool>=x.g.stool).length;
+  const vitDays=L.filter(x=>x.v.given).length,vDue=L.filter(x=>vitDue(x.k)&&(x.k!==todayK||x.v.given)).length;
+  let streak=0;for(let i=n-1;i>=0;i--){if(!vitDue(L[i].k))break;if(L[i].v.given)streak++;else if(!(i===n-1&&L[i].k===key(new Date())))break}
+  const vtimes=L.filter(x=>x.v.time).map(x=>{const[h,m]=x.v.time.split(':').map(Number);return h*60+m}).sort((a,b)=>a-b);
+  const usual=vtimes.length>=3?vtimes[Math.floor(vtimes.length/2)]:null;
+  const usualS=usual!=null?fmt12(pad(Math.floor(usual/60))+':'+pad(usual%60)):'';
+  const startL=allFeeds.filter(f=>f.start==='L').length,startR=allFeeds.filter(f=>f.start==='R').length,both=allFeeds.filter(f=>f.left&&f.right).length,nursed=allFeeds.filter(f=>f.left||f.right).length;
+  if(!logged.length){
+    $('#kpis').innerHTML=`<div class="empty" style="grid-column:1/-1">No feeds logged in the ${n} days ending ${longDate(cur)}.</div>`;
+  }else $('#kpis').innerHTML=`
+    <div class="card kpi"><h3>Feeds per day</h3><div class="big">${(baseFeeds.length/ld).toFixed(1)}</div><div class="sub">${baseFeeds.length} feeds over ${base.length} ${dl}${todayX&&done.length?'. Today so far: <b>'+todayX.t.n+'</b>':''}</div></div>
+    <div class="card kpi"><h3>Bottle per day</h3><div class="big" style="color:var(--bottle)">${Math.round(totBd/ld)} <span class="sub">mL</span></div><div class="sub">Avg <b>${bottled.length?Math.round(totB/bottled.length):0} mL</b> per bottle. ${bottled.length?Math.round(hit/bottled.length*100):0}% hit ${st.target} mL</div></div>
+    <div class="card kpi"><h3>Pumped per day</h3><div class="big" style="color:var(--pump)">${pDays.length?Math.round(totP/pDays.length):'--'} <span class="sub">mL</span></div><div class="sub">${!pDays.length?'No pump output logged in this range':totBp?'Covers <b>'+Math.round(totP/totBp*100)+'%</b> of bottle on '+pDays.length+' day'+(pDays.length>1?'s':'')+' with pumping':'Logged on '+pDays.length+' day'+(pDays.length>1?'s':'')}</div></div>
+    <div class="card kpi"><h3>Between feeds</h3><div class="big">${avgGap?hm(avgGap):'--'}</div><div class="sub">${longest?'Longest <b>'+hm(longest.g)+'</b> on '+xlab(longest.dt):'Average gap'}</div></div>
+    <div class="card kpi"><h3>Wet goal met</h3><div class="big" style="color:var(--wet)">${wetMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.wet,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.wet+' of '+todayX.g.wet+'</b>':''}</div></div>
+    <div class="card kpi"><h3>Stool goal met</h3><div class="big" style="color:var(--stool)">${stoolMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.stool,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.stool+' of '+todayX.g.stool+'</b>':''}</div></div>
+    <div class="card kpi"><h3>Vitamin D</h3><div class="big" style="color:var(--good)">${vitDays}<span class="sub"> / ${vDue} day${vDue===1?'':'s'}</span></div><div class="sub">${S.settings.vitDStart&&vDue<n?'Started '+vitStartS()+'. ':''}${streak?'<b>'+streak+' day</b> streak':'No current streak'}${usualS?'. Usually '+usualS:''}</div></div>
+    <div class="card kpi"><h3>Side starts</h3><div class="big">${startL}<span class="sub"> L</span> ${startR}<span class="sub"> R</span></div><div class="sub">${both} of ${nursed} sessions used both sides</div></div>`;
+  const ins=[];
+  if(logged.length){
+    if(todayX)ins.push(['⏳',`Today is still in progress, so it isn't counted in daily averages or goal checks yet. So far today: ${todayX.t.n} feed${todayX.t.n===1?'':'s'}, ${Math.round(todayX.t.bottle)} mL bottle, ${todayX.t.wet} of ${todayX.g.wet} wet, ${todayX.t.stool} of ${todayX.g.stool} stool${vitDue(todayK)?', Vitamin D '+(todayX.v.given?'given':'not yet'):''}.`]);
+    const lastSide=[...allFeeds].reverse().find(f=>f.start);
+    if(bottled.length)ins.push(['🍼',`Bottle averaged ${Math.round(totB/bottled.length)} mL per bottle feed. ${hit} of ${bottled.length} bottle feeds reached the ${st.target} mL target.`]);
+    if(pDays.length&&totBp)ins.push(['⚡',totP>=totBp?`Pumping covered all bottle volume on days with pump logged (${Math.round(totP)} mL pumped vs ${Math.round(totBp)} mL given).`:`On days with pump logged, pumping covered ${Math.round(totP/totBp*100)}% of bottle volume, short by ${Math.round(totBp-totP)} mL.`]);
+    if(done.length>=4){const a=done.slice(-3),b=done.slice(0,-3);const av=x=>x.reduce((t,y)=>t+y.t.bottle,0)/x.length;const ch=av(b)?Math.round((av(a)-av(b))/av(b)*100):0;
+      if(Math.abs(ch)>=5)ins.push([ch>0?'📈':'📉',`Daily bottle volume averaged ${Math.round(av(a))} mL over the last 3 completed days, ${ch>0?'up':'down'} from ${Math.round(av(b))} mL per day before that.`])}
+    {const tm=baseFeeds.filter(f=>num(f.mins)>0);if(tm.length){const tot=tm.reduce((a,f)=>a+num(f.mins),0);ins.push(['⏱',`Nursing sessions averaged ${Math.round(tot/tm.length)} min (${tm.length} timed session${tm.length>1?'s':''}), about ${Math.round(tot/ld)} min of nursing per day.`])}}
+    if(longest)ins.push(['🌙',`Longest stretch between feeds was ${hm(longest.g)}, ending at ${fmt12(longest.at)} on ${dlong(longest.dt)}.`]);
+    const missW=done.filter(x=>x.t.wet<x.g.wet).map(x=>xlab(x.dt)),missS=done.filter(x=>x.t.stool<x.g.stool).map(x=>xlab(x.dt));
+    if(done.length)ins.push(['💧',missW.length?`Wet goal not met on ${missW.join(', ')}.`:`Wet goal met every completed day.`]);
+    if(done.length)ins.push(['💩',missS.length?`Stool goal not met on ${missS.join(', ')}.`:`Stool goal met every completed day.`]);
+    const missV=L.filter(x=>vitDue(x.k)&&!x.v.given&&x.t.n>0&&x.k!==key(new Date())).map(x=>xlab(x.dt));
+    ins.push(['☀️',(missV.length?`Vitamin D not logged on ${missV.join(', ')}.`:`Vitamin D logged on every completed day since starting.`)+(usualS?` Usually given around ${usualS}.`:'')]);
+    if(lastSide)ins.push(['🤱',`Started on Left ${startL} times and Right ${startR} times. Start on ${lastSide.start==='L'?'Right':'Left'} next.`]);
+  }
+  $('#insights').innerHTML=ins.length?ins.map(x=>`<li><span>${x[0]}</span><span>${x[1]}</span></li>`).join(''):'<li><span>ℹ️</span><span>Log a few feeds to see insights here.</span></li>';
+  $('#vitSum').innerHTML=`${S.settings.vitDStart?'Started <b>'+vitStartS()+'</b>. ':''}Given on <b>${vitDays} of ${vDue}</b> day${vDue===1?'':'s'} since starting.${streak?' Current streak: <b>'+streak+' day'+(streak>1?'s':'')+'</b>.':''}${usualS?' Usual time: <b>'+usualS+'</b>.':''}`;
+  $('#vitStrip').style.gridTemplateColumns=`repeat(${n},minmax(0,1fr))`;
+  $('#vitStrip').innerHTML=L.map(x=>{const due=vitDue(x.k);return `<div class="vday ${x.v.given?'on':''} ${due?'':'na'} ${x.k===cur?'cur':''}" data-tip="${dlong(x.dt)}: ${x.v.given?'given'+(x.v.time?' at '+fmt12(x.v.time):''):due?'not logged':'before Vitamin D started'}"><b>${xlab(x.dt)}</b><div class="s">${due?'☀️':'·'}</div><span class="sub">${x.v.given?(x.v.time?fmt12(x.v.time):'✓'):due?'--':'Not started'}</span></div>`}).join('');
+  const tot=startL+startR;
+  $('#sideBal').innerHTML=tot?`<div class="sub" style="margin-bottom:8px">Which side each nursing session started on</div>
+    <div class="sidebar"><div style="flex:${startL||0.0001};background:var(--accent)" data-tip="Left: ${startL} starts">${startL?'L '+Math.round(startL/tot*100)+'%':''}</div><div style="flex:${startR||0.0001};background:var(--wet)" data-tip="Right: ${startR} starts">${startR?'R '+Math.round(startR/tot*100)+'%':''}</div></div>
+    <div class="legend" style="margin-top:10px"><span><i style="background:var(--accent)"></i>Left ${startL}</span><span><i style="background:var(--wet)"></i>Right ${startR}</span></div>
+    <div class="sub" style="margin-top:12px">Both sides used in <b>${both}</b> of ${nursed} nursing sessions. Feeds with no breast logged: <b>${allFeeds.length-nursed}</b>.</div>`
+    :`<div class="empty">No breast sides logged in this range.</div>`;
+  $('#chart1').innerHTML=chartFeeds();
+  $('#chart2').innerHTML=chartVolume(L);
+  $('#chart3').innerHTML=chartDiapers(L);
+  $('#chart4').innerHTML=chartRhythm(L);
+  $('#chart5').innerHTML=chartGaps(L,per);
+  renderWeight();
+}
+$('#rangeSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.ui.range=+b.dataset.n;save();renderDash()};
+
+/* History */
+function renderHist(){
+  $$('#histSeg button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.ui.hist));
+  const ks=Object.keys(S.days).filter(k=>S.days[k].feeds.length||S.days[k].notes||vitGiven(S.days[k]).given).sort().reverse();
+  const box=$('#histBody');
+  if(!ks.length){box.innerHTML=`<div class="empty" style="margin-top:16px">No days logged yet.</div>`;return}
+  if(S.ui.hist==='table'){
+    box.innerHTML=`<div class="card tblwrap" style="margin-top:16px"><table class="tbl"><thead><tr><th>Date</th><th class="num">Day</th><th class="num">Feeds</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th class="num">Wet</th><th class="num">Stool</th><th>Vit D</th><th class="num">Longest gap</th></tr></thead><tbody>`+
+    ks.map(k=>{const d=S.days[k],t=totals(d),g=goals(k),v=vitGiven(d),per=gapStats([{k,dt:parseK(k)}])[k],lg=per.length?Math.max(...per.map(y=>y.g)):0;
+      return `<tr class="click" data-k="${k}"><td>${dlong(parseK(k))}</td><td class="num">${g.dol!=null&&g.dol>=0?g.dol:''}</td><td class="num">${t.n}</td><td class="num">${t.bottle}</td><td class="num">${t.pump}</td><td class="num ${t.wet>=g.wet?'ok':''}">${t.wet}/${g.wet}</td><td class="num ${t.stool>=g.stool?'ok':''}">${t.stool}/${g.stool}</td><td class="${v.given?'ok':''}">${v.given?'✓ '+(v.time?fmt12(v.time):''):vitDue(k)?'--':'<span class="sub">Not started</span>'}</td><td class="num">${lg?hm(lg):'--'}</td></tr>`}).join('')+`</tbody></table></div>`;
+  }else{
+    box.innerHTML=`<div class="grid hist">`+ks.map(k=>{const d=S.days[k],t=totals(d),g=goals(k),v=vitGiven(d),mx=Math.max(1,...d.feeds.map(f=>num(f.bottle)||0));
+      return `<button class="card hday" data-k="${k}">
+        <div class="d">${dlong(parseK(k))}${g.dol!=null&&g.dol>=0?' <span class="sub">Day '+g.dol+'</span>':''}</div>
+        <div class="sub">${t.n} feeds · ${t.bottle} mL bottle · ${t.pump} mL pumped</div>
+        <div class="spark">${d.feeds.filter(isFeed).map(f=>`<i style="height:${(num(f.bottle)||0)/mx*100}%"></i>`).join('')||'<span class="sub">No feeds</span>'}</div>
+        <div class="tags"><span class="tag ${t.wet>=g.wet?'good':''}">💧 ${t.wet}/${g.wet}</span><span class="tag ${t.stool>=g.stool?'good':''}">💩 ${t.stool}/${g.stool}</span>${v.given||vitDue(k)?`<span class="tag ${v.given?'good':''}">☀️ ${v.given?(v.time?fmt12(v.time):'Vit D'):'No Vit D'}</span>`:''}</div>
+      </button>`}).join('')+`</div>`;
+  }
+}
+$('#histBody').onclick=e=>{const b=e.target.closest('[data-k]');if(b){cur=b.dataset.k;tab='today';renderAll();scrollTo(0,0)}};
+$('#histSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.ui.hist=b.dataset.v;save();renderHist()};
+
+/* Settings */
+const sf={sTarget:'target',sPMin:'pumpMin',sPMax:'pumpMax',sWet:'wetGoal',sStool:'stoolGoal'};
+function openSettings(){for(const id in sf)$('#'+id).value=S.settings[sf[id]];$('#sBirth').value=S.settings.birthDate||'';$('#sBW').value=S.settings.birthWeight?fmtW(S.settings.birthWeight):'';$('#sWU').value=S.settings.weightUnit||'lb';$('#sInt').value=S.settings.feedInterval||3;$('#sAlarm').checked=!!S.settings.alarmOn;$('#sVitD').value=S.settings.vitDStart||'';$('#sName').value=S.settings.babyName||'';$('#settingsModal').classList.add('open')}
+$('#sSave').onclick=()=>{
+  S.settings.birthDate=$('#sBirth').value||'';S.settings.weightUnit=$('#sWU').value;{const bw=$('#sBW').value.trim();S.settings.birthWeight=bw?parseWeight(bw):null}{const iv=num($('#sInt').value);if(iv>=1&&iv<=8)S.settings.feedInterval=iv}S.settings.alarmOn=$('#sAlarm').checked;S.settings.vitDStart=$('#sVitD').value||'';S.settings.babyName=$('#sName').value.trim();
+  for(const id in sf){const v=num($('#'+id).value);if(v!=null&&v>=0)S.settings[sf[id]]=v}
+  if(S.settings.pumpMax<1)S.settings.pumpMax=1;if(S.settings.pumpMax<S.settings.pumpMin)S.settings.pumpMax=S.settings.pumpMin;
+  save();$('#settingsModal').classList.remove('open');renderAll();try{famAutoName()}catch(e){}
+};
+
+/* Export */
+function exportObj(){
+  const settings={...S.settings};delete settings.theme;delete settings.v2;
+  const days={};Object.keys(S.days).sort().forEach(k=>{const d=S.days[k];if(d.feeds.length||d.notes||d.vitD)days[k]=d});
+  return {app:'cradle',version:VERSION,exportedAt:new Date().toISOString(),settings,days,weights:S.weights||[]};
+}
+let expRange='all',expCode=null,expBody='';
+function exportObjRange(){const o=exportObj();if(expRange==='2'){const keep=[key(addDays(new Date(),-1)),key(new Date())];const d={};keep.forEach(k=>{if(o.days[k])d[k]=o.days[k]});o.days=d}return o}
+function exportPack(){const obj=exportObjRange(),name='cradle-'+key(new Date())+(expRange==='2'?'-last2days':'')+'.json',text=JSON.stringify(obj);return {obj,name,text}}
+const b64e=u8=>{let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)};
+const b64d=str=>{const s=atob(str),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u};
+async function packCode(text){
+  const raw=new TextEncoder().encode(text);
+  if(window.CompressionStream){try{const buf=await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer();return 'CRADLE1:'+b64e(new Uint8Array(buf))}catch(e){}}
+  return 'CRADLE0:'+b64e(raw);
+}
+async function unpackCode(str){
+  const m=String(str).replace(/\s+/g,'').match(/CRADLE([01]):([A-Za-z0-9+/=]+)/);if(!m)return null;
+  const u=b64d(m[2]);
+  if(m[1]==='0')return new TextDecoder().decode(u);
+  if(!window.DecompressionStream)throw new Error('nodecomp');
+  return await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+}
+async function prepExport(){
+  const {obj,text}=exportPack(),ks=Object.keys(obj.days).sort(),nf=Object.values(obj.days).reduce((t,d)=>t+d.feeds.length,0);
+  expCode=null;
+  const rng=ks.length?(ks.length>1?dlong(parseK(ks[0]))+' to '+dlong(parseK(ks[ks.length-1])):dlong(parseK(ks[0]))):'';
+  $('#expSum').textContent=ks.length?`${ks.length} day${ks.length>1?'s':''}, ${nf} entries (${rng})`:'Nothing to export in this range';
+  expCode=await packCode(text);
+  expBody=`Cradle update${babyName()?' for '+babyName():''}${rng?' ('+rng+')':''}. To add it: copy this whole message, open Cradle, then Import data, Paste.\n\n${expCode}`;
+  $('#expSum').textContent+=` · code is ${expCode.length.toLocaleString()} characters`;
+}
+function openExport(){
+  $$('#expRange button').forEach(b=>b.classList.toggle('on',b.dataset.r===expRange));
+  $('#expShare').classList.toggle('hidden',!(window.isSecureContext&&navigator.share));
+  $('#exportModal').classList.add('open');prepExport();
+}
+$('#expRange').onclick=e=>{const b=e.target.closest('button');if(!b)return;expRange=b.dataset.r;$$('#expRange button').forEach(x=>x.classList.toggle('on',x===b));prepExport()};
+function textExport(){
+  if(!expCode){toast('One moment, preparing the code');return}
+  const a=document.createElement('a');a.href='sms:?&body='+encodeURIComponent(expBody);document.body.appendChild(a);a.click();a.remove();
+}
+async function shareExport(){
+  const {name,text}=exportPack();const file=new File([text],name,{type:'application/json'});
+  try{
+    if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:'Cradle backup'});
+    else await navigator.share({title:'Cradle update',text:expBody});
+    $('#exportModal').classList.remove('open');toast('Shared');
+  }catch(e){if(e&&e.name==='AbortError')return;toast('Sharing isn’t available here. Use Text message or Copy code.')}
+}
+function downloadExport(){
+  const {obj,name,text}=exportPack(),blob=new Blob([text],{type:'application/json'});
+  const u=URL.createObjectURL(blob),l=document.createElement('a');l.href=u;l.download=name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),1500);
+  $('#exportModal').classList.remove('open');toast('Downloaded '+Object.keys(obj.days).length+' days. Find it in your Downloads.');
+  if(framed())showBlocked('export',text);
+}
+function copyText(t){let ok=false;const ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,t.length);try{ok=document.execCommand('copy')}catch(e){}ta.remove();
+  if(!ok&&navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).catch(()=>{});ok=true}return ok}
+function copyExport(){
+  if(!expCode){toast('One moment, preparing the code');return}
+  if(copyText(expBody)){$('#exportModal').classList.remove('open');toast('Copied. Paste it into a text message.')}else showBlocked('export',expBody);
+}
+$('#expShare').onclick=shareExport;$('#expDownload').onclick=downloadExport;$('#expCopy').onclick=copyExport;$('#expText').onclick=textExport;
+$('#impFile').onclick=()=>{$('#importChoose').classList.remove('open');$('#fileIn').click()};
+$('#impPaste').onclick=async()=>{let t=$('#pasteIn').value.trim();if(!t){toast('Paste some data first');return}
+  try{const u=await unpackCode(t);if(u)t=u}catch(e){toast('This browser can’t read that code. Try the file instead.');return}
+  if(loadImportText(t))$('#importChoose').classList.remove('open')};
+function openImport(){$('#pasteIn').value='';$('#importChoose').classList.add('open')}
+
+/* Import: parse + normalize */
+function bool(v){if(typeof v==='boolean')return v;if(typeof v==='number')return v>0;if(v==null)return false;const s=String(v).trim().toLowerCase();return ['y','yes','true','x','✓','✔','checked','given'].includes(s)||(+s>0)}
+function parseTime(v){
+  if(v==null||v==='')return '';const s=String(v).trim().toLowerCase().replace(/\s+/g,'').replace(/\./g,'');
+  const m=s.match(/^(\d{1,2})(?::?(\d{2}))?(am|pm|a|p)?$/);if(!m)return '';
+  let h=+m[1],mi=+(m[2]||0);const ap=m[3];
+  if(ap){if(h<1||h>12)return '';h%=12;if(ap[0]==='p')h+=12}
+  return h<24&&mi<60?pad(h)+':'+pad(mi):'';
+}
+function normDate(v){
+  if(v==null)return null;const s=String(v).trim();let m;
+  if((m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)))return m[1]+'-'+pad(+m[2])+'-'+pad(+m[3]);
+  if((m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/))){const y=m[3].length===2?2000+ +m[3]:+m[3];return y+'-'+pad(+m[1])+'-'+pad(+m[2])}
+  const d=new Date(s);return isNaN(d)?null:key(d);
+}
+function vol(v){if(v==null||v==='')return null;const n=num(String(v).replace(',','.'));if(n==null)return null;return /oz/i.test(String(v))?Math.round(n*29.5735):n}
+function normFeed(f){
+  f=f||{};const side=String(f.breast??f.sides??f.side??'').toLowerCase();
+  const left=f.left!=null?bool(f.left):/\bl\b|left|both/.test(side);
+  const right=f.right!=null?bool(f.right):/\br\b|right|both/.test(side);
+  let start=String(f.start??f.startSide??'').trim().toUpperCase()[0]||'';
+  if(start!=='L'&&start!=='R'){
+    if(left&&!right)start='L';else if(right&&!left)start='R';
+    else if(left&&right){const li=side.search(/\bl\b|left/),ri=side.search(/\br\b|right/);start=ri>-1&&(li<0||ri<li)?'R':li>-1?'L':''}
+    else start='';
+  }
+  return {id:f.id?String(f.id):uid(),time:parseTime(f.time),left,right,start,
+    bottle:vol(f.bottle??f.bottleMl),pump:vol(f.pump??f.pumpMl??f.pumped),
+    urine:bool(f.urine??f.wet),stool:bool(f.stool??f.dirty??f.poop),vitD:bool(f.vitD??f.vitaminD??f.vitamin_d),
+    wf:bool(f.wf??f.weighted),wPre:num(f.wPre)||null,wPost:num(f.wPost)||null,mins:(()=>{const v=f.mins??f.minutes??f.duration;return v==null||v===''?null:num(v)})(),note:String(f.note??f.notes??'')};
+}
+function parseImport(text){
+  const obj=JSON.parse(text),days={};
+  const addDay=(k,src)=>{if(!k)return;const d=days[k]||(days[k]={feeds:[],vitD:false,notes:''});
+    if(Array.isArray(src.feeds))src.feeds.forEach(f=>d.feeds.push(normFeed(f)));
+    if(src.vitD!=null||src.vitaminD!=null)d.vitD=d.vitD||bool(src.vitD??src.vitaminD);
+    if(src.notes)d.notes=String(src.notes)};
+  if(obj&&obj.days&&!Array.isArray(obj.days)&&typeof obj.days==='object')for(const k in obj.days)addDay(normDate(k),obj.days[k]||{});
+  else if(obj&&Array.isArray(obj.days))obj.days.forEach(d=>addDay(normDate(d&&d.date),d||{}));
+  const flat=Array.isArray(obj)?obj:Array.isArray(obj&&obj.feeds)?obj.feeds:null;
+  if(flat)flat.forEach(f=>{const k=normDate(f&&f.date);if(k)addDay(k,{feeds:[f]})});
+  for(const k in days){if(days[k].feeds.some(f=>f.vitD))days[k].vitD=false;sortFeeds(days[k])}
+  const ks=Object.keys(days).sort(),feeds=ks.reduce((t,k)=>t+days[k].feeds.length,0);
+  const weights=obj&&Array.isArray(obj.weights)?obj.weights.filter(w=>w&&num(w.g)>0).map(w=>({id:String(w.id||uid()),date:normDate(w.date),time:parseTime(w.time)||'12:00',g:num(w.g),src:String(w.src||'Pediatrician'),note:String(w.note||'')})).filter(w=>w.date):[];
+  if(!ks.length&&!weights.length)throw new Error('none');
+  return {days,settings:obj&&!Array.isArray(obj)&&obj.settings||null,ks,feeds,weights};
+}
+let pending=null;
+function loadImportText(text){
+  try{pending=parseImport(text)}catch(x){pending=null;toast('That couldn’t be read as Cradle data. Make sure you copied the whole message.');return false}
+  const p=pending,first=dlong(parseK(p.ks[0])),last=dlong(parseK(p.ks[p.ks.length-1]));
+  const overlap=p.ks.filter(k=>S.days[k]&&S.days[k].feeds.length).length;
+  $('#impSum').innerHTML=`<p style="margin:0"><b>${p.feeds} feeds</b> across <b>${p.ks.length} day${p.ks.length>1?'s':''}</b><br><span class="sub">${first}${p.ks.length>1?' to '+last:''}${overlap?'. '+overlap+' of these days already have entries here.':''}</span></p>`;
+  $('#importModal').classList.add('open');return true;
+}
+$('#fileIn').onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async()=>{let t=r.result;try{const u=await unpackCode(t);if(u)t=u}catch(x){}loadImportText(t)};r.readAsText(file);e.target.value=''};
+const SKEYS=['target','pumpMin','pumpMax','wetGoal','stoolGoal','birthDate','babyName','vitDStart','birthWeight'];
+function applySettings(src,fillOnly){if(!src)return;SKEYS.forEach(k=>{if(src[k]==null||src[k]==='')return;
+  const idk=k==='birthDate'||k==='babyName'||k==='vitDStart'||k==='birthWeight';if(fillOnly&&idk&&S.settings[k])return;
+  if(fillOnly&&!idk)return;
+  S.settings[k]=src[k]})}
+$('#impReplace').onclick=async()=>{if(!pending)return;$('#importModal').classList.remove('open');if(!await ask('Replace everything in this log with the file? This cannot be undone.','Replace',true)){$('#importModal').classList.add('open');return}
+  S.days=pending.days;S.weights=pending.weights||[];applySettings(pending.settings,false);finishImport(`Replaced log with ${pending.feeds} feeds`)};
+$('#impMerge').onclick=()=>{if(!pending)return;let added=0,updated=0;
+  for(const k of pending.ks){const src=pending.days[k],d=day(k);
+    src.feeds.forEach(f=>{const m=d.feeds.find(x=>x.id===f.id)||(f.time&&d.feeds.find(x=>x.time===f.time));
+      if(m){for(const k in f){if(k==='id')continue;const v=f[k];if(v===true||(typeof v==='number')||(typeof v==='string'&&v!==''))m[k]=v}updated++}else{d.feeds.push(f);added++}});
+    if(d.feeds.some(f=>f.vitD))d.vitD=false;else d.vitD=d.vitD||src.vitD;
+    if(src.notes&&src.notes!==d.notes)d.notes=d.notes&&!d.notes.includes(src.notes)?d.notes+'\n'+src.notes:src.notes;
+    sortFeeds(d)}
+  (pending.weights||[]).forEach(w=>{if(!S.weights.some(x=>x.id===w.id)){S.weights.push(w);added++}});
+  applySettings(pending.settings,true);finishImport(`Merged: ${added} new entr${added===1?'y':'ies'}, ${updated} updated`)};
+function finishImport(msg){pending=null;$('#importModal').classList.remove('open');save();renderAll();toast(msg)}
+
+/* Print */
+function buildPrint(){
+  const d=peek(cur),t=totals(d),st=S.settings,g=goals(cur),v=vitGiven(d),rows=d.feeds.slice();while(rows.length<12)rows.push(null);
+  $('#print').innerHTML=`<h1>Triple-Feeding Daily Log${babyName()?' · '+esc(babyName()):''}</h1>
+  <div>Date: ${parseK(cur).toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})} | Target bottle: ${st.target} mL | Pump: ${st.pumpMin} to ${st.pumpMax} min${g.dol!=null&&g.dol>=0?' | Day '+g.dol+' of life, goal '+g.wet+' wet / '+g.stool+' stool':''}</div>
+  <table><tr><th>#</th><th>Time</th><th>Breast</th><th>Min</th><th>Bottle (mL)</th><th>Pump (mL)</th><th>Urine</th><th>Stool</th><th>Vit D</th><th>Note</th></tr>
+  ${rows.map((f,i)=>`<tr><td>${i+1}</td><td>${f?fmt12(f.time):''}</td><td>${f?[f.left?'L':'',f.right?'R':''].filter(Boolean).join(' + ')+(f.start?' (start '+f.start+')':''):'[ ] L  [ ] R'}</td><td>${f?.mins??''}</td><td>${f?.bottle??''}</td><td>${f?.pump??''}</td><td>${f?(f.urine?'✓':''):'[ ]'}</td><td>${f?(f.stool?'✓':''):'[ ]'}</td><td>${f?(f.vitD?'✓':''):'[ ]'}</td><td>${f?esc(f.note):''}</td></tr>`).join('')}</table>
+  <p>Vitamin D: ${v.given?'✓ Given'+(v.time?' at '+fmt12(v.time):''):'[ ]'} | Wet: ${t.wet}${g.wet?' of '+g.wet:''} | Stool: ${t.stool}${g.stool?' of '+g.stool:''} | Bottle total: ${t.bottle} mL | Pump total: ${t.pump} mL</p>
+  <p>Notes: ${esc(d.notes)}</p>`;
+}
+function preparePrint(){
+  const nm=babyName(),pre='Cradle'+(nm?' · '+nm:'');
+  document.body.classList.remove('print-sheet');
+  if(printMode==='report'){buildReport();document.body.classList.add('print-sheet');return}
+  if(tab==='today'){buildPrint();document.body.classList.add('print-sheet');return}
+  const L=rangeDays();
+  const t={dash:['Dashboard',`${dlong(L[0].dt)} to ${dlong(L[L.length-1].dt)}`],hist:['History',`${Object.keys(S.days).length} days on record`],guide:['Guide','']}[tab];
+  $('#ptitleH').textContent=pre+' · '+t[0];$('#ptitleS').textContent=t[1]+(t[1]?' · ':'')+'Printed '+new Date().toLocaleString();
+}
+let printFired=false;
+function printTab(){preparePrint();printFired=false;
+  setTimeout(()=>{try{window.print()}catch(e){}
+    setTimeout(()=>{if(!printFired){document.body.classList.remove('print-sheet');showBlocked('print')}},700)},50)}
+window.addEventListener('beforeprint',()=>{printFired=true;preparePrint()});
+window.addEventListener('afterprint',()=>document.body.classList.remove('print-sheet'));
+document.addEventListener('click',e=>{if(e.target.closest('[data-print]'))printTab()});
+
+/* Render */
+function renderAll(){
+  $$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  ['today','dash','hist','guide'].forEach(t=>$('#tab-'+t).classList.toggle('hidden',t!==tab));
+  $('#dateIn').value=cur;
+  const isToday=cur===key(new Date()),g=goals(cur);
+  $('#todayBtn').style.visibility=isToday?'hidden':'visible';
+  $('#logTitle').textContent=(isToday?'Today':longDate(cur))+(g.dol!=null&&g.dol>=0?' · Day '+g.dol:'');
+  $('#logNow').textContent=isToday?'+ Log feed now':'+ Add feed';
+  renderProfile();
+  if(tab==='today'){renderFeeds();renderStats();renderSince();renderTimer();$('#dayNotes').value=peek(cur).notes||''}
+  if(tab==='dash')renderDash();
+  if(tab==='hist')renderHist();
+}
+
+/* Built-in starting data (hospital paper log). Applied once per base version. */
+function applyBase(){
+  let B;try{B=JSON.parse(document.getElementById('baseData').textContent)}catch(e){return}
+  if(!B||!B.days||!B.baseVersion)return;  // empty in the public source: no starter log
+  if((S.baseVersion||0)>=B.baseVersion)return;
+  for(const k in B.days){const src=B.days[k],d=day(k);
+    src.feeds.forEach(f=>{
+      const m=d.feeds.find(x=>x.id===f.id);
+      if(m){Object.assign(m,f);return}
+      const same=f.time&&d.feeds.find(x=>x.time===f.time);
+      if(same){for(const kk in f){if(kk==='id')continue;const v=f[kk];if(v===true||typeof v==='number'||(typeof v==='string'&&v!==''))same[kk]=v}return}
+      d.feeds.push({...f});
+    });
+    if(src.vitD)d.vitD=d.vitD||src.vitD;
+    if(src.notes&&!d.notes)d.notes=src.notes;
+    sortFeeds(d)}
+  if(B.settings)['birthDate','vitDStart'].forEach(k=>{if(B.settings[k]&&!S.settings[k])S.settings[k]=B.settings[k]});
+  S.baseVersion=B.baseVersion;save();
+}
+async function eraseAll(){
+  S.achSeen=undefined;if(!await ask(CL.session?'Erase all feeds, diapers, notes, and weights? This also removes them from your account, so every signed-in phone loses them. Export first if you want a backup.':'Erase all feeds, diapers, and notes on this device? Settings and theme are kept. Export first if you want a backup.','Erase everything',true))return;
+  S.days={};S.weights=[];S.nurse=null;S.timer={start:null,last:null};clearInterval(tInt);save();renderAll();toast('All data erased');
+}
+
+/* Enlarged, explorable charts */
+let cmId=null;
+const CH={
+  c1:{title:()=>longDate(cur)+' by feed',render:()=>chartFeeds(),kind:'feed',legend:'#chart1'},
+  c2:{title:()=>'Daily volume',render:L=>chartVolume(L),kind:'day',legend:'#chart2'},
+  c3:{title:()=>'Daily diapers',render:L=>chartDiapers(L),kind:'day',legend:'#chart3'},
+  c5:{title:()=>'Longest stretch between feeds',render:L=>chartGaps(L,gapStats(L)),kind:'day',legend:'#chart5'},
+  c4:{title:()=>'Feeding rhythm',render:L=>chartRhythm(L),kind:'day',legend:'#chart4'},
+};
+function dayDetail(k){
+  const d=peek(k),t=totals(d),g=goals(k),v=vitGiven(d),per=gapStats([{k,dt:parseK(k)}])[k];
+  const lg=per.length?Math.max(...per.map(y=>y.g)):0,ag=per.length?per.reduce((a,y)=>a+y.g,0)/per.length:0;
+  const fs=d.feeds.filter(isFeed),both=fs.filter(f=>f.left&&f.right).length;
+  return {k,t,g,v,lg,ag,fs,both,d};
+}
+const cell=(a,b)=>`<div><div class="k">${a}</div><div class="v">${b}</div></div>`;
+function selDay(k){
+  const x=dayDetail(k);
+  $('#cmSel').innerHTML=`<div class="wide2"><b style="font-size:16px">${longDate(k)}</b>${x.g.dol!=null&&x.g.dol>=0?'<span class="sub">Day '+x.g.dol+'</span>':''}${tdy(k)?'<span class="tag">In progress</span>':''}<span class="spacer"></span><button class="ghost sm" id="cmOpen">Open this day</button></div>`+
+    cell('Feeds',x.t.n)+cell('Bottle',Math.round(x.t.bottle)+' mL')+cell('Pumped',x.d.feeds.some(f=>num(f.pump)!=null)?Math.round(x.t.pump)+' mL':'--')+
+    cell('Wet',x.t.wet+' of '+x.g.wet)+cell('Stool',x.t.stool+' of '+x.g.stool)+cell('Vitamin D',x.v.given?(x.v.time?fmt12(x.v.time):'Given'):vitDue(k)?'Not logged':'Not started')+
+    cell('Longest gap',x.lg?hm(x.lg):'--')+cell('Average gap',x.ag?hm(x.ag):'--')+cell('Both sides',x.both+' of '+x.fs.filter(f=>f.left||f.right).length)+cell('Nursing time',(()=>{const m=x.fs.reduce((a,f)=>a+(num(f.mins)||0),0);return m?m+' min':'--'})())+
+    (x.d.notes?`<div class="wide2"><span class="sub">Notes:</span> ${esc(x.d.notes)}</div>`:'');
+  $('#cmOpen').onclick=()=>{$('#chartModal').classList.remove('open');cur=k;tab='today';renderAll();scrollTo(0,0)};
+  hl(k,false);
+}
+function selFeed(id){
+  const f=peek(cur).feeds.find(x=>x.id===id);if(!f)return;
+  const br=[f.left?'L':'',f.right?'R':''].filter(Boolean).join(' + ');
+  $('#cmSel').innerHTML=`<div class="wide2"><b style="font-size:16px">${fmt12(f.time)||'No time'}</b><span class="sub">${longDate(cur)}</span></div>`+
+    cell('Breast',br?br+(f.start?' (start '+f.start+')':''):'--')+cell('Minutes',num(f.mins)!=null?f.mins+' min':'--')+(f.wf?cell('Weighted feed',num(f.wPre)>0&&num(f.wPost)>0?Math.round(f.wPost-f.wPre)+' mL':'Incomplete'):'')+cell('Bottle',num(f.bottle)!=null?f.bottle+' mL':'--')+cell('Pumped',num(f.pump)!=null?f.pump+' mL':'--')+
+    cell('Wet',f.urine?'Yes':'No')+cell('Stool',f.stool?'Yes':'No')+cell('Vitamin D',f.vitD?'Given':'No')+(f.note?`<div class="wide2"><span class="sub">Note:</span> ${esc(f.note)}</div>`:'');
+  hl(id,true);
+}
+function hl(v,feed){
+  $$('#cmChart .hit').forEach(e=>e.classList.toggle('sel',feed?e.dataset.fi===v:e.dataset.k===v));
+  $$('#cmTable tr[data-sel]').forEach(r=>r.classList.toggle('sel',r.dataset.sel===v));
+}
+function cmTable(kind,L){
+  if(kind==='feed'){const fs=peek(cur).feeds.filter(isFeed);
+    return `<table class="tbl"><thead><tr><th>Time</th><th>Breast</th><th class="num">Min</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th>Wet</th><th>Stool</th><th>Vit D</th><th>Note</th></tr></thead><tbody>`+
+    fs.map(f=>`<tr class="click" data-sel="${f.id}"><td>${fmt12(f.time)}</td><td>${[f.left?'L':'',f.right?'R':''].filter(Boolean).join('+')||'--'}</td><td class="num">${f.mins??''}</td><td class="num">${f.bottle??''}</td><td class="num">${f.pump??''}</td><td>${f.urine?'✓':''}</td><td>${f.stool?'✓':''}</td><td>${f.vitD?'✓':''}</td><td style="white-space:normal">${esc(f.note)}</td></tr>`).join('')+`</tbody></table>`}
+  return `<table class="tbl"><thead><tr><th>Date</th><th class="num">Feeds</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th class="num">Wet</th><th class="num">Stool</th><th>Vit D</th><th class="num">Longest gap</th><th class="num">Avg gap</th></tr></thead><tbody>`+
+    L.map(x=>{const y=dayDetail(x.k);return `<tr class="click" data-sel="${x.k}"><td>${dlong(x.dt)}${tdy(x.k)?' <span class="sub">(so far)</span>':''}</td><td class="num">${y.t.n}</td><td class="num">${Math.round(y.t.bottle)}</td><td class="num">${Math.round(y.t.pump)}</td><td class="num ${y.t.wet>=y.g.wet&&y.t.n?'ok':''}">${y.t.wet}/${y.g.wet}</td><td class="num ${y.t.stool>=y.g.stool&&y.t.n?'ok':''}">${y.t.stool}/${y.g.stool}</td><td>${y.v.given?'✓ '+(y.v.time?fmt12(y.v.time):''):vitDue(x.k)?'--':'<span class="sub">n/a</span>'}</td><td class="num">${y.lg?hm(y.lg):'--'}</td><td class="num">${y.ag?hm(y.ag):'--'}</td></tr>`}).join('')+`</tbody></table>`;
+}
+function openChart(id,sel){
+  cmId=id;const c=CH[id],L=rangeDays();
+  $('#cmTitle').textContent=c.title()+(c.kind==='day'?' · '+dlong(L[0].dt)+' to '+dlong(L[L.length-1].dt):'');
+  forceW=WIDE;$('#cmChart').innerHTML=c.render(L);forceW=null;
+  requestAnimationFrame(()=>{const cc=$('#cmChart');cc.scrollLeft=cc.scrollWidth});
+  const box=document.querySelector(c.legend),lg=box&&box.closest('.card').querySelector('.legend');$('#cmLegend').innerHTML=lg?lg.outerHTML:'';
+  $('#cmTable').innerHTML=cmTable(c.kind,L);
+  $('#chartModal').classList.add('open');
+  if(c.kind==='feed'){const fs=peek(cur).feeds.filter(isFeed);const s0=sel||(fs.length?fs[fs.length-1].id:null);if(s0)selFeed(s0);else $('#cmSel').innerHTML='<span class="sub">No feeds on this day.</span>'}
+  else selDay(sel&&L.some(x=>x.k===sel)?sel:cur);
+}
+document.addEventListener('click',e=>{
+  const x=e.target.closest('.xbtn[data-chart]');if(x){openChart(x.dataset.chart);return}
+  const box=e.target.closest('.chartbox[data-chart]');
+  if(box){const h=e.target.closest('.hit');openChart(box.dataset.chart,h?(h.dataset.fi||h.dataset.k):null);return}
+  if(!$('#chartModal').classList.contains('open'))return;
+  const h=e.target.closest('#cmChart .hit, #cmTable tr[data-sel]');if(!h)return;
+  const v=h.dataset.fi||h.dataset.k||h.dataset.sel;if(!v)return;
+  CH[cmId].kind==='feed'?selFeed(v):selDay(v);
+});
+document.addEventListener('keydown',e=>{
+  if(!$('#chartModal').classList.contains('open')||CH[cmId].kind!=='day'||!['ArrowLeft','ArrowRight'].includes(e.key))return;
+  const rows=[...$$('#cmTable tr[data-sel]')],i=rows.findIndex(r=>r.classList.contains('sel'));
+  const j=Math.max(0,Math.min(rows.length-1,i+(e.key==='ArrowRight'?1:-1)));if(rows[j])selDay(rows[j].dataset.sel);
+});
+
+/* ================= Weights ================= */
+function parseWeight(v){
+  if(v==null)return null;let s=String(v).trim().toLowerCase();if(!s)return null;
+  if(/lb|lbs|#|oz/.test(s)){const lb=s.match(/(\d+(?:\.\d+)?)\s*(?:lbs?|#)/),oz=s.match(/(\d+(?:\.\d+)?)\s*oz/);
+    if(!lb&&!oz)return null;return Math.round((lb?+lb[1]:0)*453.592+(oz?+oz[1]:0)*28.3495)}
+  if(/kg/.test(s)){const n=parseFloat(s);return isFinite(n)?Math.round(n*1000):null}
+  const n=parseFloat(s.replace(',','.'));if(!isFinite(n)||n<=0)return null;
+  if(n>=300)return Math.round(n);
+  return S.settings.weightUnit==='g'?Math.round(n*1000):Math.round(n*453.592);
+}
+function fmtW(g){if(g==null||!isFinite(g))return '--';
+  if(S.settings.weightUnit==='g')return Math.round(g).toLocaleString()+' g';
+  let lb=Math.floor(g/453.592),oz=Math.round((g-lb*453.592)/28.3495*10)/10;if(oz>=16){lb++;oz=0}
+  return `${lb} lb ${oz.toFixed(1)} oz`}
+function fmtDW(g){const s=g>0?'+':g<0?'−':'';const a=Math.abs(g);
+  return S.settings.weightUnit==='g'?`${s}${Math.round(a)} g`:`${s}${(a/28.3495).toFixed(1)} oz`}
+function allWeights(){
+  const out=(S.weights||[]).map(w=>({...w,kind:'log'}));
+  for(const k in S.days)S.days[k].feeds.forEach(f=>{if(f.wf&&num(f.wPre)>0)out.push({id:'wf-'+f.id,date:k,time:f.time||'12:00',g:num(f.wPre),src:'Weighted feed',kind:'wf'})});
+  const bw=num(S.settings.birthWeight);if(bw>0&&S.settings.birthDate)out.push({id:'birth',date:S.settings.birthDate,time:'00:00',g:bw,src:'Birth',kind:'birth'});
+  const ts=w=>{const d=parseK(w.date);const[h,m]=(w.time||'12:00').split(':').map(Number);d.setHours(h,m);return d.getTime()};
+  return out.map(w=>({...w,ts:ts(w)})).sort((a,b)=>a.ts-b.ts);
+}
+function weightStats(){
+  const W=allWeights(),bw=num(S.settings.birthWeight);if(!W.length)return null;
+  const latest=W[W.length-1],after=W.filter(w=>w.kind!=='birth');
+  const lowest=after.length?after.reduce((a,b)=>b.g<a.g?b:a):null;
+  let back=null;if(bw>0&&lowest){const lowI=W.indexOf(lowest);back=W.slice(lowI).find(w=>w.kind!=='birth'&&w.g>=bw)||null}
+  let rate=null;if(lowest&&latest!==lowest&&latest.ts>lowest.ts){const days=(latest.ts-lowest.ts)/864e5;if(days>=0.5)rate=(latest.g-lowest.g)/days}
+  return {W,bw,latest,lowest,back,rate,pct:bw>0?(latest.g-bw)/bw*100:null,lowPct:bw>0&&lowest?(lowest.g-bw)/bw*100:null};
+}
+function chartWeight(){
+  const st=weightStats();if(!st)return '<div class="empty">No weights yet. Add the birth weight in Settings, then log weights from visits or weighted feeds.</div>';
+  const W0=forceW||WIDE;const w0=W;W=W0;
+  const bd=S.settings.birthDate?parseK(S.settings.birthDate).getTime():st.W[0].ts;
+  const xs=st.W.map(w=>(w.ts-bd)/864e5),xmax=Math.max(14,Math.ceil(Math.max(...xs))+1),xmin=Math.min(0,Math.floor(Math.min(...xs)));
+  const gs=st.W.map(w=>w.g).concat(st.bw>0?[st.bw,st.bw*0.9]:[]);
+  let lo=Math.min(...gs),hi=Math.max(...gs);const padG=Math.max(60,(hi-lo)*0.15);lo-=padG;hi+=padG;
+  const X=d=>P.l+(W-P.l-P.r)*(d-xmin)/(xmax-xmin),Y=g=>H-P.b-(H-P.t-P.b)*(g-lo)/(hi-lo);
+  let s='';
+  for(let i=0;i<=4;i++){const g=lo+(hi-lo)*i/4,y=Y(g);s+=`<line class="ax" x1="${P.l}" x2="${W-P.r}" y1="${y}" y2="${y}" ${i?'stroke-dasharray="2 4"':''}/><text x="${P.l-6}" y="${y+4}" text-anchor="end">${S.settings.weightUnit==='g'?Math.round(g):(g/453.592).toFixed(1)}</text>`}
+  const step=xmax-xmin>21?7:xmax-xmin>10?2:1;
+  for(let d=Math.ceil(xmin);d<=xmax;d+=step)s+=`<text x="${X(d)}" y="${H-P.b+16}" text-anchor="middle">Day ${d}</text>`;
+  if(st.bw>0){s+=`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(st.bw)}" y2="${Y(st.bw)}" stroke="var(--good)" stroke-width="2" stroke-dasharray="6 5"/><text class="val" x="${W-P.r}" y="${Y(st.bw)-5}" text-anchor="end">Birth weight</text>`;
+    s+=`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(st.bw*0.9)}" y2="${Y(st.bw*0.9)}" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="3 4" opacity=".8"/><text class="val" x="${W-P.r}" y="${Y(st.bw*0.9)-5}" text-anchor="end" style="fill:var(--warn)">10% below birth</text>`}
+  const main=st.W.filter(w=>w.kind!=='wf');
+  if(main.length>1)s+=`<polyline points="${main.map(w=>X((w.ts-bd)/864e5)+','+Y(w.g)).join(' ')}" fill="none" stroke="var(--bottle)" stroke-width="2" stroke-linejoin="round"/>`;
+  st.W.forEach(w=>{const x=X((w.ts-bd)/864e5),y=Y(w.g),wf=w.kind==='wf';
+    s+=`<circle cx="${x}" cy="${y}" r="${wf?4:5.5}" fill="${wf?'var(--panel)':'var(--bottle)'}" stroke="var(--bottle)" stroke-width="2"/><circle cx="${x}" cy="${y}" r="12" fill="transparent" data-tip="${dlong(parseK(w.date))} ${w.kind==='birth'?'':fmt12(w.time)}: ${fmtW(w.g)} (${w.src})${st.bw>0&&w.kind!=='birth'?', '+((w.g-st.bw)/st.bw*100).toFixed(1)+'% vs birth':''}"/>`});
+  const out=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">${s}</svg>`;W=w0;return out;
+}
+function renderWeight(){
+  const st=weightStats();$('#wChart').innerHTML=chartWeight();
+  if(!st){$('#wStats').innerHTML='';return}
+  const c=(a,b)=>`<div><div class="k">${a}</div><div class="v">${b}</div></div>`;
+  $('#wStats').innerHTML=
+    c('Birth',st.bw>0?fmtW(st.bw):'<span class="sub">Set in Settings</span>')+
+    c('Latest',fmtW(st.latest.g)+`<div class="sub">${dlong(parseK(st.latest.date))}</div>`)+
+    (st.pct!=null?c('vs birth',`${st.pct>=0?'+':''}${st.pct.toFixed(1)}%`):'')+
+    (st.lowest?c('Lowest',fmtW(st.lowest.g)+(st.lowPct!=null?`<div class="sub">${st.lowPct.toFixed(1)}%</div>`:'')):'')+
+    (st.bw>0?c('Back to birth weight',st.back?'✓ '+dlong(parseK(st.back.date)):'Not yet'):'')+
+    (st.rate!=null?c('Gain since lowest',fmtDW(st.rate)+' / day'):'');
+}
+function openWeights(){
+  $('#wDate').value=key(new Date());const n=new Date();$('#wTime').value=pad(n.getHours())+':'+pad(n.getMinutes());$('#wVal').value='';$('#wNote').value='';
+  $('#wVal').placeholder=S.settings.weightUnit==='g'?'e.g. 3250 g':'e.g. 7 lb 3.5 oz';
+  renderWList();$('#weightModal').classList.add('open');
+}
+function renderWList(){
+  const W=allWeights().reverse();
+  $('#wList').innerHTML=W.length?W.map(w=>`<div class="wrow"><div style="flex:1"><b>${fmtW(w.g)}</b> <span class="src">${w.src}</span><div class="sub">${dlong(parseK(w.date))}${w.kind==='birth'?'':' '+fmt12(w.time)}${w.note?' · '+esc(w.note):''}</div></div>${w.kind==='log'?`<button class="del" data-wdel="${w.id}" title="Delete">&times;</button>`:'<span class="sub">'+(w.kind==='birth'?'Settings':'From feed')+'</span>'}</div>`).join(''):'<div class="sub">No weights yet.</div>';
+}
+$('#wAdd').onclick=()=>{
+  const g=parseWeight($('#wVal').value);if(!g){toast('Enter a weight like '+(S.settings.weightUnit==='g'?'3250 g':'7 lb 3 oz'));return}
+  if(g<500||g>15000){toast('That weight looks off. Check the units.');return}
+  S.weights=S.weights||[];S.weights.push({id:uid(),date:$('#wDate').value||key(new Date()),time:$('#wTime').value||'12:00',g,src:$('#wSrc').value,note:$('#wNote').value.trim()});
+  save();$('#wVal').value='';$('#wNote').value='';renderWList();if(tab==='dash')renderDash();toast('Weight saved: '+fmtW(g));
+};
+$('#wList').onclick=async e=>{const b=e.target.closest('[data-wdel]');if(!b)return;
+  $('#weightModal').classList.remove('open');const ok=await ask('Delete this weight?','Delete',true);$('#weightModal').classList.add('open');
+  if(!ok)return;S.weights=S.weights.filter(w=>w.id!==b.dataset.wdel);save();renderWList();if(tab==='dash')renderDash()};
+document.addEventListener('click',e=>{if(e.target.closest('[data-addweight]'))openWeights()});
+
+/* ================= Weighted feed row ================= */
+function wfRes(f){const a=num(f.wPre),b=num(f.wPost);if(!(a>0&&b>0))return 'Enter both weights';const d=b-a;return d>0?`Transferred about ${Math.round(d)} mL (${fmtDW(d)})`:d===0?'No change':`Weight went down ${fmtDW(d).replace('−','')}`}
+document.addEventListener('change',e=>{
+  const k=e.target.dataset&&e.target.dataset.k;if(k!=='wPre'&&k!=='wPost')return;
+  const row=e.target.closest('.feed');if(!row)return;const f=day(cur).feeds.find(x=>x.id===row.dataset.id);if(!f)return;
+  const g=parseWeight(e.target.value);f[k]=g;e.target.value=g?fmtW(g):'';row.querySelector('.wfres').textContent=wfRes(f);save();
+});
+
+/* ================= Next feed due + alarm ================= */
+function lastFeed(){const now=new Date(),r=[];for(let i=0;i<4;i++)r.push(...feedTimes(key(addDays(now,-i))).filter(x=>x.dt<=now));r.sort((a,b)=>b.dt-a.dt);return r[0]||null}
+function dueTime(){const lf=lastFeed();if(!lf)return null;const h=num(S.settings.feedInterval)||3;return new Date(lf.dt.getTime()+h*3600e3)}
+const relMin=m=>m<60?m+'m':hm(m);
+function dueText(){const d=dueTime();if(!d)return null;const mins=Math.round((d-new Date())/60000);return {d,mins,label:fmt12(pad(d.getHours())+':'+pad(d.getMinutes())),over:mins<0}}
+const isAndroid=/android/i.test(navigator.userAgent);
+function renderDue(){
+  const el=$('#dueLine');if(!el)return;const t=dueText();
+  if(!t||t.mins<-720){el.innerHTML='';el.className='dueline';return}
+  el.className='dueline'+(t.over?' over':'');
+  el.innerHTML=`<span>Next feed</span><span class="due">${t.over?'was due '+t.label+' ('+relMin(-t.mins)+' ago)':t.label+' · in '+relMin(t.mins)}</span>${isAndroid&&!t.over?'<button class="mini" id="phoneAlarm">⏰ Phone alarm</button>':''}`;
+  const pa=$('#phoneAlarm');if(pa)pa.onclick=()=>phoneAlarm(t.d);
+}
+function phoneAlarm(d){
+  // Chrome won't let web pages open the Clock app's "set alarm" screen, so give the exact time instead
+  const t=fmt12(pad(d.getHours())+':'+pad(d.getMinutes()));
+  ask(`Set a phone alarm for ${t}. Android doesn’t let web apps create Clock alarms, so open your Clock app, tap +, and pick ${t}.\n\nCradle also rings by itself at ${t} while it’s open. Night shift keeps the screen awake so it can.`,'Got it');
+}
+/* sound engine */
+let AC=null;
+function actx(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;try{AC=new C()}catch(e){return null}}if(AC.state==='suspended')AC.resume().catch(()=>{});return AC}
+document.addEventListener('pointerdown',()=>{if(AC&&AC.state==='suspended')AC.resume().catch(()=>{})},{passive:true});
+function chime(){const a=actx();if(!a)return;[880,660,990,784].forEach((fq,i)=>{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+i*0.32;o.type='sine';o.frequency.value=fq;g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.32,t+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t+1.4);o.connect(g).connect(a.destination);o.start(t);o.stop(t+1.5)})}
+let ringInt=null,ringStop=null,ringDue=null;
+function ringAlarm(dueTs){
+  if(ringDue===dueTs&&$('#alarmBar').classList.contains('on'))return;ringDue=dueTs;
+  const d=new Date(dueTs);$('#alarmTxt').textContent=`🍼 Feed due${babyName()?' for '+babyName():''} at ${fmt12(pad(d.getHours())+':'+pad(d.getMinutes()))}`;
+  $('#alarmBar').classList.add('on');const beep=()=>{chime();try{navigator.vibrate&&navigator.vibrate([400,200,400,200,600])}catch(e){}};
+  beep();clearInterval(ringInt);ringInt=setInterval(beep,6000);clearTimeout(ringStop);ringStop=setTimeout(()=>{clearInterval(ringInt)},120000);
+}
+function stopRing(){clearInterval(ringInt);clearTimeout(ringStop);$('#alarmBar').classList.remove('on');try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
+function checkAlarm(){
+  renderDue();if(nightOpen)renderNight(false);if(calmOpen)renderCalm();
+  if(!S.settings.alarmOn||S.nurse){if($('#alarmBar').classList.contains('on')&&S.nurse)stopRing();return}
+  const d=dueTime();if(!d){stopRing();return}const ts=d.getTime(),now=Date.now(),A=S.alarm||{};
+  if(A.due===ts&&A.ack){if($('#alarmBar').classList.contains('on'))stopRing();return}
+  if(now<ts){if($('#alarmBar').classList.contains('on'))stopRing();return}
+  if(now-ts>2*3600e3)return;
+  if(A.due===ts&&A.snooze&&now<A.snooze)return;
+  ringAlarm(ts);
+}
+$('#alarmSnooze').onclick=()=>{const d=dueTime();if(d)S.alarm={due:d.getTime(),snooze:Date.now()+10*60e3};save();stopRing();toast('Snoozed 10 minutes')};
+$('#alarmDismiss').onclick=()=>{const d=dueTime();if(d)S.alarm={due:d.getTime(),ack:true};save();stopRing()};
+setInterval(checkAlarm,15000);
+
+/* ================= Doctor report ================= */
+let printMode=null;
+function buildReport(){
+  const L=rangeDays(),st=S.settings,ws=weightStats(),g0=goals(key(new Date()));
+  const rows=L.map(x=>{const y=dayDetail(x.k),nm=y.fs.reduce((a,f)=>a+(num(f.mins)||0),0);return {x,y,nm}});
+  const done=rows.filter(r=>r.y.t.n>0&&!tdy(r.x.k)),nd=done.length||1;
+  const avg=f=>done.length?(done.reduce((a,r)=>a+f(r),0)/nd):0;
+  const wfs=[];L.forEach(x=>x.d.feeds.forEach(f=>{if(f.wf)wfs.push({k:x.k,f})}));
+  const notes=L.filter(x=>x.d.notes);
+  const td='style="border:1px solid #bbb;padding:5px 6px;text-align:right"',th='style="border:1px solid #bbb;padding:5px 6px;background:#f2f2f2;text-align:left"';
+  $('#print').innerHTML=`<div style="font:12px system-ui,sans-serif;color:#111">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #111;padding-bottom:6px">
+    <div><div style="font-size:20px;font-weight:800">Feeding report${babyName()?' · '+esc(babyName()):''}</div>
+    <div>${st.birthDate?'Born '+parseK(st.birthDate).toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'})+' · ':''}${g0.dol!=null&&g0.dol>=0?'Day '+g0.dol+' today':''}</div></div>
+    <div style="text-align:right">${dlong(L[0].dt)} to ${dlong(L[L.length-1].dt)}<br><span style="color:#555">Printed ${new Date().toLocaleString()}</span></div></div>
+  <h3 style="margin:12px 0 4px;font-size:14px">Weight</h3>
+  ${ws?`<div>Birth: <b>${ws.bw>0?fmtW(ws.bw):'not set'}</b> · Latest: <b>${fmtW(ws.latest.g)}</b> (${dlong(parseK(ws.latest.date))}, ${ws.latest.src})${ws.pct!=null?' · <b>'+(ws.pct>=0?'+':'')+ws.pct.toFixed(1)+'%</b> vs birth':''}${ws.lowest?' · Lowest: '+fmtW(ws.lowest.g)+(ws.lowPct!=null?' ('+ws.lowPct.toFixed(1)+'%)':''):''}${ws.bw>0?' · Back to birth weight: <b>'+(ws.back?dlong(parseK(ws.back.date)):'not yet')+'</b>':''}${ws.rate!=null?' · Gain since lowest: '+fmtDW(ws.rate)+'/day':''}</div>`:'<div style="color:#555">No weights logged.</div>'}
+  <h3 style="margin:12px 0 4px;font-size:14px">Averages over ${done.length} completed day${done.length===1?'':'s'}</h3>
+  <div>Feeds/day: <b>${avg(r=>r.y.t.n).toFixed(1)}</b> · Nursing: <b>${Math.round(avg(r=>r.nm))} min/day</b> · Bottle: <b>${Math.round(avg(r=>r.y.t.bottle))} mL/day</b> · Pumped: <b>${rows.some(r=>r.y.d.feeds.some(f=>num(f.pump)!=null))?Math.round(avg(r=>r.y.t.pump))+' mL/day':'not tracked'}</b> · Wet/day: <b>${avg(r=>r.y.t.wet).toFixed(1)}</b> · Stool/day: <b>${avg(r=>r.y.t.stool).toFixed(1)}</b> · Vitamin D: <b>${L.filter(x=>x.v.given).length} of ${L.filter(x=>vitDue(x.k)&&(!tdy(x.k)||x.v.given)).length} days</b></div>
+  <table style="width:100%;border-collapse:collapse;margin-top:10px"><tr><th ${th}>Date</th><th ${th}>Day</th><th ${th}>Feeds</th><th ${th}>Nursing min</th><th ${th}>Bottle mL</th><th ${th}>Pump mL</th><th ${th}>Wet / goal</th><th ${th}>Stool / goal</th><th ${th}>Vit D</th><th ${th}>Longest gap</th></tr>
+  ${rows.map(({x,y,nm})=>`<tr><td ${td.replace('right','left')}>${dlong(x.dt)}${tdy(x.k)?' (so far)':''}</td><td ${td}>${y.g.dol!=null&&y.g.dol>=0?y.g.dol:''}</td><td ${td}>${y.t.n}</td><td ${td}>${nm||''}</td><td ${td}>${Math.round(y.t.bottle)}</td><td ${td}>${y.d.feeds.some(f=>num(f.pump)!=null)?Math.round(y.t.pump):''}</td><td ${td}>${y.t.wet} / ${y.g.wet}</td><td ${td}>${y.t.stool} / ${y.g.stool}</td><td ${td.replace('right','center')}>${y.v.given?'✓'+(y.v.time?' '+fmt12(y.v.time):''):vitDue(x.k)?'':'n/a'}</td><td ${td}>${y.lg?hm(y.lg):''}</td></tr>`).join('')}</table>
+  ${wfs.length?`<h3 style="margin:12px 0 4px;font-size:14px">Weighted feeds</h3><table style="border-collapse:collapse"><tr><th ${th}>Date</th><th ${th}>Time</th><th ${th}>Breast</th><th ${th}>Before</th><th ${th}>After</th><th ${th}>Transfer</th></tr>${wfs.map(({k,f})=>`<tr><td ${td.replace('right','left')}>${dlong(parseK(k))}</td><td ${td}>${fmt12(f.time)}</td><td ${td}>${[f.left?'L':'',f.right?'R':''].filter(Boolean).join('+')}${f.mins?' '+f.mins+' min':''}</td><td ${td}>${f.wPre?fmtW(f.wPre):''}</td><td ${td}>${f.wPost?fmtW(f.wPost):''}</td><td ${td}>${num(f.wPre)>0&&num(f.wPost)>0?Math.round(f.wPost-f.wPre)+' mL':''}</td></tr>`).join('')}</table>`:''}
+  ${notes.length?`<h3 style="margin:12px 0 4px;font-size:14px">Notes</h3>${notes.map(x=>`<div><b>${dlong(x.dt)}:</b> ${esc(x.d.notes)}</div>`).join('')}`:''}
+  <h3 style="margin:14px 0 4px;font-size:14px">Questions for the visit</h3>
+  ${'<div style="border-bottom:1px solid #999;height:22px"></div>'.repeat(4)}
+  <div style="margin-top:10px;color:#666;font-size:10px">From Cradle, a home feeding log. Volumes are as logged by parents.</div></div>`;
+}
+function printReport(){printMode='report';buildReport();document.body.classList.add('print-sheet');printFired=false;
+  setTimeout(()=>{try{window.print()}catch(e){}setTimeout(()=>{if(!printFired){document.body.classList.remove('print-sheet');printMode=null;showBlocked('print')}},700)},50)}
+document.addEventListener('click',e=>{if(e.target.closest('[data-report]'))printReport()});
+window.addEventListener('afterprint',()=>{printMode=null});
+
+/* ================= Night shift ================= */
+let nightOpen=false,nightFid=null,nightInt=null;
+const todayK=()=>key(new Date());
+function nightFeed(){if(!nightFid)return null;for(const k of [todayK(),key(addDays(new Date(),-1))]){const f=peek(k).feeds.find(x=>x.id===nightFid);if(f)return {k,f}}return null}
+function nightPal(){const p=S.ui.nightPal||'warm';$('#night').classList.remove('pal-warm','pal-moon','pal-red');$('#night').classList.add('pal-'+p);$$('#night [data-pal]').forEach(b=>b.classList.toggle('on',b.dataset.pal===p))}
+function openNight(){keepAwake(true);document.body.classList.add('night-on');
+  nightOpen=true;nightPal();$('#night').classList.add('open');document.body.style.overflow='hidden';
+  if(S.nurse)nightFid=S.nurse.id;else{const lf=lastFeed();nightFid=lf&&(Date.now()-lf.dt)<75*60e3?lf.f.id:null}
+  renderNight(true);clearInterval(nightInt);nightInt=setInterval(()=>renderNight(false),1000);actx();
+}
+function closeNight(){nightOpen=false;keepAwake(false);document.body.classList.remove('night-on');$('#night').classList.remove('open');document.body.style.overflow='';clearInterval(nightInt);renderAll()}
+function nightNew(diaper){
+  const k=todayK(),d=day(k),n=new Date();
+  const f={id:uid(),time:pad(n.getHours())+':'+pad(n.getMinutes()),left:false,right:false,start:'',mins:null,bottle:null,pump:null,urine:false,stool:false,vitD:false,note:''};
+  d.feeds.push(f);sortFeeds(d);nightFid=f.id;save();
+  if(!diaper)startNurse(k,f.id);renderNight(true);
+}
+function renderNight(full){
+  if(!nightOpen)return;const n=new Date();
+  $('#nClock').textContent=n.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+  const lf=lastFeed(),t=dueText();
+  $('#nSub').textContent=(lf?'Last feed '+hm(Math.floor((n-lf.dt)/60000))+' ago':'No recent feeds')+(t&&t.mins>=-720?(t.over?' · feed was due '+t.label:' · next due '+t.label):'');
+  const cf=nightFeed(),run=cf&&S.nurse&&S.nurse.id===cf.f.id;
+  if(!full){const tm=$('#nTimer');if(tm&&cf)tm.textContent=run?mmss(nEl()):(cf.f.mins?cf.f.mins+' min':'0:00');return}
+  if(!cf){$('#nBody').innerHTML=`<button class="nbig" data-n="start">▶ Start feed</button><div class="nrow n2"><button class="nbtn" data-n="diaper">🧷 Diaper only</button><button class="nbtn" data-n="exit2">Close</button></div>`;return}
+  const f=cf.f,ls=(()=>{const r=[];for(let i=0;i<3;i++)r.push(...feedTimes(key(addDays(n,-i))));r.sort((a,b)=>b.dt-a.dt);return r.find(x=>x.f.start&&x.f.id!==f.id)})();
+  $('#nBody').innerHTML=`<div class="nfeed">
+    <div class="nhead">${isFeed(f)||run?'Feed':'Diaper'} at ${fmt12(f.time)}<span class="spacer"></span>${ls&&!f.start?`<span class="nhint">Start on ${ls.f.start==='L'?'Right':'Left'}</span>`:''}</div>
+    <div class="ntimer" id="nTimer">${run?mmss(nEl()):(f.mins?f.mins+' min':'0:00')}</div>
+    <div class="nrow n1" style="grid-template-columns:1fr"><button class="nbtn ${run?'on':''}" data-n="timer">${run?'■ Stop timer':'▶ '+(f.mins?'Resume timer':'Start timer')}</button></div>
+    <div class="nlab">Breast</div>
+    <div class="nrow n2"><button class="nbtn ${f.left?'on':''} ${f.start==='L'?'start':''}" data-n="L">L</button><button class="nbtn ${f.right?'on':''} ${f.start==='R'?'start':''}" data-n="R">R</button></div>
+    <div class="nlab">Bottle</div>
+    <div class="nml"><button data-n="b-">−5</button><div class="val">${num(f.bottle)||0} mL</div><button data-n="b+">+5</button></div>
+    <div class="nlab">Diaper and Vitamin D</div>
+    <div class="nrow n3"><button class="nbtn ${f.urine?'on':''}" data-n="urine">💧 Wet</button><button class="nbtn ${f.stool?'on':''}" data-n="stool">💩 Stool</button><button class="nbtn ${f.vitD?'on':''}" data-n="vitD">☀️ Vit D</button></div>
+    <button class="nbig" data-n="done" style="margin-top:16px">✓ Done</button></div>`;
+}
+$('#night').addEventListener('click',async e=>{
+  const pb=e.target.closest('[data-pal]');if(pb){S.ui.nightPal=pb.dataset.pal;save();nightPal();return}
+  const b=e.target.closest('[data-n]');if(!b)return;const a=b.dataset.n;
+  if(a==='exit'||a==='exit2'){closeNight();return}
+  if(a==='start'){nightNew(false);return}
+  if(a==='diaper'){nightNew(true);return}
+  const cf=nightFeed();if(!cf)return;const f=cf.f,d=day(cf.k);
+  if(a==='timer'){S.nurse&&S.nurse.id===f.id?stopNurse(true):startNurse(cf.k,f.id)}
+  else if(a==='L'||a==='R'){const p=a==='L'?'left':'right';f[p]=!f[p];if(f[p]&&!f.start)f.start=a;if(!f[p]&&f.start===a)f.start=f.left?'L':f.right?'R':''}
+  else if(a==='b+'||a==='b-'){const v=Math.max(0,(num(f.bottle)||0)+(a==='b+'?5:-5));f.bottle=v||null}
+  else if(a==='vitD'&&!f.vitD){const g=vitGiven(d);if(g.given&&g.feed!==f){if(!await ask('Vitamin D is already logged today'+(g.time?' at '+fmt12(g.time):'')+'. Log it again?','Log again'))return}f.vitD=true;d.vitD=false}
+  else if(a==='vitD'||a==='urine'||a==='stool'){f[a]=!f[a]}
+  else if(a==='done'){if(S.nurse&&S.nurse.id===f.id)stopNurse(true);nightFid=null;toast('Saved');}
+  save();renderNight(true);
+});
+document.addEventListener('click',e=>{if(e.target.closest('[data-night]')){$('#menu').classList.remove('open');openNight()}});
+
+/* ================= Calm screen ================= */
+let calmOpen=false,calmHideT=null,snd=null;
+function openCalm(){calmOpen=true;keepAwake(true);$('#calm').classList.add('open');document.body.style.overflow='hidden';const c=S.ui.calm;$('#calmInfo').className='pos-'+c.pos;syncCalmCtl();renderCalm();showCalmCtl();
+  if(c.sound!=='off')startSound(c.sound);clearInterval(calmTick);calmTick=setInterval(renderCalm,1000);
+  try{document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}}
+let calmTick=null;
+function closeCalm(){calmOpen=false;keepAwake(false);$('#calm').classList.remove('open');document.body.style.overflow='';stopSound();clearInterval(calmTick);
+  try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}renderAll()}
+function renderCalm(){if(!calmOpen)return;const n=new Date();
+  $('#calmTime').textContent=n.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+  const lf=lastFeed(),t=dueText(),parts=[];
+  if(lf)parts.push('Last feed '+hm(Math.floor((n-lf.dt)/60000))+' ago');
+  if(t&&t.mins>=-720)parts.push(t.over?'Feed was due at '+t.label:'Next feed in '+relMin(t.mins));
+  $('#calmLine').textContent=parts.join(' · ');
+  $('#calmNurse').style.display=S.nurse?'inline-block':'none';if(S.nurse)$('#calmNurse').textContent='⏱ Nursing '+mmss(nEl());
+}
+function syncCalmCtl(){const c=S.ui.calm;$$('#calmCtl [data-snd]').forEach(b=>b.classList.toggle('on',b.dataset.snd===c.sound));$$('#calmCtl [data-pos]').forEach(b=>b.classList.toggle('on',b.dataset.pos===c.pos));$('#calmVol').value=c.vol}
+function showCalmCtl(){$('#calmCtl').classList.remove('hide');clearTimeout(calmHideT);calmHideT=setTimeout(()=>$('#calmCtl').classList.add('hide'),5000)}
+$('#calm').addEventListener('click',e=>{
+  const b=e.target.closest('#calmCtl button');
+  if(!b){$('#calmCtl').classList.contains('hide')?showCalmCtl():$('#calmCtl').classList.add('hide');return}
+  showCalmCtl();const c=S.ui.calm;
+  if(b.dataset.snd){c.sound=b.dataset.snd;c.sound==='off'?stopSound():startSound(c.sound)}
+  else if(b.dataset.pos){c.pos=b.dataset.pos;$('#calmInfo').className='pos-'+c.pos}
+  else if(b.dataset.calm==='exit'){closeCalm();return}
+  save();syncCalmCtl();
+});
+$('#calmVol').addEventListener('input',e=>{S.ui.calm.vol=+e.target.value;if(snd)snd.out.gain.setTargetAtTime(snd.max*S.ui.calm.vol,AC.currentTime,0.2);showCalmCtl();save()});
+document.addEventListener('click',e=>{if(e.target.closest('[data-calmopen]')){$('#menu').classList.remove('open');openCalm()}});
+
+function noiseBuf(a,type){const len=a.sampleRate*4,b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0);let last=0,b0=0,b1=0,b2=0;
+  for(let i=0;i<len;i++){const w=Math.random()*2-1;
+    if(type==='brown'){last=(last+0.02*w)/1.02;d[i]=last*3.5}
+    else if(type==='pink'){b0=0.99765*b0+w*0.099046;b1=0.963*b1+w*0.2965164;b2=0.57*b2+w*1.0526913;d[i]=(b0+b1+b2+w*0.1848)*0.11}
+    else d[i]=w*0.5}
+  return b}
+function startSound(kind){
+  stopSound(true);const a=actx();if(!a)return;
+  const out=a.createGain();out.gain.value=0.0001;out.connect(a.destination);
+  const S2={out,nodes:[],timers:[],max:0.5};snd=S2;
+  const keep=n=>{S2.nodes.push(n);return n};
+  const src=type=>{const s=keep(a.createBufferSource());s.buffer=noiseBuf(a,type);s.loop=true;s.start();return s};
+  const lfo=(hz,depth,param,base)=>{const o=keep(a.createOscillator()),g=keep(a.createGain());o.frequency.value=hz;g.gain.value=depth;o.connect(g).connect(param);param.value=base;o.start();return o};
+  if(kind==='white'){const s=src('white'),f=keep(a.createBiquadFilter());f.type='lowpass';f.frequency.value=6500;s.connect(f).connect(out);S2.max=0.35}
+  else if(kind==='rain'){const s=src('white'),hp=keep(a.createBiquadFilter()),lp=keep(a.createBiquadFilter());hp.type='highpass';hp.frequency.value=900;lp.type='lowpass';lp.frequency.value=5000;s.connect(hp).connect(lp).connect(out);
+    const p=src('pink'),pl=keep(a.createBiquadFilter()),pg=keep(a.createGain());pl.type='lowpass';pl.frequency.value=350;pg.gain.value=0.8;p.connect(pl).connect(pg).connect(out);S2.max=0.45}
+  else if(kind==='ocean'){const s=src('brown'),f=keep(a.createBiquadFilter()),g=keep(a.createGain());f.type='lowpass';s.connect(f).connect(g).connect(out);
+    lfo(0.075,320,f.frequency,520);lfo(0.075,0.45,g.gain,0.55);S2.max=0.6}
+  else if(kind==='spa'){
+    const conv=keep(a.createConvolver()),len=a.sampleRate*3.5,ir=a.createBuffer(2,len,a.sampleRate);
+    for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}
+    conv.buffer=ir;const wet=keep(a.createGain());wet.gain.value=0.9;conv.connect(wet).connect(out);
+    const lp=keep(a.createBiquadFilter());lp.type='lowpass';lp.frequency.value=1400;const dry=keep(a.createGain());dry.gain.value=0.35;lp.connect(dry).connect(out);lp.connect(conv);
+    const chords=[[130.81,196.00,246.94,329.63],[110.00,164.81,196.00,261.63],[87.31,174.61,220.00,261.63],[98.00,146.83,196.00,293.66]];
+    const vs=[0,1,2,3].map(i=>{const o1=keep(a.createOscillator()),o2=keep(a.createOscillator()),g=keep(a.createGain());o1.type='sine';o2.type='triangle';o2.detune.value=7;g.gain.value=0.05;o1.connect(g);o2.connect(g);g.connect(lp);o1.frequency.value=o2.frequency.value=chords[0][i];o1.start();o2.start();lfo(0.05+i*0.013,0.02,g.gain,0.05);return [o1,o2]});
+    let ci=0;S2.timers.push(setInterval(()=>{ci=(ci+1)%chords.length;vs.forEach((p,i)=>p.forEach(o=>o.frequency.setTargetAtTime(chords[ci][i],a.currentTime,2.5)))},12000));
+    const bell=()=>{if(snd!==S2)return;const notes=[523.25,587.33,659.25,783.99,880,1046.5],o=a.createOscillator(),g=a.createGain(),t=a.currentTime;o.type='sine';o.frequency.value=notes[Math.floor(Math.random()*notes.length)];
+      g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.05,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+3.5);o.connect(g).connect(conv);o.start(t);o.stop(t+3.6);
+      S2.timers.push(setTimeout(bell,4000+Math.random()*7000))};
+    S2.timers.push(setTimeout(bell,2500));S2.max=0.7}
+  out.gain.setTargetAtTime(S2.max*S.ui.calm.vol,a.currentTime,0.8);
+}
+function stopSound(fast){if(!snd)return;const s=snd;snd=null;s.timers.forEach(t=>{clearInterval(t);clearTimeout(t)});
+  try{s.out.gain.setTargetAtTime(0.0001,AC.currentTime,fast?0.05:0.4)}catch(e){}
+  setTimeout(()=>{s.nodes.forEach(n=>{try{n.stop&&n.stop()}catch(e){}try{n.disconnect()}catch(e){}});try{s.out.disconnect()}catch(e){}},fast?200:1500)}
+
+
+/* ================= App install, offline, keep awake ================= */
+let wakeL=null;
+async function keepAwake(on){
+  try{if(on){if(!wakeL&&'wakeLock' in navigator&&document.visibilityState==='visible'){wakeL=await navigator.wakeLock.request('screen');wakeL.addEventListener('release',()=>{wakeL=null})}}
+      else if(wakeL){const w=wakeL;wakeL=null;await w.release()}}catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&(nightOpen||calmOpen))keepAwake(true)});
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;$('#installItem').classList.remove('hidden')});
+window.addEventListener('appinstalled',()=>{installEvt=null;$('#installItem').classList.add('hidden');toast('Cradle installed. Open it from your home screen.')});
+async function doInstall(){if(!installEvt){toast('Use your browser menu, then Install app or Add to Home screen.');return}installEvt.prompt();try{await installEvt.userChoice}catch(e){}installEvt=null;$('#installItem').classList.add('hidden')}
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+
+/* ================= Cloud: sign-in + shared sync (Supabase) ================= */
+const CLK='cradle-cloud-v1';
+let CL=(()=>{try{return JSON.parse(localStorage.getItem(CLK)||'null')||{}}catch(e){return {}}})();
+CL.synced=CL.synced||{};
+const clSave=()=>{try{localStorage.setItem(CLK,JSON.stringify(CL))}catch(e){}};
+function clConfig(){
+  let baked={};try{baked=JSON.parse(document.getElementById('cloudConfig').textContent)||{}}catch(e){}
+  const url=(CL.url||baked.url||'').trim().replace(/\/+$/,''),key=(CL.key||baked.key||'').trim();
+  return {url,key,baked:!!(baked.url&&baked.key)};
+}
+const clReady=()=>{const c=clConfig();return !!(c.url&&c.key)};
+const userEmail=u=>{u=String(u||'').trim().toLowerCase();return u.includes('@')?u:u.replace(/[^a-z0-9._-]/g,'')+'@cradle.cfg'};
+const userName=e=>String(e||'').replace(/@(cradle\.cfg|example\.com)$/,'');
+const fmtKey=k=>{k=String(k||'').toUpperCase().replace(/[^A-Z0-9]/g,'');return k.length>4?k.slice(0,4)+'-'+k.slice(4,8):k};
+let clBooted=false,clState='idle',clBusy=false,clPushT=null,clPollT=null,clLastErr='';
+
+async function clFetch(path,opt={},auth=true,retry=true){
+  const c=clConfig(),h=Object.assign({'apikey':c.key,'Content-Type':'application/json'},opt.headers||{});
+  if(auth){await clEnsureToken();if(!CL.session)throw Object.assign(new Error('signed out'),{code:401});h.Authorization='Bearer '+CL.session.access}
+  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),15000);
+  let res;try{res=await fetch(c.url+path,Object.assign({},opt,{headers:h,signal:ac.signal}))}finally{clearTimeout(t)}
+  if(res.status===401&&auth&&retry){if(await clRefresh(true))return clFetch(path,opt,auth,false);clSignedOut('Your sign-in expired. Please sign in again.');throw Object.assign(new Error('expired'),{code:401})}
+  if(!res.ok){let m='';try{const j=await res.json();m=j.msg||j.message||j.error_description||j.error||'';var ec=j.error_code||''}catch(e){}throw Object.assign(new Error(m||('HTTP '+res.status)),{code:res.status,errCode:ec||''})}
+  return res.status===204?null:res.json().catch(()=>null);
+}
+function clTakeSession(j){CL.session={access:j.access_token,refresh:j.refresh_token,exp:Date.now()+((j.expires_in||3600)-60)*1000,email:(j.user&&j.user.email)||(CL.session&&CL.session.email)||''};clSave()}
+async function clRefresh(force){
+  if(!CL.session||!CL.session.refresh)return false;
+  if(!force&&Date.now()<CL.session.exp)return true;
+  if(!navigator.onLine)return false;
+  try{const j=await clFetch('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:CL.session.refresh})},false);clTakeSession(j);return true}
+  catch(e){if(e.code===400||e.code===401){CL.session=null;clSave()}return false}
+}
+async function clEnsureToken(){if(CL.session&&Date.now()>=CL.session.exp)await clRefresh(true)}
+/* A different person signed in on this phone: start them clean so the last family's log never leaks into theirs */
+function clSwitchUser(){
+  CL.synced={};CL.last=null;CL.init=false;CL.household=null;CL.fam=null;
+  const keep={theme:S.settings.theme,v2:1},ui=S.ui;S=migrate({settings:keep});S.ui=ui;S.baseVersion=99;
+  try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+  try{renderAll()}catch(e){}
+}
+async function clSignUp(user,pass){
+  const j=await clFetch('/auth/v1/signup',{method:'POST',body:JSON.stringify({email:userEmail(user),password:pass})},false);
+  if(!j||!j.access_token)throw Object.assign(new Error('confirm'),{code:0,errCode:'confirm'});
+  if(CL.owner&&j.user&&j.user.id&&CL.owner!==j.user.id)clSwitchUser();
+  CL.owner=j.user&&j.user.id;clTakeSession(j);
+}
+async function clSignIn(user,pass){
+  const j=await clFetch('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:userEmail(user),password:pass})},false);
+  if(CL.owner&&j.user&&j.user.id&&CL.owner!==j.user.id)clSwitchUser()
+  CL.owner=j.user&&j.user.id;clTakeSession(j);
+}
+async function clSignOut(){
+  try{if(CL.session&&navigator.onLine)await clFetch('/auth/v1/logout',{method:'POST'},true,false)}catch(e){}
+  CL.session=null;clSave();clStop();showGate('login');renderProfile();
+}
+function clSignedOut(msg){CL.session=null;clSave();clStop();showGate('login',msg)}
+
+/* ---- items: the shared pieces of the log ---- */
+const SHARED_SETTINGS=['target','pumpMin','pumpMax','wetGoal','stoolGoal','birthDate','babyName','vitDStart','feedInterval','birthWeight'];
+function clItems(){
+  const out={};
+  for(const k in S.days){const d=S.days[k];
+    d.feeds.forEach(f=>{out['feed:'+f.id]={kind:'feed',data:Object.assign({day:k},f)}});
+    if(d.notes||d.vitD)out['day:'+k]={kind:'day',data:{day:k,notes:d.notes||'',vitD:!!d.vitD}};}
+  (S.weights||[]).forEach(w=>{out['weight:'+w.id]={kind:'weight',data:w}});
+  const st={};SHARED_SETTINGS.forEach(k=>st[k]=S.settings[k]??null);out['settings']={kind:'settings',data:st};
+  return out;
+}
+const clJ=o=>JSON.stringify(o);
+function clApply(row){
+  const id=row.id,kind=row.kind||id.split(':')[0],data=row.data||{};
+  if(kind==='feed'){const fid=id.slice(5);
+    for(const k in S.days){const i=S.days[k].feeds.findIndex(x=>x.id===fid);if(i>-1)S.days[k].feeds.splice(i,1)}
+    if(!row.deleted&&data.day){const f=Object.assign({},data);delete f.day;f.id=fid;const d=day(data.day);d.feeds.push(f);sortFeeds(d)}}
+  else if(kind==='day'){const k=id.slice(4);if(row.deleted){if(S.days[k]){S.days[k].notes='';S.days[k].vitD=false}}else{const d=day(k);d.notes=data.notes||'';d.vitD=!!data.vitD}}
+  else if(kind==='weight'){const wid=id.slice(7);S.weights=(S.weights||[]).filter(w=>w.id!==wid);if(!row.deleted)S.weights.push(Object.assign({},data,{id:wid}))}
+  else if(kind==='settings'&&!row.deleted){SHARED_SETTINGS.forEach(k=>{if(k in data)S.settings[k]=data[k]})}
+}
+function clLocalSave(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
+
+/* ---- pull + push ---- */
+async function clPull(){
+  let changed=false,since=CL.last||'1970-01-01T00:00:00Z';
+  for(let page=0;page<20;page++){
+    const rows=await clFetch(`/rest/v1/cradle_items?select=id,kind,data,deleted,updated_at${CL.household?'&household_id=eq.'+CL.household:''}&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.asc&limit=1000`,{method:'GET'});
+    if(!rows||!rows.length)break;
+    const cur=clItems();
+    for(const r of rows){
+      const local=cur[r.id],dirty=local&&clJ(local)!==CL.synced[r.id];
+      const serverJ=r.deleted?null:clJ({kind:r.kind,data:r.data});
+      if(dirty&&CL.init)continue;            // local edit wins; it will be pushed
+      if(r.deleted&&!local){delete CL.synced[r.id];continue}
+      if(local&&serverJ===clJ(local)){CL.synced[r.id]=serverJ;continue}
+      clApply(r);changed=true;
+      if(r.deleted)delete CL.synced[r.id];
+    }
+    const after=clItems();rows.forEach(r=>{if(!r.deleted&&after[r.id])CL.synced[r.id]=clJ(after[r.id])});
+    since=rows[rows.length-1].updated_at;CL.last=since;
+    if(rows.length<1000)break;
+  }
+  if(changed){clLocalSave();clRerender()}
+  clSave();return changed;
+}
+async function clPush(){
+  const cur=clItems(),up=[];
+  for(const k in cur){const j=clJ(cur[k]);if(CL.synced[k]!==j)up.push({id:k,kind:cur[k].kind,data:cur[k].data,deleted:false,_j:j})}
+  for(const k in CL.synced){if(!cur[k])up.push({id:k,kind:k.split(':')[0],data:null,deleted:true,_j:null})}
+  for(let i=0;i<up.length;i+=200){
+    const batch=up.slice(i,i+200);
+    await clFetch('/rest/v1/cradle_items?on_conflict='+(CL.household?'household_id,id':'owner,id'),{method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(batch.map(({_j,...r})=>CL.household?Object.assign({household_id:CL.household},r):r))});
+    batch.forEach(r=>{if(r.deleted)delete CL.synced[r.id];else CL.synced[r.id]=r._j});clSave();
+  }
+  return up.length;
+}
+async function clSync(){
+  if(clBusy||!CL.session||!clReady())return;
+  if(!navigator.onLine){clSetState('offline');return}
+  clBusy=true;clSetState('syncing');
+  try{
+    if(CL.pendingKey)await clJoinPending();
+    if(!CL.household||!clBooted){await clBootstrap();clBooted=true}
+    if(!CL.init){await clPull();CL.init=true;clSave()}
+    await clPush();await clPull();clLastErr='';clSetState('ok');
+    if(clWelcomePending){clWelcomePending=false;showWelcome()}
+    if(CL.newFamily){CL.newFamily=false;clSave();setTimeout(()=>{openSettings();toast('Welcome to Cradle! Start with your baby’s name and birth date.')},500)}
+  }catch(e){if(e.code===401)return;clLastErr=e.message||'error';clSetState(navigator.onLine?'error':'offline')}
+  finally{clBusy=false}
+}
+function cloudAfterSave(){if(!CL.session)return;clearTimeout(clPushT);clPushT=setTimeout(clSync,1200)}
+function clStart(){clStop();clBooted=false;clSync();clPollT=setInterval(()=>{if(document.visibilityState==='visible')clSync()},15000)}
+function clStop(){clearInterval(clPollT);clearTimeout(clPushT);clSetState('idle')}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&CL.session)clSync()});
+window.addEventListener('online',()=>{if(CL.session)clSync()});
+window.addEventListener('offline',()=>{if(CL.session)clSetState('offline')});
+function clRerender(){
+  const a=document.activeElement;
+  if(a&&a.closest&&a.closest('main')&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)){clPendingRender=true;return}
+  if(nightOpen)renderNight(true);renderAll();
+}
+let clPendingRender=false;
+document.addEventListener('focusout',()=>{setTimeout(()=>{if(clPendingRender){const a=document.activeElement;if(!(a&&a.closest&&a.closest('main')&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))){clPendingRender=false;renderAll()}}},300)});
+function clSetState(s){clState=s;const el=$('#syncDot');if(!el)return;
+  const m={idle:['',''],syncing:['⟳','Syncing…'],ok:['☁︎','Synced'],offline:['⚠︎','Offline. Will sync when back online'],error:['⚠︎','Sync problem: '+clLastErr]}[s]||['',''];
+  el.textContent=m[0];el.title=m[1];el.className='syncdot s-'+s;const st=$('#ddSync');if(st)st.textContent=CL.session?('Signed in as '+userName(CL.session.email)+(m[1]?' · '+m[1]:'')):'Not signed in';}
+
+/* ---- splash + sign-in gate ---- */
+function showGate(mode,msg){
+  const g=$('#gate');g.classList.add('open');g.dataset.mode=mode;
+  $('#gLogin').classList.toggle('hidden',mode!=='login');$('#gLoading').classList.toggle('hidden',mode==='login');
+  if(mode==='login'){const c=clConfig();$('#gDb').classList.toggle('hidden',c.baked&&!msg?.includes('database'));$('#gDbOpen').classList.toggle('hidden',!c.baked);
+    $('#gUrl').value=CL.url||(c.baked?'':c.url)||'';$('#gKey').value=CL.key||(c.baked?'':c.key)||'';$('#gMsg').textContent=msg||'';
+    gateLocalNote();
+    if(!clReady())$('#gDb').classList.remove('hidden');setTimeout(()=>{const u=$('#gUser');if(!u.value)u.focus()},50)}
+}
+function hideGate(){const g=$('#gate');g.classList.add('fade');setTimeout(()=>{g.classList.remove('open','fade')},350)}
+$('#gDbOpen').onclick=()=>$('#gDb').classList.toggle('hidden');
+$('#gForm').addEventListener('submit',async e=>{
+  e.preventDefault();const btn=$('#gGo'),u=$('#gUser').value.trim(),p=$('#gPass').value;
+  const url=$('#gUrl').value.trim(),key=$('#gKey').value.trim();
+  if((url||key)&&!$('#gDb').classList.contains('hidden')){if(!/^(https:\/\/.+|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)/.test(url)||key.length<20){$('#gMsg').textContent='Check the database address and key.';$('#gDb').classList.remove('hidden');return}CL.url=url;CL.key=key;clSave()}
+  if(!clReady()){$('#gMsg').textContent='Enter your database address and key first.';$('#gDb').classList.remove('hidden');return}
+  if(!u||!p){$('#gMsg').textContent='Enter your username and password.';return}
+  if(!navigator.onLine){$('#gMsg').textContent='You’re offline. Connect to sign in the first time.';return}
+  if(gNewMode)return doSignUp(u,p);
+  btn.disabled=true;btn.textContent='Signing in…';$('#gMsg').textContent='';
+  try{await clSignIn(u,p);$('#gPass').value='';hideGate();renderProfile();clStart();toast('Signed in as '+userName(CL.session.email))}
+  catch(err){$('#gMsg').textContent=err.code===400||err.code===401?'Wrong username or password.':err.name==='AbortError'||err.message==='Failed to fetch'?'Couldn’t reach the database. Check the address and your connection.':'Sign-in failed: '+err.message}
+  finally{btn.disabled=false;btn.textContent='Sign in'}
+});
+function gateLocalNote(){
+  let n=0,d=0;try{for(const k in S.days){const c=S.days[k].feeds.length;if(c){n+=c;d++}}}catch(e){}
+  const el=$('#gHas');el.classList.toggle('hidden',!n);if(!n)return;
+  el.innerHTML=`📱 This phone already has <b>${n} feed${n===1?'':'s'}</b> over ${d} day${d===1?'':'s'}. It stays on this phone, and when you sign in or create an account it’s added to your log. <button type="button" class="glink" id="gBackup" style="display:inline;padding:0;margin:0">Download a backup first</button>`;
+  $('#gBackup').onclick=()=>{expRange='all';try{downloadExport()}catch(e){}$('#gMsg').textContent='Backup saved. Look in your Downloads for a cradle-….json file.'};
+}
+let gNewMode=false;
+function setGateMode(isNew){gNewMode=isNew;$('#gNew').classList.toggle('hidden',!isNew);$('#gGo').textContent=isNew?'Create account':'Sign in';
+  $('#gMode').textContent=isNew?'I already have an account':'New here? Create an account';$('#gPass').autocomplete=isNew?'new-password':'current-password';$('#gMsg').textContent=''}
+$('#gMode').onclick=()=>setGateMode(!gNewMode);
+$('#gShare').addEventListener('input',e=>{const v=fmtKey(e.target.value);if(v!==e.target.value)e.target.value=v});
+async function doSignUp(u,p){
+  const btn=$('#gGo'),msg=t=>$('#gMsg').textContent=t,key=fmtKey($('#gShare').value);
+  if(!u.includes('@')&&!/^[a-z0-9._-]{3,}$/i.test(u))return msg('Usernames use letters, numbers, dots, or dashes (at least 3).');
+  if(p.length<8)return msg('Use at least 8 characters for your password.');
+  if(p!==$('#gPass2').value)return msg('The two passwords don’t match.');
+  if(key&&key.replace('-','').length!==8)return msg('Share keys have 8 letters and numbers, like K7QM-4XPD.');
+  btn.disabled=true;btn.textContent='Creating…';msg('');
+  try{
+    await clSignUp(u,p);
+    if(key){CL.pendingKey=key;CL.pendingFor=null}else CL.newFamily=true;clSave();
+    $('#gPass').value='';$('#gPass2').value='';$('#gShare').value='';setGateMode(false);
+    hideGate();renderProfile();clStart();toast('Account created. Hi, '+userName(CL.session.email)+'!');
+  }catch(err){const c=err.errCode||'';
+    if(c==='confirm'&&key){CL.pendingKey=key;CL.pendingFor=userEmail(u);clSave()}
+    msg(c==='user_already_exists'||/already registered/i.test(err.message)?'That '+(u.includes('@')?'email':'username')+' already has an account. Try signing in instead.'
+      :c==='email_address_invalid'?(u.includes('@')?'That email address wasn’t accepted. Check it for typos.':'The database didn’t accept that username. Use your email address instead.')
+      :c==='weak_password'?'Pick a stronger password: '+err.message
+      :c==='signup_disabled'||/signups not allowed/i.test(err.message)?'New accounts are turned off for this Cradle. Ask whoever set it up.'
+      :c==='confirm'?'Account created, but this Cradle still has email confirmation on, so you can’t sign in yet. Ask whoever set it up to confirm your account. Your share key is saved and applies when you sign in.'
+      :err.code===429?'Too many new accounts just now. Try again in a few minutes.'
+      :err.name==='AbortError'||err.message==='Failed to fetch'?'Couldn’t reach the database. Check your connection.':'Couldn’t create the account: '+err.message)}
+  finally{btn.disabled=false;btn.textContent=gNewMode?'Create account':'Sign in'}
+}
+async function clFromLink(){
+  const h=new URLSearchParams((location.hash||'').replace(/^#/,''));
+  if(h.get('error_description')){history.replaceState(null,'',location.pathname+location.search);return {err:h.get('error_description').replace(/\+/g,' ')}}
+  if(!h.get('access_token')||!h.get('refresh_token'))return null;
+  history.replaceState(null,'',location.pathname+location.search);
+  CL.session={access:h.get('access_token'),refresh:h.get('refresh_token'),exp:Date.now()+((+h.get('expires_in')||3600)-60)*1000,email:''};clSave();
+  try{const u=await clFetch('/auth/v1/user',{method:'GET'});if(u){if(CL.owner&&u.id&&CL.owner!==u.id)clSwitchUser();CL.owner=u.id;CL.session.email=u.email||'';clSave()}}catch(e){}
+  return {type:h.get('type')||''};
+}
+async function cloudBoot(){
+  const t0=Date.now(),wait=()=>new Promise(r=>setTimeout(r,Math.max(0,1100-(Date.now()-t0))));
+  showGate('loading');
+  if(clReady()&&/access_token|error_description/.test(location.hash||'')){
+    const lk=await clFromLink();await wait();
+    if(lk&&lk.err){showGate('login','That link didn\u2019t work: '+lk.err+'. Ask for a new invite, or sign in.');return}
+    if(lk&&CL.session){hideGate();renderProfile();clStart();
+      if(/invite|recovery|signup/.test(lk.type)){openPassword();$('#pwModal h3').textContent=lk.type==='recovery'?'🔑 Choose a new password':'🔑 Create your password';$('#pwMsg').textContent='';$('#pwMsg').insertAdjacentHTML('beforebegin','')}
+      return}
+  }
+  if(CL.session&&clReady()){
+    if(navigator.onLine)await clRefresh(false);
+    await wait();
+    if(CL.session){hideGate();renderProfile();clStart();return}
+    showGate('login','Please sign in again.');return;
+  }
+  await wait();showGate('login');
+}
+
+/* ================= Family sharing ================= */
+let clWelcomePending=false;
+async function clRpc(fn,args){const r=await clFetch('/rest/v1/rpc/'+fn,{method:'POST',body:JSON.stringify(args||{})});if(r&&r.error&&!r.household)throw Object.assign(new Error(r.error),{code:400});return r}
+async function clBootstrap(){
+  try{
+    const r=await clRpc('cradle_bootstrap');if(!r||!r.household)return;
+    if(CL.household&&CL.household!==r.household){CL.synced={};CL.last=null;CL.init=false}
+    if(!CL.household&&CL.legacy){CL.last=null}
+    CL.household=r.household;CL.legacy=false;CL.fam=r;clSave();renderFamilyBits();
+    const me=(CL.session&&CL.session.email)||'';CL.welcomed=CL.welcomed||{};
+    if(r.claimed||(!CL.welcomed[me]&&r.role==='member')){CL.welcomed[me]=true;clSave();clWelcomePending=true}
+    famAutoName();
+  }catch(e){
+    if(e.code===404||/cradle_bootstrap/.test(e.message||'')){CL.legacy=true;clSave();return}  // family script not run yet
+    throw e;
+  }
+}
+function famAutoName(){const f=CL.fam;if(f&&f.role==='owner'&&f.name==='Our family'&&babyName()&&CL.session&&navigator.onLine){clRpc('cradle_rename',{h:f.household,p_name:babyName()+'\u2019s family'}).then(x=>{if(x){CL.fam=x;clSave();renderFamilyBits()}}).catch(()=>{})}}
+async function clJoinPending(){
+  const k=CL.pendingKey,me=((CL.session&&CL.session.email)||'').toLowerCase();
+  if(CL.pendingFor&&me&&CL.pendingFor!==me){CL.pendingKey=null;CL.pendingFor=null;clSave();return}
+  try{const r=await clRpc('cradle_join',{p_code:k});CL.pendingKey=null;CL.pendingFor=null;CL.household=r.household;CL.fam=r;CL.legacy=false;clSave();renderFamilyBits()}
+  catch(e){if(e.code===401||!navigator.onLine||e.code===0||e.name==='AbortError')throw e;CL.pendingKey=null;CL.pendingFor=null;CL.newFamily=true;clSave();
+    setTimeout(()=>ask((e.message||'That share key didn’t work.')+' You’ve got your own log for now. You can join later under Profile, then Family.','OK'),300)}
+}
+function famName(){return (CL.fam&&CL.fam.name)||'your family'}
+function renderFamilyBits(){const el=$('#ddFam');if(el)el.textContent=CL.fam?CL.fam.name:''}
+function showWelcome(){
+  const nm=babyName();
+  $('#welTitle').textContent='Welcome to Cradle';
+  $('#welBody').innerHTML=`<p style="margin:0 0 10px">You’re now part of <b>${esc(famName())}</b>${nm?', sharing the feeding log for <b>'+esc(nm)+'</b>':''}. Every feed, diaper, and note you log shows up for everyone in the family, and theirs show up for you, usually within a few seconds.</p>
+    <p style="margin:0 0 6px"><b>A few things to try:</b></p>
+    <ul class="cl" style="margin-top:0"><li><b>+ Log feed now</b> when a feed starts</li><li><b>Night shift</b> for big, dim buttons at 3am</li><li>The <b>Dashboard</b> for trends and a doctor report</li><li><b>Change password</b> in the profile menu to make the account yours</li></ul>
+    <p style="margin:10px 0 0">So glad you’re here. 💛</p>`;
+  $('#welcomeModal').classList.add('open');
+}
+async function openFamily(){
+  $('#familyModal').classList.add('open');$('#famBody').innerHTML='<div class="sub">Loading…</div>';
+  if(!CL.session){$('#famBody').innerHTML='<div class="sub">Sign in to manage your family.</div>';return}
+  if(!navigator.onLine){$('#famBody').innerHTML='<div class="sub">You’re offline. Family settings need a connection.</div>';return}
+  try{if(!CL.household)await clBootstrap();if(CL.legacy||!CL.household){$('#famBody').innerHTML='<div class="sub">Family sharing isn’t set up in your database yet. Run <b>supabase-family.sql</b> in Supabase, then reopen this.</div>';return}
+    CL.fam=await clRpc('cradle_family_info',{h:CL.household});clSave();renderFamily()}
+  catch(e){$('#famBody').innerHTML='<div class="sub">Couldn’t load your family: '+esc(e.message)+'</div>'}
+}
+function renderFamily(){
+  const f=CL.fam||{},owner=f.role==='owner';
+  $('#famBody').innerHTML=`
+    <div class="field" style="grid-template-columns:1fr auto"><input id="famName" value="${esc(f.name||'')}" aria-label="Family name"><button class="ghost sm" id="famRename">Rename</button></div>
+    <div class="fsec">People</div>
+    <div class="wlist">${(f.members||[]).map(m=>`<div class="wrow"><div style="flex:1"><b>${esc(m.email||'Someone')}</b>${m.me?' <span class="src">(you)</span>':''}<div class="sub">${m.role==='owner'?'Owner':'Member'}</div></div>${owner&&!m.me?`<button class="del" data-famrm="${m.user_id}" title="Remove">&times;</button>`:''}</div>`).join('')}
+    ${(f.invites||[]).map(e=>`<div class="wrow"><div style="flex:1"><b>${esc(e)}</b><div class="sub">Invited, joins when they sign in</div></div><button class="del" data-famun="${esc(e)}" title="Cancel invite">&times;</button></div>`).join('')}</div>
+    <div class="fsec">Share key</div>
+    <p class="sub" style="margin:4px 0 8px">Give this to anyone who should share this log. They enter it when they create their Cradle account, or later under Join with a share key.</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><code id="famKey" style="font-size:20px;font-weight:800;letter-spacing:2px;padding:6px 12px">${esc(f.join_code||'')}</code><button class="ghost sm" id="famCopy">Copy</button><button class="primary sm" id="famShare">Share</button>${owner?'<button class="ghost sm" id="famNewKey">New key</button>':''}</div>
+    ${owner?'<p class="sub" style="margin:6px 0 0">New key makes the old one stop working. People already in the family stay in.</p>':''}
+    <div class="fsec">Add someone by email</div>
+    <p class="sub" style="margin:4px 0 8px">For someone who already has a Cradle account. They join the next time they open Cradle.</p>
+    <div class="field" style="grid-template-columns:1fr auto"><input id="famEmail" type="email" placeholder="their@email.com" autocapitalize="none"><button class="ghost sm" id="famInvite">Add</button></div>
+    <div class="fsec">Join with a share key</div>
+    <div class="field" style="grid-template-columns:1fr auto"><input id="famCode" placeholder="K7QM-4XPD" autocapitalize="characters" autocomplete="off"><button class="ghost sm" id="famJoin">Join</button></div>
+    ${owner?'':'<div class="mrow" style="justify-content:flex-start"><button class="ghost sm" id="famLeave" style="color:var(--warn)">Leave this family</button></div>'}`;
+}
+$('#familyModal').addEventListener('click',async e=>{
+  const t=e.target,f=CL.fam||{};
+  const run=async(fn,args,msg)=>{try{CL.fam=await clRpc(fn,args);clSave();renderFamily();if(msg)toast(msg)}catch(err){toast(err.message||'Something went wrong')}};
+  const shareMsg=()=>`Join ${famName()} on Cradle, our baby feeding log.\n\n1. Open ${location.origin+location.pathname}\n2. Tap “New here? Create an account”\n3. Enter this share key: ${f.join_code}`;
+  if(t.id==='famInvite'){const em=$('#famEmail').value.trim();if(!em.includes('@')){toast('Enter their email address');return}await run('cradle_invite',{h:CL.household,p_email:em},'Added '+em+'. They join next time they open Cradle.')}
+  else if(t.id==='famShare'){const m=shareMsg();if(navigator.share){try{await navigator.share({title:'Join us on Cradle',text:m})}catch(e){}}else{copyText(m)?toast('Invite message copied. Paste it in a text.'):toast('Key: '+f.join_code)}}
+  else if(t.id==='famNewKey'){$('#familyModal').classList.remove('open');const ok=await ask('Make a new share key? The old key stops working right away. Everyone already in the family stays in.','New key');$('#familyModal').classList.add('open');if(ok)await run('cradle_new_code',{h:CL.household},'New share key ready')}
+  else if(t.id==='famLeave'){$('#familyModal').classList.remove('open');const ok=await ask('Leave '+famName()+'? You’ll stop seeing this log on your phones. Entries you added stay with the family.','Leave',true);if(!ok){$('#familyModal').classList.add('open');return}
+    try{const r=await clRpc('cradle_leave',{h:CL.household});clSwitchUser();CL.household=r.household;CL.fam=r;CL.legacy=false;clSave();renderFamilyBits();clBooted=true;toast('You left the family');clSync()}catch(err){toast(err.message||'Couldn’t leave');$('#familyModal').classList.add('open')}}
+  else if(t.id==='famRename'){const n=$('#famName').value.trim();if(n)await run('cradle_rename',{h:CL.household,p_name:n},'Renamed');renderFamilyBits()}
+  else if(t.id==='famCopy'){copyText(f.join_code||'')?toast('Code copied'):toast('Code: '+f.join_code)}
+  else if(t.closest('[data-famun]')){const em=t.closest('[data-famun]').dataset.famun;await run('cradle_uninvite',{h:CL.household,p_email:em},'Invite cancelled')}
+  else if(t.closest('[data-famrm]')){const id=t.closest('[data-famrm]').dataset.famrm;$('#familyModal').classList.remove('open');const ok=await ask('Remove this person from your family? They will no longer see the log.','Remove',true);$('#familyModal').classList.add('open');if(ok)await run('cradle_remove_member',{h:CL.household,p_user:id},'Removed')}
+  else if(t.id==='famJoin'){const c=fmtKey($('#famCode').value);if(c.replace('-','').length!==8){toast('Share keys look like K7QM-4XPD');return}$('#familyModal').classList.remove('open');
+    const solo=(f.members||[]).length<=1;
+    const ok=await ask('Join that family? You’ll switch to their shared log.'+(solo?' Anything you’ve logged so far gets added to it.':''),'Join');if(!ok){$('#familyModal').classList.add('open');return}
+    try{const r=await clRpc('cradle_join',{p_code:c});if(solo){CL.synced={};CL.last=null;CL.init=false}else clSwitchUser();CL.household=r.household;CL.fam=r;CL.legacy=false;clSave();renderFamilyBits();clBooted=true;toast('Joined '+r.name);clSync()}catch(err){toast(err.message||'Couldn’t join');$('#familyModal').classList.add('open')}}
+});
+
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='famCode'){const v=fmtKey(e.target.value);if(v!==e.target.value)e.target.value=v}});
+/* ================= Change password ================= */
+function openPassword(){$('#pwNew').value='';$('#pwNew2').value='';$('#pwMsg').textContent='';$('#pwModal').classList.add('open');setTimeout(()=>$('#pwNew').focus(),50)}
+$('#pwSave').onclick=async()=>{
+  const a=$('#pwNew').value,b=$('#pwNew2').value;
+  if(a.length<8){$('#pwMsg').textContent='Use at least 8 characters.';return}
+  if(a!==b){$('#pwMsg').textContent='The two passwords don’t match.';return}
+  if(!navigator.onLine){$('#pwMsg').textContent='You’re offline. Try again when connected.';return}
+  $('#pwSave').disabled=true;
+  try{await clFetch('/auth/v1/user',{method:'PUT',body:JSON.stringify({password:a})});$('#pwModal').classList.remove('open');$('#pwModal h3').textContent='🔑 Change password';toast('Password saved')}
+  catch(e){$('#pwMsg').textContent=e.message||'Couldn’t change the password.'}
+  finally{$('#pwSave').disabled=false}
+};
+
+/* Achievements */
+const ACH=[
+  {id:'latch',icon:'🤱',name:'First Latch',desc:'Log your first breastfeeding session',goal:1},
+  {id:'week',icon:'📅',name:'Week One',desc:'Log feeds 7 days in a row',goal:7,streak:true},
+  {id:'eight',icon:'🎱',name:'Eight Is Great',desc:'Reach 8 or more feeds in a day, 5 times',goal:5},
+  {id:'duty',icon:'🧷',name:'Diaper Duty',desc:'Meet both diaper goals on 3 days',goal:3},
+  {id:'pro',icon:'🏅',name:'Diaper Pro',desc:'Meet both diaper goals 7 days in a row',goal:7,streak:true},
+  {id:'sun',icon:'☀️',name:'Sunshine Streak',desc:'Give Vitamin D 7 days in a row',goal:7,streak:true},
+  {id:'full',icon:'🍼',name:'Full Bottle',desc:'Reach the bottle target 10 times',goal:10},
+  {id:'big',icon:'🥛',name:'Big Day',desc:'Give 300 mL of bottle in one day',goal:300,unit:'mL'},
+  {id:'pump',icon:'⚡',name:'Pump It Up',desc:'Log pump output 10 times',goal:10},
+  {id:'switch',icon:'🔄',name:'Side Switcher',desc:'Alternate the starting side 10 feeds in a row',goal:10},
+];
+function computeAch(){
+  const st=S.settings,ks=Object.keys(S.days).filter(k=>S.days[k].feeds.length).sort();
+  const P={};ACH.forEach(a=>P[a.id]={val:0,best:0,cur:0,at:null});
+  const hit=(id,k)=>{const p=P[id],a=ACH.find(x=>x.id===id);if(!p.at&&(a.streak?p.best:p.val)>=a.goal)p.at=k};
+  if(!ks.length)return P;
+  const today=key(new Date()),end=ks[ks.length-1]>today?ks[ks.length-1]:today;
+  let lastStart='',run=0;
+  for(let dt=parseK(ks[0]);key(dt)<=end;dt=addDays(dt,1)){
+    const k=key(dt),d=peek(k),fs=d.feeds.filter(isFeed),t=totals(d),g=goals(k),isToday=k===today;
+    const streak=(id,ok)=>{const p=P[id];if(ok){p.cur++;p.best=Math.max(p.best,p.cur)}else if(!isToday)p.cur=0;hit(id,k)};
+    // per-feed
+    fs.forEach(f=>{
+      if(f.left||f.right){P.latch.val++;hit('latch',k)}
+      if(num(f.bottle)!=null&&num(f.bottle)>=st.target){P.full.val++;hit('full',k)}
+      if(num(f.pump)!=null&&num(f.pump)>0){P.pump.val++;hit('pump',k)}
+      if(f.start){run=(lastStart&&f.start!==lastStart)?run+1:1;lastStart=f.start;P.switch.val=Math.max(P.switch.val,run);hit('switch',k)}
+    });
+    streak('week',fs.length>0);
+    if(fs.length>=8){P.eight.val++;hit('eight',k)}
+    const met=fs.length>0&&t.wet>=g.wet&&t.stool>=g.stool;
+    if(met){P.duty.val++;hit('duty',k)}
+    streak('pro',met);
+    streak('sun',vitGiven(d).given);
+    P.big.val=Math.max(P.big.val,Math.round(t.bottle));hit('big',k);
+  }
+  return P;
+}
+function achUnlocked(P){return ACH.filter(a=>P[a.id].at).map(a=>a.id)}
+function renderAchChip(P){const n=achUnlocked(P).length;$('#achChip').textContent=n+' / '+ACH.length}
+function openAch(){
+  const P=computeAch(),n=achUnlocked(P).length;
+  $('#achSum').textContent=`${n} of ${ACH.length} badges earned`;
+  $('#achFill').style.width=(n/ACH.length*100)+'%';
+  const order=[...ACH].sort((a,b)=>(!!P[b.id].at)-(!!P[a.id].at));
+  $('#achGrid').innerHTML=order.map(a=>{const p=P[a.id],on=!!p.at;
+    const v=a.streak?p.best:p.val,pct=Math.min(100,v/a.goal*100);
+    const meta=on?'Earned '+dlong(parseK(p.at)):a.streak?`Best ${p.best} · Now ${p.cur} of ${a.goal}`:`${Math.min(v,a.goal)}${a.unit?' '+a.unit:''} of ${a.goal}${a.unit?' '+a.unit:''}`;
+    return `<div class="ach ${on?'on':''}"><div class="badge">${a.icon}</div><div style="flex:1;min-width:0"><b>${a.name}</b><div class="sub">${a.desc.replace('the bottle target','the '+S.settings.target+' mL bottle target')}</div><div class="achbar"><i style="width:${on?100:pct}%"></i></div><div class="meta">${meta}</div></div></div>`}).join('');
+  $('#achModal').classList.add('open');
+}
+function checkAch(){
+  const P=computeAch(),now=achUnlocked(P);renderAchChip(P);
+  if(!Array.isArray(S.achSeen)){S.achSeen=now;try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}return}
+  const fresh=now.filter(id=>!S.achSeen.includes(id));
+  if(!fresh.length)return;
+  S.achSeen=[...S.achSeen,...fresh];try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+  const a=ACH.find(x=>x.id===fresh[0]);const t=$('#toast');t.classList.add('gold');
+  toast(`🏆 Achievement unlocked: ${a.name}${fresh.length>1?' (+'+(fresh.length-1)+' more)':''}`);
+  setTimeout(()=>t.classList.remove('gold'),3400);
+}
+applyBase();
+applyTheme();renderAll();checkAch();tickNurse();setTimeout(checkAlarm,1500);
+cloudBoot();
+if(S.timer.start)tInt=setInterval(renderTimer,1000);
+setInterval(()=>{if(tab==='today')renderSince()},30000);
+})();
+</script>
+</body>
+</html>

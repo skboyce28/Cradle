@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cradle Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a warm daytime page that settles into a night-blue band (Night shift, Calm), then returns to day.
+   The signature piece is a 24-hour feed clock for one example day. Colors come from the app itself. */
+:root{
+  --bg:#f6f1ea; --panel:#fffaf4; --panel2:#efe6da; --ink:#2b2420; --muted:#76685d; --line:#e4d8ca;
+  --accent:#d0683a; --accent-ink:#b5532a; --accent-soft:#f6dccd;
+  --bottle:#2f78c4; --pump:#c2569a; --wet:#1a93b0; --stool:#b07c0c; --good:#3f8a57; --sun:#e0a019;
+  --night:#16202e; --night2:#1f2c3d; --night-ink:#e7ecf3; --night-muted:#9aa8ba; --night-line:#2e3d52; --moon:#f3d9a4;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --shadow:0 1px 2px rgba(60,40,20,.06), 0 18px 40px -18px rgba(60,40,20,.28);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#171311; --panel:#221c19; --panel2:#2b2420; --ink:#efe6dc; --muted:#a8998d; --line:#3a312b;
+  --accent:#e07a48; --accent-ink:#f0905f; --accent-soft:#4a2f22;
+  --bottle:#6aa2e0; --pump:#d872b0; --wet:#3aaecb; --stool:#cf9a2a; --good:#62b17c; --sun:#f0b43a;
+  --night:#0f1622; --night2:#18222f; --night-ink:#e7ecf3; --night-muted:#9aa8ba; --night-line:#2a3749; --moon:#f3d9a4;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#171311; --panel:#221c19; --panel2:#2b2420; --ink:#efe6dc; --muted:#a8998d; --line:#3a312b;
+  --accent:#e07a48; --accent-ink:#f0905f; --accent-soft:#4a2f22;
+  --bottle:#6aa2e0; --pump:#d872b0; --wet:#3aaecb; --stool:#cf9a2a; --good:#62b17c; --sun:#f0b43a;
+  --night:#0f1622; --night2:#18222f; --night-ink:#e7ecf3; --night-muted:#9aa8ba; --night-line:#2a3749; --moon:#f3d9a4;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 18px 40px -18px rgba(0,0,0,.6); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font:16px/1.6 var(--body); margin:0}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:clamp(16px,4vw,40px)}
+h1,h2,h3{font-family:var(--display); line-height:1.05; text-wrap:balance; margin:0; letter-spacing:-.02em}
+h2{font-size:clamp(30px,4.4vw,48px); font-weight:800}
+h3{font-size:20px; font-weight:700; letter-spacing:-.01em}
+p{margin:0}
+.eyebrow{font:600 12px/1 var(--body); letter-spacing:.14em; text-transform:uppercase; color:var(--accent-ink)}
+.lede{font-size:clamp(17px,1.6vw,19px); color:var(--muted); max-width:58ch}
+section{padding-block:clamp(64px,9vw,112px)}
+.sec-head{display:grid; gap:14px; margin-bottom:clamp(32px,5vw,56px); max-width:720px}
+.mono{font-family:var(--mono)}
+a{color:var(--accent-ink)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent); outline-offset:3px; border-radius:6px}
+
+/* phone frame */
+.phone{width:var(--w,260px); max-width:100%; aspect-ratio:390/844; border-radius:calc(var(--w,260px)*.13); padding:calc(var(--w,260px)*.035);
+  background:linear-gradient(160deg,#3a322d,#16120f); box-shadow:var(--shadow), inset 0 0 0 1.5px rgba(255,255,255,.08); flex:none}
+.phone img{display:block; width:100%; height:100%; object-fit:cover; object-position:top; border-radius:calc(var(--w,260px)*.1)}
+.cap{font-size:14px; color:var(--muted); margin-top:14px; max-width:30ch}
+.cap b{color:var(--ink); font-weight:600; display:block; font-size:15px}
+
+/* hero */
+.hero{padding-block:clamp(40px,6vw,72px) clamp(56px,8vw,96px); overflow:hidden}
+.hero-grid{display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); gap:clamp(24px,4vw,56px); align-items:center}
+.brand{display:flex; align-items:center; gap:12px; margin-bottom:clamp(28px,5vw,48px)}
+.brand svg{width:44px; height:44px}
+.brand span{font:800 22px/1 var(--display); letter-spacing:-.02em}
+.hero h1{font-size:clamp(44px,7vw,84px); font-weight:800}
+.hero h1 em{font-style:normal; color:var(--accent)}
+.hero .lede{margin-top:22px}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:28px}
+.chip{font:600 13px/1 var(--body); padding:9px 12px; border-radius:999px; background:var(--panel); border:1px solid var(--line); color:var(--ink); display:inline-flex; gap:7px; align-items:center}
+.chip i{width:8px; height:8px; border-radius:50%; display:inline-block}
+.fan{position:relative; height:clamp(420px,46vw,560px); display:flex; justify-content:center; align-items:center}
+.fan .phone{position:absolute; --w:clamp(170px,19vw,232px)}
+.fan .p1{transform:translateX(-58%) rotate(-7deg) translateY(16px); z-index:1}
+.fan .p2{z-index:3}
+.fan .p3{transform:translateX(58%) rotate(7deg) translateY(16px); z-index:2}
+@media (prefers-reduced-motion: no-preference){
+  .fan .phone{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .fan:hover .p1{transform:translateX(-66%) rotate(-9deg) translateY(10px)}
+  .fan:hover .p3{transform:translateX(66%) rotate(9deg) translateY(10px)}
+}
+
+/* triple-feed cycle */
+.cycle{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(12px,2vw,20px); counter-reset:step}
+.step{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:24px; display:grid; gap:10px; position:relative}
+.step .num{font:700 13px/1 var(--mono); color:var(--muted)}
+.step .big{font:800 clamp(40px,5vw,56px)/1 var(--display); letter-spacing:-.03em}
+.step:nth-child(1) .big{color:var(--accent)} .step:nth-child(2) .big{color:var(--bottle)} .step:nth-child(3) .big{color:var(--pump)}
+.step p{color:var(--muted); font-size:15px}
+.row-demo{margin-top:clamp(20px,3vw,28px); background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 18px; display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; font-size:14px}
+.row-demo .t{font:700 15px/1 var(--mono)}
+.tag{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:10px; background:var(--panel2); font-weight:600}
+.tag.b{color:var(--bottle)} .tag.p{color:var(--pump)} .tag.w{color:var(--wet)} .tag.s{color:var(--stool)} .tag.a{color:var(--accent-ink)} .tag.v{color:var(--sun)}
+
+/* feed clock */
+.clock-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,5vw,64px); align-items:center}
+.clock{width:100%; max-width:520px; justify-self:center}
+.clock svg{width:100%; height:auto; display:block}
+.stats{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:18px; overflow:hidden}
+.stat{background:var(--panel); padding:18px 20px; display:grid; gap:4px}
+.stat .v{font:800 34px/1 var(--display); letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.stat .v small{font:600 15px var(--body); color:var(--muted); margin-left:3px}
+.stat .k{font-size:13px; color:var(--muted)}
+.legend{display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:16px; font-size:13px; color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:7px}
+.legend i{width:12px; height:12px; border-radius:3px; display:inline-block}
+.note{font-size:13px; color:var(--muted); margin-top:14px}
+
+/* screens gallery */
+.screens{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:clamp(18px,3vw,32px) clamp(14px,2.4vw,28px)}
+.screens figure{margin:0; display:grid; justify-items:center; text-align:center}
+.screens .phone{--w:100%; width:100%; border-radius:30px; padding:8px}
+.screens .phone img{border-radius:23px}
+.screens .cap{margin-inline:auto}
+
+/* night band */
+.night{background:radial-gradient(1200px 500px at 80% -10%, var(--night2), transparent 60%), var(--night); color:var(--night-ink); position:relative; overflow:hidden}
+.night .eyebrow{color:var(--moon)}
+.night .lede,.night .cap{color:var(--night-muted)}
+.night .cap b{color:var(--night-ink)}
+.stars{position:absolute; inset:0; pointer-events:none; opacity:.55}
+.night-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,5vw,64px); align-items:center; position:relative}
+.palettes{display:flex; gap:clamp(10px,2vw,18px); justify-content:center}
+.palettes figure{margin:0; text-align:center}
+.palettes .phone{--w:clamp(110px,11.5vw,158px); background:linear-gradient(160deg,#2b3646,#0b1018)}
+.palettes figcaption{font:600 13px/1 var(--body); color:var(--night-muted); margin-top:12px; display:flex; gap:7px; justify-content:center; align-items:center}
+.palettes figcaption i{width:10px; height:10px; border-radius:50%}
+.night-points{display:grid; gap:18px; margin-top:28px}
+.night-points div{display:grid; grid-template-columns:28px minmax(0,1fr); gap:12px; align-items:start}
+.night-points svg{width:24px; height:24px; color:var(--moon); margin-top:2px}
+.night-points p{color:var(--night-muted); font-size:15px}
+.night-points b{color:var(--night-ink); font-weight:600}
+.calm-row{display:grid; grid-template-columns:auto minmax(0,1fr); gap:clamp(24px,5vw,56px); align-items:center; margin-top:clamp(56px,8vw,96px); position:relative}
+.calm-row .phone{--w:clamp(180px,22vw,250px); background:linear-gradient(160deg,#2b3646,#0b1018)}
+.sounds{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
+.sounds span{font:600 13px/1 var(--body); padding:9px 13px; border-radius:999px; border:1px solid var(--night-line); color:var(--night-ink)}
+
+/* goals chart */
+.goal-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:clamp(28px,5vw,64px); align-items:center}
+.chart{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px}
+.chart svg{width:100%; height:auto; display:block}
+
+/* family */
+.family-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,5vw,64px); align-items:center}
+.key{display:inline-flex; align-items:center; gap:14px; margin-top:22px; padding:14px 18px; border-radius:16px; background:var(--panel); border:1.5px dashed var(--accent)}
+.key code{font:700 clamp(24px,3vw,32px)/1 var(--mono); letter-spacing:.08em; color:var(--ink)}
+.key span{font-size:13px; color:var(--muted); max-width:22ch; line-height:1.4}
+.flow{display:grid; gap:12px; margin-top:28px}
+.flow div{display:grid; grid-template-columns:34px minmax(0,1fr); gap:12px; align-items:start}
+.flow .n{width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:var(--accent-soft); color:var(--accent-ink); font:700 14px/1 var(--mono)}
+.flow p{color:var(--muted); font-size:15px; padding-top:6px}
+.flow b{color:var(--ink); font-weight:600}
+.family-shots{display:flex; gap:clamp(12px,2vw,20px); justify-content:center}
+.family-shots .phone{--w:clamp(150px,19vw,240px)}
+.family-shots .phone:last-child{margin-top:48px}
+
+/* under the hood */
+.facts{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:clamp(12px,2vw,18px)}
+.fact{border-top:2px solid var(--ink); padding-top:16px; display:grid; gap:8px; align-content:start}
+.fact .v{font:800 clamp(36px,4vw,48px)/1 var(--display); letter-spacing:-.03em}
+.fact p{color:var(--muted); font-size:15px}
+.arch{margin-top:clamp(40px,6vw,64px); background:var(--panel); border:1px solid var(--line); border-radius:22px; padding:clamp(18px,3vw,32px); overflow-x:auto}
+.arch svg{display:block; width:100%; min-width:640px; height:auto}
+
+/* themes strip */
+.themes{display:flex; gap:clamp(12px,2vw,24px); justify-content:center; margin-top:clamp(32px,5vw,48px)}
+.themes figure{margin:0; text-align:center}
+.themes .phone{--w:clamp(110px,15vw,200px)}
+.themes figcaption{font:600 13px/1 var(--body); color:var(--muted); margin-top:12px}
+
+/* fine print */
+.fine{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(14px,2.4vw,24px)}
+.fine article{background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:22px; display:grid; gap:10px; align-content:start}
+.fine article.warn{border-color:var(--accent); background:color-mix(in srgb,var(--accent-soft) 55%,var(--panel))}
+.fine p,.fine li{color:var(--muted); font-size:15px}
+.fine ul{margin:0; padding-left:18px; display:grid; gap:6px}
+footer{padding-block:48px 64px; border-top:1px solid var(--line); color:var(--muted); font-size:14px}
+footer .wrap{display:flex; flex-wrap:wrap; gap:12px 28px; justify-content:space-between; align-items:center}
+footer code{font-family:var(--mono); font-size:13px}
+
+@media (max-width:900px){
+  .hero-grid,.clock-grid,.night-grid,.goal-grid,.family-grid{grid-template-columns:minmax(0,1fr)}
+  .screens{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fine{grid-template-columns:minmax(0,1fr)}
+  .calm-row{grid-template-columns:minmax(0,1fr); justify-items:center}
+  .calm-row > div{justify-self:stretch}
+}
+@media (max-width:560px){
+  .cycle{grid-template-columns:minmax(0,1fr)}
+  .fan{height:400px}
+  .fan .phone{--w:150px}
+  .fan .p1{transform:translateX(-62%) rotate(-7deg) translateY(14px)}
+  .fan .p3{transform:translateX(62%) rotate(7deg) translateY(14px)}
+  .stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .family-shots .phone{--w:44vw}
+  .palettes .phone{--w:28vw}
+  .themes .phone{--w:28vw}
+}
+</style>
+
+</head>
+<body>
+<header class="wrap hero">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--accent-soft)"/><path d="M7 15h18a9 9 0 0 1-18 0z" fill="var(--accent)"/><circle cx="16" cy="9.5" r="3.5" fill="var(--accent)"/><path d="M5 15h22" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <span>Cradle</span>
+  </div>
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">Newborn triple-feeding log</p>
+      <h1 style="margin-top:14px">Every feed, every diaper, <em>every 3am</em>, on one row.</h1>
+      <p class="lede">Nurse, bottle top-up, pump, wet, stool, and Vitamin D, logged in a few taps and shared live with everyone on feeding duty. Built for tired hands, dark rooms, and the pediatrician's questions.</p>
+      <div class="chips">
+        <span class="chip"><i style="background:var(--accent)"></i>Works offline</span>
+        <span class="chip"><i style="background:var(--bottle)"></i>Syncs between family phones</span>
+        <span class="chip"><i style="background:var(--good)"></i>Your own database</span>
+        <span class="chip"><i style="background:var(--pump)"></i>Installs like an app</span>
+      </div>
+    </div>
+    <div class="fan" aria-label="Cradle on three phones: the Log, Night shift, and the Dashboard">
+      <div class="phone p1"><img src="screenshots/log.webp" alt="The Log tab: time since last feed, next feed due, and the pump timer"></div>
+      <div class="phone p2"><img src="screenshots/night.webp" alt="Night shift: a dim screen with large buttons for breast side, bottle, and diapers"></div>
+      <div class="phone p3"><img src="screenshots/dash.webp" alt="The Dashboard: feeds per day, bottle and pump totals, time between feeds"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="wrap" id="cycle">
+  <div class="sec-head">
+    <p class="eyebrow">The triple-feed cycle</p>
+    <h2>Three parts of one feed, logged as one row.</h2>
+    <p class="lede">Triple feeding means nursing, then a bottle top-up, then pumping, every few hours, around the clock. Cradle keeps the whole session together so the totals add up the way your care team asks about them.</p>
+  </div>
+  <div class="cycle">
+    <div class="step"><span class="num">1 · Nurse</span><span class="big">L + R</span><p>Tap the sides you used. The first side gets a dot, so you know where to start next time. A ▶ timer fills in the minutes.</p></div>
+    <div class="step"><span class="num">2 · Top up</span><span class="big">45 mL</span><p>Bottle volume, with a bar that fills toward your target. Night shift adjusts it in 5 mL steps.</p></div>
+    <div class="step"><span class="num">3 · Pump</span><span class="big">70 mL</span><p>Pumped volume, plus a pump timer with a green arc for your 15 to 20 minute window.</p></div>
+  </div>
+  <div class="row-demo" aria-label="Example row">
+    <span class="t">7:05am</span>
+    <span class="tag a">L + R · 28 min</span>
+    <span class="tag b">Bottle 49 mL</span>
+    <span class="tag p">Pump 75 mL</span>
+    <span class="tag s">Stool</span>
+    <span class="tag v">☀️ Vitamin D</span>
+  </div>
+</section>
+
+<section class="wrap" id="day" style="padding-top:0">
+  <div class="clock-grid">
+    <div class="clock" id="clock" aria-label="24-hour clock of the example day's feeds"></div>
+    <div>
+      <div class="sec-head" style="margin-bottom:28px">
+        <p class="eyebrow">One day, at a glance</p>
+        <h2>Day 11, around the clock.</h2>
+        <p class="lede">Each feed gets two bars on the same scale: the bottle top-up and what was pumped. Dots outside the ring mark diapers. The shaded part is night, 8pm to 6am.</p>
+      </div>
+      <div class="stats" id="stats"></div>
+      <div class="legend">
+        <span><i style="background:var(--bottle)"></i>Bottle mL</span>
+        <span><i style="background:var(--pump)"></i>Pumped mL</span>
+        <span><i style="background:var(--wet);border-radius:50%"></i>Wet</span>
+        <span><i style="background:var(--stool);border-radius:50%"></i>Stool</span>
+        <span><i style="background:var(--sun);border-radius:50%"></i>Vitamin D</span>
+      </div>
+      <p class="note">Example data for a made-up baby, Juniper. Goals shown are Cradle's defaults, not medical guidance.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="screens" style="padding-top:0">
+  <div class="sec-head">
+    <p class="eyebrow">The app</p>
+    <h2>Four tabs, one moon button, nothing extra.</h2>
+    <p class="lede">Log, Night shift, Dashboard, and History across the top. The moon at the top right opens Calm. Everything else lives in the profile menu.</p>
+  </div>
+  <div class="screens">
+    <figure><div class="phone"><img src="screenshots/log.webp" alt="Log tab"></div><figcaption class="cap"><b>Log</b>Time since the last feed, which side to start on, when the next feed is due.</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/dash.webp" alt="Dashboard tab"></div><figcaption class="cap"><b>Dashboard</b>7 or 14 days of trends. Today counts as in progress until midnight.</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/zoom.webp" alt="An enlarged dashboard chart with the details of one feed"></div><figcaption class="cap"><b>Tap any chart</b>Enlarge it, then tap a day or a single feed for the details.</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/dash2.webp" alt="Dashboard insights including Vitamin D streak and weight chart"></div><figcaption class="cap"><b>Insights and weight</b>Vitamin D streak, side balance, and weight against birth weight.</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/hist.webp" alt="History tab with a card for each day"></div><figcaption class="cap"><b>History</b>Every day as a card or a table, with diaper goals checked off.</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/ach.webp" alt="Achievements list with earned badges"></div><figcaption class="cap"><b>Achievements</b>Ten badges, like a 7-day Vitamin D streak. A day in progress never breaks one.</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/menu.webp" alt="The profile menu"></div><figcaption class="cap"><b>Profile menu</b>Themes, family, weights, settings, export, import, and printing.</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/signup.webp" alt="Create account screen with a share key"></div><figcaption class="cap"><b>Create an account</b>Enter a family's share key to join their log, or leave it blank to start your own.</figcaption></figure>
+  </div>
+</section>
+
+<section class="night" id="night">
+  <svg class="stars" id="stars" aria-hidden="true"></svg>
+  <div class="wrap">
+    <div class="night-grid">
+      <div>
+        <p class="eyebrow">Night shift</p>
+        <h2 style="margin-top:14px">Made for the 3am feed.</h2>
+        <p class="lede" style="margin-top:18px">A dim, low-glare screen with buttons big enough for one thumb while you hold a baby with the other arm.</p>
+        <div class="night-points">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><p><b>Start feed</b> logs the time and starts the timer in one tap.</p></div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5v14"/></svg><p><b>Bottle in 5 mL steps</b>, plus wet, stool, and Vitamin D, then Done. It saves as you go.</p></div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><p><b>Three colors.</b> Red is easiest on night vision. The screen stays awake when Cradle is installed.</p></div>
+        </div>
+      </div>
+      <div class="palettes">
+        <figure><div class="phone"><img src="screenshots/night.webp" alt="Night shift in Warm colors"></div><figcaption><i style="background:#c9a77a"></i>Warm</figcaption></figure>
+        <figure><div class="phone"><img src="screenshots/night-moon.webp" alt="Night shift in Moonlight colors"></div><figcaption><i style="background:#7fa6d6"></i>Moonlight</figcaption></figure>
+        <figure><div class="phone"><img src="screenshots/night-red.webp" alt="Night shift in Red colors"></div><figcaption><i style="background:#d2483a"></i>Red</figcaption></figure>
+      </div>
+    </div>
+    <div class="calm-row">
+      <div class="phone"><img src="screenshots/calm-ctl.webp" alt="Calm screen with sound and clock controls"></div>
+      <div>
+        <p class="eyebrow">Calm</p>
+        <h2 style="margin-top:14px">A screensaver for the long nights.</h2>
+        <p class="lede" style="margin-top:18px">Tap the moon button for a slow, soothing screen with the time, how long since the last feed, and when the next one is due. The feed alarm still works while it's open.</p>
+        <div class="sounds"><span>Spa music</span><span>Ocean</span><span>Rain</span><span>White noise</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="goals">
+  <div class="goal-grid">
+    <div class="sec-head" style="margin-bottom:0">
+      <p class="eyebrow">Goals that grow with the baby</p>
+      <h2>Diaper goals follow the day of life.</h2>
+      <p class="lede">The birth day counts as Day 0. Goals climb one a day through Day 5, then hold at four of each. Every number can be changed in Settings to match what your care team tells you.</p>
+    </div>
+    <div class="chart" id="goalChart" aria-label="Chart of daily wet and stool diaper goals by day of life"></div>
+  </div>
+</section>
+
+<section class="wrap" id="family" style="padding-top:0">
+  <div class="family-grid">
+    <div>
+      <div class="sec-head" style="margin-bottom:0">
+        <p class="eyebrow">Family sharing</p>
+        <h2>Everyone gets a login. The family shares one log.</h2>
+        <p class="lede">Whoever is on duty logs it, and every other phone has it a few seconds later. Each family's log is walled off from every other family by the database itself.</p>
+      </div>
+      <div class="key"><code>K7QM-4XPD</code><span>A share key. Text it to anyone who should see this log.</span></div>
+      <div class="flow">
+        <div><span class="n">1</span><p><b>Start a family.</b> Create an account with no key. Add the baby's name and birth date.</p></div>
+        <div><span class="n">2</span><p><b>Share the key.</b> Profile, then Family, then Share writes the invite text for you.</p></div>
+        <div><span class="n">3</span><p><b>They join.</b> Create account, paste the key, and the whole log appears.</p></div>
+      </div>
+    </div>
+    <div class="family-shots">
+      <div class="phone"><img src="screenshots/family.webp" alt="Family screen with members and the share key"></div>
+      <div class="phone"><img src="screenshots/signup.webp" alt="Create account screen"></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="themes" style="padding-top:0">
+  <div class="sec-head" style="margin-inline:auto;text-align:center;justify-items:center">
+    <p class="eyebrow">Appearance</p>
+    <h2>Light, Dark, and one spotty experiment.</h2>
+  </div>
+  <div class="themes">
+    <figure><div class="phone"><img src="screenshots/log.webp" alt="Light theme"></div><figcaption>Light</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/log-dark.webp" alt="Dark theme"></div><figcaption>Dark</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/log-dalmatian.webp" alt="Dalmatian mode"></div><figcaption>Dalmatian (experimental)</figcaption></figure>
+  </div>
+</section>
+
+<section class="wrap" id="hood" style="padding-top:0">
+  <div class="sec-head">
+    <p class="eyebrow">Under the hood</p>
+    <h2>Small on purpose.</h2>
+    <p class="lede">The whole app is one HTML file with no frameworks, no trackers, and no third-party scripts. Each phone keeps its own copy and syncs through a free Supabase project that you own.</p>
+  </div>
+  <div class="facts">
+    <div class="fact"><span class="v">1</span><p>HTML file for the whole app. No dependencies.</p></div>
+    <div class="fact"><span class="v mono" style="font-size:clamp(30px,3.4vw,40px)">~15s</span><p>for an entry to reach other phones while Cradle is open.</p></div>
+    <div class="fact"><span class="v">0</span><p>analytics, ads, or third-party scripts.</p></div>
+    <div class="fact"><span class="v">2</span><p>SQL scripts set up the database, and both are safe to rerun.</p></div>
+  </div>
+  <div class="arch" aria-label="Diagram: phones keep a local copy and sync through your Supabase project, where row-level security keeps families separate">
+    <svg viewBox="0 0 960 250" role="img">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+      <g font-family="Figtree, system-ui, sans-serif">
+        <rect x="10" y="20" width="230" height="92" rx="16" fill="var(--panel2)" stroke="var(--line)"/>
+        <text x="30" y="54" font-size="17" font-weight="700" fill="var(--ink)">Your phone</text>
+        <text x="30" y="80" font-size="14" fill="var(--muted)">Offline copy of the log</text>
+        <text x="30" y="99" font-size="14" fill="var(--muted)">Saves first, syncs after</text>
+        <rect x="10" y="140" width="230" height="92" rx="16" fill="var(--panel2)" stroke="var(--line)"/>
+        <text x="30" y="174" font-size="17" font-weight="700" fill="var(--ink)">Partner's phone</text>
+        <text x="30" y="200" font-size="14" fill="var(--muted)">Their own login</text>
+        <text x="30" y="219" font-size="14" fill="var(--muted)">Same family log</text>
+        <path d="M244 66 C320 66 320 126 396 126" fill="none" stroke="var(--muted)" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+        <path d="M244 186 C320 186 320 126 396 126" fill="none" stroke="var(--muted)" stroke-width="2" marker-end="url(#ah)" marker-start="url(#ah)"/>
+        <text x="270" y="44" font-size="13" fill="var(--muted)">changes only</text>
+        <rect x="400" y="40" width="300" height="172" rx="18" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="422" y="76" font-size="18" font-weight="700" fill="var(--ink)">Your Supabase project</text>
+        <text x="422" y="104" font-size="14" fill="var(--ink)">Sign-ins and accounts</text>
+        <text x="422" y="128" font-size="14" fill="var(--ink)">One log per family</text>
+        <text x="422" y="152" font-size="14" fill="var(--ink)">Row-level security:</text>
+        <text x="422" y="172" font-size="14" fill="var(--ink)">families can't see each other</text>
+        <text x="422" y="196" font-size="13" fill="var(--muted)">Free tier</text>
+        <path d="M704 126 L780 126" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="5 5"/>
+        <rect x="784" y="64" width="166" height="124" rx="16" fill="var(--panel)" stroke="var(--line)" stroke-dasharray="5 5"/>
+        <text x="802" y="98" font-size="16" font-weight="700" fill="var(--ink)">Another family</text>
+        <text x="802" y="124" font-size="14" fill="var(--muted)">Separate log.</text>
+        <text x="802" y="144" font-size="14" fill="var(--muted)">Never visible</text>
+        <text x="802" y="164" font-size="14" fill="var(--muted)">to yours.</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="wrap" id="fine" style="padding-top:0">
+  <div class="sec-head">
+    <p class="eyebrow">Good to know</p>
+    <h2>The fine print, up front.</h2>
+  </div>
+  <div class="fine">
+    <article class="warn">
+      <h3>Not medical advice</h3>
+      <p>Cradle is a notebook. Its goals are placeholders, and its totals are simple arithmetic on what you type. Follow your pediatrician or care team, and call them if you're worried about your baby.</p>
+    </article>
+    <article class="warn">
+      <h3>Built with AI</h3>
+      <p>Cradle was built with help from Claude, an AI model by Anthropic, and tested in a simulated setup. It hasn't had an independent security review. Keep backups with Export data.</p>
+    </article>
+    <article>
+      <h3>Known limits</h3>
+      <ul>
+        <li>Alarms ring only while Cradle is open. Android won't let web apps set Clock alarms.</li>
+        <li>No password-reset email without your own email sender.</li>
+        <li>Free Supabase projects pause after about a week unused.</li>
+        <li>One baby per family.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><b style="color:var(--ink)">Cradle v1.5</b> · PolyForm Noncommercial 1.0.0 · Screenshots show example data for a made-up baby.</span>
+    <span>Source and setup guide: <a href="https://github.com/skboyce28/Cradle">github.com/skboyce28/Cradle</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Example day: Day 11 for the made-up baby in the screenshots
+  const feeds=[{"t":"01:50","s":"L","m":28,"b":49,"p":75,"w":true,"st":true,"v":false},{"t":"04:35","s":"L+R","m":22,"b":50,"p":70,"w":true,"st":false,"v":false},{"t":"07:05","s":"L+R","m":28,"b":49,"p":75,"w":false,"st":true,"v":true},{"t":"09:35","s":"L+R","m":12,"b":44,"p":70,"w":true,"st":true,"v":false},{"t":"12:05","s":"L","m":15,"b":44,"p":70,"w":true,"st":false,"v":false},{"t":"14:35","s":"L+R","m":18,"b":50,"p":70,"w":true,"st":false,"v":false},{"t":"17:45","s":"L+R","m":22,"b":49,"p":60,"w":true,"st":false,"v":false},{"t":"20:30","s":"L+R","m":15,"b":49,"p":70,"w":false,"st":true,"v":false},{"t":"23:50","s":"L+R","m":28,"b":49,"p":70,"w":false,"st":true,"v":false}];
+  const NS='http://www.w3.org/2000/svg';
+  const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
+  const mins=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
+  const fmt=m=>{let h=Math.floor(m/60)%24,mm=m%60,ap=h<12?'am':'pm';h=h%12||12;return h+(mm?':'+String(mm).padStart(2,'0'):'')+ap};
+
+  // ---- 24-hour feed clock
+  const S=520,C=S/2,R0=92,RB=196,svg=el('svg',{viewBox:`0 0 ${S} ${S}`,role:'img'});
+  const ang=m=>(m/1440)*Math.PI*2-Math.PI/2, pt=(m,r)=>[C+r*Math.cos(ang(m)),C+r*Math.sin(ang(m))];
+  const arc=(m1,m2,r1,r2)=>{const [a,b]=pt(m1,r2),[c,d]=pt(m2,r2),[e,f]=pt(m2,r1),[g,h]=pt(m1,r1),L=(m2-m1)>720?1:0;
+    return `M${a} ${b}A${r2} ${r2} 0 ${L} 1 ${c} ${d}L${e} ${f}A${r1} ${r1} 0 ${L} 0 ${g} ${h}Z`};
+  el('circle',{cx:C,cy:C,r:228,fill:'var(--panel)',stroke:'var(--line)'},svg);
+  // night shading 8pm to 6am
+  el('path',{d:arc(1200,1440,R0-8,226),fill:'var(--night)',opacity:.1},svg);
+  el('path',{d:arc(0,360,R0-8,226),fill:'var(--night)',opacity:.1},svg);
+  // one mL scale for bottle and pump; rings at 40 and 80 mL
+  const scale=v=>R0+(RB-R0)*(v/80);
+  [40,80].forEach(v=>{el('circle',{cx:C,cy:C,r:scale(v),fill:'none',stroke:'var(--line)','stroke-dasharray':'3 5'},svg);
+    const[x,y]=pt(1440*0.125,scale(v));const t=el('text',{x:x+4,y:y-4,'font-size':10,fill:'var(--muted)','font-family':'JetBrains Mono, monospace'},svg);t.textContent=v+' mL'});
+  // hour ticks + labels
+  for(let h=0;h<24;h++){const m=h*60,[x1,y1]=pt(m,222),[x2,y2]=pt(m,h%6?216:208);el('line',{x1,y1,x2,y2,stroke:'var(--muted)','stroke-width':h%6?1:2,opacity:h%6?.5:.9},svg);
+    if(h%3===0){const[x,y]=pt(m,R0-24);const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'central','font-size':h%6?11:13,'font-weight':h%6?500:700,fill:'var(--muted)','font-family':'Figtree, system-ui, sans-serif'},svg);t.textContent=h===0?'12am':h===12?'12pm':(h%12)+(h<12?'a':'p')}}
+  // feeds
+  feeds.forEach(f=>{const m=mins(f.t);
+    const bar=(mm,v,c)=>{const[x1,y1]=pt(mm,R0),[x2,y2]=pt(mm,scale(v));el('line',{x1,y1,x2,y2,stroke:c,'stroke-width':7,'stroke-linecap':'round'},svg)};
+    bar(m-9,f.b,'var(--bottle)');bar(m+9,f.p,'var(--pump)');
+    let r=RB+16;
+    if(f.w){const[x,y]=pt(m-12,r);el('circle',{cx:x,cy:y,r:5,fill:'var(--wet)'},svg)}
+    if(f.st){const[x,y]=pt(m+12,r);el('circle',{cx:x,cy:y,r:5,fill:'var(--stool)'},svg)}
+    if(f.v){const[x,y]=pt(m,R0-48);el('circle',{cx:x,cy:y,r:6,fill:'var(--sun)'},svg)}
+    const tt=el('title',{},svg);tt.textContent=`${fmt(m)}: ${f.s}, ${f.m} min, bottle ${f.b} mL, pumped ${f.p} mL`;
+  });
+  // center
+  el('circle',{cx:C,cy:C,r:R0-44,fill:'var(--bg)',stroke:'var(--line)'},svg);
+  const t1=el('text',{x:C,y:C-6,'text-anchor':'middle','font-size':44,'font-weight':800,fill:'var(--ink)','font-family':'Bricolage Grotesque, system-ui, sans-serif'},svg);t1.textContent=feeds.length;
+  const t2=el('text',{x:C,y:C+20,'text-anchor':'middle','font-size':13,fill:'var(--muted)','font-family':'Figtree, system-ui, sans-serif'},svg);t2.textContent='feeds';
+  document.getElementById('clock').appendChild(svg);
+
+  // ---- stats, computed from the same data
+  const sum=k=>feeds.reduce((a,f)=>a+(typeof f[k]==='number'?f[k]:(f[k]?1:0)),0);
+  const ts=feeds.map(f=>mins(f.t));let longest=0,lf='';for(let i=1;i<ts.length;i++){const g=ts[i]-ts[i-1];if(g>longest){longest=g;lf=fmt(ts[i-1])+' to '+fmt(ts[i])}}
+  const avgGap=Math.round((ts[ts.length-1]-ts[0])/(ts.length-1));
+  const hm=m=>Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';
+  const stats=[[sum('b'),'mL','bottle top-ups'],[sum('p'),'mL','pumped'],[sum('w')+' / '+sum('st'),'','wet / stool (goal 4 / 4)'],[hm(avgGap),'','average time between feeds'],[hm(longest),'','longest stretch, '+lf],[Math.round(sum('m')/60*10)/10,'h','nursing, Vitamin D at '+fmt(mins(feeds.find(f=>f.v).t))]];
+  document.getElementById('stats').innerHTML=stats.map(([v,u,k])=>`<div class="stat"><span class="v">${v}${u?`<small>${u}</small>`:''}</span><span class="k">${k}</span></div>`).join('');
+
+  // ---- diaper goal chart (Day 0 = 1, days 1-5 = day number, then 4)
+  const goal=d=>d===0?1:(d<=5?d:4), days=[0,1,2,3,4,5,6,7,8,9];
+  const W=560,H=260,L=36,B=36,T=18,Rr=10,bw=(W-L-Rr)/days.length,ys=v=>H-B-(v/5)*(H-B-T);
+  const g=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  [0,1,2,3,4,5].forEach(v=>{el('line',{x1:L,x2:W-Rr,y1:ys(v),y2:ys(v),stroke:'var(--line)'},g);const t=el('text',{x:L-10,y:ys(v),'text-anchor':'end','dominant-baseline':'central','font-size':12,fill:'var(--muted)','font-family':'JetBrains Mono, monospace'},g);t.textContent=v});
+  days.forEach((d,i)=>{const x=L+i*bw,v=goal(d),w=(bw-10)/2;
+    el('rect',{x:x+4,y:ys(v),width:w,height:ys(0)-ys(v),rx:4,fill:'var(--wet)'},g);
+    el('rect',{x:x+6+w,y:ys(v),width:w,height:ys(0)-ys(v),rx:4,fill:'var(--stool)'},g);
+    const t=el('text',{x:x+bw/2,y:H-B+20,'text-anchor':'middle','font-size':12,fill:d===0?'var(--accent-ink)':'var(--muted)','font-weight':d===0?700:500,'font-family':'Figtree, system-ui, sans-serif'},g);t.textContent=d===0?'Day 0':d;
+    const tl=el('title',{},g);tl.textContent=`Day ${d}: ${v} wet, ${v} stool`;
+  });
+  const lg=el('text',{x:W-Rr,y:T-2,'text-anchor':'end','font-size':12,fill:'var(--muted)','font-family':'Figtree, system-ui, sans-serif'},g);lg.textContent='Wet (blue) and stool (amber) per day; Day 6 on: at least 4';
+  document.getElementById('goalChart').appendChild(g);
+
+  // ---- a few stars in the night band
+  const st=document.getElementById('stars');st.setAttribute('viewBox','0 0 1000 600');st.setAttribute('preserveAspectRatio','xMidYMid slice');
+  let seed=11;const rnd=()=>(seed=(seed*9301+49297)%233280)/233280;
+  for(let i=0;i<70;i++)el('circle',{cx:rnd()*1000,cy:rnd()*600,r:rnd()*1.3+.3,fill:'#ffffff',opacity:(rnd()*.6+.2).toFixed(2)},st);
+})();
+</script>
+
+</body>
+</html>
