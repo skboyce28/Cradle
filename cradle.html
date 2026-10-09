@@ -294,6 +294,31 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 .c-wf .wfres{font-weight:700}
 .chk.wf.on{border-color:var(--bottle);background:color-mix(in srgb,var(--bottle) 15%,transparent)}
 @media (max-width:820px){.feed>.c-wf{grid-area:wf}.feed>.c-wtd{display:none}}
+/* Phone alarm card */
+#alarmSetModal .card{text-align:center;max-width:360px}
+.as-time{font:800 52px/1.05 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-1px;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.as-steps{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:14px 0 4px;font-size:14px}
+.as-steps span{background:var(--panel2);border-radius:999px;padding:6px 10px}
+/* Learning center */
+.lc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;margin:10px 0 4px}
+.lc-card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px;display:grid;gap:6px;justify-items:center;cursor:pointer}
+.lc-card svg{width:100%;height:auto;aspect-ratio:1;display:block}
+.lc-card b{font-size:12px;color:#111}
+.lc-card:hover,.lc-card:focus-visible{border-color:var(--accent)}
+.lc-tips{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:14px;display:grid;gap:4px}
+#hc{position:fixed;inset:0;z-index:115;display:none;background:#fff;color:#000;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+#hc.open{display:block}
+#hc.inv{background:#000;color:#fff}
+#hc .hc-art{position:absolute;inset:56px 0 92px;display:grid;place-items:center}
+#hc .hc-art svg{width:min(92vw,calc(100vh - 170px));height:auto;max-height:100%}
+#hc .hc-top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;font:600 15px system-ui,sans-serif}
+#hc .hc-top .spacer{flex:1}
+#hc .hc-bar{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:10px;padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px))}
+#hc button{border:2px solid currentColor;background:transparent;color:inherit;border-radius:999px;min-width:48px;height:48px;padding:0 16px;font:700 15px system-ui,sans-serif}
+#hc button.on{background:currentColor}
+#hc button.on{color:inherit}
+#hc button.on span{color:#fff}
+#hc.inv button.on span{color:#000}
 /* Bath rows: time, sponge or tub, note */
 .feed.bathrow{grid-template-columns:44px 118px auto 1fr 32px;background:color-mix(in srgb,var(--wet) 7%,var(--panel));border-color:color-mix(in srgb,var(--wet) 35%,var(--line))}
 .feed.bathrow .n{color:var(--wet)}
@@ -472,6 +497,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <button class="dalm" data-theme="dalmatian">🐾 Dalmatian mode <span class="beta">Experimental</span></button>
         <hr>
         <button class="item" data-act="ach"><span>🏆</span>Achievements<span class="achchip" id="achChip"></span></button>
+        <button class="item" data-act="learn"><span>🎓</span>Learning center</button>
         <button class="item" data-addweight><span>⚖️</span>Weights</button>
         <button class="item" data-act="settings"><span>⚙️</span>Settings</button>
         <button class="item" data-act="export"><span>⬇️</span>Export data</button>
@@ -660,13 +686,14 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">👪</div><h3>Family</h3><p>Everyone has their own login and a family shares one log. <b>New here?</b> On the sign-in screen tap <b>Create an account</b>, pick a username (or use your email) and a password. To share someone’s log, enter their <b>share key</b> (like K7QM-4XPD); leave it blank to start your own. Your share key is under <b>Family</b> in the profile menu, with a <b>Share</b> button that writes the invite text for you. The family owner can make a <b>New key</b> at any time, which stops the old one working, and can remove people. Members can leave. Other families never see your log.</p></div>
       <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Export</b> in the profile menu saves a backup file you can keep, or sends a short code by text message. <b>Import</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so export first if you want a copy. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
       <div class="card"><div class="ico">🖨️</div><h3>Printing</h3><p>Every tab has a Print button. The Log tab prints a paper sheet for the selected day. Printing needs Cradle open in a browser like Chrome or Safari, not in a file preview.</p></div>
-      <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On Android, <b>⏰ Phone alarm</b> shows the exact time to set in your Clock app. Android doesn’t let web apps create Clock alarms themselves, so this one is a quick manual step.</p></div>
+      <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On a phone, <b>⏰ Set alarm</b> shows the time to set in your Clock app, with the steps. Phones don’t let web apps add Clock alarms themselves, even when Cradle is installed, so that one takes a few taps.</p></div>
       <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Set the birth weight in Settings.</p></div>
       <div class="card"><div class="ico">🩺</div><h3>Doctor report</h3><p>On the Dashboard, <b>🩺 Doctor report</b> prints one page for appointments: weight against birth weight, daily feeds, nursing minutes, bottle and pump volumes, diapers against goals, Vitamin D, baths, weighted feeds, your day notes, and lines for questions. It covers the 7 or 14 days shown on the Dashboard.</p></div>
       <div class="card"><div class="ico">🌙</div><h3>Night shift</h3><p>Tap the <b>Night shift</b> tab for a dim, low-glare screen with huge buttons for one-handed night feeds. The three dots at the top switch colors: Warm, Moonlight, or Red. <b>Start feed</b> logs the time and starts the timer. Then tap L or R, adjust the bottle by 5 mL, mark wet, stool, or Vitamin D, and tap <b>Done</b>. Everything saves as you go. Between feeds, <b>🧷 Diaper only</b> and <b>🛁 Bath</b> log those with the current time.</p></div>
       <div class="card"><div class="ico">🌌</div><h3>Calm screen</h3><p>A slow, soothing screensaver with the time, time since the last feed, and the next feed due. Open it with the moon button at the top right, next to your profile. Tap the screen to show controls: spa music, ocean, rain, or white noise, volume, and whether the clock sits in the center or the corner. The feed alarm still works here. When Cradle is installed as an app, the screen stays on while Calm or Night shift is open. Opened as a file, your phone may still turn the screen off on its own timer.</p></div>
       <div class="card"><div class="ico">🏆</div><h3>Achievements</h3><p>Ten badges based on your goals, like Sunshine Streak for 7 days of Vitamin D and Diaper Pro for 7 days of diaper goals. Open them from the profile menu to see progress. Streaks aren’t broken by a day that isn’t over yet.</p></div>
-      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Settings, Export, Import, Print, Erase all data, this Guide, About, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
+      <div class="card"><div class="ico">🎓</div><h3>Learning center</h3><p>In the profile menu. <b>High-contrast cards</b> are five bold black-and-white designs (Bullseye, Checkerboard, Zigzag, Spiral, and Smile) for calm, awake moments with your baby. Tap one to show it full screen, then swipe or tap the sides to change cards. <b>Invert</b> swaps black and white, and <b>Auto</b> changes cards every 10 seconds. Hold the phone about 8 to 12 inches (20 to 30 cm) away, and stop when your baby looks away or fusses. The screen stays on while a card is showing.</p></div>
+      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Learning center, Settings, Export, Import, Print, Erase all data, this Guide, About, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
     </div>
     <p class="disc">This tracker is for keeping records only. Volumes, goals, and supplements should follow your pediatrician or lactation consultant. If you're worried about feeding, diapers, or weight gain, call your baby's doctor.</p>
   </section>
@@ -852,6 +879,37 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
   </div>
 </div>
 
+<div class="modal" id="alarmSetModal" role="dialog" aria-labelledby="asTime">
+  <div class="card">
+    <div class="sub">Set an alarm on your phone for</div>
+    <div class="as-time" id="asTime">--</div>
+    <div class="sub" id="asWhat">Next feed</div>
+    <div class="as-steps" aria-label="How to set it"><span>Open Clock</span><span>Tap +</span><span id="asPick">Pick the time</span></div>
+    <div class="mrow" style="justify-content:center"><button class="primary" data-close>Done</button></div>
+  </div>
+</div>
+
+<div class="modal" id="learnModal">
+  <div class="card" style="max-width:560px">
+    <h3>🎓 Learning center</h3>
+    <p style="margin:0 0 4px"><b>High-contrast cards</b></p>
+    <p class="sub" style="margin:0">Bold black-and-white shapes are among the first things newborns can make out. Tap a card to show it full screen.</p>
+    <div class="lc-grid" id="lcGrid"></div>
+    <ul class="lc-tips">
+      <li>Hold the phone about 8 to 12 inches (20 to 30 cm) from your baby’s face, during a calm, awake moment.</li>
+      <li>A few minutes is plenty. Stop when your baby looks away, yawns, or fusses.</li>
+      <li>Swipe or tap the sides to change cards. <b>Invert</b> swaps black and white, and <b>Auto</b> changes cards every 10 seconds.</li>
+    </ul>
+    <div class="mrow"><button class="ghost" data-close>Close</button></div>
+  </div>
+</div>
+
+<div id="hc" role="dialog" aria-label="High-contrast card">
+  <div class="hc-top"><span id="hcName"></span><span class="spacer"></span><span id="hcCount"></span><button data-hc="close" aria-label="Close">✕</button></div>
+  <div class="hc-art" id="hcArt"></div>
+  <div class="hc-bar"><button data-hc="prev" aria-label="Previous card">‹</button><button data-hc="auto" aria-label="Change cards every 10 seconds"><span>Auto</span></button><button data-hc="inv" aria-label="Swap black and white"><span>Invert</span></button><button data-hc="next" aria-label="Next card">›</button></div>
+</div>
+
 <div class="modal" id="achModal">
   <div class="card">
     <div class="achtop"><div class="trophy">🏆</div><div style="flex:1"><h3 style="margin:0">Achievements</h3><div class="sub" id="achSum"></div><div class="achbar"><i id="achFill"></i></div></div></div>
@@ -863,9 +921,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.6</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.7</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.7</b>
+    <ul class="cl"><li>Learning center in the profile menu, with five high-contrast black-and-white cards to show your baby</li><li>⏰ Set alarm shows the time to set on your phone, big and clear, with the steps</li></ul>
     <b>v1.6</b>
     <ul class="cl"><li>Bath logging: 🛁 Bath on the Log and in Night shift, with Sponge or Tub and a note</li><li>Baths on the Log, Dashboard (tile and insight), History, chart details, print sheet, and doctor report</li><li>Baths never count as feeds</li></ul>
     <b>v1.5</b>
@@ -888,7 +948,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.6';
+const VERSION='1.7';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -976,7 +1036,7 @@ $('#dd').addEventListener('click',e=>{
   if(tb){S.settings.theme=tb.dataset.theme;applyTheme();save();if(tab==='dash')renderDash();return}
   const a=e.target.closest('[data-act]');if(!a)return;$('#menu').classList.remove('open');
   ({settings:openSettings,export:openExport,import:openImport,erase:eraseAll,ach:openAch,print:printTab,
-    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account.','Sign out'))clSignOut()}})[a.dataset.act]();
+    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,learn:openLearn,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account.','Sign out'))clSignOut()}})[a.dataset.act]();
 });
 $$('.modal:not(#askModal)').forEach(m=>m.addEventListener('click',e=>{if(e.target===m||e.target.closest('[data-close]'))m.classList.remove('open')}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(nightOpen||calmOpen)){nightOpen?closeNight():closeCalm();return}if(e.key==='Escape'){if($('#askModal').classList.contains('open')){$('#askCancel').click();return}$$('.modal.open').forEach(m=>m.classList.remove('open'));$('#menu').classList.remove('open')}});
@@ -1780,18 +1840,21 @@ function lastFeed(){const now=new Date(),r=[];for(let i=0;i<4;i++)r.push(...feed
 function dueTime(){const lf=lastFeed();if(!lf)return null;const h=num(S.settings.feedInterval)||3;return new Date(lf.dt.getTime()+h*3600e3)}
 const relMin=m=>m<60?m+'m':hm(m);
 function dueText(){const d=dueTime();if(!d)return null;const mins=Math.round((d-new Date())/60000);return {d,mins,label:fmt12(pad(d.getHours())+':'+pad(d.getMinutes())),over:mins<0}}
-const isAndroid=/android/i.test(navigator.userAgent);
+const isAndroid=/android/i.test(navigator.userAgent),isPhone=isAndroid||/iphone|ipad|ipod/i.test(navigator.userAgent);
 function renderDue(){
   const el=$('#dueLine');if(!el)return;const t=dueText();
   if(!t||t.mins<-720){el.innerHTML='';el.className='dueline';return}
   el.className='dueline'+(t.over?' over':'');
-  el.innerHTML=`<span>Next feed</span><span class="due">${t.over?'was due '+t.label+' ('+relMin(-t.mins)+' ago)':t.label+' · in '+relMin(t.mins)}</span>${isAndroid&&!t.over?'<button class="mini" id="phoneAlarm">⏰ Phone alarm</button>':''}`;
+  el.innerHTML=`<span>Next feed</span><span class="due">${t.over?'was due '+t.label+' ('+relMin(-t.mins)+' ago)':t.label+' · in '+relMin(t.mins)}</span>${isPhone&&!t.over?'<button class="mini" id="phoneAlarm">⏰ Set alarm</button>':''}`;
   const pa=$('#phoneAlarm');if(pa)pa.onclick=()=>phoneAlarm(t.d);
 }
 function phoneAlarm(d){
-  // Chrome won't let web pages open the Clock app's "set alarm" screen, so give the exact time instead
-  const t=fmt12(pad(d.getHours())+':'+pad(d.getMinutes()));
-  ask(`Set a phone alarm for ${t}. Android doesn’t let web apps create Clock alarms, so open your Clock app, tap +, and pick ${t}.\n\nCradle also rings by itself at ${t} while it’s open. Night shift keeps the screen awake so it can.`,'Got it');
+  // Android doesn't let web apps (installed or not) create Clock alarms, so show the time to set, big and clear.
+  const t=fmt12(pad(d.getHours())+':'+pad(d.getMinutes())),nm=babyName();
+  $('#asTime').textContent=t.replace(/(am|pm)$/,m=>' '+m.toUpperCase());
+  $('#asWhat').textContent='Next feed'+(nm?' for '+nm:'')+' · in '+relMin(Math.max(0,Math.round((d-new Date())/60000)));
+  $('#asPick').textContent='Pick '+t;
+  $('#alarmSetModal').classList.add('open');
 }
 /* sound engine */
 let AC=null;
@@ -2317,6 +2380,33 @@ $('#pwSave').onclick=async()=>{
   catch(e){$('#pwMsg').textContent=e.message||'Couldn’t change the password.'}
   finally{$('#pwSave').disabled=false}
 };
+
+/* ================= Learning center: high-contrast cards ================= */
+// Original geometric designs, drawn in code. Black on white; the viewer can invert them.
+const HC=[
+  {name:'Bullseye',svg:()=>{let o='';for(let r=96,i=0;r>0;r-=12,i++)o+=`<circle cx="100" cy="100" r="${r}" fill="${i%2?'var(--hc-bg)':'var(--hc-fg)'}"/>`;return o}},
+  {name:'Checkerboard',svg:()=>{let o='';for(let y=0;y<5;y++)for(let x=0;x<5;x++)if((x+y)%2===0)o+=`<rect x="${x*40}" y="${y*40}" width="40" height="40" fill="var(--hc-fg)"/>`;return o}},
+  {name:'Zigzag',svg:()=>{let o='';for(let k=0;k<6;k++){const y=12+k*34;let d=`M0 ${y}`;for(let x=0;x<=200;x+=25)d+=` L${x} ${y+((x/25)%2?14:0)}`;o+=`<path d="${d}" fill="none" stroke="var(--hc-fg)" stroke-width="13" stroke-linejoin="miter"/>`}return o}},
+  {name:'Spiral',svg:()=>{let d='';for(let a=0;a<=6*Math.PI*2;a+=0.12){const r=4+a*4.4,x=100+r*Math.cos(a),y=100+r*Math.sin(a);d+=(d?' L':'M')+x.toFixed(1)+' '+y.toFixed(1)}return `<path d="${d}" fill="none" stroke="var(--hc-fg)" stroke-width="12" stroke-linecap="round"/>`}},
+  {name:'Smile',svg:()=>`<circle cx="100" cy="100" r="88" fill="none" stroke="var(--hc-fg)" stroke-width="14"/><circle cx="70" cy="80" r="15" fill="var(--hc-fg)"/><circle cx="130" cy="80" r="15" fill="var(--hc-fg)"/><path d="M58 118 Q100 162 142 118" fill="none" stroke="var(--hc-fg)" stroke-width="14" stroke-linecap="round"/>`}
+];
+const hcSvg=(c,inv)=>`<svg viewBox="0 0 200 200" role="img" aria-label="${c.name}" style="--hc-fg:${inv?'#fff':'#000'};--hc-bg:${inv?'#000':'#fff'};background:${inv?'#000':'#fff'}">${c.svg()}</svg>`;
+let hcI=0,hcInv=false,hcAuto=null,hcOpen=false;
+function openLearn(){$('#lcGrid').innerHTML=HC.map((c,i)=>`<button class="lc-card" data-hci="${i}">${hcSvg(c,false)}<b>${c.name}</b></button>`).join('');$('#learnModal').classList.add('open')}
+$('#lcGrid').addEventListener('click',e=>{const b=e.target.closest('[data-hci]');if(!b)return;$('#learnModal').classList.remove('open');openHC(+b.dataset.hci)});
+function renderHC(){const c=HC[hcI];$('#hc').classList.toggle('inv',hcInv);$('#hcArt').innerHTML=hcSvg(c,hcInv);$('#hcName').textContent=c.name;$('#hcCount').textContent=(hcI+1)+' / '+HC.length;
+  $('#hc [data-hc=auto]').classList.toggle('on',!!hcAuto);$('#hc [data-hc=inv]').classList.toggle('on',hcInv)}
+function openHC(i){hcI=i||0;hcOpen=true;$('#hc').classList.add('open');document.body.style.overflow='hidden';keepAwake(true);renderHC()}
+function closeHC(){hcOpen=false;clearInterval(hcAuto);hcAuto=null;$('#hc').classList.remove('open');document.body.style.overflow='';if(!nightOpen&&!calmOpen)keepAwake(false);openLearn()}
+const hcStep=n=>{hcI=(hcI+n+HC.length)%HC.length;renderHC()};
+$('#hc').addEventListener('click',e=>{const b=e.target.closest('[data-hc]');
+  if(!b){if(e.target.closest('.hc-art'))hcStep(e.clientX<innerWidth/2?-1:1);return}
+  const a=b.dataset.hc;if(a==='close')closeHC();else if(a==='prev')hcStep(-1);else if(a==='next')hcStep(1);
+  else if(a==='inv'){hcInv=!hcInv;renderHC()}
+  else if(a==='auto'){if(hcAuto){clearInterval(hcAuto);hcAuto=null}else hcAuto=setInterval(()=>hcStep(1),10000);renderHC()}});
+{let sx=null;$('#hc').addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});$('#hc').addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>50){e.preventDefault();hcStep(dx<0?1:-1)}})}
+document.addEventListener('keydown',e=>{if(!hcOpen)return;if(e.key==='ArrowRight')hcStep(1);else if(e.key==='ArrowLeft')hcStep(-1);else if(e.key==='Escape'){e.stopImmediatePropagation();closeHC()}},true);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&hcOpen)keepAwake(true)});
 
 /* Achievements */
 const ACH=[

@@ -33,6 +33,7 @@ Nurse, bottle top-up, pump, diapers, and Vitamin D on one row, shared live betwe
 | **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, volumes, diapers, Vitamin D, and baths. Every tab also prints. |
 | **Weighted feeds** | Before and after weights on a feed, with the estimated transfer (1 g ≈ 1 mL). |
 | **Achievements** | Ten badges based on your goals, like a 7-day Vitamin D streak. |
+| **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
 | **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs in seconds. Join with a share key like `K7QM-4XPD`. |
 | **Works offline** | Every phone keeps its own copy and catches up when it reconnects. Installs to the home screen like an app. |
 | **Your data, your database** | Sync runs through **your own** free Supabase project. No analytics, no ads, no third-party scripts. Export to a file or a text message at any time. |
@@ -59,6 +60,7 @@ Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 | [Accounts and families](docs/accounts-and-families.md) | Sign-up, share keys, owners and members, who can see what |
 | [Using Cradle](docs/using-cradle.md) | Every screen and feature, for the people doing the feeding |
 | [How it works](docs/how-it-works.md) | Architecture, sync, data model, database rules, security |
+| [Deployment and architecture](docs/deployment.md) | How it's deployed (GitHub, Netlify, Supabase), the schema, admin queries, and the design decisions behind it |
 | [Troubleshooting](docs/troubleshooting.md) | Sign-in problems, missing data, sync, alarms, printing |
 | [Product overview](docs/overview.html) | A one-page visual tour with screenshots (download and open in a browser) |
 | [Changelog](CHANGELOG.md) | What changed in each version |
@@ -74,6 +76,7 @@ icons/                 App icons used by the build
 supabase/
   1-setup.sql          Step 1: the log table
   2-family.sql         Step 2: families, accounts, share keys
+  admin-queries.sql    Queries for running Cradle: confirm accounts, find families, fix problems
   invite-email.html    Optional "Welcome to Cradle" email template
 netlify.toml           Lets Netlify build and publish straight from this repo
 docs/                  The guides above, the product overview page, and screenshots
@@ -87,7 +90,7 @@ Your log lives in your browser and in **your** Supabase project; it never touche
 
 ## Known limits
 
-- **Alarms only ring while Cradle is open.** Android doesn't let web apps create Clock alarms, so the ⏰ *Phone alarm* button shows the time to set by hand. Notifications with the app closed would need push notifications, which aren't built yet.
+- **Alarms only ring while Cradle is open.** Phones don't let web apps create Clock alarms, even installed, so **⏰ Set alarm** shows the time to set by hand. Notifications with the app closed would need push notifications, which aren't built yet.
 - **No password reset email** unless you connect your own email sender (SMTP) in Supabase. Encourage people to sign up with a real email.
 - **Free Supabase projects pause after about a week without use.** Daily logging keeps it awake; a paused project can be restored from the dashboard.
 - **One baby per family.** Twins or siblings would each need their own family for now.

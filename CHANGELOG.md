@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.7
+
+**Learning center**
+- New in the profile menu: five original high-contrast cards (Bullseye, Checkerboard, Zigzag, Spiral, Smile)
+- Full-screen viewer:
+  - swipe or tap the sides to change cards
+  - **Invert** swaps black and white
+  - **Auto** changes cards every 10 seconds
+  - the screen stays on
+
+**Alarm**
+- **⏰ Set alarm** (was Phone alarm) opens a clear card with the time to set and the steps, on Android and iPhone
+
+**Docs**
+- New [Deployment and architecture](docs/deployment.md): GitHub → Netlify → Supabase, the schema, settings, rollbacks, releasing, and the design decisions behind Cradle
+- New [`supabase/admin-queries.sql`](supabase/admin-queries.sql): confirm accounts, find families and people, new share key, transfer ownership, clear lockouts, read a family's log, check storage
+
 ## v1.6
 
 **Baths**

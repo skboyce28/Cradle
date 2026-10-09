@@ -52,7 +52,7 @@ Baths **never count as feeds**, so they don't change feed totals, the time betwe
 The Log shows when the next feed is due: the last feed's time plus your feed interval (3 hours to start). When it's due, Cradle chimes, vibrates, and shows **Snooze 10 min** and **Dismiss**.
 
 - **It only rings while Cradle is open on screen.** Tap the screen once after opening Cradle so your phone allows sound. Night shift and Calm keep the screen awake when Cradle is installed as an app.
-- **On Android, ⏰ Phone alarm** shows the exact time to set in your Clock app. Android doesn't let web apps create Clock alarms themselves, so that one is a quick manual step.
+- **On a phone, ⏰ Set alarm** shows the time to set in your Clock app, big and clear, with the steps (Open Clock, Tap +, Pick the time). Phones don't let web apps create Clock alarms themselves, even when Cradle is installed, so that one is a few quick taps.
 - **Turn the in-app alarm off** in Settings.
 
 ### Diaper goals
@@ -114,6 +114,15 @@ The 🌙 button at the top right. A slow, soothing screensaver with the time, ti
 
 The feed alarm still works here.
 
+## Learning center
+
+In the profile menu. **High-contrast cards** are five original black-and-white designs: Bullseye, Checkerboard, Zigzag, Spiral, and Smile. Bold contrast is among the first things newborns can make out, so they're something to share during calm, awake moments.
+
+- Tap a card to show it full screen. Swipe, or tap the left or right side, to change cards.
+- **Invert** swaps black and white. **Auto** changes cards every 10 seconds.
+- Hold the phone about 8 to 12 inches (20 to 30 cm) from your baby's face. A few minutes is plenty; stop when your baby looks away, yawns, or fusses.
+- The screen stays on while a card is showing. ✕ or the back gesture returns to the Learning center.
+
 ## Profile menu
 
 The round button at the top right:
@@ -123,6 +132,7 @@ The round button at the top right:
 | **Appearance** | Auto, Light, Dark, and Dalmatian mode (experimental) |
 | **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | All logged weights |
+| **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Achievements** | Ten badges with progress, like *Sunshine Streak* (7 days of Vitamin D) and *Diaper Pro* (7 days of diaper goals). A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, feed interval, alarm, and goals |
 | **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |

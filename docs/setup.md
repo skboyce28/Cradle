@@ -38,7 +38,7 @@ Why turn off confirmation? Supabase's built-in email service only delivers to me
 > update auth.users set email_confirmed_at = now()
 > where email = 'their@email.com' and email_confirmed_at is null;
 > ```
-> For a username account, the email is the username plus `@cradle.cfg`.
+> For a username account, the email is the username plus `@cradle.cfg`. More queries like this are in [`supabase/admin-queries.sql`](../supabase/admin-queries.sql), explained in [Deployment and architecture](deployment.md#admin-queries).
 
 ## 4. Point Cradle at your project
 

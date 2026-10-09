@@ -1,6 +1,6 @@
 # How it works
 
-For anyone reading, changing, or reviewing the code.
+For anyone reading, changing, or reviewing the code. For how it's deployed and why it's built this way, see [Deployment and architecture](deployment.md).
 
 ## The app
 

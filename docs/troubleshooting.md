@@ -91,8 +91,8 @@ The cloud icon in the header shows the state:
 - Check that the alarm is on in Settings.
 - When installed as an app, Night shift and Calm keep the screen awake.
 
-**⏰ Phone alarm doesn't open my Clock app**
-That's expected. Android doesn't let web apps create Clock alarms, so the button shows the time to set by hand. See [Known limits](../README.md#known-limits).
+**⏰ Set alarm doesn't open my Clock app**
+That's expected, even with Cradle installed: phones don't let web apps create Clock alarms. The button shows the time and the steps (Open Clock, Tap +, Pick the time). See [Known limits](../README.md#known-limits).
 
 ## Printing and files
 

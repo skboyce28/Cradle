@@ -1,0 +1,168 @@
+# Deployment and architecture
+
+How Cradle is deployed today, what each piece does, how to run it day to day, and why it's built the way it is. For first-time setup, see [Setup](setup.md). For the code and sync internals, see [How it works](how-it-works.md).
+
+## The deployment at a glance
+
+```
+ GitHub: skboyce28/Cradle (main)
+        │  every push
+        ▼
+ Netlify build ── python3 build_pwa.py
+        │          reads CRADLE_SUPABASE_URL + CRADLE_SUPABASE_KEY (Netlify environment variables)
+        ▼
+ Netlify static site (HTTPS) ── index.html · sw.js · manifest.webmanifest · icons/
+        │
+        ▼
+ Phones and browsers ── Cradle installed as an app, or opened in the browser
+        │   log kept on each device (localStorage), works offline
+        ▼   sync every ~15 s while open, over HTTPS
+ Supabase project ── Auth (accounts, sign-in)  +  Postgres (the shared log)
+                     reached directly through Supabase's REST API; no server code of our own
+```
+
+| Piece | Service | What it holds | Configured in |
+|---|---|---|---|
+| Source | GitHub, `skboyce28/Cradle` | Code, database scripts, docs. **No keys, no personal data.** | This repo |
+| Build and hosting | Netlify, connected to `main` | The built web app, served over HTTPS | [`netlify.toml`](../netlify.toml) and Netlify's environment variables |
+| Accounts and data | Supabase (free plan) | Sign-ins, families, and every log entry | [`supabase/`](../supabase/) scripts and Supabase's Authentication settings |
+| The app | Each phone | A full copy of the family's log, plus sign-in tokens | Nothing to configure |
+
+## Supabase
+
+### Settings Cradle depends on
+
+| Where in Supabase | Setting | Value |
+|---|---|---|
+| Authentication → Sign In / Providers | Allow new users to sign up | **On**, so people can create accounts in the app |
+| Authentication → Sign In / Providers → Email | Confirm email | **Off**: Supabase's built-in email can't reach outside addresses |
+| Authentication → URL Configuration | Site URL | Your Netlify address (only matters if you add email later) |
+| Project Settings → Authentication → SMTP | Custom email sender | Not set. Optional; see [Setup](setup.md#optional-real-emails) |
+
+### Schema
+
+Built by two scripts, both safe to rerun in any order:
+
+1. [`supabase/1-setup.sql`](../supabase/1-setup.sql): the log table.
+2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, share keys, and the security rules.
+
+**Tables:**
+
+| Table | Columns | Notes |
+|---|---|---|
+| `cradle_items` | `household_id` · `id` · `kind` · `data` (JSON) · `deleted` · `updated_at` · `owner` | One row per synced piece of the log. Primary key `(household_id, id)`. |
+| `cradle_households` | `id` · `name` · `join_code` · `created_by` · `created_at` | One per family. `join_code` is the share key, like `K7QM-4XPD`. |
+| `cradle_members` | `household_id` · `user_id` · `email` · `role` · `joined_at` | Who belongs to which family. `role` is `owner` or `member`. |
+| `cradle_invites` | `household_id` · `email` · `invited_by` · `created_at` | Pending "add by email" invites |
+| `cradle_join_tries` | `user_id` · `at` | Wrong share-key attempts, for the lockout of 10 per hour |
+
+**What goes in `cradle_items`:**
+
+| `id` | `kind` | `data` example |
+|---|---|---|
+| `feed:k3j9x2a` | `feed` | `{"day":"2026-10-09","time":"07:05","left":true,"right":true,"start":"L","mins":28,"bottle":49,"pump":75,"urine":false,"stool":true,"vitD":true,"note":""}` |
+| `feed:p0q7m1z` | `feed` | A bath: `{"day":"2026-10-09","time":"19:00","bath":"tub","note":"Hair wash"}` |
+| `day:2026-10-09` | `day` | `{"day":"2026-10-09","notes":"Lactation visit at 4pm.","vitD":false}` |
+| `weight:w8d2` | `weight` | `{"id":"w8d2","date":"2026-10-07","time":"11:00","g":3380,"src":"Pediatrician","note":""}` |
+| `settings` | `settings` | Goals, baby's name and birth date, Vitamin D start, feed interval, birth weight |
+
+Diaper-only rows are `feed` items with no breast, bottle, or pump. Deleting an entry keeps a marker (`deleted = true`), so other phones learn about the deletion.
+
+**Security rules:**
+- Row-level security is on for every table.
+- Signed-in users can read and write `cradle_items` only for their own families, and can only read the family tables.
+- Every change to a family goes through `security definer` functions that check permissions themselves: `cradle_bootstrap`, `cradle_join`, `cradle_invite`, `cradle_new_code`, `cradle_remove_member`, `cradle_leave`, and others. The full list is in [How it works](how-it-works.md#rules-row-level-security).
+
+**Triggers:** `cradle_touch` stamps `updated_at` with the server clock and records `owner` (the last editor) on every write.
+
+### Admin queries
+
+[`supabase/admin-queries.sql`](../supabase/admin-queries.sql) collects the queries for running Cradle, one at a time in the SQL Editor:
+
+| # | Query |
+|---|---|
+| 1 | List accounts |
+| 2, 3 | Confirm accounts stuck at "confirm your email" |
+| 5 to 7 | List families, see who's in one, find someone's family |
+| 8 | New share key |
+| 9 | Transfer ownership |
+| 10 | Remove someone |
+| 11 | Clear a share-key lockout |
+| 12 to 14 | Read a family's log, count entries, count baths |
+| 15 | Check storage |
+| 16 | Tidy old deletion markers |
+
+Queries that change data are marked **CHANGES DATA**.
+
+The one used most so far, confirming an account created while email confirmation was on:
+
+```sql
+update auth.users set email_confirmed_at = now()
+where email = 'their@email.com' and email_confirmed_at is null;
+```
+
+### Backups and limits
+
+- **Back up from the app.** Profile menu → **Export data** saves a full backup file. This is the backup to rely on; the free plan has limited database backups.
+- **The free plan pauses** a project after about a week without activity. Daily logging keeps it awake. A paused project is restored from the dashboard with nothing lost, and phones keep working offline meanwhile.
+- **Storage is tiny.** A family's log is a few hundred rows a month, far below the free plan's database size. Query 15 shows current usage.
+
+## Netlify
+
+| Setting | Value |
+|---|---|
+| Repository | `skboyce28/Cradle`, branch `main` |
+| Build command | `python3 build_pwa.py` (from `netlify.toml`) |
+| Publish directory | `pwa` |
+| Environment variables | `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` (the **publishable** key) |
+| Headers | `sw.js` and `index.html` are sent with `Cache-Control: no-cache`, so updates arrive promptly |
+
+**Safety checks in the build:**
+- **Missing variables stop the build.** If either variable is missing on Netlify, the build fails with a message saying what to add, and the last good deploy stays live. Users never see a version that asks them for database details.
+- **A secret key stops the build.** The build refuses `sb_secret_…` and `service_role` keys.
+- **No personal data ships.** The build strips any built-in starter log from `cradle.html`.
+
+**Rolling back:** in Netlify, open **Deploys**, pick an earlier deploy, then **Publish deploy**. Phones pick it up the next time Cradle opens.
+
+**Deploy previews:** if you turn them on for pull requests, give the two environment variables the **All deploy contexts** scope, or preview builds will stop on the missing-variable check.
+
+## The installed app
+
+- **It's a progressive web app (PWA).** "Install app" in the profile menu, or the browser's own install option, adds it to the home screen. It opens full screen like a native app.
+- **Offline support:** `sw.js` caches the app. Page loads try the network first, so updates arrive, and fall back to the cached copy offline. The cache name changes with every build.
+- **Updates** reach a phone the next time Cradle opens with a connection.
+- **Limits that come from being a web app:**
+  - **No Clock alarms.** Android won't let it create alarms in the Clock app, installed or not; **⏰ Set alarm** shows the time to set.
+  - **Alarms need Cradle open.** Its own feed alarm rings only while Cradle is open.
+  - **No notifications with the app closed.** That would need push notifications, which aren't built.
+
+## Releasing a change
+
+1. Edit `cradle.html`. Bump `VERSION` and add to the About changelog inside it.
+2. Update the in-app guide, the README, the guides in `docs/`, `CHANGELOG.md`, and the [overview page](overview.html) and screenshots when the change is visible.
+3. Test in a browser, including on a phone-sized screen.
+4. Commit and push to `main`. Netlify builds and deploys automatically.
+5. If `supabase/2-family.sql` changed, run it again in the SQL Editor. It's safe to rerun.
+
+There's no automated test run on push yet. Tests have been run by hand in a simulated setup (see [Architecture decisions](#architecture-decisions)).
+
+## Architecture decisions
+
+The main choices so far, why they were made, and what they cost.
+
+| # | Decision | Why | Trade-off |
+|---|---|---|---|
+| 1 | **One HTML file, no framework or libraries** | Nothing to install or update, fast on old phones, easy to read and back up. | One large file. Discipline needed to keep it organized. |
+| 2 | **Offline-first:** every phone keeps the whole log and syncs small items | Logging at 3am can't wait for a signal. | Last write wins per entry, so two people editing the *same* row within seconds can overwrite each other. |
+| 3 | **Supabase free plan, called directly over REST**, no server code of our own | Real accounts and a real database with no server to run or pay for. No SDK keeps the app dependency-free. | Bound by free-plan limits (pausing, email). Sync and auth code is hand-written. |
+| 4 | **Security enforced in the database:** row-level security plus permission-checking functions | A modified copy of the app still can't reach other families' data. The publishable key can be public. | Schema changes need care, and are tested before release. |
+| 5 | **Families with share keys and open sign-up** | Friends and family set themselves up without the admin creating accounts. | Anyone with the link can make an account (but only ever sees their own empty family). |
+| 6 | **Email confirmation off; usernames allowed** (stored as `name@cradle.cfg`) | Supabase's built-in email can't deliver to outside addresses. | Emails aren't verified. No password-reset email; the admin helps instead. Share keys, not emails, decide family access. |
+| 7 | **Invites by email only for accounts that already existed when invited** | With unverified emails, a stranger could otherwise register someone's address and take their invite. | Invites are rarely needed; share keys are the main path. |
+| 8 | **Keys in environment variables, never in the repo** | Keeps project details out of the code history. | The publishable key is still visible in the hosted page; that's by design and safe. |
+| 9 | **Netlify builds from GitHub and fails without the keys** | Every push deploys. A broken config never goes live. | Netlify's environment variables are one more place to keep right. |
+| 10 | **A web app (PWA) instead of a native Android app** | One codebase for every phone, instant updates, no app store. | No Clock alarms, no alarms or notifications while closed. |
+| 11 | **Diaper-only rows and baths share the feed list; `isFeed()` decides what counts** | Simple data model; everything syncs, exports, and imports the same way. | Every feed calculation must use `isFeed()`. |
+| 12 | **Personal starter log stripped at build** | The author's copy can preload real data without it reaching the public site. | The public copy keeps the block empty (`{}`). |
+| 13 | **PolyForm Noncommercial license** | Free for families, friends, and charities; no commercial reuse without permission. | Not "open source" by the official definition. |
+| 14 | **Built with AI assistance (Claude), tested in a simulation** | Fast iteration. Each feature was checked with a real Postgres database, stand-ins for Supabase's sign-in service, and an automated browser playing several phones. | Those tests aren't in the repo or run automatically yet, and nothing has had an independent security review. |
