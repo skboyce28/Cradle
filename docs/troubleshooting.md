@@ -29,7 +29,10 @@ The operator turned off **Allow new users to sign up** in Supabase.
 - If it keeps happening, the free Supabase project may be **paused** after a week without use. Open it in Supabase and choose **Restore**.
 
 **The sign-in screen asks for a database address and key**
-The site was built without `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY`. Enter the project URL and publishable key once per phone, or set the variables and rebuild. See [Setup](setup.md#4-point-cradle-at-your-project).
+The site was built without `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY`. On Netlify, add both under **Site configuration**, then **Environment variables**, then choose **Deploys**, then **Trigger deploy**. Users shouldn't need to enter them.
+
+**Netlify build failed: "Missing CRADLE_SUPABASE_URL and CRADLE_SUPABASE_KEY"**
+Same fix. The build stops on purpose so a site that asks users for database details never goes live; your previous deploy stays up meanwhile. See [Setup](setup.md#4-point-cradle-at-your-project).
 
 ## Families
 

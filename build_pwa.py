@@ -41,6 +41,11 @@ if url or key:
     html = html.replace('<script type="application/json" id="cloudConfig">{}</script>',
                         '<script type="application/json" id="cloudConfig">' + json.dumps({'url': url, 'key': key}) + '</script>', 1)
     print('baked database config for', url)
+elif os.environ.get('NETLIFY') == 'true' or os.environ.get('CRADLE_REQUIRE_CONFIG') == '1':
+    # On a real deploy, never publish a site that asks users for database details.
+    # The failed build leaves the last good deploy live.
+    raise SystemExit('Missing CRADLE_SUPABASE_URL and CRADLE_SUPABASE_KEY. In Netlify: Site configuration > '
+                     'Environment variables, add both, then Deploys > Trigger deploy.')
 else:
     print('no CRADLE_SUPABASE_URL / CRADLE_SUPABASE_KEY: each phone enters the database address once at sign-in')
 

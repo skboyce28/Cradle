@@ -69,7 +69,7 @@ If you skip this step, the app still works, but everyone has to type the address
 
 1. In [Netlify](https://app.netlify.com), choose **Add new site**, then **Import an existing project**, and pick this GitHub repo.
 2. Netlify reads [`netlify.toml`](../netlify.toml): build command `python3 build_pwa.py`, publish folder `pwa`. Leave those as they are.
-3. Before the first deploy, add `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` under **Site configuration**, then **Environment variables**. If the site already deployed without them, add them and choose **Deploys**, then **Trigger deploy**.
+3. Before the first deploy, add `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` under **Site configuration**, then **Environment variables**. If they're missing, the Netlify build stops with a message saying so and your last good deploy stays live; add them and choose **Deploys**, then **Trigger deploy**.
 4. Deploy. Every push to `main` redeploys automatically.
 
 ### Option B: build on your computer and drag it in
