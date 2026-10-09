@@ -294,6 +294,18 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 .c-wf .wfres{font-weight:700}
 .chk.wf.on{border-color:var(--bottle);background:color-mix(in srgb,var(--bottle) 15%,transparent)}
 @media (max-width:820px){.feed>.c-wf{grid-area:wf}.feed>.c-wtd{display:none}}
+/* Bath rows: time, sponge or tub, note */
+.feed.bathrow{grid-template-columns:44px 118px auto 1fr 32px;background:color-mix(in srgb,var(--wet) 7%,var(--panel));border-color:color-mix(in srgb,var(--wet) 35%,var(--line))}
+.feed.bathrow .n{color:var(--wet)}
+.bseg{display:flex;gap:6px}
+.bseg button{height:34px;padding:0 12px;border-radius:9px;border:1px solid var(--line);background:var(--bg);font-weight:700;color:var(--muted)}
+.bseg button.on{background:color-mix(in srgb,var(--wet) 16%,transparent);border-color:var(--wet);color:var(--ink)}
+.c-bath .lbl{display:none}
+.tag.bath{color:var(--wet);border-color:color-mix(in srgb,var(--wet) 40%,var(--line))}
+@media (max-width:820px){
+  .feed.bathrow{grid-template-columns:auto 1fr auto;grid-template-areas:"n time del" "bath bath bath" "note note note"}
+  .feed.bathrow>.c-bath{grid-area:bath}
+}
 /* Next feed due */
 .dueline{margin-top:6px;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .dueline .due{font-weight:700}
@@ -505,6 +517,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="primary" id="logNow">+ Log feed now</button>
           <button class="ghost" id="addDiaper">🧷 Diaper only</button>
+          <button class="ghost" id="addBath">🛁 Bath</button>
           <button class="ghost" id="addBlank">Add blank row</button>
         </div>
       </div>
@@ -628,9 +641,10 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">🔁</div><h3>The triple-feed cycle</h3><p>Each session has three parts: nurse at the breast, offer a bottle top-up, then pump. Log all three on one row.</p></div>
       <div class="card"><div class="ico">🤱</div><h3>Breast tracking</h3><p>If you nurse on both sides, tap both. The first side you tap gets the dot, so you know where to start next time. To time a feed, tap <b>▶</b> next to Minutes when you start and <b>■</b> when you finish. The minutes fill in for you, or you can type them.</p></div>
       <div class="card"><div class="ico">💧</div><h3>Diaper checks</h3><p>If a diaper has both urine and stool, mark both on that feed. For a change between feeds, tap <b>🧷 Diaper only</b>; those rows don't count as feeds. Goals follow the baby's age: 1 of each on the birth day (Day 0), then 1 on day 1, up to 5 on day 5, then at least 4 of each per day.</p></div>
+      <div class="card"><div class="ico">🛁</div><h3>Baths</h3><p>Tap <b>🛁 Bath</b> under Since last feed to log a bath with the current time. Choose <b>Sponge</b> or <b>Tub</b> and add a note if you like, such as a hair wash or nail trim. Cradle remembers which kind you used last. Baths don’t count as feeds, so they never change feed totals or when the next feed is due. The Log shows today’s bath or when the last one was, and the Dashboard, History, print sheet, and doctor report all include baths.</p></div>
       <div class="card"><div class="ico">☀️</div><h3>Vitamin D</h3><p>Tap ☀️ on the feed where you gave the drops. Giving them at the same feed each day, like the first morning feed, makes it easier to remember. You'll get a heads-up if it's already logged that day.</p></div>
       <div class="card"><div class="ico">⏱️</div><h3>Pump timer</h3><p>Start the timer when you start pumping. The green arc shows your target window.</p></div>
-      <div class="card"><div class="ico">📊</div><h3>Dashboard</h3><p>Shows the last 7 or 14 days ending on the day you have selected. Tap any chart to enlarge it, then tap a day or feed for details. Today counts as in progress until midnight.</p></div>
+      <div class="card"><div class="ico">📊</div><h3>Dashboard</h3><p>Shows the last 7 or 14 days ending on the day you have selected, including how many baths and when the last one was. Tap any chart to enlarge it, then tap a day or feed for details. Today counts as in progress until midnight.</p></div>
       <div class="card wide-guide"><div class="ico">💬</div><h3>Send updates by text</h3>
         <p>Each phone keeps its own copy of the log. To catch the other person up:</p>
         <ol class="steps">
@@ -648,8 +662,8 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">🖨️</div><h3>Printing</h3><p>Every tab has a Print button. The Log tab prints a paper sheet for the selected day. Printing needs Cradle open in a browser like Chrome or Safari, not in a file preview.</p></div>
       <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On Android, <b>⏰ Phone alarm</b> shows the exact time to set in your Clock app. Android doesn’t let web apps create Clock alarms themselves, so this one is a quick manual step.</p></div>
       <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Set the birth weight in Settings.</p></div>
-      <div class="card"><div class="ico">🩺</div><h3>Doctor report</h3><p>On the Dashboard, <b>🩺 Doctor report</b> prints one page for appointments: weight against birth weight, daily feeds, nursing minutes, bottle and pump volumes, diapers against goals, Vitamin D, weighted feeds, your day notes, and lines for questions. It covers the 7 or 14 days shown on the Dashboard.</p></div>
-      <div class="card"><div class="ico">🌙</div><h3>Night shift</h3><p>Tap the <b>Night shift</b> tab for a dim, low-glare screen with huge buttons for one-handed night feeds. The three dots at the top switch colors: Warm, Moonlight, or Red. <b>Start feed</b> logs the time and starts the timer. Then tap L or R, adjust the bottle by 5 mL, mark wet, stool, or Vitamin D, and tap <b>Done</b>. Everything saves as you go.</p></div>
+      <div class="card"><div class="ico">🩺</div><h3>Doctor report</h3><p>On the Dashboard, <b>🩺 Doctor report</b> prints one page for appointments: weight against birth weight, daily feeds, nursing minutes, bottle and pump volumes, diapers against goals, Vitamin D, baths, weighted feeds, your day notes, and lines for questions. It covers the 7 or 14 days shown on the Dashboard.</p></div>
+      <div class="card"><div class="ico">🌙</div><h3>Night shift</h3><p>Tap the <b>Night shift</b> tab for a dim, low-glare screen with huge buttons for one-handed night feeds. The three dots at the top switch colors: Warm, Moonlight, or Red. <b>Start feed</b> logs the time and starts the timer. Then tap L or R, adjust the bottle by 5 mL, mark wet, stool, or Vitamin D, and tap <b>Done</b>. Everything saves as you go. Between feeds, <b>🧷 Diaper only</b> and <b>🛁 Bath</b> log those with the current time.</p></div>
       <div class="card"><div class="ico">🌌</div><h3>Calm screen</h3><p>A slow, soothing screensaver with the time, time since the last feed, and the next feed due. Open it with the moon button at the top right, next to your profile. Tap the screen to show controls: spa music, ocean, rain, or white noise, volume, and whether the clock sits in the center or the corner. The feed alarm still works here. When Cradle is installed as an app, the screen stays on while Calm or Night shift is open. Opened as a file, your phone may still turn the screen off on its own timer.</p></div>
       <div class="card"><div class="ico">🏆</div><h3>Achievements</h3><p>Ten badges based on your goals, like Sunshine Streak for 7 days of Vitamin D and Diaper Pro for 7 days of diaper goals. Open them from the profile menu to see progress. Streaks aren’t broken by a day that isn’t over yet.</p></div>
       <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Settings, Export, Import, Print, Erase all data, this Guide, About, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
@@ -849,9 +863,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.5</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.6</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.6</b>
+    <ul class="cl"><li>Bath logging: 🛁 Bath on the Log and in Night shift, with Sponge or Tub and a note</li><li>Baths on the Log, Dashboard (tile and insight), History, chart details, print sheet, and doctor report</li><li>Baths never count as feeds</li></ul>
     <b>v1.5</b>
     <ul class="cl"><li>Family sharing: everyone has their own login, and a family shares one log</li><li>Create an account from the sign-in screen, with share keys to join a family</li><li>Family screen: share key, Share invite text, New key, add by email, remove people, leave</li><li>Welcome screen for new family members</li><li>Change password</li><li>Sign-in screen offers a backup when the phone already has a log</li><li>Tabs reordered: Log, Night shift, Dashboard, History</li><li>Calm is now the moon button at the top right</li><li>Phone alarm button shows the time to set (Android blocks web apps from setting Clock alarms)</li></ul>
     <b>v1.4</b>
@@ -872,7 +888,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.5';
+const VERSION='1.6';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -915,7 +931,15 @@ let cur=key(new Date()), tab='today';
 const day=k=>S.days[k]||(S.days[k]={feeds:[],vitD:false,notes:''});
 const peek=k=>S.days[k]||{feeds:[],vitD:false,notes:''};
 const sum=(a,f)=>a.reduce((t,x)=>t+(num(x[f])||0),0);
-const isFeed=f=>!!(f.wf||f.left||f.right||num(f.bottle)!=null||num(f.pump)!=null||num(f.mins)>0||(S&&S.nurse&&S.nurse.id===f.id));
+const isFeed=f=>!f.bath&&!!(f.wf||f.left||f.right||num(f.bottle)!=null||num(f.pump)!=null||num(f.mins)>0||(S&&S.nurse&&S.nurse.id===f.id));
+/* Baths: rows with f.bath = 'sponge' or 'tub' */
+const BATHS={sponge:'Sponge bath',tub:'Tub bath'};
+const bathName=f=>BATHS[f.bath]||'Bath';
+function bathsOf(d){return d.feeds.filter(f=>f.bath)}
+function allBaths(){const r=[];for(const k in S.days)bathsOf(S.days[k]).forEach(f=>r.push({k,f,t:f.time||'00:00'}));return r.sort((a,b)=>(a.k+a.t)<(b.k+b.t)?-1:1)}
+function lastBath(uptoK){const b=allBaths().filter(x=>!uptoK||x.k<=uptoK);return b.length?b[b.length-1]:null}
+function daysAgo(k){const n=Math.round((parseK(key(new Date()))-parseK(k))/864e5);return n<=0?'today':n===1?'yesterday':n+' days ago'}
+function bathTag(d){const b=bathsOf(d);return b.length?b.map(f=>(f.bath==='sponge'?'Sponge':f.bath==='tub'?'Tub':'Bath')+(f.time?' '+fmt12(f.time):'')).join(', '):''}
 function totals(d){
   return {n:d.feeds.filter(isFeed).length,bottle:sum(d.feeds,'bottle'),pump:sum(d.feeds,'pump'),
     wet:d.feeds.filter(f=>f.urine).length,stool:d.feeds.filter(f=>f.stool).length};
@@ -1002,7 +1026,17 @@ function meter(v,col){
   const t=S.settings.target||1;const p=Math.min(100,(num(v)||0)/t*100);
   return `<div class="meter"><i style="width:${p}%;background:${col}"></i></div>`;
 }
+function bathRow(f){
+  return `<div class="feed bathrow" data-id="${f.id}">
+    <div class="n" title="Bath, not counted as a feed">🛁</div>
+    <div class="c-time"><input type="time" data-k="time" value="${esc(f.time)}" aria-label="Bath time"></div>
+    <div class="c-bath"><span class="lbl">Bath</span><div class="bseg" role="group" aria-label="Kind of bath"><button data-bath="sponge" class="${f.bath==='sponge'?'on':''}" aria-pressed="${f.bath==='sponge'}">Sponge</button><button data-bath="tub" class="${f.bath==='tub'?'on':''}" aria-pressed="${f.bath==='tub'}">Tub</button></div></div>
+    <div class="c-note"><input type="text" data-k="note" value="${esc(f.note)}" placeholder="Note (hair wash, nail trim...)"></div>
+    <button class="del" title="Delete bath">&times;</button>
+  </div>`;
+}
 function feedRow(f,i,lab){
+  if(f.bath)return bathRow(f);
   return `<div class="feed" data-id="${f.id}">
     <div class="n" title="${isFeed(f)?'Feed':'Diaper or note only, not counted as a feed'}">${lab}</div>
     <div class="c-time"><input type="time" data-k="time" value="${esc(f.time)}" aria-label="Time"></div>
@@ -1024,7 +1058,7 @@ function sortFeeds(d){d.feeds.sort((a,b)=>(a.time||'99')<(b.time||'99')?-1:(a.ti
 function renderFeeds(){
   setTimeout(tickNurse,0);
   const d=peek(cur);
-  $('#feeds').innerHTML=d.feeds.length?(()=>{let c=0;return d.feeds.map((f,i)=>feedRow(f,i,isFeed(f)?'#'+(++c):'🧷')).join('')})():`<div class="empty">No feeds logged for this day yet.<br>Tap <b>Log feed now</b> to start.</div>`;
+  $('#feeds').innerHTML=d.feeds.length?(()=>{let c=0;return d.feeds.map((f,i)=>feedRow(f,i,isFeed(f)?'#'+(++c):f.bath?'🛁':'🧷')).join('')})():`<div class="empty">No feeds logged for this day yet.<br>Tap <b>Log feed now</b> to start.</div>`;
 }
 const findFeed=el=>{const row=el.closest('.feed');if(!row)return{};const d=day(cur);return{row,d,f:d.feeds.find(x=>x.id===row.dataset.id)}};
 $('#feeds').addEventListener('input',e=>{
@@ -1043,7 +1077,8 @@ $('#feeds').addEventListener('change',e=>{
 $('#feeds').addEventListener('click',async e=>{
   const{row,d,f}=findFeed(e.target);if(!f)return;
   if(e.target.closest('[data-timer]')){S.nurse&&S.nurse.id===f.id?stopNurse():startNurse(cur,f.id);return}
-  const sb=e.target.closest('.side'),cb=e.target.closest('.chk');
+  const sb=e.target.closest('.side'),cb=e.target.closest('.chk'),bb=e.target.closest('[data-bath]');
+  if(bb){f.bath=bb.dataset.bath;S.ui.lastBath=f.bath;save();renderFeeds();renderStats();return}
   if(sb){
     const s=sb.dataset.side,p=s==='L'?'left':'right';f[p]=!f[p];
     if(f[p]&&!f.start)f.start=s;
@@ -1056,7 +1091,7 @@ $('#feeds').addEventListener('click',async e=>{
     if(t==='wf'){save();renderFeeds();renderStats();const r2=document.querySelector(`.feed[data-id="${f.id}"]`);if(r2&&f.wf)r2.querySelector('input[data-k=wPre]').focus();return}
     row.querySelectorAll(`.chk[data-t="${t}"]`).forEach(b=>b.classList.toggle('on',f[t]));save();renderStats();
   }else if(e.target.closest('.del')){
-    if(!await ask('Delete this feed?','Delete',true))return;
+    if(!await ask(f.bath?'Delete this bath?':'Delete this feed?','Delete',true))return;
     if(S.nurse&&S.nurse.id===f.id)S.nurse=null;d.feeds=d.feeds.filter(x=>x!==f);save();renderFeeds();renderStats();renderSince();
   }
 });
@@ -1070,6 +1105,15 @@ function addFeed(withTime,focusSel){
 $('#logNow').onclick=()=>addFeed(true);
 $('#addBlank').onclick=()=>addFeed(false);
 $('#addDiaper').onclick=()=>addFeed(true,'.chk.wet');
+function addBath(){
+  const d=day(cur),now=new Date();
+  const f={id:uid(),time:cur===key(now)?pad(now.getHours())+':'+pad(now.getMinutes()):'',bath:S.ui.lastBath==='tub'?'tub':'sponge',note:''};
+  d.feeds.push(f);sortFeeds(d);save();renderFeeds();renderStats();
+  const row=document.querySelector(`.feed[data-id="${f.id}"]`);
+  if(row){row.scrollIntoView({behavior:'smooth',block:'center'});row.querySelector(f.time?'[data-bath].on':'input[type=time]').focus({preventScroll:true})}
+  toast(bathName(f)+' logged'+(f.time?' at '+fmt12(f.time):''));
+}
+$('#addBath').onclick=addBath;
 $('#dayNotes').addEventListener('input',e=>{day(cur).notes=e.target.value;save()});
 
 /* Stats */
@@ -1089,6 +1133,7 @@ function renderStats(){
     <div class="card"><h3>Pumped</h3><div class="big" style="color:var(--pump)">${t.pump} <span class="sub">mL</span></div><div class="sub">${!d.feeds.some(f=>num(f.pump)!=null)?'No pump output logged yet':t.pump>=t.bottle?'Covering bottle use':'Bottle minus pump: '+Math.round(t.bottle-t.pump)+' mL'}</div></div>
     <div class="card stat">${ring(t.wet,G.wet,'var(--wet)')}<div><h3>Wet</h3><div class="sub">${gl}${G.wet}+${G.dol==null?'<br>Add birth date in Settings for day-by-day goals':''}</div></div></div>
     <div class="card stat">${ring(t.stool,G.stool,'var(--stool)')}<div><h3>Stool</h3><div class="sub">${gl}${G.stool}+</div></div></div>
+    ${(()=>{const b=bathsOf(d),lb=lastBath(cur);return `<div class="card"><h3>Bath</h3><div class="big" style="color:var(--wet)">${b.length?'🛁 '+(b.length>1?b.length:''):'--'}</div><div class="sub">${b.length?bathTag(d):lb?'Last: '+bathName(lb.f).toLowerCase()+', '+(cur===key(new Date())?daysAgo(lb.k):dlong(parseK(lb.k))):'No baths logged yet'}</div></div>`})()}
     <div class="card"><h3>Vitamin D</h3><button class="vitd ${vg.given?'on':''}" id="vitBtn"><span class="box">${vg.given?'✓':''}</span><span>${vg.given?(vg.time?'Given at '+fmt12(vg.time):'Given today'):vitDue(cur)?'Not yet given':'Not started (began '+vitStartS()+')'}</span></button></div>`;
   $('#vitBtn').onclick=()=>{const dd=day(cur),g=vitGiven(dd);if(g.given){dd.vitD=false;dd.feeds.forEach(x=>x.vitD=false)}else dd.vitD=true;save();renderStats();renderFeeds()};
 }
@@ -1283,6 +1328,8 @@ function renderDash(){
     <div class="card kpi"><h3>Wet goal met</h3><div class="big" style="color:var(--wet)">${wetMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.wet,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.wet+' of '+todayX.g.wet+'</b>':''}</div></div>
     <div class="card kpi"><h3>Stool goal met</h3><div class="big" style="color:var(--stool)">${stoolMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.stool,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.stool+' of '+todayX.g.stool+'</b>':''}</div></div>
     <div class="card kpi"><h3>Vitamin D</h3><div class="big" style="color:var(--good)">${vitDays}<span class="sub"> / ${vDue} day${vDue===1?'':'s'}</span></div><div class="sub">${S.settings.vitDStart&&vDue<n?'Started '+vitStartS()+'. ':''}${streak?'<b>'+streak+' day</b> streak':'No current streak'}${usualS?'. Usually '+usualS:''}</div></div>
+    ${(()=>{const bs=L.flatMap(x=>bathsOf(x.d).map(f=>({k:x.k,f}))),lb=lastBath(L[n-1].k),sp=bs.filter(b=>b.f.bath==='sponge').length,tb=bs.filter(b=>b.f.bath==='tub').length;
+      return `<div class="card kpi"><h3>Baths</h3><div class="big" style="color:var(--wet)">${bs.length}<span class="sub"> in ${n} days</span></div><div class="sub">${lb?'Last <b>'+dlong(parseK(lb.k))+'</b>'+' ('+daysAgo(lb.k)+')'+(bs.length?'. '+[sp?sp+' sponge':'',tb?tb+' tub':''].filter(Boolean).join(', '):''):'No baths logged yet'}</div></div>`})()}
     <div class="card kpi"><h3>Side starts</h3><div class="big">${startL}<span class="sub"> L</span> ${startR}<span class="sub"> R</span></div><div class="sub">${both} of ${nursed} sessions used both sides</div></div>`;
   const ins=[];
   if(logged.length){
@@ -1299,6 +1346,8 @@ function renderDash(){
     if(done.length)ins.push(['💩',missS.length?`Stool goal not met on ${missS.join(', ')}.`:`Stool goal met every completed day.`]);
     const missV=L.filter(x=>vitDue(x.k)&&!x.v.given&&x.t.n>0&&x.k!==key(new Date())).map(x=>xlab(x.dt));
     ins.push(['☀️',(missV.length?`Vitamin D not logged on ${missV.join(', ')}.`:`Vitamin D logged on every completed day since starting.`)+(usualS?` Usually given around ${usualS}.`:'')]);
+    {const bs=L.flatMap(x=>bathsOf(x.d).map(f=>({k:x.k,f}))),lb=lastBath(L[n-1].k);
+      if(bs.length||lb)ins.push(['🛁',bs.length?`${bs.length} bath${bs.length>1?'s':''} in these ${n} days. Last: ${bathName(lb.f).toLowerCase()} on ${dlong(parseK(lb.k))}${lb.f.time?' at '+fmt12(lb.f.time):''} (${daysAgo(lb.k)}).`:`No baths in these ${n} days. Last bath was ${dlong(parseK(lb.k))} (${daysAgo(lb.k)}).`])}
     if(lastSide)ins.push(['🤱',`Started on Left ${startL} times and Right ${startR} times. Start on ${lastSide.start==='L'?'Right':'Left'} next.`]);
   }
   $('#insights').innerHTML=ins.length?ins.map(x=>`<li><span>${x[0]}</span><span>${x[1]}</span></li>`).join(''):'<li><span>ℹ️</span><span>Log a few feeds to see insights here.</span></li>';
@@ -1327,16 +1376,16 @@ function renderHist(){
   const box=$('#histBody');
   if(!ks.length){box.innerHTML=`<div class="empty" style="margin-top:16px">No days logged yet.</div>`;return}
   if(S.ui.hist==='table'){
-    box.innerHTML=`<div class="card tblwrap" style="margin-top:16px"><table class="tbl"><thead><tr><th>Date</th><th class="num">Day</th><th class="num">Feeds</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th class="num">Wet</th><th class="num">Stool</th><th>Vit D</th><th class="num">Longest gap</th></tr></thead><tbody>`+
+    box.innerHTML=`<div class="card tblwrap" style="margin-top:16px"><table class="tbl"><thead><tr><th>Date</th><th class="num">Day</th><th class="num">Feeds</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th class="num">Wet</th><th class="num">Stool</th><th>Vit D</th><th>Bath</th><th class="num">Longest gap</th></tr></thead><tbody>`+
     ks.map(k=>{const d=S.days[k],t=totals(d),g=goals(k),v=vitGiven(d),per=gapStats([{k,dt:parseK(k)}])[k],lg=per.length?Math.max(...per.map(y=>y.g)):0;
-      return `<tr class="click" data-k="${k}"><td>${dlong(parseK(k))}</td><td class="num">${g.dol!=null&&g.dol>=0?g.dol:''}</td><td class="num">${t.n}</td><td class="num">${t.bottle}</td><td class="num">${t.pump}</td><td class="num ${t.wet>=g.wet?'ok':''}">${t.wet}/${g.wet}</td><td class="num ${t.stool>=g.stool?'ok':''}">${t.stool}/${g.stool}</td><td class="${v.given?'ok':''}">${v.given?'✓ '+(v.time?fmt12(v.time):''):vitDue(k)?'--':'<span class="sub">Not started</span>'}</td><td class="num">${lg?hm(lg):'--'}</td></tr>`}).join('')+`</tbody></table></div>`;
+      return `<tr class="click" data-k="${k}"><td>${dlong(parseK(k))}</td><td class="num">${g.dol!=null&&g.dol>=0?g.dol:''}</td><td class="num">${t.n}</td><td class="num">${t.bottle}</td><td class="num">${t.pump}</td><td class="num ${t.wet>=g.wet?'ok':''}">${t.wet}/${g.wet}</td><td class="num ${t.stool>=g.stool?'ok':''}">${t.stool}/${g.stool}</td><td class="${v.given?'ok':''}">${v.given?'✓ '+(v.time?fmt12(v.time):''):vitDue(k)?'--':'<span class="sub">Not started</span>'}</td><td>${bathTag(d)||''}</td><td class="num">${lg?hm(lg):'--'}</td></tr>`}).join('')+`</tbody></table></div>`;
   }else{
     box.innerHTML=`<div class="grid hist">`+ks.map(k=>{const d=S.days[k],t=totals(d),g=goals(k),v=vitGiven(d),mx=Math.max(1,...d.feeds.map(f=>num(f.bottle)||0));
       return `<button class="card hday" data-k="${k}">
         <div class="d">${dlong(parseK(k))}${g.dol!=null&&g.dol>=0?' <span class="sub">Day '+g.dol+'</span>':''}</div>
         <div class="sub">${t.n} feeds · ${t.bottle} mL bottle · ${t.pump} mL pumped</div>
         <div class="spark">${d.feeds.filter(isFeed).map(f=>`<i style="height:${(num(f.bottle)||0)/mx*100}%"></i>`).join('')||'<span class="sub">No feeds</span>'}</div>
-        <div class="tags"><span class="tag ${t.wet>=g.wet?'good':''}">💧 ${t.wet}/${g.wet}</span><span class="tag ${t.stool>=g.stool?'good':''}">💩 ${t.stool}/${g.stool}</span>${v.given||vitDue(k)?`<span class="tag ${v.given?'good':''}">☀️ ${v.given?(v.time?fmt12(v.time):'Vit D'):'No Vit D'}</span>`:''}</div>
+        <div class="tags"><span class="tag ${t.wet>=g.wet?'good':''}">💧 ${t.wet}/${g.wet}</span><span class="tag ${t.stool>=g.stool?'good':''}">💩 ${t.stool}/${g.stool}</span>${v.given||vitDue(k)?`<span class="tag ${v.given?'good':''}">☀️ ${v.given?(v.time?fmt12(v.time):'Vit D'):'No Vit D'}</span>`:''}${bathsOf(d).length?`<span class="tag bath">🛁 ${bathTag(d)}</span>`:''}</div>
       </button>`}).join('')+`</div>`;
   }
 }
@@ -1448,6 +1497,8 @@ function normFeed(f){
     else if(left&&right){const li=side.search(/\bl\b|left/),ri=side.search(/\br\b|right/);start=ri>-1&&(li<0||ri<li)?'R':li>-1?'L':''}
     else start='';
   }
+  const bt=f.bath==null||f.bath===false||f.bath===''?null:(/sponge/i.test(String(f.bath))?'sponge':'tub');
+  if(bt)return {id:f.id?String(f.id):uid(),time:parseTime(f.time),bath:bt,note:String(f.note??f.notes??'')};
   return {id:f.id?String(f.id):uid(),time:parseTime(f.time),left,right,start,
     bottle:vol(f.bottle??f.bottleMl),pump:vol(f.pump??f.pumpMl??f.pumped),
     urine:bool(f.urine??f.wet),stool:bool(f.stool??f.dirty??f.poop),vitD:bool(f.vitD??f.vitaminD??f.vitamin_d),
@@ -1487,7 +1538,7 @@ $('#impReplace').onclick=async()=>{if(!pending)return;$('#importModal').classLis
   S.days=pending.days;S.weights=pending.weights||[];applySettings(pending.settings,false);finishImport(`Replaced log with ${pending.feeds} feeds`)};
 $('#impMerge').onclick=()=>{if(!pending)return;let added=0,updated=0;
   for(const k of pending.ks){const src=pending.days[k],d=day(k);
-    src.feeds.forEach(f=>{const m=d.feeds.find(x=>x.id===f.id)||(f.time&&d.feeds.find(x=>x.time===f.time));
+    src.feeds.forEach(f=>{const m=d.feeds.find(x=>x.id===f.id)||(f.time&&d.feeds.find(x=>x.time===f.time&&!!x.bath===!!f.bath));
       if(m){for(const k in f){if(k==='id')continue;const v=f[k];if(v===true||(typeof v==='number')||(typeof v==='string'&&v!==''))m[k]=v}updated++}else{d.feeds.push(f);added++}});
     if(d.feeds.some(f=>f.vitD))d.vitD=false;else d.vitD=d.vitD||src.vitD;
     if(src.notes&&src.notes!==d.notes)d.notes=d.notes&&!d.notes.includes(src.notes)?d.notes+'\n'+src.notes:src.notes;
@@ -1502,8 +1553,8 @@ function buildPrint(){
   $('#print').innerHTML=`<h1>Triple-Feeding Daily Log${babyName()?' · '+esc(babyName()):''}</h1>
   <div>Date: ${parseK(cur).toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})} | Target bottle: ${st.target} mL | Pump: ${st.pumpMin} to ${st.pumpMax} min${g.dol!=null&&g.dol>=0?' | Day '+g.dol+' of life, goal '+g.wet+' wet / '+g.stool+' stool':''}</div>
   <table><tr><th>#</th><th>Time</th><th>Breast</th><th>Min</th><th>Bottle (mL)</th><th>Pump (mL)</th><th>Urine</th><th>Stool</th><th>Vit D</th><th>Note</th></tr>
-  ${rows.map((f,i)=>`<tr><td>${i+1}</td><td>${f?fmt12(f.time):''}</td><td>${f?[f.left?'L':'',f.right?'R':''].filter(Boolean).join(' + ')+(f.start?' (start '+f.start+')':''):'[ ] L  [ ] R'}</td><td>${f?.mins??''}</td><td>${f?.bottle??''}</td><td>${f?.pump??''}</td><td>${f?(f.urine?'✓':''):'[ ]'}</td><td>${f?(f.stool?'✓':''):'[ ]'}</td><td>${f?(f.vitD?'✓':''):'[ ]'}</td><td>${f?esc(f.note):''}</td></tr>`).join('')}</table>
-  <p>Vitamin D: ${v.given?'✓ Given'+(v.time?' at '+fmt12(v.time):''):'[ ]'} | Wet: ${t.wet}${g.wet?' of '+g.wet:''} | Stool: ${t.stool}${g.stool?' of '+g.stool:''} | Bottle total: ${t.bottle} mL | Pump total: ${t.pump} mL</p>
+  ${rows.map((f,i)=>f&&f.bath?`<tr><td>${i+1}</td><td>${fmt12(f.time)}</td><td colspan="7">🛁 ${bathName(f)}</td><td>${esc(f.note)}</td></tr>`:`<tr><td>${i+1}</td><td>${f?fmt12(f.time):''}</td><td>${f?[f.left?'L':'',f.right?'R':''].filter(Boolean).join(' + ')+(f.start?' (start '+f.start+')':''):'[ ] L  [ ] R'}</td><td>${f?.mins??''}</td><td>${f?.bottle??''}</td><td>${f?.pump??''}</td><td>${f?(f.urine?'✓':''):'[ ]'}</td><td>${f?(f.stool?'✓':''):'[ ]'}</td><td>${f?(f.vitD?'✓':''):'[ ]'}</td><td>${f?esc(f.note):''}</td></tr>`).join('')}</table>
+  <p>Vitamin D: ${v.given?'✓ Given'+(v.time?' at '+fmt12(v.time):''):'[ ]'} | Wet: ${t.wet}${g.wet?' of '+g.wet:''} | Stool: ${t.stool}${g.stool?' of '+g.stool:''} | Bottle total: ${t.bottle} mL | Pump total: ${t.pump} mL${bathsOf(d).length?' | Bath: '+bathTag(d):''}</p>
   <p>Notes: ${esc(d.notes)}</p>`;
 }
 function preparePrint(){
@@ -1583,7 +1634,7 @@ function selDay(k){
   $('#cmSel').innerHTML=`<div class="wide2"><b style="font-size:16px">${longDate(k)}</b>${x.g.dol!=null&&x.g.dol>=0?'<span class="sub">Day '+x.g.dol+'</span>':''}${tdy(k)?'<span class="tag">In progress</span>':''}<span class="spacer"></span><button class="ghost sm" id="cmOpen">Open this day</button></div>`+
     cell('Feeds',x.t.n)+cell('Bottle',Math.round(x.t.bottle)+' mL')+cell('Pumped',x.d.feeds.some(f=>num(f.pump)!=null)?Math.round(x.t.pump)+' mL':'--')+
     cell('Wet',x.t.wet+' of '+x.g.wet)+cell('Stool',x.t.stool+' of '+x.g.stool)+cell('Vitamin D',x.v.given?(x.v.time?fmt12(x.v.time):'Given'):vitDue(k)?'Not logged':'Not started')+
-    cell('Longest gap',x.lg?hm(x.lg):'--')+cell('Average gap',x.ag?hm(x.ag):'--')+cell('Both sides',x.both+' of '+x.fs.filter(f=>f.left||f.right).length)+cell('Nursing time',(()=>{const m=x.fs.reduce((a,f)=>a+(num(f.mins)||0),0);return m?m+' min':'--'})())+
+    cell('Longest gap',x.lg?hm(x.lg):'--')+cell('Average gap',x.ag?hm(x.ag):'--')+cell('Both sides',x.both+' of '+x.fs.filter(f=>f.left||f.right).length)+cell('Nursing time',(()=>{const m=x.fs.reduce((a,f)=>a+(num(f.mins)||0),0);return m?m+' min':'--'})())+cell('Bath',bathTag(x.d)||'--')+
     (x.d.notes?`<div class="wide2"><span class="sub">Notes:</span> ${esc(x.d.notes)}</div>`:'');
   $('#cmOpen').onclick=()=>{$('#chartModal').classList.remove('open');cur=k;tab='today';renderAll();scrollTo(0,0)};
   hl(k,false);
@@ -1604,8 +1655,8 @@ function cmTable(kind,L){
   if(kind==='feed'){const fs=peek(cur).feeds.filter(isFeed);
     return `<table class="tbl"><thead><tr><th>Time</th><th>Breast</th><th class="num">Min</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th>Wet</th><th>Stool</th><th>Vit D</th><th>Note</th></tr></thead><tbody>`+
     fs.map(f=>`<tr class="click" data-sel="${f.id}"><td>${fmt12(f.time)}</td><td>${[f.left?'L':'',f.right?'R':''].filter(Boolean).join('+')||'--'}</td><td class="num">${f.mins??''}</td><td class="num">${f.bottle??''}</td><td class="num">${f.pump??''}</td><td>${f.urine?'✓':''}</td><td>${f.stool?'✓':''}</td><td>${f.vitD?'✓':''}</td><td style="white-space:normal">${esc(f.note)}</td></tr>`).join('')+`</tbody></table>`}
-  return `<table class="tbl"><thead><tr><th>Date</th><th class="num">Feeds</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th class="num">Wet</th><th class="num">Stool</th><th>Vit D</th><th class="num">Longest gap</th><th class="num">Avg gap</th></tr></thead><tbody>`+
-    L.map(x=>{const y=dayDetail(x.k);return `<tr class="click" data-sel="${x.k}"><td>${dlong(x.dt)}${tdy(x.k)?' <span class="sub">(so far)</span>':''}</td><td class="num">${y.t.n}</td><td class="num">${Math.round(y.t.bottle)}</td><td class="num">${Math.round(y.t.pump)}</td><td class="num ${y.t.wet>=y.g.wet&&y.t.n?'ok':''}">${y.t.wet}/${y.g.wet}</td><td class="num ${y.t.stool>=y.g.stool&&y.t.n?'ok':''}">${y.t.stool}/${y.g.stool}</td><td>${y.v.given?'✓ '+(y.v.time?fmt12(y.v.time):''):vitDue(x.k)?'--':'<span class="sub">n/a</span>'}</td><td class="num">${y.lg?hm(y.lg):'--'}</td><td class="num">${y.ag?hm(y.ag):'--'}</td></tr>`}).join('')+`</tbody></table>`;
+  return `<table class="tbl"><thead><tr><th>Date</th><th class="num">Feeds</th><th class="num">Bottle mL</th><th class="num">Pump mL</th><th class="num">Wet</th><th class="num">Stool</th><th>Vit D</th><th>Bath</th><th class="num">Longest gap</th><th class="num">Avg gap</th></tr></thead><tbody>`+
+    L.map(x=>{const y=dayDetail(x.k);return `<tr class="click" data-sel="${x.k}"><td>${dlong(x.dt)}${tdy(x.k)?' <span class="sub">(so far)</span>':''}</td><td class="num">${y.t.n}</td><td class="num">${Math.round(y.t.bottle)}</td><td class="num">${Math.round(y.t.pump)}</td><td class="num ${y.t.wet>=y.g.wet&&y.t.n?'ok':''}">${y.t.wet}/${y.g.wet}</td><td class="num ${y.t.stool>=y.g.stool&&y.t.n?'ok':''}">${y.t.stool}/${y.g.stool}</td><td>${y.v.given?'✓ '+(y.v.time?fmt12(y.v.time):''):vitDue(x.k)?'--':'<span class="sub">n/a</span>'}</td><td>${bathTag(y.d)}</td><td class="num">${y.lg?hm(y.lg):'--'}</td><td class="num">${y.ag?hm(y.ag):'--'}</td></tr>`}).join('')+`</tbody></table>`;
 }
 function openChart(id,sel){
   cmId=id;const c=CH[id],L=rangeDays();
@@ -1787,9 +1838,9 @@ function buildReport(){
   <h3 style="margin:12px 0 4px;font-size:14px">Weight</h3>
   ${ws?`<div>Birth: <b>${ws.bw>0?fmtW(ws.bw):'not set'}</b> · Latest: <b>${fmtW(ws.latest.g)}</b> (${dlong(parseK(ws.latest.date))}, ${ws.latest.src})${ws.pct!=null?' · <b>'+(ws.pct>=0?'+':'')+ws.pct.toFixed(1)+'%</b> vs birth':''}${ws.lowest?' · Lowest: '+fmtW(ws.lowest.g)+(ws.lowPct!=null?' ('+ws.lowPct.toFixed(1)+'%)':''):''}${ws.bw>0?' · Back to birth weight: <b>'+(ws.back?dlong(parseK(ws.back.date)):'not yet')+'</b>':''}${ws.rate!=null?' · Gain since lowest: '+fmtDW(ws.rate)+'/day':''}</div>`:'<div style="color:#555">No weights logged.</div>'}
   <h3 style="margin:12px 0 4px;font-size:14px">Averages over ${done.length} completed day${done.length===1?'':'s'}</h3>
-  <div>Feeds/day: <b>${avg(r=>r.y.t.n).toFixed(1)}</b> · Nursing: <b>${Math.round(avg(r=>r.nm))} min/day</b> · Bottle: <b>${Math.round(avg(r=>r.y.t.bottle))} mL/day</b> · Pumped: <b>${rows.some(r=>r.y.d.feeds.some(f=>num(f.pump)!=null))?Math.round(avg(r=>r.y.t.pump))+' mL/day':'not tracked'}</b> · Wet/day: <b>${avg(r=>r.y.t.wet).toFixed(1)}</b> · Stool/day: <b>${avg(r=>r.y.t.stool).toFixed(1)}</b> · Vitamin D: <b>${L.filter(x=>x.v.given).length} of ${L.filter(x=>vitDue(x.k)&&(!tdy(x.k)||x.v.given)).length} days</b></div>
-  <table style="width:100%;border-collapse:collapse;margin-top:10px"><tr><th ${th}>Date</th><th ${th}>Day</th><th ${th}>Feeds</th><th ${th}>Nursing min</th><th ${th}>Bottle mL</th><th ${th}>Pump mL</th><th ${th}>Wet / goal</th><th ${th}>Stool / goal</th><th ${th}>Vit D</th><th ${th}>Longest gap</th></tr>
-  ${rows.map(({x,y,nm})=>`<tr><td ${td.replace('right','left')}>${dlong(x.dt)}${tdy(x.k)?' (so far)':''}</td><td ${td}>${y.g.dol!=null&&y.g.dol>=0?y.g.dol:''}</td><td ${td}>${y.t.n}</td><td ${td}>${nm||''}</td><td ${td}>${Math.round(y.t.bottle)}</td><td ${td}>${y.d.feeds.some(f=>num(f.pump)!=null)?Math.round(y.t.pump):''}</td><td ${td}>${y.t.wet} / ${y.g.wet}</td><td ${td}>${y.t.stool} / ${y.g.stool}</td><td ${td.replace('right','center')}>${y.v.given?'✓'+(y.v.time?' '+fmt12(y.v.time):''):vitDue(x.k)?'':'n/a'}</td><td ${td}>${y.lg?hm(y.lg):''}</td></tr>`).join('')}</table>
+  <div>Feeds/day: <b>${avg(r=>r.y.t.n).toFixed(1)}</b> · Nursing: <b>${Math.round(avg(r=>r.nm))} min/day</b> · Bottle: <b>${Math.round(avg(r=>r.y.t.bottle))} mL/day</b> · Pumped: <b>${rows.some(r=>r.y.d.feeds.some(f=>num(f.pump)!=null))?Math.round(avg(r=>r.y.t.pump))+' mL/day':'not tracked'}</b> · Wet/day: <b>${avg(r=>r.y.t.wet).toFixed(1)}</b> · Stool/day: <b>${avg(r=>r.y.t.stool).toFixed(1)}</b> · Vitamin D: <b>${L.filter(x=>x.v.given).length} of ${L.filter(x=>vitDue(x.k)&&(!tdy(x.k)||x.v.given)).length} days</b> · Baths: <b>${(()=>{const c=L.reduce((a,x)=>a+bathsOf(x.d).length,0),lb=lastBath(L[L.length-1].k);return c+(lb?', last '+dlong(parseK(lb.k))+' ('+bathName(lb.f).toLowerCase()+')':'')})()}</b></div>
+  <table style="width:100%;border-collapse:collapse;margin-top:10px"><tr><th ${th}>Date</th><th ${th}>Day</th><th ${th}>Feeds</th><th ${th}>Nursing min</th><th ${th}>Bottle mL</th><th ${th}>Pump mL</th><th ${th}>Wet / goal</th><th ${th}>Stool / goal</th><th ${th}>Vit D</th><th ${th}>Bath</th><th ${th}>Longest gap</th></tr>
+  ${rows.map(({x,y,nm})=>`<tr><td ${td.replace('right','left')}>${dlong(x.dt)}${tdy(x.k)?' (so far)':''}</td><td ${td}>${y.g.dol!=null&&y.g.dol>=0?y.g.dol:''}</td><td ${td}>${y.t.n}</td><td ${td}>${nm||''}</td><td ${td}>${Math.round(y.t.bottle)}</td><td ${td}>${y.d.feeds.some(f=>num(f.pump)!=null)?Math.round(y.t.pump):''}</td><td ${td}>${y.t.wet} / ${y.g.wet}</td><td ${td}>${y.t.stool} / ${y.g.stool}</td><td ${td.replace('right','center')}>${y.v.given?'✓'+(y.v.time?' '+fmt12(y.v.time):''):vitDue(x.k)?'':'n/a'}</td><td ${td.replace('right','center')}>${bathsOf(y.d).map(f=>f.bath==='sponge'?'Sponge':f.bath==='tub'?'Tub':'✓').join(', ')}</td><td ${td}>${y.lg?hm(y.lg):''}</td></tr>`).join('')}</table>
   ${wfs.length?`<h3 style="margin:12px 0 4px;font-size:14px">Weighted feeds</h3><table style="border-collapse:collapse"><tr><th ${th}>Date</th><th ${th}>Time</th><th ${th}>Breast</th><th ${th}>Before</th><th ${th}>After</th><th ${th}>Transfer</th></tr>${wfs.map(({k,f})=>`<tr><td ${td.replace('right','left')}>${dlong(parseK(k))}</td><td ${td}>${fmt12(f.time)}</td><td ${td}>${[f.left?'L':'',f.right?'R':''].filter(Boolean).join('+')}${f.mins?' '+f.mins+' min':''}</td><td ${td}>${f.wPre?fmtW(f.wPre):''}</td><td ${td}>${f.wPost?fmtW(f.wPost):''}</td><td ${td}>${num(f.wPre)>0&&num(f.wPost)>0?Math.round(f.wPost-f.wPre)+' mL':''}</td></tr>`).join('')}</table>`:''}
   ${notes.length?`<h3 style="margin:12px 0 4px;font-size:14px">Notes</h3>${notes.map(x=>`<div><b>${dlong(x.dt)}:</b> ${esc(x.d.notes)}</div>`).join('')}`:''}
   <h3 style="margin:14px 0 4px;font-size:14px">Questions for the visit</h3>
@@ -1825,7 +1876,7 @@ function renderNight(full){
   $('#nSub').textContent=(lf?'Last feed '+hm(Math.floor((n-lf.dt)/60000))+' ago':'No recent feeds')+(t&&t.mins>=-720?(t.over?' · feed was due '+t.label:' · next due '+t.label):'');
   const cf=nightFeed(),run=cf&&S.nurse&&S.nurse.id===cf.f.id;
   if(!full){const tm=$('#nTimer');if(tm&&cf)tm.textContent=run?mmss(nEl()):(cf.f.mins?cf.f.mins+' min':'0:00');return}
-  if(!cf){$('#nBody').innerHTML=`<button class="nbig" data-n="start">▶ Start feed</button><div class="nrow n2"><button class="nbtn" data-n="diaper">🧷 Diaper only</button><button class="nbtn" data-n="exit2">Close</button></div>`;return}
+  if(!cf){$('#nBody').innerHTML=`<button class="nbig" data-n="start">▶ Start feed</button><div class="nrow n2"><button class="nbtn" data-n="diaper">🧷 Diaper only</button><button class="nbtn" data-n="bath">🛁 Bath</button></div><div class="nrow n1" style="grid-template-columns:1fr"><button class="nbtn" data-n="exit2">Close</button></div>`;return}
   const f=cf.f,ls=(()=>{const r=[];for(let i=0;i<3;i++)r.push(...feedTimes(key(addDays(n,-i))));r.sort((a,b)=>b.dt-a.dt);return r.find(x=>x.f.start&&x.f.id!==f.id)})();
   $('#nBody').innerHTML=`<div class="nfeed">
     <div class="nhead">${isFeed(f)||run?'Feed':'Diaper'} at ${fmt12(f.time)}<span class="spacer"></span>${ls&&!f.start?`<span class="nhint">Start on ${ls.f.start==='L'?'Right':'Left'}</span>`:''}</div>
@@ -1845,6 +1896,8 @@ $('#night').addEventListener('click',async e=>{
   if(a==='exit'||a==='exit2'){closeNight();return}
   if(a==='start'){nightNew(false);return}
   if(a==='diaper'){nightNew(true);return}
+  if(a==='bath'){const k=todayK(),dd=day(k),n2=new Date(),bf={id:uid(),time:pad(n2.getHours())+':'+pad(n2.getMinutes()),bath:S.ui.lastBath==='tub'?'tub':'sponge',note:''};
+    dd.feeds.push(bf);sortFeeds(dd);save();renderNight(true);toast(bathName(bf)+' logged at '+fmt12(bf.time)+'. Change it on the Log.');return}
   const cf=nightFeed();if(!cf)return;const f=cf.f,d=day(cf.k);
   if(a==='timer'){S.nurse&&S.nurse.id===f.id?stopNurse(true):startNurse(cf.k,f.id)}
   else if(a==='L'||a==='R'){const p=a==='L'?'left':'right';f[p]=!f[p];if(f[p]&&!f.start)f.start=a;if(!f[p]&&f.start===a)f.start=f.left?'L':f.right?'R':''}

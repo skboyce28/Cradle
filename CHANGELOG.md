@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.6
+
+**Baths**
+- **🛁 Bath** on the Log, next to Diaper only, and on Night shift's start screen
+- Each bath has a time, **Sponge** or **Tub** (Cradle remembers the last kind), and a note
+- Baths never count as feeds: feed totals, gaps, streaks, and the next-feed time are unchanged
+- Baths show up everywhere:
+  - a Bath tile on the Log
+  - a Baths tile and insight on the Dashboard
+  - tags and a column in History
+  - the chart explorer
+  - the printed day sheet
+  - the doctor report
+- Export, text-message codes, import (Replace and Merge), and family sync all carry baths. No database changes.
+
 ## v1.5
 
 **Accounts and families**

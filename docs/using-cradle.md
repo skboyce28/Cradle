@@ -31,6 +31,18 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 
 **🧷 Diaper only** adds a row for a change between feeds. Those rows don't count as feeds.
 
+### Baths
+
+**🛁 Bath** adds a bath with the current time. Each bath row has:
+
+| Part | How to use it |
+|---|---|
+| **Time** | Set to now; tap to change it. |
+| **Sponge / Tub** | The kind of bath. Cradle starts the next one with whichever you used last. |
+| **Note** | Hair wash, nail trim, anything else. |
+
+Baths **never count as feeds**, so they don't change feed totals, the time between feeds, or when the next feed is due. The **Bath** tile under the day's totals shows today's bath, or when the last one was.
+
 **Day notes** sit at the bottom of the day.
 
 **Pump timer:** start it when you start pumping. The green arc shows your target window (15 to 20 minutes to start; change it in Settings).
@@ -65,6 +77,8 @@ A dim, low-glare screen with huge buttons, for one-handed feeds in the dark.
 4. Mark wet, stool, or Vitamin D.
 5. Tap **Done**.
 
+Between feeds, the start screen also has **🧷 Diaper only** and **🛁 Bath**, which log those with the current time. Change a bath's kind or add a note on the Log afterward.
+
 Everything saves as you go. The three dots at the top switch colors: **Warm**, **Moonlight**, or **Red** (easiest on night vision). ✕ closes it.
 
 ## Dashboard
@@ -73,6 +87,7 @@ The 7 or 14 days ending on the selected day:
 
 - Feeds per day, nursing minutes, bottle and pump volume
 - Diapers against goals, Vitamin D streak, side balance, longest stretch between feeds
+- Baths: how many, sponge or tub, and when the last one was
 - Weight against birth weight
 
 **Tap any chart to enlarge it**, then tap a day or a feed for details. **Today counts as "in progress"** until midnight, so a goal that isn't met *yet* isn't shown as missed.
@@ -82,13 +97,13 @@ The 7 or 14 days ending on the selected day:
 **🩺 Doctor report** prints one page for appointments:
 - weight against birth weight
 - daily feeds, nursing minutes, and bottle and pump volumes
-- diapers against goals, and Vitamin D
+- diapers against goals, Vitamin D, and baths
 - weighted feeds and your day notes
 - lines for questions
 
 ## History
 
-Every day at a glance, as cards or a table.
+Every day at a glance, as cards or a table. A 🛁 tag or the Bath column shows each day's baths.
 
 ## Calm
 
@@ -112,7 +127,7 @@ The round button at the top right:
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, feed interval, alarm, and goals |
 | **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |
 | **Import data** | **Choose a file**, or paste a `CRADLE1:` code. **Merge** adds to your log without removing anything; **Replace** clears your log first. |
-| **Print this tab** | Prints the current tab. The Log prints a paper sheet for the selected day. |
+| **Print this tab** | Prints the current tab. The Log prints a paper sheet for the selected day, baths included. |
 | **Erase all data** | Removes every entry from your family's log **on every phone**. Export first if you want a copy. |
 | **Guide / About** | In-app help, version, and changelog |
 | **Install app** | Shown when your browser can install Cradle |

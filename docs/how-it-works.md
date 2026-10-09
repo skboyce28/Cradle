@@ -11,7 +11,7 @@ For anyone reading, changing, or reviewing the code.
   - `migrate()` upgrades older saved shapes when the app loads
 - **Sync state.** Sign-in and sync bookkeeping live separately under `cradle-cloud-v1`: session tokens, the family id, the last sync time, and a fingerprint of each item as last synced.
 - **Day of life.** The birth date in Settings is **Day 0**. Diaper goals are computed from it.
-- **Feeds vs. diaper-only rows.** A 🧷 row with no breast, bottle, or pump doesn't count as a feed in stats, streaks, or the next-feed time.
+- **Feeds vs. other rows.** A 🧷 diaper-only row (no breast, bottle, or pump) and a 🛁 bath row (`bath: "sponge"` or `"tub"`, plus `time` and `note`) live in the same `feeds` list but never count as feeds in stats, streaks, gaps, or the next-feed time. `isFeed()` checks for `bath` first.
 
 ### The installable build
 
@@ -28,7 +28,7 @@ The log is split into small **items**, each synced on its own:
 
 | Item id | Holds |
 |---|---|
-| `feed:<id>` | One feed row, plus its date |
+| `feed:<id>` | One row from a day's log (a feed, a diaper-only row, or a bath), plus its date |
 | `day:<YYYY-MM-DD>` | That day's notes and Vitamin D flag |
 | `weight:<id>` | One weight |
 | `settings` | Shared settings: goals, baby name, birth date and weight, Vitamin D start, feed interval |
