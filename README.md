@@ -24,13 +24,13 @@ Nurse, bottle top-up, pump, diapers, and Vitamin D on one row, shared live betwe
 
 | | |
 |---|---|
-| **Log** | One row per feed: left/right breast (with which side you started), nursing minutes with a ▶ timer, bottle mL, pump mL, wet, stool, Vitamin D, notes. 🧷 diaper-only and 🛁 bath rows (sponge or tub) that don't count as feeds. |
+| **Log** | One row per feed: left/right breast (with which side you started), nursing minutes with a ▶ timer, a slider that splits the minutes between sides, bottle mL, pump mL, wet, stool, Vitamin D, notes. 🧷 diaper-only and 🛁 bath rows (sponge or tub) that don't count as feeds. |
 | **Night shift** | A dim, low-glare screen with huge buttons for one-handed night feeds, plus quick Diaper only and Bath buttons. Warm, Moonlight, or Red colors. |
-| **Dashboard** | 7 or 14 days of trends: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, side balance, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
+| **Dashboard** | 7 or 14 days of trends: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |
 | **Calm** | The 🌙 button at the top right: a slow screensaver with the time, time since the last feed, and spa music, ocean, rain, or white noise. |
-| **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, volumes, diapers, Vitamin D, and baths. Every tab also prints. |
+| **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, and baths. Every tab also prints. |
 | **Weighted feeds** | Before and after weights on a feed, with the estimated transfer (1 g ≈ 1 mL). |
 | **Achievements** | Ten badges based on your goals, like a 7-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |

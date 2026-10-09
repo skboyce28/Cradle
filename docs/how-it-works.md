@@ -12,6 +12,7 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
 - **Game state.** Fun center settings live in the log's UI preferences. Your best score per account, remembered initials, and scores waiting to post (from rounds played offline) live under `cradle-game-v1`.
 - **Sync state.** Sign-in and sync bookkeeping live separately under `cradle-cloud-v1`: session tokens, the family id, the last sync time, and a fingerprint of each item as last synced.
 - **Day of life.** The birth date in Settings is **Day 0**. Diaper goals are computed from it.
+- **Left and right split.** A feed with both sides has `split`, the percent of its minutes on the left (0 to 100, in steps of 5). Missing means 50/50; a one-side feed is all on that side. `sideMins()` turns minutes and split into whole minutes per side, used by the Dashboard, the chart explorer, the day sheet, and the doctor report.
 - **Feeds vs. other rows.** A 🧷 diaper-only row (no breast, bottle, or pump) and a 🛁 bath row (`bath: "sponge"` or `"tub"`, plus `time` and `note`) live in the same `feeds` list but never count as feeds in stats, streaks, gaps, or the next-feed time. `isFeed()` checks for `bath` first.
 
 ### The installable build

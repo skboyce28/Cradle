@@ -62,13 +62,13 @@ Built by two scripts, both safe to rerun in any order:
 
 | `id` | `kind` | `data` example |
 |---|---|---|
-| `feed:k3j9x2a` | `feed` | `{"day":"2026-10-09","time":"07:05","left":true,"right":true,"start":"L","mins":28,"bottle":49,"pump":75,"urine":false,"stool":true,"vitD":true,"note":""}` |
+| `feed:k3j9x2a` | `feed` | `{"day":"2026-10-09","time":"07:05","left":true,"right":true,"start":"L","mins":28,"split":60,"bottle":49,"pump":75,"urine":false,"stool":true,"vitD":true,"note":""}` |
 | `feed:p0q7m1z` | `feed` | A bath: `{"day":"2026-10-09","time":"19:00","bath":"tub","note":"Hair wash"}` |
 | `day:2026-10-09` | `day` | `{"day":"2026-10-09","notes":"Lactation visit at 4pm.","vitD":false}` |
 | `weight:w8d2` | `weight` | `{"id":"w8d2","date":"2026-10-07","time":"11:00","g":3380,"src":"Pediatrician","note":""}` |
 | `settings` | `settings` | Goals, baby's name and birth date, Vitamin D start, feed interval, birth weight |
 
-Diaper-only rows are `feed` items with no breast, bottle, or pump. Deleting an entry keeps a marker (`deleted = true`), so other phones learn about the deletion.
+`split` is the percent of a both-sides feed's minutes on the left (missing means 50/50). Diaper-only rows are `feed` items with no breast, bottle, or pump. Deleting an entry keeps a marker (`deleted = true`), so other phones learn about the deletion.
 
 **Security rules:**
 - Row-level security is on for every table.

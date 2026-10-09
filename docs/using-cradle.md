@@ -22,6 +22,7 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 | **Time** | Set to now; tap to change it. |
 | **L / R** | Which breast. If you nurse on both sides, tap both. The first side you tap gets a dot, so you know where to start next time. |
 | **Minutes** | How long you nursed. Tap ▶ when you start and ■ when you finish to fill it in, or type it. |
+| **Left ↔ Right** | Appears when both sides are on. Slide it toward the side that got more time and it divides the minutes: 20 minutes slid to 75% left is 15 left and 5 right. The middle is an even split. Before minutes are entered it shows percentages. |
 | **Bottle** | mL of the top-up. The bar fills toward your bottle target (Settings). |
 | **Pump** | mL pumped. |
 | **Wet / Stool** | Mark both if a diaper had both. |
@@ -72,7 +73,7 @@ The day-6-on numbers are set in Settings. Follow whatever your care team tells y
 A dim, low-glare screen with huge buttons, for one-handed feeds in the dark.
 
 1. Tap **Start feed**. It logs the time and starts the timer.
-2. Tap **L** or **R**.
+2. Tap **L** or **R**. With both on, a slider splits the time between them, like on the Log.
 3. Adjust the bottle in 5 mL steps.
 4. Mark wet, stool, or Vitamin D.
 5. Tap **Done**.
@@ -86,7 +87,7 @@ Everything saves as you go. The three dots at the top switch colors: **Warm**, *
 The 7 or 14 days ending on the selected day:
 
 - Feeds per day, nursing minutes, bottle and pump volume
-- Diapers against goals, Vitamin D streak, side balance, longest stretch between feeds
+- Diapers against goals, Vitamin D streak, side balance (which side you started on, and nursing time on each side from the split slider), longest stretch between feeds
 - Baths: how many, sponge or tub, and when the last one was
 - Weight against birth weight
 
@@ -96,7 +97,7 @@ The 7 or 14 days ending on the selected day:
 
 **🩺 Doctor report** prints one page for appointments:
 - weight against birth weight
-- daily feeds, nursing minutes, and bottle and pump volumes
+- daily feeds, nursing minutes with the left and right split, and bottle and pump volumes
 - diapers against goals, Vitamin D, and baths
 - weighted feeds and your day notes
 - lines for questions

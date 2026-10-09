@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.10
+
+**Left and right split**
+- When both sides are on, a **Left ↔ Right** slider appears on the feed. Slide it toward the side that got more time and it divides the feed's minutes: 20 minutes at 75% left is 15 left and 5 right.
+- Steps of 5%; the middle is an even split. It shows percentages until minutes are entered, then minutes per side, and follows the ▶ timer.
+- Also in **Night shift** when both L and R are on.
+- Time on each side shows up in:
+  - the Dashboard's side balance, plus an insight when one side gets noticeably more
+  - the chart explorer's feed table and details
+  - the printed day sheet (`20 (L15/R5)`)
+  - the doctor report (`left 60%, right 40%`)
+- Stored as `split` (percent on the left) on the feed, so export, text-message codes, import, and family sync carry it. Older both-sides feeds count as 50/50. No database changes.
+
 ## v1.9
 
 **Security**
