@@ -34,6 +34,7 @@ Nurse, bottle top-up, pump, diapers, and Vitamin D on one row, shared live betwe
 | **Weighted feeds** | Before and after weights on a feed, with the estimated transfer (1 g ≈ 1 mL). |
 | **Achievements** | Ten badges based on your goals, like a 7-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
+| **Fun center** | **Bottle Catch**: a two-minute, one-thumb game for the waiting moments, with arcade-style high scores (3 initials) for everyone, your family, and you. |
 | **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs in seconds. Join with a share key like `K7QM-4XPD`. |
 | **Works offline** | Every phone keeps its own copy and catches up when it reconnects. Installs to the home screen like an app. |
 | **Your data, your database** | Sync runs through **your own** free Supabase project. No analytics, no ads, no third-party scripts. Export to a file or a text message at any time. |
@@ -94,6 +95,7 @@ Your log lives in your browser and in **your** Supabase project; it never touche
 - **No password reset email** unless you connect your own email sender (SMTP) in Supabase. Encourage people to sign up with a real email.
 - **Free Supabase projects pause after about a week without use.** Daily logging keeps it awake; a paused project can be restored from the dashboard.
 - **One baby per family.** Twins or siblings would each need their own family for now.
+- **High scores are checked, not cheat-proof.** The server refuses impossible scores, but like any web game, a determined cheater could post a believable fake.
 
 ## Built with AI
 

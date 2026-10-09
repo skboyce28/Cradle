@@ -1,4 +1,4 @@
--- Cradle, step 2 of 2: families, accounts, and share keys (run after 1-setup.sql)
+-- Cradle, step 2 of 2: families, accounts, share keys, and Fun center high scores (run after 1-setup.sql)
 -- Paste all of this into Supabase > SQL Editor > New query, then press Run.
 -- Safe to run more than once. Your existing log is moved into your family automatically.
 -- Includes share keys for open sign-up (turn on sign-ups and turn off Confirm email in Supabase Auth settings).
@@ -229,11 +229,117 @@ begin
   return public.cradle_bootstrap();
 end $$;
 
+-- 5) Fun center: arcade-style high scores (Bottle Catch)
+--    Only initials and scores are ever shown to other people. All reads and writes go
+--    through the functions below; the tables themselves aren't readable from the app.
+create table if not exists public.cradle_players (
+  user_id    uuid primary key references auth.users(id) on delete cascade,
+  initials   text not null check (initials ~ '^[A-Z]{3}$'),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.cradle_scores (
+  id           bigint generated always as identity primary key,
+  user_id      uuid not null references auth.users(id) on delete cascade,
+  household_id uuid references public.cradle_households(id) on delete set null,
+  game         text not null default 'bottles',
+  initials     text not null check (initials ~ '^[A-Z]{3}$'),
+  score        int  not null check (score between 0 and 20000),
+  seconds      int  not null check (seconds between 0 and 130),
+  created_at   timestamptz not null default now()
+);
+create index if not exists cradle_scores_game_score on public.cradle_scores (game, score desc);
+create index if not exists cradle_scores_user on public.cradle_scores (user_id, created_at desc);
+
+alter table public.cradle_players enable row level security;
+alter table public.cradle_scores  enable row level security;
+
+-- Initials: three letters, and a short list that isn't allowed on a shared board
+create or replace function public.cradle_clean_initials(p text) returns text
+language plpgsql immutable as $$
+declare i text := upper(regexp_replace(coalesce(p,''), '[^A-Za-z]', '', 'g'));
+begin
+  if length(i) <> 3 then raise exception 'Initials need exactly 3 letters.'; end if;
+  if i = any (array['ASS','FUK','FUC','FCK','FKU','SEX','CUM','TIT','DIK','DIC','COK','KKK','NIG','NGR','FAG','WTF','STD','VAG','POO','PEE','SUX','SUK','JIZ','GOD','NAZ','HIV','DIE','KYS','PIS','XXX']) then
+    raise exception 'Please pick different initials.';
+  end if;
+  return i;
+end $$;
+
+-- The leaderboards: Everyone (each person's best), Our family, and My best
+create or replace function public.cradle_scores_board(p_game text default 'bottles') returns json
+language sql stable security definer set search_path = public as $$
+  with me as (select auth.uid() as uid),
+  fam as (select household_id from cradle_members where user_id = (select uid from me) order by joined_at desc limit 1),
+  best as (
+    select distinct on (s.user_id) s.user_id, s.initials, s.score, s.created_at, s.household_id
+    from cradle_scores s where s.game = p_game
+    order by s.user_id, s.score desc, s.created_at asc),
+  famscores as (
+    select distinct on (s.user_id) s.user_id, s.initials, s.score, s.created_at
+    from cradle_scores s join cradle_members m on m.user_id = s.user_id and m.household_id = (select household_id from fam)
+    where s.game = p_game
+    order by s.user_id, s.score desc, s.created_at asc)
+  select json_build_object(
+    'initials', (select initials from cradle_players where user_id = (select uid from me)),
+    'everyone', coalesce((select json_agg(json_build_object('initials', b.initials, 'score', b.score, 'me', b.user_id = (select uid from me), 'at', b.created_at) order by b.score desc, b.created_at)
+                          from (select * from best order by score desc, created_at limit 10) b), '[]'::json),
+    'family',   coalesce((select json_agg(json_build_object('initials', f.initials, 'score', f.score, 'me', f.user_id = (select uid from me), 'at', f.created_at) order by f.score desc, f.created_at)
+                          from (select * from famscores order by score desc, created_at limit 10) f), '[]'::json),
+    'mine',     coalesce((select json_agg(json_build_object('score', x.score, 'at', x.created_at) order by x.score desc, x.created_at)
+                          from (select score, created_at from cradle_scores where user_id = (select uid from me) and game = p_game order by score desc, created_at limit 10) x), '[]'::json),
+    'rank',     (select count(*) + 1 from best b2 where b2.score > coalesce((select max(score) from cradle_scores where user_id = (select uid from me) and game = p_game), -1)),
+    'players',  (select count(*) from best)
+  );
+$$;
+
+-- Save or change your initials (also updates your past scores, so the boards stay consistent)
+create or replace function public.cradle_set_initials(p_initials text) returns json
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); i text;
+begin
+  if uid is null then raise exception 'not signed in'; end if;
+  i := cradle_clean_initials(p_initials);
+  insert into cradle_players (user_id, initials) values (uid, i)
+    on conflict (user_id) do update set initials = excluded.initials, updated_at = now();
+  update cradle_scores set initials = i where user_id = uid;
+  return cradle_scores_board('bottles');
+end $$;
+
+-- Post a score. The server refuses scores a round couldn't produce and posting too often.
+create or replace function public.cradle_submit_score(p_score int, p_seconds int, p_initials text default null, p_game text default 'bottles') returns json
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); i text; h uuid; last timestamptz;
+begin
+  if uid is null then raise exception 'not signed in'; end if;
+  if p_game <> 'bottles' then raise exception 'unknown game'; end if;
+  if p_seconds is null or p_seconds < 0 or p_seconds > 130 then raise exception 'That round length isn''t possible.'; end if;
+  if p_score is null or p_score < 0 or p_score > 100 * greatest(p_seconds, 1) then raise exception 'That score isn''t possible for a round that long.'; end if;
+  select max(created_at) into last from cradle_scores where user_id = uid;
+  if last is not null and last > now() - interval '10 seconds' then raise exception 'Scores are coming in too fast. Try again in a moment.'; end if;
+  if (select count(*) from cradle_scores where user_id = uid and created_at > now() - interval '1 day') >= 200 then
+    raise exception 'That''s a lot of rounds today. Scores will post again tomorrow.';
+  end if;
+  if p_initials is not null and p_initials <> '' then
+    i := cradle_clean_initials(p_initials);
+    insert into cradle_players (user_id, initials) values (uid, i)
+      on conflict (user_id) do update set initials = excluded.initials, updated_at = now();
+  else
+    select initials into i from cradle_players where user_id = uid;
+    if i is null then raise exception 'Pick your initials first.'; end if;
+  end if;
+  select household_id into h from cradle_members where user_id = uid order by joined_at desc limit 1;
+  insert into cradle_scores (user_id, household_id, game, initials, score, seconds) values (uid, h, p_game, i, p_score, p_seconds);
+  return cradle_scores_board(p_game);
+end $$;
+
 grant execute on function public.cradle_bootstrap(), public.cradle_family_info(uuid), public.cradle_invite(uuid,text),
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
-  public.cradle_new_code(uuid), public.cradle_leave(uuid)
+  public.cradle_new_code(uuid), public.cradle_leave(uuid),
+  public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text)
   to authenticated;
 revoke execute on function public.cradle_bootstrap(), public.cradle_family_info(uuid), public.cradle_invite(uuid,text),
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
-  public.cradle_new_code(uuid), public.cradle_leave(uuid)
+  public.cradle_new_code(uuid), public.cradle_leave(uuid),
+  public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text)
   from anon, public;

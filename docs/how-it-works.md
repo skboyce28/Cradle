@@ -9,6 +9,7 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
   - `days`: keyed by date (`YYYY-MM-DD`); each day has `feeds`, `notes`, and a Vitamin D flag
   - `weights`, `settings`, plus UI preferences
   - `migrate()` upgrades older saved shapes when the app loads
+- **Game state.** Fun center settings live in the log's UI preferences. Your best score per account, remembered initials, and scores waiting to post (from rounds played offline) live under `cradle-game-v1`.
 - **Sync state.** Sign-in and sync bookkeeping live separately under `cradle-cloud-v1`: session tokens, the family id, the last sync time, and a fingerprint of each item as last synced.
 - **Day of life.** The birth date in Settings is **Day 0**. Diaper goals are computed from it.
 - **Feeds vs. other rows.** A 🧷 diaper-only row (no breast, bottle, or pump) and a 🛁 bath row (`bath: "sponge"` or `"tub"`, plus `time` and `note`) live in the same `feeds` list but never count as feeds in stats, streaks, gaps, or the next-feed time. `isFeed()` checks for `bath` first.
@@ -64,6 +65,8 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | `cradle_members` | Who belongs to which family, with role `owner` or `member` |
 | `cradle_invites` | Pending "add by email" invites |
 | `cradle_join_tries` | Wrong share-key attempts, for rate limiting |
+| `cradle_players` | Each account's 3 initials for the high-score boards |
+| `cradle_scores` | Fun center scores: account, family at the time, game, initials, score, round length in seconds |
 
 A trigger (`cradle_touch`) stamps `updated_at` with the server's clock and records `owner` on every write, so phones with wrong clocks can't confuse sync. Deleting an account clears `owner` on its entries but **never deletes entries**.
 
@@ -73,7 +76,7 @@ Every table has row-level security on.
 
 - **`cradle_items`:** you can read and write a row only if its `household_id` is one of your families, via `cradle_my_households()`. You also can't write a row into a family you're not in.
 - **Families, members, invites:** you can only *read* rows for your own families. You can't write them directly at all.
-- **`cradle_join_tries`:** no access from the app.
+- **`cradle_join_tries`, `cradle_players`, `cradle_scores`:** no direct access from the app; only through the functions below.
 
 All changes to families go through these functions, which check permissions themselves and are callable only by signed-in users:
 
@@ -87,6 +90,9 @@ All changes to families go through these functions, which check permissions them
 | `cradle_new_code(h)` | owner | New share key; the old one stops working |
 | `cradle_remove_member(h, user)` | owner | Removes someone |
 | `cradle_leave(h)` | members | Leaves the family |
+| `cradle_scores_board(game)` | anyone signed in | The three boards: Everyone (each person's best, top 10), Our family (top 10), My best (top 10), plus your initials and rank. Only initials and scores. |
+| `cradle_set_initials(initials)` | anyone signed in | Saves your 3 initials and updates your past scores |
+| `cradle_submit_score(score, seconds, initials)` | anyone signed in | Posts a score. Refuses rounds over 130 seconds, more than 100 points per second played, posting within 10 seconds of your last score, more than 200 scores a day, and initials on a short blocklist. |
 
 Share keys are 8 characters from an alphabet without look-alikes (no 0/O, 1/I/L), shown as `XXXX-XXXX`: about 850 billion combinations.
 

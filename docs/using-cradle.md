@@ -123,7 +123,32 @@ In the profile menu. **High-contrast cards** are five original black-and-white d
 - Hold the phone about 8 to 12 inches (20 to 30 cm) from your baby's face. A few minutes is plenty; stop when your baby looks away, yawns, or fusses.
 - The screen stays on while a card is showing. ✕ or the back gesture returns to the Learning center.
 
-## Profile menu
+## Fun center
+
+In the profile menu. **Bottle Catch** is a two-minute, one-thumb game for the in-between moments.
+
+| Falls | What it does |
+|---|---|
+| 🍼 Bottle | +10. Catching in a row builds a multiplier, up to ×4 after 15 in a row. Missing one resets it. |
+| 🍼 Golden bottle (glowing) | +50, times the multiplier. Rare and quick. |
+| 🧷 Safety pin | Costs a heart. You have 3; losing all 3 ends the round early. |
+| 🧸 Pacifier | Slows everything down for 5 seconds. |
+
+- **Controls:** drag anywhere to move the basket. On a computer, the arrow keys work too, and Space pauses.
+- **Pace:** things fall faster as the 2 minutes run down.
+- **Pausing:** the game pauses by itself when you switch apps or the feed alarm rings. **❚❚** pauses it by hand; **End round** finishes early and keeps your score.
+- **Sound and buzz:** sound starts **off** so it won't wake anyone. **Buzz** (a light vibration) and **Sound** switch on the start and pause screens.
+
+### High scores
+
+- **Initials:** your first posted score asks for **3 initials**. They're remembered for your account, and **Change** on the board updates them, past scores included.
+- **Three boards:**
+  - **Everyone:** each player's best score across this Cradle site, top 10.
+  - **Our family:** your family's top 10.
+  - **My best:** your own top 10, with your rank.
+- **What's shown:** only initials and scores, never names or emails.
+- **Offline:** a round played offline is saved on the phone and posts when you're back online. If several are waiting, your best one posts.
+
 
 The round button at the top right:
 
@@ -133,6 +158,7 @@ The round button at the top right:
 | **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | All logged weights |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
+| **Fun center** | Bottle Catch and its high scores. See [Fun center](#fun-center). |
 | **Achievements** | Ten badges with progress, like *Sunshine Streak* (7 days of Vitamin D) and *Diaper Pro* (7 days of diaper goals). A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, feed interval, alarm, and goals |
 | **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |

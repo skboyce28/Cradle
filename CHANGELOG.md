@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.8
+
+**Fun center** (rerun `supabase/2-family.sql`)
+- New in the profile menu, under Learning center: **🍼 Bottle Catch**
+  - a two-minute, one-thumb game: catch bottles, dodge safety pins, and grab the pacifier for slow-mo
+  - golden bottles are worth +50, and catching in a row builds up to ×4
+  - 3 hearts, and it speeds up as the clock runs down
+  - pauses itself when you switch away or the feed alarm rings; sound starts off, with Buzz and Sound toggles
+- Arcade-style high scores with 3 initials:
+  - three boards: **Everyone**, **Our family**, **My best**
+  - initials are picked once and changeable anytime
+  - offline rounds post later
+- Database: `cradle_players` and `cradle_scores`, plus `cradle_scores_board`, `cradle_set_initials`, and `cradle_submit_score`
+  - the server refuses impossible scores, posting too often, and a short list of rude initials
+  - only initials and scores are ever shown to others
+- Admin queries 17 to 20 for scores
+
 ## v1.7
 
 **Learning center**

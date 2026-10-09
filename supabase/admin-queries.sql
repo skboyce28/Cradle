@@ -125,3 +125,26 @@ select pg_size_pretty(pg_total_relation_size('public.cradle_items')) as log_tabl
 --     A phone offline for longer than that could bring a deleted entry back, so keep the window long.
 delete from public.cradle_items
 where deleted and updated_at < now() - interval '90 days';
+
+
+-- ============================================================
+-- Fun center (Bottle Catch) high scores
+-- ============================================================
+
+-- 17. Top 20 scores, with the account behind each (only you see emails; players see initials)
+select s.id, s.initials, s.score, s.seconds, s.created_at, u.email
+from public.cradle_scores s
+join auth.users u on u.id = s.user_id
+where s.game = 'bottles'
+order by s.score desc, s.created_at
+limit 20;
+
+-- 18. CHANGES DATA. Remove one score (use the id from query 17)
+delete from public.cradle_scores where id = 0;
+
+-- 19. CHANGES DATA. Clear every score for one account (their initials stay saved)
+delete from public.cradle_scores
+where user_id = (select id from auth.users where email = 'their@email.com');
+
+-- 20. CHANGES DATA. Reset the whole board for everyone
+delete from public.cradle_scores where game = 'bottles';

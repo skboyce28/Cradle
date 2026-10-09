@@ -319,6 +319,56 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 #hc button.on{color:inherit}
 #hc button.on span{color:#fff}
 #hc.inv button.on span{color:#000}
+/* Fun center: Bottle Catch */
+.fun-game{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--panel2)}
+.fun-game .ic{width:64px;height:64px;border-radius:16px;background:linear-gradient(160deg,#1c2840,#0c1322);display:grid;place-items:center;font-size:34px}
+.fun-game h4{margin:0 0 2px;font-size:17px}
+.fun-game .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+#game{position:fixed;inset:0;z-index:116;display:none;background:#0c1322;color:#eef2fb;touch-action:none;user-select:none;-webkit-user-select:none;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+#game.open{display:block}
+#gCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#gHud{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;pointer-events:none}
+#gHud .sc{font:800 26px/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+#gHud .cb{font:800 15px/1 system-ui,sans-serif;color:#ffd36b;min-width:26px}
+#gHud .hr{font-size:16px;letter-spacing:2px}
+#gHud .tm{font:700 16px/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;margin-left:auto}
+#gHud button{pointer-events:auto;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.08);color:#fff;border-radius:999px;height:38px;min-width:38px;padding:0 12px;font-weight:700}
+#gPanel{position:absolute;inset:0;display:grid;place-items:center;padding:16px;background:rgba(6,10,20,.55)}
+.g-card{width:min(380px,100%);max-height:100%;overflow:auto;background:#152036;border:1px solid #2c3c5a;border-radius:20px;padding:20px;display:grid;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.g-title{font:800 26px/1.1 system-ui,sans-serif;text-align:center}
+.g-big{font:800 56px/1 system-ui,sans-serif;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-1px}
+.g-sub{color:#a9b6cc;font-size:14px;text-align:center;margin:0}
+.g-new{color:#ffd36b}
+.g-how{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15px}
+.g-how li{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px}
+.g-how span{font-size:22px;text-align:center}
+.g-how .gold{filter:drop-shadow(0 0 6px #ffd36b)}
+.g-go,.g-ghost{height:48px;border-radius:14px;font:700 16px system-ui,sans-serif;border:0;width:100%}
+.g-go{background:#e07a48;color:#fff}
+.g-ghost{background:transparent;color:#eef2fb;border:1.5px solid #3a4d70}
+.g-tog{display:flex;gap:8px;justify-content:center}
+.g-tog button{border:1.5px solid #3a4d70;background:transparent;color:#a9b6cc;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px}
+.g-tog button.on{border-color:#e07a48;color:#fff}
+.g-ini{display:grid;gap:6px}
+.g-ini label{font-size:14px;text-align:center;color:#eef2fb}
+.g-ini div{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:8px}
+.g-ini input{height:48px;border-radius:12px;border:1.5px solid #3a4d70;background:#0c1322;color:#fff;font:800 24px ui-monospace,Menlo,monospace;letter-spacing:8px;text-align:center;text-transform:uppercase;min-width:0}
+.g-post{text-align:center;font-size:14px;min-height:18px;margin:0;color:#a9b6cc}
+.g-post.done{color:#8fe0a8}.g-post.err{color:#ff9a8a}
+.g-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;background:#0c1322;border-radius:12px;padding:4px}
+.g-tabs button{border:0;background:transparent;color:#a9b6cc;border-radius:9px;height:36px;font-weight:700;font-size:13px}
+.g-tabs button.on{background:#2a3a58;color:#fff}
+.g-list ol{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.g-list li{display:grid;grid-template-columns:28px 64px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#0f192c;font-variant-numeric:tabular-nums}
+.g-list li.me{background:#3a2a1e;outline:1.5px solid #e07a48}
+.g-list .rk{color:#a9b6cc;font-weight:700}
+.g-list .in{font:800 18px ui-monospace,Menlo,monospace;letter-spacing:3px}
+.g-list .sc{font-weight:800;font-size:17px;text-align:right}
+.g-list .dt{color:#7f8ca4;font-size:12px}
+.g-list li:nth-child(1) .rk{color:#ffd36b}
+.g-me{text-align:center;color:#a9b6cc;font-size:14px}
+.g-me .mono{font-family:ui-monospace,Menlo,monospace;letter-spacing:2px;color:#fff}
+.g-link{border:0;background:none;color:#ffb68f;text-decoration:underline;font:inherit;padding:0 4px}
 /* Bath rows: time, sponge or tub, note */
 .feed.bathrow{grid-template-columns:44px 118px auto 1fr 32px;background:color-mix(in srgb,var(--wet) 7%,var(--panel));border-color:color-mix(in srgb,var(--wet) 35%,var(--line))}
 .feed.bathrow .n{color:var(--wet)}
@@ -498,6 +548,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <hr>
         <button class="item" data-act="ach"><span>🏆</span>Achievements<span class="achchip" id="achChip"></span></button>
         <button class="item" data-act="learn"><span>🎓</span>Learning center</button>
+        <button class="item" data-act="fun"><span>🎮</span>Fun center</button>
         <button class="item" data-addweight><span>⚖️</span>Weights</button>
         <button class="item" data-act="settings"><span>⚙️</span>Settings</button>
         <button class="item" data-act="export"><span>⬇️</span>Export data</button>
@@ -693,7 +744,8 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">🌌</div><h3>Calm screen</h3><p>A slow, soothing screensaver with the time, time since the last feed, and the next feed due. Open it with the moon button at the top right, next to your profile. Tap the screen to show controls: spa music, ocean, rain, or white noise, volume, and whether the clock sits in the center or the corner. The feed alarm still works here. When Cradle is installed as an app, the screen stays on while Calm or Night shift is open. Opened as a file, your phone may still turn the screen off on its own timer.</p></div>
       <div class="card"><div class="ico">🏆</div><h3>Achievements</h3><p>Ten badges based on your goals, like Sunshine Streak for 7 days of Vitamin D and Diaper Pro for 7 days of diaper goals. Open them from the profile menu to see progress. Streaks aren’t broken by a day that isn’t over yet.</p></div>
       <div class="card"><div class="ico">🎓</div><h3>Learning center</h3><p>In the profile menu. <b>High-contrast cards</b> are five bold black-and-white designs (Bullseye, Checkerboard, Zigzag, Spiral, and Smile) for calm, awake moments with your baby. Tap one to show it full screen, then swipe or tap the sides to change cards. <b>Invert</b> swaps black and white, and <b>Auto</b> changes cards every 10 seconds. Hold the phone about 8 to 12 inches (20 to 30 cm) away, and stop when your baby looks away or fusses. The screen stays on while a card is showing.</p></div>
-      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Learning center, Settings, Export, Import, Print, Erase all data, this Guide, About, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
+      <div class="card"><div class="ico">🎮</div><h3>Fun center</h3><p>In the profile menu: <b>Bottle Catch</b>, a two-minute, one-thumb game. Drag anywhere to move the basket. Bottles are +10, golden bottles +50, and catching in a row builds up to ×4. Safety pins cost a heart (you have 3), and the pacifier slows everything for 5 seconds. It pauses by itself if you switch away or the feed alarm rings. Sound is off to start; Buzz and Sound are on the start screen. Your first posted score asks for 3 initials, which you can change on the board. <b>High scores</b> has three boards: Everyone (each person’s best across this Cradle), Our family, and My best. Only initials and scores are shown. Scores from rounds played offline post when you’re back online.</p></div>
+      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Learning center, Fun center, Settings, Export, Import, Print, Erase all data, this Guide, About, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
     </div>
     <p class="disc">This tracker is for keeping records only. Volumes, goals, and supplements should follow your pediatrician or lactation consultant. If you're worried about feeding, diapers, or weight gain, call your baby's doctor.</p>
   </section>
@@ -910,6 +962,22 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
   <div class="hc-bar"><button data-hc="prev" aria-label="Previous card">‹</button><button data-hc="auto" aria-label="Change cards every 10 seconds"><span>Auto</span></button><button data-hc="inv" aria-label="Swap black and white"><span>Invert</span></button><button data-hc="next" aria-label="Next card">›</button></div>
 </div>
 
+<div class="modal" id="funModal">
+  <div class="card" style="max-width:480px">
+    <h3>🎮 Fun center</h3>
+    <p class="sub" style="margin:0 0 12px">Quick games for the in-between moments. One thumb, two minutes.</p>
+    <div class="fun-game"><div class="ic" aria-hidden="true">🍼</div><div><h4>Bottle Catch</h4><div class="sub">Catch falling bottles, dodge the pins. High scores with your initials. Your best: <b id="funBest">--</b></div>
+      <div class="btns"><button class="primary" id="funPlay">Play</button><button class="ghost" id="funScores">High scores</button></div></div></div>
+    <div class="mrow"><button class="ghost" data-close>Close</button></div>
+  </div>
+</div>
+
+<div id="game" role="dialog" aria-label="Bottle Catch">
+  <canvas id="gCanvas"></canvas>
+  <div id="gHud" class="hidden"><span class="sc" id="gScore">0</span><span class="cb" id="gCombo"></span><span class="hr" id="gHearts" aria-label="Hearts left"></span><span class="tm" id="gTime">2:00</span><button data-g="pause" aria-label="Pause">❚❚</button></div>
+  <div id="gPanel"></div>
+</div>
+
 <div class="modal" id="achModal">
   <div class="card">
     <div class="achtop"><div class="trophy">🏆</div><div style="flex:1"><h3 style="margin:0">Achievements</h3><div class="sub" id="achSum"></div><div class="achbar"><i id="achFill"></i></div></div></div>
@@ -921,9 +989,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.7</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.8</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.8</b>
+    <ul class="cl"><li>Fun center in the profile menu with Bottle Catch, a two-minute one-thumb game</li><li>Arcade-style high scores with your initials: Everyone, Our family, and My best</li><li>The game pauses itself when you switch away or the feed alarm rings</li></ul>
     <b>v1.7</b>
     <ul class="cl"><li>Learning center in the profile menu, with five high-contrast black-and-white cards to show your baby</li><li>⏰ Set alarm shows the time to set on your phone, big and clear, with the steps</li></ul>
     <b>v1.6</b>
@@ -948,7 +1018,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.7';
+const VERSION='1.8';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -1036,7 +1106,7 @@ $('#dd').addEventListener('click',e=>{
   if(tb){S.settings.theme=tb.dataset.theme;applyTheme();save();if(tab==='dash')renderDash();return}
   const a=e.target.closest('[data-act]');if(!a)return;$('#menu').classList.remove('open');
   ({settings:openSettings,export:openExport,import:openImport,erase:eraseAll,ach:openAch,print:printTab,
-    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,learn:openLearn,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account.','Sign out'))clSignOut()}})[a.dataset.act]();
+    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,learn:openLearn,fun:openFun,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account.','Sign out'))clSignOut()}})[a.dataset.act]();
 });
 $$('.modal:not(#askModal)').forEach(m=>m.addEventListener('click',e=>{if(e.target===m||e.target.closest('[data-close]'))m.classList.remove('open')}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(nightOpen||calmOpen)){nightOpen?closeNight():closeCalm();return}if(e.key==='Escape'){if($('#askModal').classList.contains('open')){$('#askCancel').click();return}$$('.modal.open').forEach(m=>m.classList.remove('open'));$('#menu').classList.remove('open')}});
@@ -1863,6 +1933,7 @@ document.addEventListener('pointerdown',()=>{if(AC&&AC.state==='suspended')AC.re
 function chime(){const a=actx();if(!a)return;[880,660,990,784].forEach((fq,i)=>{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+i*0.32;o.type='sine';o.frequency.value=fq;g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.32,t+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t+1.4);o.connect(g).connect(a.destination);o.start(t);o.stop(t+1.5)})}
 let ringInt=null,ringStop=null,ringDue=null;
 function ringAlarm(dueTs){
+  gamePauseIfPlaying();
   if(ringDue===dueTs&&$('#alarmBar').classList.contains('on'))return;ringDue=dueTs;
   const d=new Date(dueTs);$('#alarmTxt').textContent=`🍼 Feed due${babyName()?' for '+babyName():''} at ${fmt12(pad(d.getHours())+':'+pad(d.getMinutes()))}`;
   $('#alarmBar').classList.add('on');const beep=()=>{chime();try{navigator.vibrate&&navigator.vibrate([400,200,400,200,600])}catch(e){}};
@@ -2407,6 +2478,222 @@ $('#hc').addEventListener('click',e=>{const b=e.target.closest('[data-hc]');
 {let sx=null;$('#hc').addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});$('#hc').addEventListener('touchend',e=>{if(sx==null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>50){e.preventDefault();hcStep(dx<0?1:-1)}})}
 document.addEventListener('keydown',e=>{if(!hcOpen)return;if(e.key==='ArrowRight')hcStep(1);else if(e.key==='ArrowLeft')hcStep(-1);else if(e.key==='Escape'){e.stopImmediatePropagation();closeHC()}},true);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&hcOpen)keepAwake(true)});
+
+/* ================= Fun center: Bottle Catch ================= */
+// One-thumb arcade game. 2-minute rounds, 3 hearts, combo multiplier up to x4.
+// Scores post to the family database (cradle_submit_score); boards come from cradle_scores_board.
+const GKEY='cradle-game-v1',G_ROUND=120,G_ITEMS={bottle:'🍼',gold:'🍼',pin:'🧷',paci:'🧸'};
+let GS=(()=>{try{return JSON.parse(localStorage.getItem(GKEY)||'null')||{}}catch(e){return {}}})();
+GS.best=GS.best||{};GS.pending=GS.pending||[];GS.initials=GS.initials||{};
+const gSave=()=>{try{localStorage.setItem(GKEY,JSON.stringify(GS))}catch(e){}};
+const gWho=()=>(CL&&CL.owner)||'local';
+const gOpt=()=>{S.ui.game=Object.assign({buzz:true,sound:false},S.ui.game||{});return S.ui.game};
+let gState='closed',gRaf=0,gLast=0,gCtx=null,gW=0,gH=0,gDpr=1,gRun=null,gBoardTab='everyone',gBoard=null;
+
+function openFun(){
+  const b=GS.best[gWho()]||0;
+  $('#funBest').textContent=b?b.toLocaleString():'--';
+  $('#funModal').classList.add('open');gFlush();
+}
+function gOpen(){$('#funModal').classList.remove('open');$('#game').classList.add('open');document.body.style.overflow='hidden';gState='start';gResize();gPanel();gDrawIdle();keepAwake(true)}
+function gClose(){cancelAnimationFrame(gRaf);gState='closed';$('#game').classList.remove('open');document.body.style.overflow='';if(!nightOpen&&!calmOpen&&!hcOpen)keepAwake(false);openFun()}
+function gResize(){const c=$('#gCanvas'),r=c.getBoundingClientRect();gDpr=Math.min(2,window.devicePixelRatio||1);gW=r.width;gH=r.height;c.width=Math.round(gW*gDpr);c.height=Math.round(gH*gDpr);gCtx=c.getContext('2d');gCtx.setTransform(gDpr,0,0,gDpr,0,0)}
+window.addEventListener('resize',()=>{if(gState!=='closed'){gResize();if(gState!=='play')gDraw()}});
+
+function gNew(){
+  const bw=Math.max(64,gW*0.22);
+  gRun={t:0,score:0,combo:0,best:0,hearts:3,items:[],fx:[],spawn:0.6,slowUntil:-1,lastPaci:-99,shake:0,
+    bx:gW/2,tx:gW/2,bw,bh:Math.max(18,gH*0.045),by:gH-Math.max(64,gH*0.11),size:Math.max(28,Math.min(52,gW*0.085)),caught:0,missed:0};
+}
+function gStart(){gNew();gState='play';gPanel();gHud();gLast=performance.now();cancelAnimationFrame(gRaf);gRaf=requestAnimationFrame(gLoop)}
+function gPause(){if(gState!=='play')return;gState='pause';cancelAnimationFrame(gRaf);gPanel()}
+function gResume(){if(gState!=='pause')return;gState='play';gPanel();gLast=performance.now();gRaf=requestAnimationFrame(gLoop)}
+function gamePauseIfPlaying(){if(gState==='play')gPause()}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')gamePauseIfPlaying();else if(gState!=='closed')keepAwake(true)});
+
+function gBuzz(ms){if(gOpt().buzz){try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}}}
+function gBeep(f,d){if(!gOpt().sound)return;const a=actx();if(!a)return;const o=a.createOscillator(),g=a.createGain(),t=a.currentTime;o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.12,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+0.02)}
+
+function gLoop(now){
+  if(gState!=='play')return;
+  const dt=Math.min(0.05,(now-gLast)/1000);gLast=now;gStep(dt);gDraw();gHud();
+  if(gState==='play')gRaf=requestAnimationFrame(gLoop);
+}
+function gStep(dt){
+  const R=gRun;R.t+=dt;const p=Math.min(1,R.t/G_ROUND),slow=R.t<R.slowUntil?0.45:1;
+  R.bx+=(R.tx-R.bx)*Math.min(1,dt*18);R.bx=Math.max(R.bw/2,Math.min(gW-R.bw/2,R.bx));
+  R.spawn-=dt*slow;
+  if(R.spawn<=0){
+    R.spawn=0.95-0.5*p;const r=Math.random();let type='bottle';
+    if(r<0.04)type='gold';else if(r<0.065&&R.t-R.lastPaci>15&&R.t>=R.slowUntil){type='paci';R.lastPaci=R.t}else if(r<0.065+0.15+0.13*p)type='pin';
+    const s=R.size*(type==='gold'?0.95:1);
+    R.items.push({type,x:s/2+Math.random()*(gW-s),y:-s,s,v:gH*(0.28+0.42*p)*(type==='gold'?1.35:1)*(0.9+Math.random()*0.2),wob:Math.random()*6.28});
+  }
+  const top=R.by;
+  for(const it of R.items){
+    const py=it.y;it.y+=it.v*dt*slow;it.wob+=dt*3;
+    if(!it.done&&py+it.s/2<top&&it.y+it.s/2>=top&&Math.abs(it.x-R.bx)<=R.bw/2+it.s*0.3){it.done=true;gCatch(it)}
+    else if(!it.done&&it.y-it.s/2>gH){it.done=true;if(it.type==='bottle'||it.type==='gold'){if(R.combo>=5)gFx('Combo lost',it.x,gH-90,'#9aa8ba');R.combo=0;R.missed++}}
+  }
+  R.items=R.items.filter(it=>!it.done);
+  R.fx.forEach(f=>{f.y-=40*dt;f.a-=dt*1.2});R.fx=R.fx.filter(f=>f.a>0);
+  if(R.shake>0)R.shake=Math.max(0,R.shake-dt*30);
+  if(R.t>=G_ROUND||R.hearts<=0)gEnd();
+}
+const gMult=()=>Math.min(4,1+Math.floor(gRun.combo/5));
+function gFx(txt,x,y,col){gRun.fx.push({txt,x,y,col,a:1})}
+function gCatch(it){
+  const R=gRun;
+  if(it.type==='pin'){R.hearts--;R.combo=0;R.shake=8;gBuzz(120);gBeep(160,0.25);gFx('Ouch!',it.x,R.by-20,'#ff8a7a');return}
+  if(it.type==='paci'){R.slowUntil=R.t+5;gBuzz(30);gBeep(520,0.2);gFx('Slow-mo!',it.x,R.by-20,'#bfe3ff');return}
+  R.combo++;R.best=Math.max(R.best,R.combo);R.caught++;const pts=(it.type==='gold'?50:10)*gMult();R.score+=pts;
+  gBuzz(it.type==='gold'?40:15);gBeep(it.type==='gold'?1046:660+gMult()*80,0.09);gFx('+'+pts,it.x,R.by-20,it.type==='gold'?'#ffd36b':'#ffffff');
+}
+function gEnd(){
+  const R=gRun;gState='over';cancelAnimationFrame(gRaf);gBuzz(200);
+  const w=gWho(),prev=GS.best[w]||0;R.newBest=R.score>prev;if(R.newBest)GS.best[w]=R.score;
+  R.secs=Math.min(G_ROUND,Math.round(R.t));R.post={state:'idle',msg:''};gSave();gDraw();gPanel();
+  if(R.score>0)gPost();
+}
+
+/* drawing */
+function gBg(){const c=gCtx,gr=c.createLinearGradient(0,0,0,gH);gr.addColorStop(0,'#0c1322');gr.addColorStop(1,'#1c2840');c.fillStyle=gr;c.fillRect(0,0,gW,gH);
+  c.fillStyle='rgba(255,255,255,.55)';for(let i=0;i<40;i++){const x=(i*97.3)%gW,y=(i*53.7)%(gH*0.7);c.fillRect(x,y,1.4,1.4)}}
+function gDrawIdle(){if(!gCtx)return;gBg();}
+function gDraw(){
+  if(!gCtx)return;const c=gCtx,R=gRun;c.save();
+  if(R&&R.shake)c.translate((Math.random()-.5)*R.shake,(Math.random()-.5)*R.shake);
+  gBg();if(!R){c.restore();return}
+  if(R.t<R.slowUntil){c.fillStyle='rgba(120,180,255,.10)';c.fillRect(0,0,gW,gH)}
+  c.textAlign='center';c.textBaseline='middle';
+  for(const it of R.items){
+    if(it.type==='gold'){const g=c.createRadialGradient(it.x,it.y,2,it.x,it.y,it.s*0.9);g.addColorStop(0,'rgba(255,214,90,.85)');g.addColorStop(1,'rgba(255,214,90,0)');c.fillStyle=g;c.beginPath();c.arc(it.x,it.y,it.s*0.9,0,6.29);c.fill()}
+    c.save();c.translate(it.x,it.y);c.rotate(Math.sin(it.wob)*0.18);c.font=`${it.s}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;c.fillText(G_ITEMS[it.type],0,0);c.restore();
+  }
+  // basket
+  const x=R.bx-R.bw/2,y=R.by,w=R.bw,h=R.bh;
+  c.fillStyle='#c98a4b';c.beginPath();c.moveTo(x,y);c.lineTo(x+w,y);c.lineTo(x+w-h*0.5,y+h*1.6);c.lineTo(x+h*0.5,y+h*1.6);c.closePath();c.fill();
+  c.strokeStyle='rgba(90,50,20,.45)';c.lineWidth=2;for(let i=1;i<6;i++){const xx=x+w*i/6;c.beginPath();c.moveTo(xx,y+2);c.lineTo(xx-(xx-R.bx)*0.12,y+h*1.6-2);c.stroke()}
+  c.fillStyle='#e9a865';c.fillRect(x-3,y-4,w+6,8);
+  for(const f of R.fx){c.globalAlpha=Math.max(0,f.a);c.fillStyle=f.col;c.font='700 18px system-ui,sans-serif';c.fillText(f.txt,f.x,f.y)}
+  c.globalAlpha=1;c.restore();
+}
+function gHud(){
+  const R=gRun;if(!R){$('#gHud').classList.add('hidden');return}
+  $('#gHud').classList.toggle('hidden',gState==='start');
+  $('#gScore').textContent=R.score.toLocaleString();
+  const m=gMult();$('#gCombo').textContent=m>1?'×'+m:'';
+  $('#gHearts').textContent='❤️'.repeat(Math.max(0,R.hearts))+'🤍'.repeat(3-Math.max(0,R.hearts));
+  const left=Math.max(0,G_ROUND-R.t);$('#gTime').textContent=Math.floor(left/60)+':'+pad(Math.floor(left%60));
+}
+
+/* panels: start, pause, over, board */
+function gToggles(){const o=gOpt();return `<div class="g-tog"><button data-g="buzz" class="${o.buzz?'on':''}" aria-pressed="${o.buzz}">Buzz ${o.buzz?'on':'off'}</button><button data-g="sound" class="${o.sound?'on':''}" aria-pressed="${o.sound}">Sound ${o.sound?'on':'off'}</button></div>`}
+function gPanel(){
+  const P=$('#gPanel'),R=gRun;P.classList.toggle('hidden',gState==='play');$('#gHud').classList.toggle('hidden',gState==='start'||!R);
+  if(gState==='start'){
+    P.innerHTML=`<div class="g-card"><div class="g-title">🍼 Bottle Catch</div>
+      <ul class="g-how"><li><span>🍼</span>Catch bottles: +10. Keep catching for up to ×4.</li><li><span class="gold">🍼</span>Golden bottles: +50.</li><li><span>🧷</span>Dodge safety pins. 3 hearts.</li><li><span>🧸</span>Pacifier: slow-mo for 5 seconds.</li></ul>
+      <p class="g-sub">Drag anywhere to move the basket. Rounds last 2 minutes.</p>
+      <button class="g-go" data-g="play">Play</button><button class="g-ghost" data-g="board">High scores</button>${gToggles()}</div>`;
+  }else if(gState==='pause'){
+    P.innerHTML=`<div class="g-card"><div class="g-title">Paused</div><p class="g-sub">${R.score.toLocaleString()} points · ${Math.floor((G_ROUND-R.t)/60)}:${pad(Math.floor((G_ROUND-R.t)%60))} left</p><button class="g-go" data-g="resume">Resume</button><button class="g-ghost" data-g="quit">End round</button>${gToggles()}</div>`;
+  }else if(gState==='over'){
+    const ini=GS.initials[gWho()]||'',need=R.score>0&&!ini&&R.post.state!=='done';
+    P.innerHTML=`<div class="g-card"><div class="g-title">${R.hearts<=0?'Out of hearts':'Time!'}</div>
+      <div class="g-big">${R.score.toLocaleString()}</div><p class="g-sub">${R.newBest&&R.score>0?'<b class="g-new">New personal best!</b> · ':''}${R.caught} caught · best streak ${R.best}</p>
+      ${need?`<form class="g-ini" id="gIniForm"><label for="gIni">Your initials for the high-score board</label><div><input id="gIni" maxlength="3" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC" value=""><button class="g-go" type="submit">Post</button></div><span class="g-sub">You pick them once. Change them anytime on the board.</span></form>`:''}
+      <p class="g-post ${R.post.state}" id="gPost">${esc(R.post.msg)}</p>
+      <button class="g-go" data-g="play">Play again</button><button class="g-ghost" data-g="board">High scores</button><button class="g-ghost" data-g="close">Close</button></div>`;
+    const f=$('#gIniForm');if(f){const i=$('#gIni');i.addEventListener('input',()=>{i.value=i.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,3)});f.onsubmit=e=>{e.preventDefault();if(i.value.length!==3){gPostMsg('err','Initials need 3 letters.');return}gPost(i.value)};setTimeout(()=>i.focus(),50)}
+  }else if(gState==='board'){
+    P.innerHTML=`<div class="g-card g-boardcard"><div class="g-title">🏆 High scores</div>
+      <div class="g-tabs" role="tablist">${[['everyone','Everyone'],['family','Our family'],['mine','My best']].map(([k,l])=>`<button role="tab" aria-selected="${gBoardTab===k}" class="${gBoardTab===k?'on':''}" data-gt="${k}">${l}</button>`).join('')}</div>
+      <div id="gList" class="g-list"><p class="g-sub">Loading…</p></div>
+      <div class="g-me" id="gMe"></div>
+      <button class="g-go" data-g="play">Play</button><button class="g-ghost" data-g="back">Back</button></div>`;
+    gLoadBoard();
+  }
+}
+function gPostMsg(state,msg){if(!gRun)return;gRun.post={state,msg};const el=$('#gPost');if(el){el.className='g-post '+state;el.textContent=msg}}
+function gErrText(e){const m=(e&&e.message)||'';
+  if(e&&e.code===404||/cradle_submit_score|cradle_scores_board|Could not find the function/i.test(m))return 'setup';
+  if(!navigator.onLine||e&&(e.name==='AbortError'||m==='Failed to fetch'))return 'offline';
+  return m||'Something went wrong.'}
+async function gPost(initials){
+  const R=gRun,w=gWho();if(!R)return;
+  let ini=initials||GS.initials[w];
+  if(!ini&&CL.session&&navigator.onLine){gPostMsg('wait','Posting…');try{const b0=await clRpc('cradle_scores_board',{p_game:'bottles'});if(b0&&b0.initials){ini=b0.initials;GS.initials[w]=ini;gSave()}}catch(e){}}
+  if(!ini){R.post={state:'idle',msg:''};gPanel();return}
+  if(!CL.session){gQueue(R.score,R.secs);gPostMsg('wait','Saved on this phone. It posts when you sign in.');return}
+  gPostMsg('wait','Posting…');
+  try{
+    const b=await clRpc('cradle_submit_score',{p_score:R.score,p_seconds:R.secs,p_initials:initials||null});
+    if(b&&b.initials)GS.initials[w]=b.initials;gBoard=b;gSave();
+    const pos=(b.everyone||[]).findIndex(x=>x.me&&x.score===R.score);
+    R.post={state:'done',msg:pos>-1?`Posted! You're #${pos+1} on Everyone.`:'Posted to the high scores.'};
+    if(gState==='over')gPanel();
+  }catch(e){const t=gErrText(e);
+    if(t==='offline'){gQueue(R.score,R.secs);gPostMsg('wait','Saved. It posts when you’re back online.')}
+    else if(t==='setup'){gQueue(R.score,R.secs);gPostMsg('wait','Saved. High scores need a quick database update by whoever runs this Cradle.')}
+    else if(/too fast/i.test(t)){gQueue(R.score,R.secs);gPostMsg('wait','Saved. It posts in a moment.');setTimeout(gFlush,12000)}
+    else{gPostMsg('err',t);if(initials&&gState==='over'){/* keep the initials form */}}}
+}
+function gQueue(score,secs){if(score<=0)return;GS.pending.push({who:gWho(),score,secs,at:Date.now()});gSave()}
+let gFlushing=false;
+async function gFlush(){
+  if(gFlushing||!CL.session||!navigator.onLine)return;const w=gWho(),mine=GS.pending.filter(p=>p.who===w);if(!mine.length)return;
+  const ini=GS.initials[w];if(!ini){try{const b=await clRpc('cradle_scores_board',{p_game:'bottles'});if(b&&b.initials){GS.initials[w]=b.initials;gSave()}else return}catch(e){return}}
+  gFlushing=true;const top=mine.reduce((a,b)=>b.score>a.score?b:a);
+  try{await clRpc('cradle_submit_score',{p_score:top.score,p_seconds:top.secs,p_initials:null});GS.pending=GS.pending.filter(p=>p.who!==w);gSave()}
+  catch(e){const t=gErrText(e);if(t!=='offline'&&t!=='setup'&&!/too fast/i.test(t)){GS.pending=GS.pending.filter(p=>p.who!==w);gSave()}}
+  finally{gFlushing=false}
+}
+window.addEventListener('online',()=>setTimeout(gFlush,1500));
+async function gLoadBoard(){
+  const L=$('#gList');
+  try{if(CL.session&&navigator.onLine){gBoard=await clRpc('cradle_scores_board',{p_game:'bottles'});if(gBoard&&gBoard.initials){GS.initials[gWho()]=gBoard.initials;gSave()}}}
+  catch(e){const t=gErrText(e);if(!$('#gList'))return;L.innerHTML=`<p class="g-sub">${t==='setup'?'High scores aren’t set up on this Cradle yet. Whoever runs it needs to rerun the database script (supabase/2-family.sql).':t==='offline'?'You’re offline. High scores load when you’re back online.':esc(t)}</p>`;gMe();return}
+  if(!$('#gList'))return;gRenderBoard();
+}
+function gRenderBoard(){
+  const L=$('#gList');if(!L)return;const b=gBoard;
+  if(!b){L.innerHTML=`<p class="g-sub">${CL.session?'You’re offline. High scores load when you’re back online.':'Sign in to see high scores.'}</p>`;gMe();return}
+  const rows=gBoardTab==='mine'?(b.mine||[]).map(x=>({initials:b.initials||'YOU',score:x.score,at:x.at,me:true})):(b[gBoardTab]||[]);
+  L.innerHTML=rows.length?`<ol>${rows.map((r,i)=>`<li class="${r.me?'me':''}"><span class="rk">${i+1}</span><span class="in">${esc(r.initials)}</span><span class="sc">${Number(r.score).toLocaleString()}</span><span class="dt">${new Date(r.at).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</span></li>`).join('')}</ol>`
+    :`<p class="g-sub">${gBoardTab==='mine'?'No scores yet. Play a round!':gBoardTab==='family'?'No family scores yet. Be the first!':'No scores yet. Be the first!'}</p>`;
+  gMe();
+}
+function gMe(){
+  const el=$('#gMe');if(!el)return;const ini=(gBoard&&gBoard.initials)||GS.initials[gWho()]||'';
+  el.innerHTML=ini?`Playing as <b class="mono">${esc(ini)}</b> <button class="g-link" data-g="ini">Change</button>${gBoard&&gBoard.mine&&gBoard.mine.length?` · Rank #${gBoard.rank} of ${gBoard.players}`:''}`:'Your initials appear after your first posted score.';
+}
+async function gChangeInitials(){
+  const el=$('#gMe');el.innerHTML=`<form id="gIni2" class="g-ini"><div><input id="gIniB" maxlength="3" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="ABC" value="${esc(GS.initials[gWho()]||'')}"><button class="g-go" type="submit">Save</button></div><span class="g-post" id="gIniMsg"></span></form>`;
+  const i=$('#gIniB');i.addEventListener('input',()=>{i.value=i.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,3)});i.focus();i.select();
+  $('#gIni2').onsubmit=async e=>{e.preventDefault();if(i.value.length!==3){$('#gIniMsg').textContent='Initials need 3 letters.';return}
+    try{gBoard=await clRpc('cradle_set_initials',{p_initials:i.value});GS.initials[gWho()]=gBoard.initials;gSave();gRenderBoard();toast('Initials saved')}
+    catch(err){const t=gErrText(err);$('#gIniMsg').textContent=t==='offline'?'You’re offline. Try again when connected.':t==='setup'?'High scores aren’t set up yet.':t}};
+}
+
+$('#game').addEventListener('click',e=>{
+  const t=e.target.closest('[data-gt]');if(t){gBoardTab=t.dataset.gt;$$('#gPanel [data-gt]').forEach(b=>{b.classList.toggle('on',b===t);b.setAttribute('aria-selected',b===t)});gRenderBoard();return}
+  const b=e.target.closest('[data-g]');if(!b)return;const a=b.dataset.g;
+  if(a==='play'){actx();gStart()}else if(a==='resume')gResume();else if(a==='pause')gPause();else if(a==='quit'){gEnd()}
+  else if(a==='close')gClose();else if(a==='board'){gPrev=gState;gState='board';gPanel()}else if(a==='back'){gState=gRun&&gPrev==='over'?'over':'start';gPanel()}
+  else if(a==='ini')gChangeInitials();
+  else if(a==='buzz'||a==='sound'){const o=gOpt();o[a]=!o[a];save();if(a==='sound'&&o.sound){actx();gBeep(660,0.1)}if(a==='buzz'&&o.buzz)gBuzz(20);b.classList.toggle('on',o[a]);b.setAttribute('aria-pressed',o[a]);b.textContent=(a==='buzz'?'Buzz ':'Sound ')+(o[a]?'on':'off')}
+});
+let gPrev='start';
+{const c=$('#gCanvas');const mv=e=>{if(gState!=='play'||!gRun)return;const r=c.getBoundingClientRect();gRun.tx=e.clientX-r.left};
+  c.addEventListener('pointerdown',e=>{mv(e);try{c.setPointerCapture(e.pointerId)}catch(x){}});c.addEventListener('pointermove',mv);
+  c.addEventListener('touchmove',e=>{if(gState==='play')e.preventDefault()},{passive:false})}
+document.addEventListener('keydown',e=>{if(gState==='closed')return;
+  if(gState==='play'&&(e.key==='ArrowLeft'||e.key==='ArrowRight')){gRun.tx=Math.max(0,Math.min(gW,gRun.bx+(e.key==='ArrowLeft'?-1:1)*gW*0.18));e.preventDefault()}
+  else if(e.key==='Escape'){e.stopImmediatePropagation();if(gState==='play')gPause();else if(gState==='board'){gState=gRun&&gPrev==='over'?'over':'start';gPanel()}else gClose()}
+  else if(e.key===' '&&(gState==='play'||gState==='pause')){e.preventDefault();gState==='play'?gPause():gResume()}},true);
+$('#funPlay').onclick=gOpen;
+$('#funScores').onclick=()=>{gOpen();gPrev='start';gState='board';gPanel()};
 
 /* Achievements */
 const ACH=[

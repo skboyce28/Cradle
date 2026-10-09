@@ -66,6 +66,7 @@ Open the profile menu (the round button, top right), then **Family**.
 - You see **only your family's** log. The database enforces this, not just the app, so even someone with a modified copy of Cradle can't read or change another family's entries.
 - A share key is the only way in. After **10 wrong keys in an hour**, an account is locked out of joining for the rest of that hour, so keys can't be guessed by trying thousands of them.
 - **Add by email** only works for accounts that already exist, and only an account created *before* you added the email can accept. A stranger can't sign up with your partner's address afterward and take their place. Share keys are still the simplest and safest way to invite.
+- **Fun center high scores are shared across this Cradle site.** The Everyone board shows each player's **3 initials and best score** to everyone who uses the same Cradle site. Names, emails, and families are never shown. The Our family board only shows people in your family.
 - **The person who runs the Supabase project can see every family's data** in the Supabase dashboard. If you open your Cradle to friends, tell them.
 
 ## Changing your password

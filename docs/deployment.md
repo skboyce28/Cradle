@@ -44,7 +44,7 @@ How Cradle is deployed today, what each piece does, how to run it day to day, an
 Built by two scripts, both safe to rerun in any order:
 
 1. [`supabase/1-setup.sql`](../supabase/1-setup.sql): the log table.
-2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, share keys, and the security rules.
+2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, share keys, Fun center high scores, and the security rules.
 
 **Tables:**
 
@@ -55,6 +55,8 @@ Built by two scripts, both safe to rerun in any order:
 | `cradle_members` | `household_id` · `user_id` · `email` · `role` · `joined_at` | Who belongs to which family. `role` is `owner` or `member`. |
 | `cradle_invites` | `household_id` · `email` · `invited_by` · `created_at` | Pending "add by email" invites |
 | `cradle_join_tries` | `user_id` · `at` | Wrong share-key attempts, for the lockout of 10 per hour |
+| `cradle_players` | `user_id` · `initials` · `updated_at` | Each account's 3 initials for the high-score boards |
+| `cradle_scores` | `id` · `user_id` · `household_id` · `game` · `initials` · `score` · `seconds` · `created_at` | Fun center scores. Only readable through `cradle_scores_board`, which shows initials and scores only. |
 
 **What goes in `cradle_items`:**
 
@@ -70,7 +72,7 @@ Diaper-only rows are `feed` items with no breast, bottle, or pump. Deleting an e
 
 **Security rules:**
 - Row-level security is on for every table.
-- Signed-in users can read and write `cradle_items` only for their own families, and can only read the family tables.
+- Signed-in users can read and write `cradle_items` only for their own families, and can only read the family tables. The score tables aren't readable at all except through the board function.
 - Every change to a family goes through `security definer` functions that check permissions themselves: `cradle_bootstrap`, `cradle_join`, `cradle_invite`, `cradle_new_code`, `cradle_remove_member`, `cradle_leave`, and others. The full list is in [How it works](how-it-works.md#rules-row-level-security).
 
 **Triggers:** `cradle_touch` stamps `updated_at` with the server clock and records `owner` (the last editor) on every write.
@@ -91,6 +93,8 @@ Diaper-only rows are `feed` items with no breast, bottle, or pump. Deleting an e
 | 12 to 14 | Read a family's log, count entries, count baths |
 | 15 | Check storage |
 | 16 | Tidy old deletion markers |
+| 17 | Top Bottle Catch scores, with the account behind each |
+| 18 to 20 | Remove one score, clear one player's scores, or reset the whole board |
 
 Queries that change data are marked **CHANGES DATA**.
 
@@ -166,3 +170,4 @@ The main choices so far, why they were made, and what they cost.
 | 12 | **Personal starter log stripped at build** | The author's copy can preload real data without it reaching the public site. | The public copy keeps the block empty (`{}`). |
 | 13 | **PolyForm Noncommercial license** | Free for families, friends, and charities; no commercial reuse without permission. | Not "open source" by the official definition. |
 | 14 | **Built with AI assistance (Claude), tested in a simulation** | Fast iteration. Each feature was checked with a real Postgres database, stand-ins for Supabase's sign-in service, and an automated browser playing several phones. | Those tests aren't in the repo or run automatically yet, and nothing has had an independent security review. |
+| 15 | **Fun center high scores checked by the server, shown as initials only** | Scores post from the phone, so the server is the only place to enforce rules. Initials keep the shared board fun without exposing who anyone is. | The checks stop impossible and spammy scores, but a careful cheater could still post a believable fake. Only the best queued offline score posts. |
