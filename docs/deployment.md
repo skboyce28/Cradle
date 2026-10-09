@@ -119,12 +119,19 @@ where email = 'their@email.com' and email_confirmed_at is null;
 | Build command | `python3 build_pwa.py` (from `netlify.toml`) |
 | Publish directory | `pwa` |
 | Environment variables | `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` (the **publishable** key) |
-| Headers | `sw.js` and `index.html` are sent with `Cache-Control: no-cache`, so updates arrive promptly |
+| Headers | Written by the build to `pwa/_headers`, which Netlify applies (below) |
+
+**Headers on the hosted site:**
+- **Security headers on every response:**
+  - a Content-Security-Policy allowing only Cradle's own script and your Supabase project
+  - plus no framing, `nosniff`, `no-referrer`, a Permissions-Policy, and HSTS
+- **`Cache-Control: no-cache`** on the page and `sw.js`, so updates arrive promptly.
 
 **Safety checks in the build:**
 - **Missing variables stop the build.** If either variable is missing on Netlify, the build fails with a message saying what to add, and the last good deploy stays live. Users never see a version that asks them for database details.
 - **A secret key stops the build.** The build refuses `sb_secret_…` and `service_role` keys.
 - **No personal data ships.** The build strips any built-in starter log from `cradle.html`.
+- **Security headers are generated, not hand-written.** The script's hash is recomputed on every build, so the policy always matches the code being deployed.
 
 **Rolling back:** in Netlify, open **Deploys**, pick an earlier deploy, then **Publish deploy**. Phones pick it up the next time Cradle opens.
 
@@ -171,3 +178,4 @@ The main choices so far, why they were made, and what they cost.
 | 13 | **PolyForm Noncommercial license** | Free for families, friends, and charities; no commercial reuse without permission. | Not "open source" by the official definition. |
 | 14 | **Built with AI assistance (Claude), tested in a simulation** | Fast iteration. Each feature was checked with a real Postgres database, stand-ins for Supabase's sign-in service, and an automated browser playing several phones. | Those tests aren't in the repo or run automatically yet, and nothing has had an independent security review. |
 | 15 | **Fun center high scores checked by the server, shown as initials only** | Scores post from the phone, so the server is the only place to enforce rules. Initials keep the shared board fun without exposing who anyone is. | The checks stop impossible and spammy scores, but a careful cheater could still post a believable fake. Only the best queued offline score posts. |
+| 16 | **Strict security headers generated at build time; Erase all data for owners; a sign-out that clears the phone** | Blocks injected or outside scripts and data leaving for other sites. Protects the family log from an accidental wipe. Gives shared or lost phones a clean exit. | Styles still allow inline CSS, since the app uses it everywhere (lower risk than scripts). Owner-only erase is an app check, not a database rule. |

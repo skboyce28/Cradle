@@ -164,10 +164,12 @@ The round button at the top right:
 | **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |
 | **Import data** | **Choose a file**, or paste a `CRADLE1:` code. **Merge** adds to your log without removing anything; **Replace** clears your log first. |
 | **Print this tab** | Prints the current tab. The Log prints a paper sheet for the selected day, baths included. |
-| **Erase all data** | Removes every entry from your family's log **on every phone**. Export first if you want a copy. |
+| **Erase all data** | Removes every entry from your family's log **on every phone**. Only the **family owner** can use it; for others it's marked *Owner only*. Everyone can still delete single entries with ×. Export first if you want a copy. |
 | **Guide / About** | In-app help, version, and changelog |
 | **Install app** | Shown when your browser can install Cradle |
-| **Change password / Sign out** | Your account |
+| **Change password** | Your account |
+| **Sign out** | Signs you out. The log stays on this phone for next time. |
+| **Sign out and remove from this phone** | Signs you out and clears the log, settings, and game scores from this phone, for a shared or lost phone. It syncs first and warns you if any changes haven't reached your account. Everything comes back when you sign in again. |
 
 ## Printing
 

@@ -21,6 +21,7 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
 - Removes the `baseData` block, an optional starter log for personal copies, so personal data can't reach a public site
 - Bakes in `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` from the environment or a git-ignored `.env`, and refuses secret keys
 - Writes `manifest.webmanifest` and copies the icons
+- Writes `_headers` with the site's security headers (see [Security](#security))
 - Writes `sw.js`, a service worker whose cache name is a hash of the page. Page loads try the network first (so updates arrive) and fall back to the cached copy offline.
 
 ## Sync
@@ -103,13 +104,21 @@ An invite can only be claimed by an account that **existed when the invite was m
 **What protects the data:**
 - **The database, not the app,** decides who sees what. A modified copy of Cradle with the same publishable key still can't read or change another family's rows.
 - **The publishable key** only identifies your project. It's built into the hosted page, so anyone who opens your site can see it; it's kept out of the repo (in `.env` or Netlify's environment variables) so project details stay out of the code history.
+- **Security headers** on the hosted site, written by `build_pwa.py` into `pwa/_headers`:
+  - a **Content-Security-Policy** that only runs Cradle's own inline script, allowed by its SHA-256 hash
+  - network connections limited to the site itself and your Supabase project
+  - no plugins or embedding in other sites (`frame-ancestors 'none'`, `X-Frame-Options: DENY`)
+  - `nosniff`, `Referrer-Policy: no-referrer`, a Permissions-Policy that turns off camera, microphone, location, and payment, and HSTS
+
+  Even if someone found a way to inject a script into the page, the browser wouldn't run it, and couldn't send data anywhere else.
 - **The secret key** (`sb_secret_…` or `service_role`) bypasses every rule. It must never be in this repo, the app, or a chat, and Cradle never needs it.
 
 **What to know:**
 - **Email isn't verified** when confirmation is off, so an email address on an account proves nothing. Share keys, not emails, decide who joins a family.
 - **Username accounts** (`name@cradle.cfg`) can't receive password-reset emails.
 - **The project owner** can see all data in the Supabase dashboard.
-- **On a phone**, the log is stored unencrypted in the browser, like any website's saved data. Anyone who can unlock the phone and open Cradle can see it.
+- **On a phone**, the log is stored unencrypted in the browser, like any website's saved data. Anyone who can unlock the phone and open Cradle can see it. **Sign out and remove from this phone** clears it, after syncing.
+- **Erase all data** is limited to the family owner in the app. It's a safeguard against accidents, not a database rule: members can still delete entries one at a time, which everyday logging needs.
 - **The hosted build removes the starter-log block**, and the build fails if it can't. Personal starter data belongs only in a local copy, never in a commit.
 
 **Review status:** the database scripts and the app were tested in a simulated setup:

@@ -85,6 +85,7 @@ This creates a `pwa/` folder. In Netlify, choose **Add new site**, then **Deploy
 
 - Removes any built-in starter log from `cradle.html`, so personal data never reaches a public site
 - Bakes in your project URL and publishable key from the environment variables or `.env`
+- Writes the site's security headers (`pwa/_headers`): a strict Content-Security-Policy and related headers, which Netlify applies automatically
 - Adds the app manifest, icons, and an offline helper (service worker) so Cradle can be installed and works without a connection
 
 Any static host works (GitHub Pages, Cloudflare Pages, your own server), as long as it serves over **https**. Installing and offline mode need https.

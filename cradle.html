@@ -74,7 +74,7 @@ nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
 .calmbtn svg{width:18px;height:18px;opacity:.85}
 .calmbtn:hover{border-color:var(--accent)}
 @media print{.calmbtn{display:none!important}}
-.menu .dd{position:absolute;right:0;top:46px;background:var(--panel);border:var(--cardb);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;width:290px;max-width:calc(100vw - 24px);display:none;z-index:30}
+.menu .dd{position:absolute;right:0;top:46px;background:var(--panel);border:var(--cardb);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.18);padding:8px;width:290px;max-width:calc(100vw - 24px);display:none;z-index:30;max-height:calc(100vh - 80px);max-height:calc(100dvh - 80px);overflow-y:auto;overscroll-behavior:contain}
 .menu.open .dd{display:block;animation:pop .18s ease}
 .ddhead{padding:6px 8px 10px;border-bottom:1px solid var(--line);margin-bottom:6px}
 .ddhead b{display:block}
@@ -87,6 +87,8 @@ nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
 .beta{margin-left:auto;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;background:var(--accent);color:#fff;border-radius:999px;padding:2px 7px}
 .dd .item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px}
 .dd .item:hover{background:var(--panel2)}
+.dd .item.dim{opacity:.55}
+.dd .item .note{margin-left:auto;font-size:11px;color:var(--muted);width:auto}
 .dd .item span{width:18px;text-align:center}
 .dd hr{border:0;border-top:1px solid var(--line);margin:6px 0}
 
@@ -553,7 +555,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <button class="item" data-act="settings"><span>⚙️</span>Settings</button>
         <button class="item" data-act="export"><span>⬇️</span>Export data</button>
         <button class="item" data-act="import"><span>⬆️</span>Import data</button>
-        <button class="item" data-act="erase" style="color:var(--warn)"><span>🗑️</span>Erase all data</button>
+        <button class="item" data-act="erase" id="ddErase" style="color:var(--warn)"><span>🗑️</span>Erase all data<span class="note" id="ddEraseNote"></span></button>
         <button class="item" data-act="print"><span>🖨️</span>Print this tab</button>
         <hr>
         <button class="item" data-act="help"><span>📖</span>Guide</button>
@@ -563,6 +565,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <button class="item" data-act="family"><span>👪</span>Family<span class="achchip" id="ddFam"></span></button>
         <button class="item" data-act="password"><span>🔑</span>Change password</button>
         <button class="item" data-act="signout"><span>🚪</span>Sign out</button>
+        <button class="item" data-act="wipe"><span>🧹</span>Sign out and remove from this phone</button>
       </div>
     </div>
   </div>
@@ -733,9 +736,9 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
           <li>Tap <b>Merge</b>. New entries are added and matching times are updated. Nothing already logged is removed.</li>
         </ol>
         <p class="sub" style="margin-top:8px">If the text button doesn’t open your messages app, use <b>📋 Copy code</b> and paste it into any message instead. Paste the whole message, including the line that starts with CRADLE.</p></div>
-      <div class="card"><div class="ico">☁︎</div><h3>Sign-in and sharing</h3><p>Sign in with your Cradle username (or email) and password. Everyone in your family shares one log: feeds, diapers, notes, weights, and goals sync automatically, usually within about 15 seconds. Each phone also keeps its own copy, so Cradle works offline and catches up when it reconnects. The cloud icon in the header shows the sync status. Sign out from the profile menu; your log stays saved in your account.</p></div>
+      <div class="card"><div class="ico">☁︎</div><h3>Sign-in and sharing</h3><p>Sign in with your Cradle username (or email) and password. Everyone in your family shares one log: feeds, diapers, baths, notes, weights, and goals sync automatically, usually within about 15 seconds. Each phone also keeps its own copy, so Cradle works offline and catches up when it reconnects. The cloud icon in the header shows the sync status. In the profile menu, <b>Sign out</b> keeps the log on this phone for next time, and <b>Sign out and remove from this phone</b> clears the log, settings, and game scores from the phone too (it syncs first, and warns you if anything hasn’t reached your account yet). Either way, your log stays saved in your account.</p></div>
       <div class="card"><div class="ico">👪</div><h3>Family</h3><p>Everyone has their own login and a family shares one log. <b>New here?</b> On the sign-in screen tap <b>Create an account</b>, pick a username (or use your email) and a password. To share someone’s log, enter their <b>share key</b> (like K7QM-4XPD); leave it blank to start your own. Your share key is under <b>Family</b> in the profile menu, with a <b>Share</b> button that writes the invite text for you. The family owner can make a <b>New key</b> at any time, which stops the old one working, and can remove people. Members can leave. Other families never see your log.</p></div>
-      <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Export</b> in the profile menu saves a backup file you can keep, or sends a short code by text message. <b>Import</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so export first if you want a copy. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
+      <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Export</b> in the profile menu saves a backup file you can keep, or sends a short code by text message. <b>Import</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so only the family owner can use it; export first if you want a copy. Everyone can still delete single entries with ×. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
       <div class="card"><div class="ico">🖨️</div><h3>Printing</h3><p>Every tab has a Print button. The Log tab prints a paper sheet for the selected day. Printing needs Cradle open in a browser like Chrome or Safari, not in a file preview.</p></div>
       <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On a phone, <b>⏰ Set alarm</b> shows the time to set in your Clock app, with the steps. Phones don’t let web apps add Clock alarms themselves, even when Cradle is installed, so that one takes a few taps.</p></div>
       <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Set the birth weight in Settings.</p></div>
@@ -745,7 +748,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">🏆</div><h3>Achievements</h3><p>Ten badges based on your goals, like Sunshine Streak for 7 days of Vitamin D and Diaper Pro for 7 days of diaper goals. Open them from the profile menu to see progress. Streaks aren’t broken by a day that isn’t over yet.</p></div>
       <div class="card"><div class="ico">🎓</div><h3>Learning center</h3><p>In the profile menu. <b>High-contrast cards</b> are five bold black-and-white designs (Bullseye, Checkerboard, Zigzag, Spiral, and Smile) for calm, awake moments with your baby. Tap one to show it full screen, then swipe or tap the sides to change cards. <b>Invert</b> swaps black and white, and <b>Auto</b> changes cards every 10 seconds. Hold the phone about 8 to 12 inches (20 to 30 cm) away, and stop when your baby looks away or fusses. The screen stays on while a card is showing.</p></div>
       <div class="card"><div class="ico">🎮</div><h3>Fun center</h3><p>In the profile menu: <b>Bottle Catch</b>, a two-minute, one-thumb game. Drag anywhere to move the basket. Bottles are +10, golden bottles +50, and catching in a row builds up to ×4. Safety pins cost a heart (you have 3), and the pacifier slows everything for 5 seconds. It pauses by itself if you switch away or the feed alarm rings. Sound is off to start; Buzz and Sound are on the start screen. Your first posted score asks for 3 initials, which you can change on the board. <b>High scores</b> has three boards: Everyone (each person’s best across this Cradle), Our family, and My best. Only initials and scores are shown. Scores from rounds played offline post when you’re back online.</p></div>
-      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Learning center, Fun center, Settings, Export, Import, Print, Erase all data, this Guide, About, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
+      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, and Dalmatian mode), Family, Weights, Achievements, Learning center, Fun center, Settings, Export, Import, Print, Erase all data (family owner only), this Guide, About, Change password, Sign out, and Sign out and remove from this phone. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
     </div>
     <p class="disc">This tracker is for keeping records only. Volumes, goals, and supplements should follow your pediatrician or lactation consultant. If you're worried about feeding, diapers, or weight gain, call your baby's doctor.</p>
   </section>
@@ -989,9 +992,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.8</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.9</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.9</b>
+    <ul class="cl"><li>Sign out and remove from this phone: clears the log, settings, and game scores from a shared or lost phone</li><li>Erase all data is now for the family owner only</li><li>Stronger web security: the site only runs Cradle’s own code and only talks to your database</li><li>The profile menu scrolls on small screens</li></ul>
     <b>v1.8</b>
     <ul class="cl"><li>Fun center in the profile menu with Bottle Catch, a two-minute one-thumb game</li><li>Arcade-style high scores with your initials: Everyone, Our family, and My best</li><li>The game pauses itself when you switch away or the feed alarm rings</li></ul>
     <b>v1.7</b>
@@ -1018,7 +1023,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.8';
+const VERSION='1.9';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -1106,7 +1111,7 @@ $('#dd').addEventListener('click',e=>{
   if(tb){S.settings.theme=tb.dataset.theme;applyTheme();save();if(tab==='dash')renderDash();return}
   const a=e.target.closest('[data-act]');if(!a)return;$('#menu').classList.remove('open');
   ({settings:openSettings,export:openExport,import:openImport,erase:eraseAll,ach:openAch,print:printTab,
-    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,learn:openLearn,fun:openFun,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account.','Sign out'))clSignOut()}})[a.dataset.act]();
+    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,learn:openLearn,fun:openFun,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account, and stays on this phone until someone signs in. To clear it from this phone too, use Sign out and remove from this phone.','Sign out'))clSignOut()},wipe:signOutWipe})[a.dataset.act]();
 });
 $$('.modal:not(#askModal)').forEach(m=>m.addEventListener('click',e=>{if(e.target===m||e.target.closest('[data-close]'))m.classList.remove('open')}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(nightOpen||calmOpen)){nightOpen?closeNight():closeCalm();return}if(e.key==='Escape'){if($('#askModal').classList.contains('open')){$('#askCancel').click();return}$$('.modal.open').forEach(m=>m.classList.remove('open'));$('#menu').classList.remove('open')}});
@@ -1738,8 +1743,11 @@ function applyBase(){
   if(B.settings)['birthDate','vitDStart'].forEach(k=>{if(B.settings[k]&&!S.settings[k])S.settings[k]=B.settings[k]});
   S.baseVersion=B.baseVersion;save();
 }
+const notOwner=()=>!!(CL.session&&CL.fam&&CL.fam.role&&CL.fam.role!=='owner');
 async function eraseAll(){
-  S.achSeen=undefined;if(!await ask(CL.session?'Erase all feeds, diapers, notes, and weights? This also removes them from your account, so every signed-in phone loses them. Export first if you want a backup.':'Erase all feeds, diapers, and notes on this device? Settings and theme are kept. Export first if you want a backup.','Erase everything',true))return;
+  if(notOwner()){const o=(CL.fam.members||[]).find(m=>m.role==='owner');
+    await ask('Only the family owner'+(o&&o.email?' ('+userName(o.email)+')':'')+' can erase the whole log. You can still delete single entries with ×.','OK');return}
+  S.achSeen=undefined;if(!await ask(CL.session?'Erase all feeds, diapers, baths, notes, and weights for your whole family? Every family member’s phone loses them too. Export first if you want a backup.':'Erase all feeds, diapers, and notes on this device? Settings and theme are kept. Export first if you want a backup.','Erase everything',true))return;
   S.days={};S.weights=[];S.nurse=null;S.timer={start:null,last:null};clearInterval(tInt);save();renderAll();toast('All data erased');
 }
 
@@ -2177,6 +2185,18 @@ async function clSignIn(user,pass){
   if(CL.owner&&j.user&&j.user.id&&CL.owner!==j.user.id)clSwitchUser()
   CL.owner=j.user&&j.user.id;clTakeSession(j);
 }
+function clUnsynced(){if(!CL.session)return 0;const cur=clItems();let n=0;for(const k in cur)if(CL.synced[k]!==clJ(cur[k]))n++;for(const k in CL.synced)if(!cur[k])n++;return n}
+async function signOutWipe(){
+  if(CL.session&&navigator.onLine){try{await clSync()}catch(e){}}
+  const n=clUnsynced();
+  const ok=await ask(n?`${n} change${n===1?'':'s'} on this phone haven’t reached your account yet (you may be offline). Removing now loses ${n===1?'it':'them'}. Remove anyway?`
+    :'Sign out and remove your log, settings, and game scores from this phone? Everything stays saved in your account and comes back when you sign in again.',n?'Remove anyway':'Sign out and remove',true);
+  if(!ok)return;
+  try{if(CL.session&&navigator.onLine)await clFetch('/auth/v1/logout',{method:'POST'},true,false)}catch(e){}
+  clStop();const c=clConfig(),keep=!c.baked&&CL.url&&CL.key?{url:CL.url,key:CL.key}:null;
+  try{localStorage.removeItem(LS);localStorage.removeItem(CLK);localStorage.removeItem('cradle-game-v1');if(keep)localStorage.setItem(CLK,JSON.stringify(keep))}catch(e){}
+  location.reload();
+}
 async function clSignOut(){
   try{if(CL.session&&navigator.onLine)await clFetch('/auth/v1/logout',{method:'POST'},true,false)}catch(e){}
   CL.session=null;clSave();clStop();showGate('login');renderProfile();
@@ -2383,7 +2403,7 @@ async function clJoinPending(){
     setTimeout(()=>ask((e.message||'That share key didn’t work.')+' You’ve got your own log for now. You can join later under Profile, then Family.','OK'),300)}
 }
 function famName(){return (CL.fam&&CL.fam.name)||'your family'}
-function renderFamilyBits(){const el=$('#ddFam');if(el)el.textContent=CL.fam?CL.fam.name:''}
+function renderFamilyBits(){const el=$('#ddFam');if(el)el.textContent=CL.fam?CL.fam.name:'';const er=$('#ddErase'),m=notOwner();if(er){er.classList.toggle('dim',m);$('#ddEraseNote').textContent=m?'Owner only':''}}
 function showWelcome(){
   const nm=babyName();
   $('#welTitle').textContent='Welcome to Cradle';

@@ -47,7 +47,7 @@ Open the profile menu (the round button, top right), then **Family**.
 
 - The person who starts a family is its **owner**. Everyone who joins is a **member**.
 - Everyone in a family can log, edit, and delete entries, change settings, rename the family, and share the key.
-- Only the owner can **remove people** and make a **new key**.
+- Only the owner can **remove people**, make a **new key**, and use **Erase all data**. Members can still delete single entries.
 - The owner can't leave their own family. That keeps every family with someone in charge.
 
 ## What happens to the log on a phone
@@ -60,6 +60,7 @@ Open the profile menu (the round button, top right), then **Family**.
 | **Leaving** a family | The phone clears that family's log. |
 | **A different person signs in** on a phone | The phone starts fresh for them. The previous person's log is safe in their account and comes back when they sign in again. |
 | **Signing out** | The log stays on the phone until someone signs in. |
+| **Sign out and remove from this phone** | The phone's copy of the log, settings, and game scores is cleared. It syncs first, and warns you if anything hasn't reached your account yet. |
 
 ## Who can see what
 
@@ -75,7 +76,9 @@ Profile menu, then **Change password**. At least 8 characters.
 
 ## Signing out
 
-Profile menu, then **Sign out**. Your log stays saved in your account.
+Profile menu, then **Sign out**. Your log stays saved in your account, and also stays on the phone so it's there next time.
+
+On a shared, borrowed, or lost phone, use **Sign out and remove from this phone** instead. It clears the log, settings, and game scores from that phone. Before clearing, it syncs; if some changes still haven't reached your account (for example, you're offline), it tells you how many and lets you cancel.
 
 ## Running a Cradle for other families
 
