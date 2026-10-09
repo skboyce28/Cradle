@@ -85,6 +85,12 @@ The cloud icon in the header shows the state:
 | ⟳ | Syncing |
 | ⚠︎ | Offline, or a sync problem. The profile menu shows which, under your name. |
 
+**Two of us edited the same feed**
+Edits to different boxes are combined. If you both changed the *same* box, the change that synced last wins on every phone; just fix it again. The note at the bottom says who made the last change.
+
+**A weight is wrong**
+Profile menu, then **Weights** (or **See all** on the Dashboard), then **Edit** next to it. Weights from a weighted feed are changed on that feed (**Open feed**), and the birth weight in **Settings**.
+
 **An entry isn't showing on the other phone**
 - Both phones need a connection.
 - Changes arrive within about 15 seconds while Cradle is on screen. Opening the app syncs right away.

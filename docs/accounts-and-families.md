@@ -62,6 +62,16 @@ Open the profile menu (the round button, top right), then **Family**.
 | **Signing out** | The log stays on the phone until someone signs in. |
 | **Sign out and remove from this phone** | The phone's copy of the log, settings, and game scores is cleared. It syncs first, and warns you if anything hasn't reached your account yet. |
 
+## Editing together
+
+Everything saves as you type; there's no Save button.
+
+- **Different boxes on the same feed:** if one person enters the bottle while another types a note, both are kept.
+- **The same box:** whoever's change reaches the database last wins, and every phone ends up showing it.
+- **While you're typing:** other people's changes still appear on the rest of the Log, but the box you're in is never changed under you.
+- **Seeing who changed what:** when someone else's edit arrives, a note at the bottom names them ("Sam updated a feed at 2:40pm") and the row flashes.
+- **Deleting:** a delete wins over an edit someone else is making at the same moment.
+
 ## Who can see what
 
 - You see **only your family's** log. The database enforces this, not just the app, so even someone with a modified copy of Cradle can't read or change another family's entries.

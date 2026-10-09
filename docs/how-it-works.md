@@ -43,12 +43,18 @@ Theme, weight units, the alarm switch, and layout preferences stay per phone.
 A round runs when the app opens, about a second after any save, every 15 seconds while the app is on screen, and when the phone comes back online:
 
 1. **Bootstrap** (first round after sign-in): ask the database which family this account belongs to. It creates a family if there isn't one, and accepts any pending invite.
-2. **Push:** compare every local item with its fingerprint from the last sync, and upload only what changed. A deletion is uploaded as a tombstone (`deleted = true`), so other phones remove it too.
-3. **Pull:** download items changed since the last pull (`updated_at >= last`) and apply them.
+2. **Pull:** download items changed since the last pull (`updated_at >= last`) and apply them, merging any that this phone has also changed (see below).
+3. **Push:** compare every local item with its fingerprint from the last sync, and upload only what changed. A deletion is uploaded as a tombstone (`deleted = true`), so other phones remove it too.
+
+Pulling before pushing means a phone always merges in other people's edits before it uploads its own.
 
 **Conflicts.**
 - **A phone's first sync with a family:** the server's copy wins for items both sides have, then items only on the phone are uploaded. That's how a phone's existing log merges into a family.
-- **After that:** each item is last-write-wins. An edit uploads on the next round and becomes the newest version for everyone. Two people editing the *same feed row* within seconds of each other is the only case where one edit can overwrite the other.
+- **After that:** items merge **field by field**. When a pulled item has also changed on this phone, Cradle compares three versions: the last synced copy (the fingerprint), this phone's, and the server's. A field only one side changed takes that change; a field both changed keeps this phone's value, which then uploads and becomes everyone's. So if one person adds the bottle while another types a note on the same feed, both stay.
+- **Deletes:** a delete on this phone wins over an edit from elsewhere. An edit here to an entry deleted elsewhere brings it back.
+- **The one gap:** two phones uploading the same field within the same second or so (between one's pull and its push). The later upload wins.
+
+**While typing.** A pull never redraws the box you're typing in. The rest of the Log is rebuilt around your row, and the other boxes in your row are refreshed, so nothing on screen shows an old value. When someone else's change arrives, a toast names them (from the `owner` column) and the changed rows flash.
 
 **Offline.** Saves always go to the phone first. Failed rounds just retry later; nothing is lost while offline.
 

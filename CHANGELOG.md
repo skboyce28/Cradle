@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.11
+
+**Editing together**
+- Entries now merge **field by field**. If one person adds the bottle while another types a note on the same feed, both are kept, instead of one phone's copy overwriting the other.
+  - each round now pulls (and merges) before it pushes
+  - if both change the same box, the later one wins and every phone agrees
+  - a delete wins over a simultaneous edit
+- **Fixed:** an edit made while a sync was in progress could be marked as synced without being uploaded, so other phones never got it.
+- **While you're typing,** other people's changes appear everywhere on the Log except the box you're in. New rows from other phones appear in order.
+- When someone else's change arrives, a note says who made it ("Sam updated a feed at 2:40pm") and the row flashes.
+
+**Weights**
+- The Weights screen lists every weight first, newest at the top
+- **Edit** a weight (date, time, weight, where, note), or delete it
+- Weighted-feed weights have **Open feed**, and the birth weight has **Settings**
+- **See all** on the Dashboard's weight card opens the list. **+ Add weight** goes straight to the form.
+
+No database changes.
+
 ## v1.10
 
 **Left and right split**

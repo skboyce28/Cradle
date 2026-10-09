@@ -139,6 +139,8 @@ nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
 .cols,.feed{display:grid;grid-template-columns:44px 118px 104px 112px 1fr 1fr 48px 48px 48px 48px 1.3fr 32px;gap:8px;align-items:center}
 .cols{padding:0 12px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .feed{background:var(--panel);border:var(--cardb);border-radius:12px;padding:8px 12px;margin-bottom:8px;box-shadow:var(--shadow);animation:pop .25s ease}
+@keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 3px transparent}}
+.feed.flash{animation:flash 2.4s ease-out}
 @keyframes pop{from{transform:translateY(4px);opacity:0}to{transform:none;opacity:1}}
 .feed .n{font-weight:700;color:var(--accent)}
 .feed input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px;min-width:0}
@@ -407,6 +409,9 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 .wstats .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
 .wstats .v{font-size:16px;font-weight:700}
 .wlist{margin-top:12px;display:grid;gap:6px}
+#wList{max-height:38vh;overflow-y:auto;margin-top:4px}
+.wrow.editing{outline:2px solid var(--accent)}
+.wrow .wact{display:flex;gap:6px;align-items:center}
 .wrow{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:10px;background:var(--bg);font-size:14px}
 .wrow .src{font-size:12px;color:var(--muted)}
 .field select,.field input[type=checkbox]{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 8px;width:100%;color:var(--ink)}
@@ -660,7 +665,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
     <div class="grid kpis" id="kpis"></div>
     <div class="grid charts">
       <div class="card wide">
-        <div class="chead"><h3>Weight</h3><button class="ghost sm noprint" data-addweight style="margin:-6px 0 2px">+ Add weight</button></div>
+        <div class="chead"><h3>Weight</h3><span class="noprint" style="display:flex;gap:6px;margin:-6px 0 2px"><button class="ghost sm" data-addweight="list">See all</button><button class="ghost sm" data-addweight="add">+ Add weight</button></span></div>
         <div id="wChart"></div>
         <div class="legend"><span><i style="background:var(--bottle);border-radius:50%"></i>Weigh-in</span><span><i style="background:var(--panel);border:2px solid var(--bottle);border-radius:50%"></i>Weighted feed (before)</span><span><i style="background:var(--good);height:3px;vertical-align:3px"></i>Birth weight</span><span><i style="background:var(--warn);height:3px;vertical-align:3px"></i>10% below birth</span></div>
         <div class="wstats" id="wStats"></div>
@@ -744,11 +749,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         </ol>
         <p class="sub" style="margin-top:8px">If the text button doesn’t open your messages app, use <b>📋 Copy code</b> and paste it into any message instead. Paste the whole message, including the line that starts with CRADLE.</p></div>
       <div class="card"><div class="ico">☁︎</div><h3>Sign-in and sharing</h3><p>Sign in with your Cradle username (or email) and password. Everyone in your family shares one log: feeds, diapers, baths, notes, weights, and goals sync automatically, usually within about 15 seconds. Each phone also keeps its own copy, so Cradle works offline and catches up when it reconnects. The cloud icon in the header shows the sync status. In the profile menu, <b>Sign out</b> keeps the log on this phone for next time, and <b>Sign out and remove from this phone</b> clears the log, settings, and game scores from the phone too (it syncs first, and warns you if anything hasn’t reached your account yet). Either way, your log stays saved in your account.</p></div>
-      <div class="card"><div class="ico">👪</div><h3>Family</h3><p>Everyone has their own login and a family shares one log. <b>New here?</b> On the sign-in screen tap <b>Create an account</b>, pick a username (or use your email) and a password. To share someone’s log, enter their <b>share key</b> (like K7QM-4XPD); leave it blank to start your own. Your share key is under <b>Family</b> in the profile menu, with a <b>Share</b> button that writes the invite text for you. The family owner can make a <b>New key</b> at any time, which stops the old one working, and can remove people. Members can leave. Other families never see your log.</p></div>
+      <div class="card"><div class="ico">👪</div><h3>Family</h3><p>Everyone has their own login and a family shares one log. <b>New here?</b> On the sign-in screen tap <b>Create an account</b>, pick a username (or use your email) and a password. To share someone’s log, enter their <b>share key</b> (like K7QM-4XPD); leave it blank to start your own. Your share key is under <b>Family</b> in the profile menu, with a <b>Share</b> button that writes the invite text for you. The family owner can make a <b>New key</b> at any time, which stops the old one working, and can remove people. Members can leave. Other families never see your log. Everything saves as you type, with no Save button. If two of you edit the same feed, changes to different boxes are combined; if you both change the same box, the last one wins. When someone else’s change arrives, a note says who made it and the row flashes.</p></div>
       <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Export</b> in the profile menu saves a backup file you can keep, or sends a short code by text message. <b>Import</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so only the family owner can use it; export first if you want a copy. Everyone can still delete single entries with ×. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
       <div class="card"><div class="ico">🖨️</div><h3>Printing</h3><p>Every tab has a Print button. The Log tab prints a paper sheet for the selected day. Printing needs Cradle open in a browser like Chrome or Safari, not in a file preview.</p></div>
       <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On a phone, <b>⏰ Set alarm</b> shows the time to set in your Clock app, with the steps. Phones don’t let web apps add Clock alarms themselves, even when Cradle is installed, so that one takes a few taps.</p></div>
-      <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Set the birth weight in Settings.</p></div>
+      <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Every weight is listed at the top of the Weights screen (<b>See all</b> on the Dashboard): tap <b>Edit</b> to fix one, or × to delete it. Weights from weighted feeds have <b>Open feed</b>, and the birth weight has <b>Settings</b>, where you change them.</p></div>
       <div class="card"><div class="ico">🩺</div><h3>Doctor report</h3><p>On the Dashboard, <b>🩺 Doctor report</b> prints one page for appointments: weight against birth weight, daily feeds, nursing minutes with the left and right split, bottle and pump volumes, diapers against goals, Vitamin D, baths, weighted feeds, your day notes, and lines for questions. It covers the 7 or 14 days shown on the Dashboard.</p></div>
       <div class="card"><div class="ico">🌙</div><h3>Night shift</h3><p>Tap the <b>Night shift</b> tab for a dim, low-glare screen with huge buttons for one-handed night feeds. The three dots at the top switch colors: Warm, Moonlight, or Red. <b>Start feed</b> logs the time and starts the timer. Then tap L or R (with both on, a slider splits the time between sides), adjust the bottle by 5 mL, mark wet, stool, or Vitamin D, and tap <b>Done</b>. Everything saves as you go. Between feeds, <b>🧷 Diaper only</b> and <b>🛁 Bath</b> log those with the current time.</p></div>
       <div class="card"><div class="ico">🌌</div><h3>Calm screen</h3><p>A slow, soothing screensaver with the time, time since the last feed, and the next feed due. Open it with the moon button at the top right, next to your profile. Tap the screen to show controls: spa music, ocean, rain, or white noise, volume, and whether the clock sits in the center or the corner. The feed alarm still works here. When Cradle is installed as an app, the screen stays on while Calm or Night shift is open. Opened as a file, your phone may still turn the screen off on its own timer.</p></div>
@@ -891,15 +896,15 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="weightModal">
   <div class="card">
     <h3>Weights</h3>
+    <div class="wlist" id="wList"></div>
+    <div class="fsec" id="wFormTitle">Add a weight</div>
     <div class="field"><label for="wDate">Date</label><input id="wDate" type="date"></div>
     <div class="field"><label for="wTime">Time</label><input id="wTime" type="time"></div>
     <div class="field"><label for="wVal">Weight</label><input id="wVal" type="text" placeholder="e.g. 7 lb 3.5 oz"></div>
     <div class="field"><label for="wSrc">Where</label><select id="wSrc"><option>Pediatrician</option><option>Lactation consultant</option><option>Hospital</option><option>Home scale</option></select></div>
     <div class="field"><label for="wNote">Note</label><input id="wNote" type="text" placeholder="Optional"></div>
-    <div class="mrow" style="margin-top:4px"><button class="primary" id="wAdd">Save weight</button></div>
+    <div class="mrow" style="margin-top:4px"><button class="primary" id="wAdd">Save weight</button><button class="ghost hidden" id="wCancel">Cancel edit</button></div>
     <p class="sub" style="margin:8px 0 0">Type it the way the scale shows it: 7 lb 3.5 oz, 3270 g, or 3.27 kg. Weighted feeds add their before weight here automatically.</p>
-    <div class="fsec">History</div>
-    <div class="wlist" id="wList"></div>
     <div class="mrow"><button class="ghost" data-close>Close</button></div>
   </div>
 </div>
@@ -999,9 +1004,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.10</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.11</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.11</b>
+    <ul class="cl"><li>Two people can edit the same feed at once: changes to different boxes are combined instead of one overwriting the other</li><li>While you’re typing, the rest of the Log still updates, and the box you’re in is left alone</li><li>A note says who changed what when someone else’s edit arrives, and the row flashes</li><li>Weights: review them at the top of the Weights screen, and tap <b>Edit</b> to fix one. <b>See all</b> on the Dashboard opens the list.</li></ul>
     <b>v1.10</b>
     <ul class="cl"><li>Left and right split: when you nurse on both sides, a slider divides the feed’s minutes between them (for example 15 left and 5 right)</li><li>The slider is on the Log and in Night shift</li><li>The Dashboard, chart explorer, printed day sheet, and doctor report show time on each side</li></ul>
     <b>v1.9</b>
@@ -1032,7 +1039,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.10';
+const VERSION='1.11';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -1906,25 +1913,42 @@ function renderWeight(){
     (st.bw>0?c('Back to birth weight',st.back?'✓ '+dlong(parseK(st.back.date)):'Not yet'):'')+
     (st.rate!=null?c('Gain since lowest',fmtDW(st.rate)+' / day'):'');
 }
-function openWeights(){
-  $('#wDate').value=key(new Date());const n=new Date();$('#wTime').value=pad(n.getHours())+':'+pad(n.getMinutes());$('#wVal').value='';$('#wNote').value='';
-  $('#wVal').placeholder=S.settings.weightUnit==='g'?'e.g. 3250 g':'e.g. 7 lb 3.5 oz';
-  renderWList();$('#weightModal').classList.add('open');
+let wEditing=null;
+function wFormReset(){wEditing=null;$('#wDate').value=key(new Date());const n=new Date();$('#wTime').value=pad(n.getHours())+':'+pad(n.getMinutes());$('#wVal').value='';$('#wNote').value='';$('#wSrc').selectedIndex=0;
+  $('#wFormTitle').textContent='Add a weight';$('#wAdd').textContent='Save weight';$('#wCancel').classList.add('hidden')}
+function openWeights(focusAdd){
+  wFormReset();$('#wVal').placeholder=S.settings.weightUnit==='g'?'e.g. 3250 g':'e.g. 7 lb 3.5 oz';
+  renderWList();$('#weightModal').classList.add('open');$('#wList').scrollTop=0;if(focusAdd)setTimeout(()=>$('#wVal').focus(),60);
 }
 function renderWList(){
   const W=allWeights().reverse();
-  $('#wList').innerHTML=W.length?W.map(w=>`<div class="wrow"><div style="flex:1"><b>${fmtW(w.g)}</b> <span class="src">${w.src}</span><div class="sub">${dlong(parseK(w.date))}${w.kind==='birth'?'':' '+fmt12(w.time)}${w.note?' · '+esc(w.note):''}</div></div>${w.kind==='log'?`<button class="del" data-wdel="${w.id}" title="Delete">&times;</button>`:'<span class="sub">'+(w.kind==='birth'?'Settings':'From feed')+'</span>'}</div>`).join(''):'<div class="sub">No weights yet.</div>';
+  $('#wList').innerHTML=W.length?W.map(w=>`<div class="wrow${w.id===wEditing?' editing':''}"><div style="flex:1"><b>${fmtW(w.g)}</b> <span class="src">${esc(w.src)}</span><div class="sub">${dlong(parseK(w.date))}${w.kind==='birth'?'':' '+fmt12(w.time)}${w.note?' · '+esc(w.note):''}</div></div><div class="wact">${
+    w.kind==='log'?`<button class="ghost sm" data-wedit="${w.id}">Edit</button><button class="del" data-wdel="${w.id}" title="Delete">&times;</button>`
+    :w.kind==='birth'?'<button class="ghost sm" data-wgo="birth">Settings</button>':`<button class="ghost sm" data-wgo="${w.date}" data-wfeed="${w.id.slice(3)}">Open feed</button>`}</div></div>`).join(''):'<div class="sub">No weights yet. Add one below.</div>';
 }
+function wEdit(id){const w=(S.weights||[]).find(x=>x.id===id);if(!w)return;wEditing=id;
+  $('#wDate').value=w.date||'';$('#wTime').value=w.time||'';$('#wVal').value=S.settings.weightUnit==='g'?Math.round(w.g)+' g':fmtW(w.g);$('#wNote').value=w.note||'';
+  const o=[...$('#wSrc').options].find(x=>x.value===w.src);if(o)$('#wSrc').value=w.src;
+  $('#wFormTitle').textContent='Edit weight';$('#wAdd').textContent='Save changes';$('#wCancel').classList.remove('hidden');renderWList();
+  $('#wFormTitle').scrollIntoView({block:'start',behavior:'smooth'});setTimeout(()=>$('#wVal').focus({preventScroll:true}),250)}
+$('#wCancel').onclick=()=>{wFormReset();renderWList()};
 $('#wAdd').onclick=()=>{
   const g=parseWeight($('#wVal').value);if(!g){toast('Enter a weight like '+(S.settings.weightUnit==='g'?'3250 g':'7 lb 3 oz'));return}
   if(g<500||g>15000){toast('That weight looks off. Check the units.');return}
-  S.weights=S.weights||[];S.weights.push({id:uid(),date:$('#wDate').value||key(new Date()),time:$('#wTime').value||'12:00',g,src:$('#wSrc').value,note:$('#wNote').value.trim()});
-  save();$('#wVal').value='';$('#wNote').value='';renderWList();if(tab==='dash')renderDash();toast('Weight saved: '+fmtW(g));
+  const vals={date:$('#wDate').value||key(new Date()),time:$('#wTime').value||'12:00',g,src:$('#wSrc').value,note:$('#wNote').value.trim()};
+  S.weights=S.weights||[];const w=wEditing&&S.weights.find(x=>x.id===wEditing);
+  if(w)Object.assign(w,vals);else S.weights.push(Object.assign({id:uid()},vals));
+  save();wFormReset();renderWList();if(tab==='dash')renderDash();toast((w?'Weight updated: ':'Weight saved: ')+fmtW(g));
 };
-$('#wList').onclick=async e=>{const b=e.target.closest('[data-wdel]');if(!b)return;
+$('#wList').onclick=async e=>{
+  const ed=e.target.closest('[data-wedit]');if(ed){wEdit(ed.dataset.wedit);return}
+  const go=e.target.closest('[data-wgo]');if(go){$('#weightModal').classList.remove('open');
+    if(go.dataset.wgo==='birth'){openSettings();setTimeout(()=>$('#sBW').focus(),60);return}
+    cur=go.dataset.wgo;tab='today';renderAll();const id=go.dataset.wfeed;setTimeout(()=>{const r=document.querySelector(`.feed[data-id="${id}"]`);if(r){r.scrollIntoView({block:'center'});r.classList.remove('flash');void r.offsetWidth;r.classList.add('flash')}},60);return}
+  const b=e.target.closest('[data-wdel]');if(!b)return;
   $('#weightModal').classList.remove('open');const ok=await ask('Delete this weight?','Delete',true);$('#weightModal').classList.add('open');
-  if(!ok)return;S.weights=S.weights.filter(w=>w.id!==b.dataset.wdel);save();renderWList();if(tab==='dash')renderDash()};
-document.addEventListener('click',e=>{if(e.target.closest('[data-addweight]'))openWeights()});
+  if(!ok)return;S.weights=S.weights.filter(w=>w.id!==b.dataset.wdel);if(wEditing===b.dataset.wdel)wFormReset();save();renderWList();if(tab==='dash')renderDash()};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-addweight]');if(b)openWeights(b.dataset.addweight==='add')});
 
 /* ================= Weighted feed row ================= */
 function wfRes(f){const a=num(f.wPre),b=num(f.wPost);if(!(a>0&&b>0))return 'Enter both weights';const d=b-a;return d>0?`Transferred about ${Math.round(d)} mL (${fmtDW(d)})`:d===0?'No change':`Weight went down ${fmtDW(d).replace('−','')}`}
@@ -2238,6 +2262,10 @@ function clItems(){
   return out;
 }
 const clJ=o=>JSON.stringify(o);
+// Three-way merge of one item, field by field: a field only one side changed takes that change; if both changed it, this phone's value wins.
+function clMergeData(base,local,server){const out={},eq=(a,b)=>clJ(a??null)===clJ(b??null);
+  new Set([...Object.keys(local||{}),...Object.keys(server||{})]).forEach(k=>{const l=local?local[k]:undefined,v=eq(l,server[k])?l:eq(l,base?base[k]:undefined)?server[k]:l;if(v!==undefined)out[k]=v});return out}
+function memberName(uid){const m=CL.fam&&(CL.fam.members||[]).find(x=>x.user_id===uid);if(!m||!m.email)return 'Someone in your family';const n=userName(m.email).split('@')[0];return n.charAt(0).toUpperCase()+n.slice(1)}
 function clApply(row){
   const id=row.id,kind=row.kind||id.split(':')[0],data=row.data||{};
   if(kind==='feed'){const fid=id.slice(5);
@@ -2251,26 +2279,45 @@ function clLocalSave(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
 
 /* ---- pull + push ---- */
 async function clPull(){
-  let changed=false,since=CL.last||'1970-01-01T00:00:00Z';
+  let changed=false,since=CL.last||'1970-01-01T00:00:00Z';const seen=[];
   for(let page=0;page<20;page++){
-    const rows=await clFetch(`/rest/v1/cradle_items?select=id,kind,data,deleted,updated_at${CL.household?'&household_id=eq.'+CL.household:''}&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.asc&limit=1000`,{method:'GET'});
+    const rows=await clFetch(`/rest/v1/cradle_items?select=id,kind,data,deleted,updated_at,owner${CL.household?'&household_id=eq.'+CL.household:''}&updated_at=gte.${encodeURIComponent(since)}&order=updated_at.asc&limit=1000`,{method:'GET'});
     if(!rows||!rows.length)break;
-    const cur=clItems();
+    const cur=clItems(),keep=new Set();
     for(const r of rows){
-      const local=cur[r.id],dirty=local&&clJ(local)!==CL.synced[r.id];
+      const local=cur[r.id],base=CL.synced[r.id],dirty=local?clJ(local)!==base:base!==undefined;
       const serverJ=r.deleted?null:clJ({kind:r.kind,data:r.data});
-      if(dirty&&CL.init)continue;            // local edit wins; it will be pushed
-      if(r.deleted&&!local){delete CL.synced[r.id];continue}
       if(local&&serverJ===clJ(local)){CL.synced[r.id]=serverJ;continue}
-      clApply(r);changed=true;
+      if(dirty&&CL.init){                   // this phone has changes that aren't uploaded yet
+        keep.add(r.id);
+        if(!local||r.deleted)continue;      // a delete here wins; an edit here brings back an entry deleted elsewhere
+        const m=clMergeData(base?JSON.parse(base).data:null,local.data,r.data);
+        if(clJ(m)!==clJ(local.data)){clApply({id:r.id,kind:r.kind,data:m});changed=true;seen.push({r,local})}
+        CL.synced[r.id]=serverJ;continue    // the merged result differs from the server's, so it uploads next
+      }
+      if(r.deleted&&!local){delete CL.synced[r.id];continue}
+      clApply(r);changed=true;seen.push({r,local});
       if(r.deleted)delete CL.synced[r.id];
     }
-    const after=clItems();rows.forEach(r=>{if(!r.deleted&&after[r.id])CL.synced[r.id]=clJ(after[r.id])});
+    const after=clItems();rows.forEach(r=>{if(!r.deleted&&after[r.id]&&!keep.has(r.id))CL.synced[r.id]=clJ(after[r.id])});
     since=rows[rows.length-1].updated_at;CL.last=since;
     if(rows.length<1000)break;
   }
-  if(changed){clLocalSave();clRerender()}
+  if(changed){clLocalSave();clRerender();if(CL.init)clTellChanges(seen)}
   clSave();return changed;
+}
+// Say who changed what, and flash the rows, when someone else's edit arrives
+async function clTellChanges(seen){
+  const other=seen.filter(x=>x.r.owner&&x.r.owner!==CL.owner);if(!other.length)return;
+  const known=id=>CL.fam&&(CL.fam.members||[]).some(m=>m.user_id===id);
+  if(CL.household&&other.some(x=>!known(x.r.owner))){try{CL.fam=await clRpc('cradle_family_info',{h:CL.household});clSave()}catch(e){}}
+  const ids=other.filter(x=>x.r.kind==='feed').map(x=>x.r.id.slice(5));
+  setTimeout(()=>ids.forEach(id=>{const el=document.querySelector(`.feed[data-id="${id}"]`);if(el){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}}),60);
+  const who=[...new Set(other.map(x=>x.r.owner))],name=who.length===1?memberName(who[0]):'Your family';
+  if(other.length>1){toast(`${name} made ${other.length} changes`);return}
+  const {r,local}=other[0],d=r.data||(local&&local.data)||{},verb=r.deleted?'removed':!local?'added':'updated';
+  const what=r.kind==='feed'?(d.bath?'a bath':isFeed(d)?'a feed':'a diaper')+(d.time?' at '+fmt12(d.time):''):r.kind==='weight'?'a weight':r.kind==='day'?'the day notes':'the settings';
+  toast(`${name} ${verb} ${what}`);
 }
 async function clPush(){
   const cur=clItems(),up=[];
@@ -2290,8 +2337,9 @@ async function clSync(){
   try{
     if(CL.pendingKey)await clJoinPending();
     if(!CL.household||!clBooted){await clBootstrap();clBooted=true}
-    if(!CL.init){await clPull();CL.init=true;clSave()}
-    await clPush();await clPull();clLastErr='';clSetState('ok');
+    // Pull first so other phones' edits are merged in, then upload the result
+    const first=!CL.init;await clPull();if(first){CL.init=true;clSave()}
+    await clPush();clLastErr='';clSetState('ok');
     if(clWelcomePending){clWelcomePending=false;showWelcome()}
     if(CL.newFamily){CL.newFamily=false;clSave();setTimeout(()=>{openSettings();toast('Welcome to Cradle! Start with your baby’s name and birth date.')},500)}
   }catch(e){if(e.code===401)return;clLastErr=e.message||'error';clSetState(navigator.onLine?'error':'offline')}
@@ -2305,10 +2353,28 @@ window.addEventListener('online',()=>{if(CL.session)clSync()});
 window.addEventListener('offline',()=>{if(CL.session)clSetState('offline')});
 function clRerender(){
   const a=document.activeElement;
-  if(a&&a.closest&&a.closest('main')&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)){clPendingRender=true;return}
+  if(a&&a.closest&&a.closest('main')&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)){clPendingRender=true;if(tab==='today'){renderFeedsKeep(a);renderStats();renderSince();const n=$('#dayNotes');if(n!==a)n.value=peek(cur).notes||''}return}
   if(nightOpen)renderNight(true);renderAll();
 }
 let clPendingRender=false;
+// While someone is typing, redraw the Log around the row they're in: other rows are rebuilt, and in their row every box but the one being typed in is refreshed
+function renderFeedsKeep(a){
+  const keep=a&&a.closest&&a.closest('#feeds .feed');if(!keep){renderFeeds();return}
+  setTimeout(tickNurse,0);const box=$('#feeds'),d=peek(cur),t=document.createElement('div');
+  let c=0;t.innerHTML=d.feeds.map((f,i)=>feedRow(f,i,isFeed(f)?'#'+(++c):f.bath?'🛁':'🧷')).join('');
+  const fresh=[...t.children],mine=fresh.find(r=>r.dataset.id===keep.dataset.id);
+  [...box.children].forEach(r=>{if(r!==keep)r.remove()});
+  if(!mine){fresh.forEach(r=>box.appendChild(r));return}   // deleted on another phone: it goes away when they finish typing
+  let before=true;fresh.forEach(r=>{if(r===mine){before=false;return}if(before)box.insertBefore(r,keep);else box.appendChild(r)});
+  keep.querySelector('.n').textContent=mine.querySelector('.n').textContent;
+  const f=d.feeds.find(x=>x.id===keep.dataset.id),row=keep;
+  row.querySelectorAll('input[data-k]').forEach(i=>{if(i===a)return;const k=i.dataset.k,v=k==='split'?100-(splitOf(f)??50):k==='wPre'||k==='wPost'?(f[k]?fmtW(f[k]):''):(f[k]??'');if(String(i.value)!==String(v))i.value=v});
+  const sd=row.querySelector('.sides');if(sd)sd.innerHTML=sideBtns(f);
+  row.querySelectorAll('.chk[data-t]').forEach(b=>b.classList.toggle('on',!!f[b.dataset.t]));
+  row.querySelectorAll('[data-bath]').forEach(b=>b.classList.toggle('on',b.dataset.bath===f.bath));
+  const wf=row.querySelector('.c-wf');if(wf)wf.classList.toggle('hidden',!f.wf);
+  if(a.dataset.k!=='split')updSplit(row,f);
+}
 document.addEventListener('focusout',()=>{setTimeout(()=>{if(clPendingRender){const a=document.activeElement;if(!(a&&a.closest&&a.closest('main')&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))){clPendingRender=false;renderAll()}}},300)});
 function clSetState(s){clState=s;const el=$('#syncDot');if(!el)return;
   const m={idle:['',''],syncing:['⟳','Syncing…'],ok:['☁︎','Synced'],offline:['⚠︎','Offline. Will sync when back online'],error:['⚠︎','Sync problem: '+clLastErr]}[s]||['',''];
@@ -2440,7 +2506,7 @@ async function openFamily(){
   $('#familyModal').classList.add('open');$('#famBody').innerHTML='<div class="sub">Loading…</div>';
   if(!CL.session){$('#famBody').innerHTML='<div class="sub">Sign in to manage your family.</div>';return}
   if(!navigator.onLine){$('#famBody').innerHTML='<div class="sub">You’re offline. Family settings need a connection.</div>';return}
-  try{if(!CL.household)await clBootstrap();if(CL.legacy||!CL.household){$('#famBody').innerHTML='<div class="sub">Family sharing isn’t set up in your database yet. Run <b>supabase-family.sql</b> in Supabase, then reopen this.</div>';return}
+  try{if(!CL.household)await clBootstrap();if(CL.legacy||!CL.household){$('#famBody').innerHTML='<div class="sub">Family sharing isn’t set up in your database yet. Run <b>supabase/2-family.sql</b> in Supabase, then reopen this.</div>';return}
     CL.fam=await clRpc('cradle_family_info',{h:CL.household});clSave();renderFamily()}
   catch(e){$('#famBody').innerHTML='<div class="sub">Couldn’t load your family: '+esc(e.message)+'</div>'}
 }

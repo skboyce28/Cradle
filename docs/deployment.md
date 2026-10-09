@@ -164,7 +164,7 @@ The main choices so far, why they were made, and what they cost.
 | # | Decision | Why | Trade-off |
 |---|---|---|---|
 | 1 | **One HTML file, no framework or libraries** | Nothing to install or update, fast on old phones, easy to read and back up. | One large file. Discipline needed to keep it organized. |
-| 2 | **Offline-first:** every phone keeps the whole log and syncs small items | Logging at 3am can't wait for a signal. | Last write wins per entry, so two people editing the *same* row within seconds can overwrite each other. |
+| 2 | **Offline-first:** every phone keeps the whole log and syncs small items | Logging at 3am can't wait for a signal. | Entries merge field by field (three-way, against the last synced copy), so edits to different boxes of the same row both survive. Two phones changing the *same* box within about a second: the later upload wins. |
 | 3 | **Supabase free plan, called directly over REST**, no server code of our own | Real accounts and a real database with no server to run or pay for. No SDK keeps the app dependency-free. | Bound by free-plan limits (pausing, email). Sync and auth code is hand-written. |
 | 4 | **Security enforced in the database:** row-level security plus permission-checking functions | A modified copy of the app still can't reach other families' data. The publishable key can be public. | Schema changes need care, and are tested before release. |
 | 5 | **Families with share keys and open sign-up** | Friends and family set themselves up without the admin creating accounts. | Anyone with the link can make an account (but only ever sees their own empty family). |

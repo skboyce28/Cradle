@@ -32,6 +32,7 @@ Nurse, bottle top-up, pump, diapers, and Vitamin D on one row, shared live betwe
 | **Calm** | The 🌙 button at the top right: a slow screensaver with the time, time since the last feed, and spa music, ocean, rain, or white noise. |
 | **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, and baths. Every tab also prints. |
 | **Weighted feeds** | Before and after weights on a feed, with the estimated transfer (1 g ≈ 1 mL). |
+| **Weights** | A list of every weight to review, edit, or delete, and a chart against birth weight. |
 | **Achievements** | Ten badges based on your goals, like a 7-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
 | **Fun center** | **Bottle Catch**: a two-minute, one-thumb game for the waiting moments, with arcade-style high scores (3 initials) for everyone, your family, and you. |

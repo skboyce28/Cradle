@@ -95,6 +95,11 @@ The 7 or 14 days ending on the selected day:
 
 **+ Add weight** logs a weight from a visit. Type it like `7 lb 3.5 oz` or `3270 g`.
 
+**See all** (or **Weights** in the profile menu) lists every weight, newest first, above the form:
+- **Edit** fills the form with that weight. Change it and tap **Save changes**, or **Cancel edit**.
+- **×** deletes it.
+- Weights from weighted feeds have **Open feed**, which jumps to that feed on the Log. The birth weight has **Settings**.
+
 **🩺 Doctor report** prints one page for appointments:
 - weight against birth weight
 - daily feeds, nursing minutes with the left and right split, and bottle and pump volumes
@@ -157,7 +162,7 @@ The round button at the top right:
 |---|---|
 | **Appearance** | Auto, Light, Dark, and Dalmatian mode (experimental) |
 | **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
-| **Weights** | All logged weights |
+| **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch and its high scores. See [Fun center](#fun-center). |
 | **Achievements** | Ten badges with progress, like *Sunshine Streak* (7 days of Vitamin D) and *Diaper Pro* (7 days of diaper goals). A day that isn't over yet never breaks a streak. |
