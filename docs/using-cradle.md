@@ -11,7 +11,7 @@ A tour of every screen, for the people doing the feeding. The same tips live in 
 
 ## The triple-feed cycle
 
-Each session has three parts: **nurse** at the breast, offer a **bottle** top-up, then **pump**. Log all three on **one row**.
+Each session has three parts: **nurse** at the breast, offer a **bottle** top-up, then **pump**. Log all three on **one row**. If you only nurse or only bottle feed, fill in just those parts; everything else works the same.
 
 ## Log
 

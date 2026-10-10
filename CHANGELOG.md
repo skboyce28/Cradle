@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.12
+
+**New tagline**
+- **Family baby log** on the splash and sign-in screens; **Baby log** everywhere else:
+  - the header (or *Juniper's baby log* once the baby's name is set) and the profile menu
+  - the About dialog, the browser tab, and the installed app's name and description
+  - the printed day sheet, the doctor report footer, the family welcome, and the share invite
+- Cradle is still built around triple feeding, and the docs now say it works just as well for nursing or bottle feeding alone
+
 ## v1.11
 
 **Editing together**

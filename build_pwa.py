@@ -57,7 +57,7 @@ head = '''<meta name="viewport" content="width=device-width, initial-scale=1, vi
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Cradle">
-<meta name="description" content="Offline triple-feeding log for newborns">
+<meta name="description" content="Baby log that works offline and syncs between family phones">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">'''
@@ -67,8 +67,8 @@ open(os.path.join(out, 'index.html'), 'w').write(html)
 
 # 3) manifest
 manifest = {
-  "name": "Cradle Feeding Log", "short_name": "Cradle",
-  "description": "Offline triple-feeding log for newborns",
+  "name": "Cradle Baby Log", "short_name": "Cradle",
+  "description": "Baby log that works offline and syncs between family phones",
   "start_url": "./", "scope": "./", "display": "standalone", "orientation": "portrait",
   "background_color": "#f6f1ea", "theme_color": "#d0683a",
   "icons": [

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cradle Feeding Log</title>
+<title>Cradle Baby Log</title>
 <style>
 :root{
   --bg:#f6f1ea;--panel:#fffaf4;--panel2:#f1e9df;--ink:#2b2420;--muted:#7d7066;--line:#e6dbcf;
@@ -538,7 +538,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
   <div class="hrow">
     <div class="brand">
       <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="var(--accent-soft)"/><path d="M7 15h18a9 9 0 0 1-18 0z" fill="var(--accent)"/><circle cx="16" cy="9.5" r="3.5" fill="var(--accent)"/><path d="M5 15h22" stroke="var(--ink)" stroke-width="1.6" stroke-linecap="round"/><g class="spots" fill="#141414"><circle cx="11" cy="19" r="1.6"/><circle cx="19" cy="21.5" r="1.3"/><circle cx="21.5" cy="17.5" r="1"/></g></svg>
-      <div>Cradle<small id="brandSub">Triple-feeding log</small></div>
+      <div>Cradle<small id="brandSub">Baby log</small></div>
     </div>
     <div class="spacer"></div>
     <span class="saved" id="saved">Saved</span>
@@ -553,7 +553,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
     <div class="menu" id="menu">
       <button class="avatar" id="menuBtn" title="Profile" aria-haspopup="true"></button>
       <div class="dd" id="dd">
-        <div class="ddhead"><b id="ddName">Cradle</b><span class="sub" id="ddSub">Triple-feeding log</span><div class="sub" style="margin-top:4px">☁︎ <span id="ddSync">Not signed in</span></div></div>
+        <div class="ddhead"><b id="ddName">Cradle</b><span class="sub" id="ddSub">Baby log</span><div class="sub" style="margin-top:4px">☁︎ <span id="ddSync">Not signed in</span></div></div>
         <div class="ddlabel">Appearance</div>
         <div class="seg" id="themeSeg">
           <button data-theme="auto">Auto</button><button data-theme="light">Light</button><button data-theme="dark">Dark</button>
@@ -850,7 +850,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
   <div class="gwrap">
     <div class="glogo"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 15h18a9 9 0 0 1-18 0z" fill="#fff5ea"/><circle cx="16" cy="9.5" r="3.5" fill="#fff5ea"/><path d="M5 15h22" stroke="#fff5ea" stroke-width="1.8" stroke-linecap="round"/></svg></div>
     <div class="gname">Cradle</div>
-    <div class="gtag">Triple-feeding log</div>
+    <div class="gtag">Family baby log</div>
     <div id="gLoading" class="gdots"><i></i><i></i><i></i></div>
     <form id="gForm" autocomplete="on"><div id="gLogin" class="card hidden">
       <label for="gUser">Username or email</label><input id="gUser" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
@@ -1004,9 +1004,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.11</b><br><span class="sub">A triple-feeding log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.12</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.12</b>
+    <ul class="cl"><li>New tagline: <b>Family baby log</b> on the splash and sign-in screens, and <b>Baby log</b> everywhere else, since Cradle works however your baby is fed</li></ul>
     <b>v1.11</b>
     <ul class="cl"><li>Two people can edit the same feed at once: changes to different boxes are combined instead of one overwriting the other</li><li>While you’re typing, the rest of the Log still updates, and the box you’re in is left alone</li><li>A note says who changed what when someone else’s edit arrives, and the row flashes</li><li>Weights: review them at the top of the Weights screen, and tap <b>Edit</b> to fix one. <b>See all</b> on the Dashboard opens the list.</li></ul>
     <b>v1.10</b>
@@ -1039,7 +1041,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.11';
+const VERSION='1.12';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -1121,10 +1123,10 @@ function applyTheme(){
 function renderProfile(){
   const n=babyName();
   $('#menuBtn').innerHTML=n?esc(n[0].toUpperCase()):'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>';
-  $('#brandSub').textContent=n?n+'’s feeding log':'Triple-feeding log';
+  $('#brandSub').textContent=n?n+'’s baby log':'Baby log';
   $('#ddName').textContent=n||'Cradle';
   const g=goals(key(new Date()));
-  $('#ddSub').textContent=g.dol!=null&&g.dol>=0?'Day '+g.dol+' of life':(S.settings.birthDate?'Triple-feeding log':'Add a birth date in Settings');
+  $('#ddSub').textContent=g.dol!=null&&g.dol>=0?'Day '+g.dol+' of life':(S.settings.birthDate?'Baby log':'Add a birth date in Settings');
 }
 $('#menuBtn').onclick=e=>{e.stopPropagation();$('#menu').classList.toggle('open')};
 document.addEventListener('click',e=>{if(!e.target.closest('#menu'))$('#menu').classList.remove('open')});
@@ -1713,7 +1715,7 @@ function finishImport(msg){pending=null;$('#importModal').classList.remove('open
 /* Print */
 function buildPrint(){
   const d=peek(cur),t=totals(d),st=S.settings,g=goals(cur),v=vitGiven(d),rows=d.feeds.slice();while(rows.length<12)rows.push(null);
-  $('#print').innerHTML=`<h1>Triple-Feeding Daily Log${babyName()?' · '+esc(babyName()):''}</h1>
+  $('#print').innerHTML=`<h1>Daily Baby Log${babyName()?' · '+esc(babyName()):''}</h1>
   <div>Date: ${parseK(cur).toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})} | Target bottle: ${st.target} mL | Pump: ${st.pumpMin} to ${st.pumpMax} min${g.dol!=null&&g.dol>=0?' | Day '+g.dol+' of life, goal '+g.wet+' wet / '+g.stool+' stool':''}</div>
   <table><tr><th>#</th><th>Time</th><th>Breast</th><th>Min</th><th>Bottle (mL)</th><th>Pump (mL)</th><th>Urine</th><th>Stool</th><th>Vit D</th><th>Note</th></tr>
   ${rows.map((f,i)=>f&&f.bath?`<tr><td>${i+1}</td><td>${fmt12(f.time)}</td><td colspan="7">🛁 ${bathName(f)}</td><td>${esc(f.note)}</td></tr>`:`<tr><td>${i+1}</td><td>${f?fmt12(f.time):''}</td><td>${f?[f.left?'L':'',f.right?'R':''].filter(Boolean).join(' + ')+(f.start?' (start '+f.start+')':''):'[ ] L  [ ] R'}</td><td>${f?.mins??''}${f&&f.left&&f.right&&num(f.mins)>0?' ('+splitShort(f)+')':''}</td><td>${f?.bottle??''}</td><td>${f?.pump??''}</td><td>${f?(f.urine?'✓':''):'[ ]'}</td><td>${f?(f.stool?'✓':''):'[ ]'}</td><td>${f?(f.vitD?'✓':''):'[ ]'}</td><td>${f?esc(f.note):''}</td></tr>`).join('')}</table>
@@ -2032,7 +2034,7 @@ function buildReport(){
   ${notes.length?`<h3 style="margin:12px 0 4px;font-size:14px">Notes</h3>${notes.map(x=>`<div><b>${dlong(x.dt)}:</b> ${esc(x.d.notes)}</div>`).join('')}`:''}
   <h3 style="margin:14px 0 4px;font-size:14px">Questions for the visit</h3>
   ${'<div style="border-bottom:1px solid #999;height:22px"></div>'.repeat(4)}
-  <div style="margin-top:10px;color:#666;font-size:10px">From Cradle, a home feeding log. Volumes are as logged by parents.</div></div>`;
+  <div style="margin-top:10px;color:#666;font-size:10px">From Cradle, a home baby log. Volumes are as logged by parents.</div></div>`;
 }
 function printReport(){printMode='report';buildReport();document.body.classList.add('print-sheet');printFired=false;
   setTimeout(()=>{try{window.print()}catch(e){}setTimeout(()=>{if(!printFired){document.body.classList.remove('print-sheet');printMode=null;showBlocked('print')}},700)},50)}
@@ -2496,7 +2498,7 @@ function renderFamilyBits(){const el=$('#ddFam');if(el)el.textContent=CL.fam?CL.
 function showWelcome(){
   const nm=babyName();
   $('#welTitle').textContent='Welcome to Cradle';
-  $('#welBody').innerHTML=`<p style="margin:0 0 10px">You’re now part of <b>${esc(famName())}</b>${nm?', sharing the feeding log for <b>'+esc(nm)+'</b>':''}. Every feed, diaper, and note you log shows up for everyone in the family, and theirs show up for you, usually within a few seconds.</p>
+  $('#welBody').innerHTML=`<p style="margin:0 0 10px">You’re now part of <b>${esc(famName())}</b>${nm?', sharing the baby log for <b>'+esc(nm)+'</b>':''}. Every feed, diaper, and note you log shows up for everyone in the family, and theirs show up for you, usually within a few seconds.</p>
     <p style="margin:0 0 6px"><b>A few things to try:</b></p>
     <ul class="cl" style="margin-top:0"><li><b>+ Log feed now</b> when a feed starts</li><li><b>Night shift</b> for big, dim buttons at 3am</li><li>The <b>Dashboard</b> for trends and a doctor report</li><li><b>Change password</b> in the profile menu to make the account yours</li></ul>
     <p style="margin:10px 0 0">So glad you’re here. 💛</p>`;
@@ -2531,7 +2533,7 @@ function renderFamily(){
 $('#familyModal').addEventListener('click',async e=>{
   const t=e.target,f=CL.fam||{};
   const run=async(fn,args,msg)=>{try{CL.fam=await clRpc(fn,args);clSave();renderFamily();if(msg)toast(msg)}catch(err){toast(err.message||'Something went wrong')}};
-  const shareMsg=()=>`Join ${famName()} on Cradle, our baby feeding log.\n\n1. Open ${location.origin+location.pathname}\n2. Tap “New here? Create an account”\n3. Enter this share key: ${f.join_code}`;
+  const shareMsg=()=>`Join ${famName()} on Cradle, our baby log.\n\n1. Open ${location.origin+location.pathname}\n2. Tap “New here? Create an account”\n3. Enter this share key: ${f.join_code}`;
   if(t.id==='famInvite'){const em=$('#famEmail').value.trim();if(!em.includes('@')){toast('Enter their email address');return}await run('cradle_invite',{h:CL.household,p_email:em},'Added '+em+'. They join next time they open Cradle.')}
   else if(t.id==='famShare'){const m=shareMsg();if(navigator.share){try{await navigator.share({title:'Join us on Cradle',text:m})}catch(e){}}else{copyText(m)?toast('Invite message copied. Paste it in a text.'):toast('Key: '+f.join_code)}}
   else if(t.id==='famNewKey'){$('#familyModal').classList.remove('open');const ok=await ask('Make a new share key? The old key stops working right away. Everyone already in the family stays in.','New key');$('#familyModal').classList.add('open');if(ok)await run('cradle_new_code',{h:CL.household},'New share key ready')}

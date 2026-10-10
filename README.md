@@ -4,8 +4,8 @@
 
 <h1 align="center">Cradle</h1>
 
-<p align="center"><b>A newborn triple-feeding log for tired parents.</b><br>
-Nurse, bottle top-up, pump, diapers, and Vitamin D on one row, shared live between family phones, and usable one-handed at 3am.</p>
+<p align="center"><b>A baby log for tired parents.</b><br>
+Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family phones and usable one-handed at 3am. Built for triple feeding, and just as handy if you only nurse or only bottle feed.</p>
 
 > [!IMPORTANT]
 > **Cradle is not medical advice.** It is a notebook, not a clinical tool. Feeding and diaper goals in the app are placeholders: always follow your pediatrician, lactation consultant, or care team. **Cradle was built with AI assistance (Claude, by Anthropic).** The code was written and reviewed with an AI model, has not been independently audited, and comes with no warranty. See [DISCLAIMER.md](DISCLAIMER.md).
