@@ -160,7 +160,7 @@ The round button at the top right:
 
 | Item | What it does |
 |---|---|
-| **Appearance** | Auto, Light, Dark, Dalmatian mode (experimental), and 🎃 Halloween mode (seasonal: a dark night theme with bats and a jack-o'-lantern logo). The theme is per phone. |
+| **Appearance** | Auto, Light, Dark, and Dalmatian mode (experimental), plus three seasonal themes:<br>🎃 **Halloween**: a dark night theme with bats and a jack-o'-lantern logo<br>🦃 **Thanksgiving**: warm cream and maple with falling leaves, and an acorn cap on the logo<br>🎄 **Christmas**: snowy white with red and evergreen, snowflakes, a candy-cane stripe, and a Santa hat on the logo<br>The theme is per phone. |
 | **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
