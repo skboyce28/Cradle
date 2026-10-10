@@ -1,5 +1,46 @@
 # Changelog
 
+## v1.15
+
+**40 achievements** (up from 10)
+- Grouped into Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, and Weight and milestones, each with an earned count
+- Higher tiers of the originals, marked ★★ or ★★★:
+  - Fortnight Strong (14 days) and Month of Feeds (30)
+  - Clockwork (8+ feeds on 20 days)
+  - Nursing Natural (50 sessions) and Switch Master (25 alternating starts)
+  - Bottle Boss (50) and Bottle Legend (150)
+  - Bigger Day (400 mL) and Biggest Day (500 mL)
+  - Pump Pro (50)
+  - Diaper Dynamo (14 days), Diaper Legend (30), and Diaper Master (14 in a row)
+  - Vitamin D Devotee (14 in a row) and Sunshine Superstar (30)
+  - Feed Machine (500 feeds) and One Thousand Feeds
+  - Bath Buddy (10 baths), Perfect Week, and One Month Old
+- New kinds:
+  - Century Club (100 feeds)
+  - Night Owl (10 feeds between midnight and 5am)
+  - Perfect Day (8+ feeds, both diaper goals, and Vitamin D when due)
+  - Note Taker (day notes on 5 days)
+  - Liquid Gold (5 liters pumped)
+  - Splish Splash (first bath)
+  - Weigh In (first weight) and Weighted Wonder (5 weighted feeds)
+  - Back to Birth Weight
+  - Two Weeks Old
+- Earned dates are worked out from the log, so badges you already qualified for show as earned right away
+
+**Themes window**
+- The profile menu has one **🎨 Themes** item, showing the current theme. It opens a window with Auto, Light, and Dark, and the four fun themes with a short description each.
+
+**Doctor report fixes** (checked against the log with separate code)
+- **Pumped** now averages over the days you pumped, and says how many ("365 mL/day on 8 days with pumping"). Before, days without pumping counted as zero, which made it look lower.
+- **Vitamin D** only counts days on or after the Vitamin D start date. Before, drops logged earlier could show "10 of 9 days".
+- **Days before the birth date** are left out of the table when the 14-day range reaches back that far
+- **Nursing** says how many nursing feeds were timed, when some weren't, since untimed feeds count as 0 minutes
+- The daily rows (feeds, nursing minutes, bottle, pump, wet, stool, Vitamin D, baths, longest gap) were already right
+
+**Dashboard fixes**
+- Pumped per day uses completed days, like the other averages
+- Vitamin D counts only days since the start date
+
 ## v1.14
 
 **Dashboard filters**

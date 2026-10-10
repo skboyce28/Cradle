@@ -162,12 +162,12 @@ The round button at the top right:
 
 | Item | What it does |
 |---|---|
-| **Appearance** | Auto, Light, or Dark, plus **Fun themes**: Dalmatian (experimental) and three seasonal themes:<br>🎃 **Halloween**: a dark night theme with bats and a jack-o'-lantern logo<br>🦃 **Thanksgiving**: warm cream and maple with falling leaves, and an acorn cap on the logo<br>🎄 **Christmas**: snowy white with red and evergreen, snowflakes, a candy-cane stripe, and a Santa hat on the logo<br>The theme is per phone. |
+| **🎨 Themes** | Opens a window with Auto, Light, or Dark, plus **Fun themes**: Dalmatian (experimental) and three seasonal themes:<br>🎃 **Halloween**: a dark night theme with bats and a jack-o'-lantern logo<br>🦃 **Thanksgiving**: warm cream and maple with falling leaves, and an acorn cap on the logo<br>🎄 **Christmas**: snowy white with red and evergreen, snowflakes, a candy-cane stripe, and a Santa hat on the logo<br>The theme is per phone. |
 | **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch and its high scores. See [Fun center](#fun-center). |
-| **Achievements** | Ten badges with progress, like *Sunshine Streak* (7 days of Vitamin D) and *Diaper Pro* (7 days of diaper goals). A day that isn't over yet never breaks a streak. |
+| **Achievements** | Forty badges with progress, in seven groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, and Weight and milestones. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, feed interval, alarm, and goals |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About** | In-app help, version, and changelog |
