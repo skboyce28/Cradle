@@ -158,6 +158,12 @@ nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
 
 /* Section toolbar */
 .bar0{display:flex;align-items:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.dfilter{display:flex;gap:8px;overflow-x:auto;margin:12px -16px 0;padding:2px 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.dfilter::-webkit-scrollbar{display:none}
+.dfilter button{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:13.5px;font-weight:600;white-space:nowrap}
+.dfilter button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="halloween"] .dfilter button.on{color:#1b1022}
+.fhide{display:none!important}
 .bar0 h2{margin:0;font-size:20px}
 .sm{padding:6px 12px!important;font-size:13px}
 
@@ -715,48 +721,49 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <button class="ghost sm" data-report>🩺 Doctor report</button>
       <button class="ghost sm" data-print>🖨️ Print</button>
     </div>
+    <div class="dfilter noprint" id="dashFilter" role="tablist" aria-label="Show on the Dashboard"><button data-f="all">All</button><button data-f="feeds">🤱 Feeds</button><button data-f="bottle">🍼 Bottle &amp; pump</button><button data-f="diapers">💧 Diapers</button><button data-f="vitd">☀️ Vitamin D</button><button data-f="weight">⚖️ Weight</button><button data-f="baths">🛁 Baths</button></div>
     <div class="grid kpis" id="kpis"></div>
     <div class="grid charts">
-      <div class="card wide">
+      <div class="card wide" data-cat="weight">
         <div class="chead"><h3>Weight</h3><span class="noprint" style="display:flex;gap:6px;margin:-6px 0 2px"><button class="ghost sm" data-addweight="list">See all</button><button class="ghost sm" data-addweight="add">+ Add weight</button></span></div>
         <div id="wChart"></div>
         <div class="legend"><span><i style="background:var(--bottle);border-radius:50%"></i>Weigh-in</span><span><i style="background:var(--panel);border:2px solid var(--bottle);border-radius:50%"></i>Weighted feed (before)</span><span><i style="background:var(--good);height:3px;vertical-align:3px"></i>Birth weight</span><span><i style="background:var(--warn);height:3px;vertical-align:3px"></i>10% below birth</span></div>
         <div class="wstats" id="wStats"></div>
       </div>
-      <div class="card wide">
+      <div class="card wide" id="insCard">
         <h3>Insights</h3>
         <ul class="insights" id="insights"></ul>
       </div>
-      <div class="card wide">
+      <div class="card wide" data-cat="vitd">
         <h3>Vitamin D</h3>
         <div class="sub" id="vitSum" style="margin-bottom:10px"></div>
         <div class="vstrip" id="vitStrip"></div>
       </div>
-      <div class="card wide">
+      <div class="card wide" data-cat="feeds bottle">
         <div class="chead"><h3 id="c1title">This day by feed</h3><button class="xbtn noprint" data-chart="c1" title="Enlarge and explore">⤢</button></div>
         <div id="chart1" class="chartbox" data-chart="c1" title="Tap to enlarge"></div>
         <div class="legend"><span><i style="background:var(--bottle)"></i>Bottle</span><span><i style="background:repeating-linear-gradient(45deg,var(--pump) 0 2px,transparent 2px 4px);border:1px solid var(--pump)"></i>Pump output</span><span><i style="background:var(--accent);height:3px;vertical-align:3px"></i>Bottle target</span></div>
       </div>
-      <div class="card">
+      <div class="card" data-cat="bottle">
         <div class="chead"><h3>Daily volume</h3><button class="xbtn noprint" data-chart="c2" title="Enlarge and explore">⤢</button></div>
         <div id="chart2" class="chartbox" data-chart="c2" title="Tap to enlarge"></div>
         <div class="legend"><span><i style="background:var(--bottle)"></i>Bottle total</span><span><i style="background:var(--pump)"></i>Pump total (dashed)</span></div>
       </div>
-      <div class="card">
+      <div class="card" data-cat="diapers">
         <div class="chead"><h3>Daily diapers</h3><button class="xbtn noprint" data-chart="c3" title="Enlarge and explore">⤢</button></div>
         <div id="chart3" class="chartbox" data-chart="c3" title="Tap to enlarge"></div>
         <div class="legend"><span><i style="background:var(--wet)"></i>Wet</span><span><i style="background:var(--stool)"></i>Stool</span><span>Dashes mark each day's goal. Faded bars are today, still in progress.</span></div>
       </div>
-      <div class="card">
+      <div class="card" data-cat="feeds">
         <div class="chead"><h3>Longest stretch between feeds</h3><button class="xbtn noprint" data-chart="c5" title="Enlarge and explore">⤢</button></div>
         <div id="chart5" class="chartbox" data-chart="c5" title="Tap to enlarge"></div>
         <div class="legend"><span>Hours per day. The dot shows the average gap.</span></div>
       </div>
-      <div class="card">
+      <div class="card" data-cat="feeds">
         <h3>Breast side balance</h3>
         <div id="sideBal"></div>
       </div>
-      <div class="card wide">
+      <div class="card wide" data-cat="feeds vitd">
         <div class="chead"><h3>Feeding rhythm</h3><button class="xbtn noprint" data-chart="c4" title="Enlarge and explore">⤢</button></div>
         <div id="chart4" class="chartbox" data-chart="c4" title="Tap to enlarge"></div>
         <div class="legend"><span><i style="background:var(--accent);border-radius:50%"></i>Feed (bigger dot means more bottle)</span><span>☀️ Vitamin D</span></div>
@@ -789,7 +796,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">🛁</div><h3>Baths</h3><p>Tap <b>🛁 Bath</b> under Since last feed to log a bath with the current time. Choose <b>Sponge</b> or <b>Tub</b> and add a note if you like, such as a hair wash or nail trim. Cradle remembers which kind you used last. Baths don’t count as feeds, so they never change feed totals or when the next feed is due. The Log shows today’s bath or when the last one was, and the Dashboard, History, print sheet, and doctor report all include baths.</p></div>
       <div class="card"><div class="ico">☀️</div><h3>Vitamin D</h3><p>Tap ☀️ on the feed where you gave the drops. Giving them at the same feed each day, like the first morning feed, makes it easier to remember. You'll get a heads-up if it's already logged that day.</p></div>
       <div class="card"><div class="ico">⏱️</div><h3>Pump timer</h3><p>Start the timer when you start pumping. The green arc shows your target window.</p></div>
-      <div class="card"><div class="ico">📊</div><h3>Dashboard</h3><p>Shows the last 7 or 14 days ending on the day you have selected, including how many baths and when the last one was. Tap any chart to enlarge it, then tap a day or feed for details. The side balance also shows nursing time on each side, from the minutes and the split slider. Today counts as in progress until midnight.</p></div>
+      <div class="card"><div class="ico">📊</div><h3>Dashboard</h3><p>Shows the last 7 or 14 days ending on the day you have selected, including how many baths and when the last one was. Tap a chip under Print (<b>Feeds</b>, <b>Bottle &amp; pump</b>, <b>Diapers</b>, <b>Vitamin D</b>, <b>Weight</b>, <b>Baths</b>) to see just that topic, or <b>All</b> for everything. Print prints what’s showing. Tap any chart to enlarge it, then tap a day or feed for details. The side balance also shows nursing time on each side, from the minutes and the split slider. Today counts as in progress until midnight.</p></div>
       <div class="card wide-guide"><div class="ico">💬</div><h3>Send updates by text</h3>
         <p>Each phone keeps its own copy of the log. To catch the other person up:</p>
         <ol class="steps">
@@ -1072,10 +1079,12 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.13</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.14</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data (in Data management).</p>
     <div class="donate hidden" id="donateBox"><span style="font-size:22px">☕</span><div><b>Enjoying Cradle?</b><div class="sub">It’s free. If it helps your family, you can buy me a coffee.</div></div><a class="primary" id="donateLink" href="#" target="_blank" rel="noopener noreferrer">Buy me a coffee</a></div>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.14</b>
+    <ul class="cl"><li>Dashboard filters: chips under Print (All, Feeds, Bottle &amp; pump, Diapers, Vitamin D, Weight, Baths) show just that topic’s cards and insights</li><li>Cradle remembers your filter, and Print prints what’s showing</li></ul>
     <b>v1.13</b>
     <ul class="cl"><li>🦃 Thanksgiving mode: warm cream and maple colors, falling leaves and acorns, and an acorn cap on the logo</li><li>🎄 Christmas mode: snowy white with red and evergreen, falling snowflakes, a candy-cane stripe under the header, and a Santa hat on the logo</li><li>Both are in Appearance under Fun themes, next to Halloween, and like every theme they’re just for this phone</li><li>A shorter profile menu: <b>Data management</b> holds export, import, print, erase all data, and sign out and remove from this phone. Fun themes sit in a small grid.</li><li>☕ An optional Buy me a coffee button, when your Cradle has a donation link set</li></ul>
     <b>v1.12</b>
@@ -1113,7 +1122,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.13';
+const VERSION='1.14';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -1561,16 +1570,16 @@ function renderDash(){
   if(!logged.length){
     $('#kpis').innerHTML=`<div class="empty" style="grid-column:1/-1">No feeds logged in the ${n} days ending ${longDate(cur)}.</div>`;
   }else $('#kpis').innerHTML=`
-    <div class="card kpi"><h3>Feeds per day</h3><div class="big">${(baseFeeds.length/ld).toFixed(1)}</div><div class="sub">${baseFeeds.length} feeds over ${base.length} ${dl}${todayX&&done.length?'. Today so far: <b>'+todayX.t.n+'</b>':''}</div></div>
-    <div class="card kpi"><h3>Bottle per day</h3><div class="big" style="color:var(--bottle)">${Math.round(totBd/ld)} <span class="sub">mL</span></div><div class="sub">Avg <b>${bottled.length?Math.round(totB/bottled.length):0} mL</b> per bottle. ${bottled.length?Math.round(hit/bottled.length*100):0}% hit ${st.target} mL</div></div>
-    <div class="card kpi"><h3>Pumped per day</h3><div class="big" style="color:var(--pump)">${pDays.length?Math.round(totP/pDays.length):'--'} <span class="sub">mL</span></div><div class="sub">${!pDays.length?'No pump output logged in this range':totBp?'Covers <b>'+Math.round(totP/totBp*100)+'%</b> of bottle on '+pDays.length+' day'+(pDays.length>1?'s':'')+' with pumping':'Logged on '+pDays.length+' day'+(pDays.length>1?'s':'')}</div></div>
-    <div class="card kpi"><h3>Between feeds</h3><div class="big">${avgGap?hm(avgGap):'--'}</div><div class="sub">${longest?'Longest <b>'+hm(longest.g)+'</b> on '+xlab(longest.dt):'Average gap'}</div></div>
-    <div class="card kpi"><h3>Wet goal met</h3><div class="big" style="color:var(--wet)">${wetMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.wet,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.wet+' of '+todayX.g.wet+'</b>':''}</div></div>
-    <div class="card kpi"><h3>Stool goal met</h3><div class="big" style="color:var(--stool)">${stoolMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.stool,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.stool+' of '+todayX.g.stool+'</b>':''}</div></div>
-    <div class="card kpi"><h3>Vitamin D</h3><div class="big" style="color:var(--good)">${vitDays}<span class="sub"> / ${vDue} day${vDue===1?'':'s'}</span></div><div class="sub">${S.settings.vitDStart&&vDue<n?'Started '+vitStartS()+'. ':''}${streak?'<b>'+streak+' day</b> streak':'No current streak'}${usualS?'. Usually '+usualS:''}</div></div>
+    <div class="card kpi" data-cat="feeds"><h3>Feeds per day</h3><div class="big">${(baseFeeds.length/ld).toFixed(1)}</div><div class="sub">${baseFeeds.length} feeds over ${base.length} ${dl}${todayX&&done.length?'. Today so far: <b>'+todayX.t.n+'</b>':''}</div></div>
+    <div class="card kpi" data-cat="bottle"><h3>Bottle per day</h3><div class="big" style="color:var(--bottle)">${Math.round(totBd/ld)} <span class="sub">mL</span></div><div class="sub">Avg <b>${bottled.length?Math.round(totB/bottled.length):0} mL</b> per bottle. ${bottled.length?Math.round(hit/bottled.length*100):0}% hit ${st.target} mL</div></div>
+    <div class="card kpi" data-cat="bottle"><h3>Pumped per day</h3><div class="big" style="color:var(--pump)">${pDays.length?Math.round(totP/pDays.length):'--'} <span class="sub">mL</span></div><div class="sub">${!pDays.length?'No pump output logged in this range':totBp?'Covers <b>'+Math.round(totP/totBp*100)+'%</b> of bottle on '+pDays.length+' day'+(pDays.length>1?'s':'')+' with pumping':'Logged on '+pDays.length+' day'+(pDays.length>1?'s':'')}</div></div>
+    <div class="card kpi" data-cat="feeds"><h3>Between feeds</h3><div class="big">${avgGap?hm(avgGap):'--'}</div><div class="sub">${longest?'Longest <b>'+hm(longest.g)+'</b> on '+xlab(longest.dt):'Average gap'}</div></div>
+    <div class="card kpi" data-cat="diapers"><h3>Wet goal met</h3><div class="big" style="color:var(--wet)">${wetMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.wet,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.wet+' of '+todayX.g.wet+'</b>':''}</div></div>
+    <div class="card kpi" data-cat="diapers"><h3>Stool goal met</h3><div class="big" style="color:var(--stool)">${stoolMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.stool,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.stool+' of '+todayX.g.stool+'</b>':''}</div></div>
+    <div class="card kpi" data-cat="vitd"><h3>Vitamin D</h3><div class="big" style="color:var(--good)">${vitDays}<span class="sub"> / ${vDue} day${vDue===1?'':'s'}</span></div><div class="sub">${S.settings.vitDStart&&vDue<n?'Started '+vitStartS()+'. ':''}${streak?'<b>'+streak+' day</b> streak':'No current streak'}${usualS?'. Usually '+usualS:''}</div></div>
     ${(()=>{const bs=L.flatMap(x=>bathsOf(x.d).map(f=>({k:x.k,f}))),lb=lastBath(L[n-1].k),sp=bs.filter(b=>b.f.bath==='sponge').length,tb=bs.filter(b=>b.f.bath==='tub').length;
-      return `<div class="card kpi"><h3>Baths</h3><div class="big" style="color:var(--wet)">${bs.length}<span class="sub"> in ${n} days</span></div><div class="sub">${lb?'Last <b>'+dlong(parseK(lb.k))+'</b>'+' ('+daysAgo(lb.k)+')'+(bs.length?'. '+[sp?sp+' sponge':'',tb?tb+' tub':''].filter(Boolean).join(', '):''):'No baths logged yet'}</div></div>`})()}
-    <div class="card kpi"><h3>Side starts</h3><div class="big">${startL}<span class="sub"> L</span> ${startR}<span class="sub"> R</span></div><div class="sub">${both} of ${nursed} sessions used both sides</div></div>`;
+      return `<div class="card kpi" data-cat="baths"><h3>Baths</h3><div class="big" style="color:var(--wet)">${bs.length}<span class="sub"> in ${n} days</span></div><div class="sub">${lb?'Last <b>'+dlong(parseK(lb.k))+'</b>'+' ('+daysAgo(lb.k)+')'+(bs.length?'. '+[sp?sp+' sponge':'',tb?tb+' tub':''].filter(Boolean).join(', '):''):'No baths logged yet'}</div></div>`})()}
+    <div class="card kpi" data-cat="feeds"><h3>Side starts</h3><div class="big">${startL}<span class="sub"> L</span> ${startR}<span class="sub"> R</span></div><div class="sub">${both} of ${nursed} sessions used both sides</div></div>`;
   const ins=[];
   if(logged.length){
     if(todayX)ins.push(['⏳',`Today is still in progress, so it isn't counted in daily averages or goal checks yet. So far today: ${todayX.t.n} feed${todayX.t.n===1?'':'s'}, ${Math.round(todayX.t.bottle)} mL bottle, ${todayX.t.wet} of ${todayX.g.wet} wet, ${todayX.t.stool} of ${todayX.g.stool} stool${vitDue(todayK)?', Vitamin D '+(todayX.v.given?'given':'not yet'):''}.`]);
@@ -1591,7 +1600,8 @@ function renderDash(){
     {const st=sideTotals(baseFeeds),tt=st.L+st.R;if(tt>=30){const pl=Math.round(st.L/tt*100);ins.push(['⚖️',`Nursing time split ${pl}% left and ${100-pl}% right (${hm(st.L)} left, ${hm(st.R)} right)${Math.abs(pl-50)>=15?`, so the ${pl>50?'right':'left'} side has been getting less time`:''}.`])}}
     if(lastSide)ins.push(['🤱',`Started on Left ${startL} times and Right ${startR} times. Start on ${lastSide.start==='L'?'Right':'Left'} next.`]);
   }
-  $('#insights').innerHTML=ins.length?ins.map(x=>`<li><span>${x[0]}</span><span>${x[1]}</span></li>`).join(''):'<li><span>ℹ️</span><span>Log a few feeds to see insights here.</span></li>';
+  const IC={'⏳':'feeds bottle diapers vitd','🍼':'bottle','⚡':'bottle','📈':'bottle','📉':'bottle','⏱':'feeds','🌙':'feeds','💧':'diapers','💩':'diapers','☀️':'vitd','🛁':'baths','⚖️':'feeds','🤱':'feeds'};
+  $('#insights').innerHTML=ins.length?ins.map(x=>`<li data-cat="${IC[x[0]]||'feeds'}"><span>${x[0]}</span><span>${x[1]}</span></li>`).join(''):'<li><span>ℹ️</span><span>Log a few feeds to see insights here.</span></li>';
   $('#vitSum').innerHTML=`${S.settings.vitDStart?'Started <b>'+vitStartS()+'</b>. ':''}Given on <b>${vitDays} of ${vDue}</b> day${vDue===1?'':'s'} since starting.${streak?' Current streak: <b>'+streak+' day'+(streak>1?'s':'')+'</b>.':''}${usualS?' Usual time: <b>'+usualS+'</b>.':''}`;
   $('#vitStrip').style.gridTemplateColumns=`repeat(${n},minmax(0,1fr))`;
   $('#vitStrip').innerHTML=L.map(x=>{const due=vitDue(x.k);return `<div class="vday ${x.v.given?'on':''} ${due?'':'na'} ${x.k===cur?'cur':''}" data-tip="${dlong(x.dt)}: ${x.v.given?'given'+(x.v.time?' at '+fmt12(x.v.time):''):due?'not logged':'before Vitamin D started'}"><b>${xlab(x.dt)}</b><div class="s">${due?'☀️':'·'}</div><span class="sub">${x.v.given?(x.v.time?fmt12(x.v.time):'✓'):due?'--':'Not started'}</span></div>`}).join('');
@@ -1608,8 +1618,16 @@ function renderDash(){
   $('#chart3').innerHTML=chartDiapers(L);
   $('#chart4').innerHTML=chartRhythm(L);
   $('#chart5').innerHTML=chartGaps(L,per);
-  renderWeight();
+  renderWeight();applyDashFilter();
 }
+// Dashboard filter: show only the cards (and insights) for one topic
+function applyDashFilter(){const f=S.ui.dashFilter||'all',sec=$('#tab-dash');
+  $$('#dashFilter button').forEach(b=>{const on=b.dataset.f===f;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
+  sec.querySelectorAll('[data-cat]').forEach(el=>el.classList.toggle('fhide',f!=='all'&&!el.dataset.cat.split(' ').includes(f)));
+  const ic=$('#insCard');if(ic)ic.classList.toggle('fhide',f!=='all'&&!$('#insights li[data-cat]:not(.fhide)'));
+  const k=$('#kpis');k.classList.toggle('fhide',f!=='all'&&!k.querySelector('.kpi:not(.fhide)'));
+}
+$('#dashFilter').onclick=e=>{const b=e.target.closest('[data-f]');if(!b)return;S.ui.dashFilter=b.dataset.f;save();applyDashFilter();b.scrollIntoView({block:'nearest',inline:'nearest',behavior:'smooth'})};
 $('#rangeSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.ui.range=+b.dataset.n;save();renderDash()};
 
 /* History */

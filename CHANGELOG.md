@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.14
+
+**Dashboard filters**
+- A row of chips under Print: **All**, **🤱 Feeds**, **🍼 Bottle & pump**, **💧 Diapers**, **☀️ Vitamin D**, **⚖️ Weight**, **🛁 Baths**
+- Each shows only that topic's cards, charts, and insights:
+  - **Feeds:** feeds per day, between feeds, side starts, the day's feeds chart, longest stretch, side balance, and feeding rhythm
+  - **Bottle & pump:** bottle and pumped per day, the day's feeds chart, and daily volume
+  - **Diapers:** wet and stool goals, and daily diapers
+  - **Vitamin D:** the Vitamin D tile and strip, and feeding rhythm (which marks the drops)
+  - **Weight:** the weight chart and stats
+  - **Baths:** the baths tile and insight
+- Remembered per phone, and kept when you switch between 7 and 14 days
+- **Print** prints what's showing, so you can print just the weight chart, for example. The doctor report is unchanged.
+- On a phone the chips scroll sideways
+
 ## v1.13
 
 **Two more seasonal themes**, in Appearance under **Fun themes**, next to Halloween:

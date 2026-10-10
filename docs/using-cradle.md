@@ -91,6 +91,8 @@ The 7 or 14 days ending on the selected day:
 - Baths: how many, sponge or tub, and when the last one was
 - Weight against birth weight
 
+**Filter chips** under the Print button narrow the Dashboard to one topic: **Feeds**, **Bottle & pump**, **Diapers**, **Vitamin D**, **Weight**, or **Baths**. Only that topic's cards and insights show; **All** brings everything back. Cradle remembers your choice on this phone, and **Print** prints what's showing.
+
 **Tap any chart to enlarge it**, then tap a day or a feed for details. **Today counts as "in progress"** until midnight, so a goal that isn't met *yet* isn't shown as missed.
 
 **+ Add weight** logs a weight from a visit. Type it like `7 lb 3.5 oz` or `3270 g`.

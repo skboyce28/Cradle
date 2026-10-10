@@ -26,7 +26,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 |---|---|
 | **Log** | One row per feed: left/right breast (with which side you started), nursing minutes with a ▶ timer, a slider that splits the minutes between sides, bottle mL, pump mL, wet, stool, Vitamin D, notes. 🧷 diaper-only and 🛁 bath rows (sponge or tub) that don't count as feeds. |
 | **Night shift** | A dim, low-glare screen with huge buttons for one-handed night feeds, plus quick Diaper only and Bath buttons. Warm, Moonlight, or Red colors. |
-| **Dashboard** | 7 or 14 days of trends: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
+| **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |
 | **Calm** | The 🌙 button at the top right: a slow screensaver with the time, time since the last feed, and spa music, ocean, rain, or white noise. |
