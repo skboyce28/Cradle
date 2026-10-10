@@ -53,6 +53,7 @@ These go in **environment variables**, never in the repo:
 |---|---|
 | `CRADLE_SUPABASE_URL` | Your project URL |
 | `CRADLE_SUPABASE_KEY` | Your publishable key |
+| `CRADLE_DONATE_URL` | *Optional.* A donation link (Buy Me a Coffee, Ko-fi, PayPal.me), shown as **☕ Buy me a coffee** in the profile menu and About. Must start with `https://`. Leave it out to hide the button. |
 
 - **On Netlify:** set them under **Site configuration**, then **Environment variables** (step 5).
 - **On your computer:** copy [`.env.example`](../.env.example) to `.env` and fill it in. `.env` is in `.gitignore`, so it's never committed.

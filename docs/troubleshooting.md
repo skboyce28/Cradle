@@ -67,13 +67,13 @@ The phone starts fresh for each different account, so logs never mix. Your log i
 See [What happens to the log on a phone](accounts-and-families.md#what-happens-to-the-log-on-a-phone).
 
 **Restoring from a backup**
-Profile menu, then **Import data**, then choose the file or paste the `CRADLE1:` code, then **Merge**.
+Profile menu, then **Data management**, then **Import data**, then choose the file or paste the `CRADLE1:` code, then **Merge**.
 
 **"Only the family owner can erase the whole log"**
 Erase all data is limited to the family owner, because it clears every phone in the family. Members can still delete single entries with ×. To change who the owner is, see query 9 in [`supabase/admin-queries.sql`](../supabase/admin-queries.sql).
 
 **Clearing Cradle off a shared or lost phone**
-Profile menu, then **Sign out and remove from this phone**. If the phone is lost, also change your password from another phone (profile menu, then **Change password**).
+Profile menu, then **Data management**, then **Sign out and remove from this phone**. If the phone is lost, also change your password from another phone (profile menu, then **Change password**).
 
 ## Sync
 

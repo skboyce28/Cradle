@@ -21,6 +21,7 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
 
 - Removes the `baseData` block, an optional starter log for personal copies, so personal data can't reach a public site
 - Bakes in `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` from the environment or a git-ignored `.env`, and refuses secret keys
+- Bakes in the optional `CRADLE_DONATE_URL` (an `https://` link only), which shows the Buy me a coffee button; without it the button stays hidden
 - Writes `manifest.webmanifest` and copies the icons
 - Writes `_headers` with the site's security headers (see [Security](#security))
 - Writes `sw.js`, a service worker whose cache name is a hash of the page. Page loads try the network first (so updates arrive) and fall back to the cached copy offline.

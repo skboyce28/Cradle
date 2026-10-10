@@ -107,7 +107,7 @@ where email = 'their@email.com' and email_confirmed_at is null;
 
 ### Backups and limits
 
-- **Back up from the app.** Profile menu → **Export data** saves a full backup file. This is the backup to rely on; the free plan has limited database backups.
+- **Back up from the app.** Profile menu → **Data management** → **Export data** saves a full backup file. This is the backup to rely on; the free plan has limited database backups.
 - **The free plan pauses** a project after about a week without activity. Daily logging keeps it awake. A paused project is restored from the dashboard with nothing lost, and phones keep working offline meanwhile.
 - **Storage is tiny.** A family's log is a few hundred rows a month, far below the free plan's database size. Query 15 shows current usage.
 
@@ -118,7 +118,7 @@ where email = 'their@email.com' and email_confirmed_at is null;
 | Repository | `skboyce28/Cradle`, branch `main` |
 | Build command | `python3 build_pwa.py` (from `netlify.toml`) |
 | Publish directory | `pwa` |
-| Environment variables | `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` (the **publishable** key) |
+| Environment variables | `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` (the **publishable** key); optional `CRADLE_DONATE_URL` for the Buy me a coffee button |
 | Headers | Written by the build to `pwa/_headers`, which Netlify applies (below) |
 
 **Headers on the hosted site:**

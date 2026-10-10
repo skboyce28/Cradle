@@ -160,21 +160,28 @@ The round button at the top right:
 
 | Item | What it does |
 |---|---|
-| **Appearance** | Auto, Light, Dark, and Dalmatian mode (experimental), plus three seasonal themes:<br>🎃 **Halloween**: a dark night theme with bats and a jack-o'-lantern logo<br>🦃 **Thanksgiving**: warm cream and maple with falling leaves, and an acorn cap on the logo<br>🎄 **Christmas**: snowy white with red and evergreen, snowflakes, a candy-cane stripe, and a Santa hat on the logo<br>The theme is per phone. |
+| **Appearance** | Auto, Light, or Dark, plus **Fun themes**: Dalmatian (experimental) and three seasonal themes:<br>🎃 **Halloween**: a dark night theme with bats and a jack-o'-lantern logo<br>🦃 **Thanksgiving**: warm cream and maple with falling leaves, and an acorn cap on the logo<br>🎄 **Christmas**: snowy white with red and evergreen, snowflakes, a candy-cane stripe, and a Santa hat on the logo<br>The theme is per phone. |
 | **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch and its high scores. See [Fun center](#fun-center). |
 | **Achievements** | Ten badges with progress, like *Sunshine Streak* (7 days of Vitamin D) and *Diaper Pro* (7 days of diaper goals). A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, feed interval, alarm, and goals |
-| **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |
-| **Import data** | **Choose a file**, or paste a `CRADLE1:` code. **Merge** adds to your log without removing anything; **Replace** clears your log first. |
-| **Print this tab** | Prints the current tab. The Log prints a paper sheet for the selected day, baths included. |
-| **Erase all data** | Removes every entry from your family's log **on every phone**. Only the **family owner** can use it; for others it's marked *Owner only*. Everyone can still delete single entries with ×. Export first if you want a copy. |
+| **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About** | In-app help, version, and changelog |
+| **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |
 | **Install app** | Shown when your browser can install Cradle |
 | **Change password** | Your account |
 | **Sign out** | Signs you out. The log stays on this phone for next time. |
+
+### Data management
+
+| Item | What it does |
+|---|---|
+| **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |
+| **Import data** | **Choose a file**, or paste a `CRADLE1:` code. **Merge** adds to your log without removing anything; **Replace** clears your log first. |
+| **Print this tab** | Prints the current tab (or saves it as a PDF). The Log prints a paper sheet for the selected day, baths included. |
+| **Erase all data** | Removes every entry from your family's log **on every phone**. Only the **family owner** can use it; for others it says *Only the family owner can do this*. Everyone can still delete single entries with ×. Export first if you want a copy. |
 | **Sign out and remove from this phone** | Signs you out and clears the log, settings, and game scores from this phone, for a shared or lost phone. It syncs first and warns you if any changes haven't reached your account. Everything comes back when you sign in again. |
 
 ## Printing

@@ -88,7 +88,7 @@ Profile menu, then **Change password**. At least 8 characters.
 
 Profile menu, then **Sign out**. Your log stays saved in your account, and also stays on the phone so it's there next time.
 
-On a shared, borrowed, or lost phone, use **Sign out and remove from this phone** instead. It clears the log, settings, and game scores from that phone. Before clearing, it syncs; if some changes still haven't reached your account (for example, you're offline), it tells you how many and lets you cancel.
+On a shared, borrowed, or lost phone, use **Sign out and remove from this phone** (profile menu, then **Data management**) instead. It clears the log, settings, and game scores from that phone. Before clearing, it syncs; if some changes still haven't reached your account (for example, you're offline), it tells you how many and lets you cancel.
 
 ## Running a Cradle for other families
 

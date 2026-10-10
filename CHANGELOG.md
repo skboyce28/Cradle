@@ -2,10 +2,19 @@
 
 ## v1.13
 
-**Two more seasonal themes**, in Appearance under Halloween mode, both marked *Seasonal*:
+**Two more seasonal themes**, in Appearance under **Fun themes**, next to Halloween:
 - **🦃 Thanksgiving mode:** warm cream and deep brown with a maple-orange accent and olive green for goals met. Faint falling maple leaves and acorns in the background, an orange line under the header, and an acorn cap on the logo.
 - **🎄 Christmas mode:** snowy white with Christmas red and evergreen. Faint snowflakes in the background, a red, white, and green candy-cane stripe under the header, a Santa hat on the logo, and an evergreen splash screen.
 - Each greets you when you switch to it ("Merry Christmas!"). Like every theme, they're saved per phone and don't sync. Night shift and Calm keep their own colors.
+
+**A shorter profile menu**
+- **💾 Data management** gathers Export data, Import data, Print this tab, Erase all data, and Sign out and remove from this phone into one screen, with a line explaining each
+- **Fun themes** (Dalmatian, Halloween, Thanksgiving, Christmas) sit in a compact two-by-two grid under Auto, Light, and Dark
+- The menu is about a third shorter
+
+**☕ Buy me a coffee**
+- An optional donation button in the profile menu and a card in About
+- Set it with the `CRADLE_DONATE_URL` environment variable on Netlify (or in `.env`). Without it, the button is hidden. Only `https://` links are accepted.
 
 ## v1.12
 

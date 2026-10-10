@@ -3,6 +3,7 @@
 # - Removes any built-in starter log (hosted files are public)
 # - Bakes in the database address and publishable key from environment variables
 #   (CRADLE_SUPABASE_URL, CRADLE_SUPABASE_KEY) or a local .env file, which git ignores
+# - Optionally bakes in a donation link (CRADLE_DONATE_URL), shown as "Buy me a coffee"
 # - Adds the manifest, icons, and an offline service worker
 # - Writes pwa/_headers: security headers, including a Content-Security-Policy that only
 #   allows Cradle's own scripts (by hash) and only talks to your Supabase project
@@ -50,6 +51,14 @@ elif os.environ.get('NETLIFY') == 'true' or os.environ.get('CRADLE_REQUIRE_CONFI
                      'Environment variables, add both, then Deploys > Trigger deploy.')
 else:
     print('no CRADLE_SUPABASE_URL / CRADLE_SUPABASE_KEY: each phone enters the database address once at sign-in')
+
+# 1c) optional donation link (a "Buy me a coffee" button in the profile menu and About)
+donate = (os.environ.get('CRADLE_DONATE_URL') or env.get('CRADLE_DONATE_URL') or '').strip()
+if donate:
+    assert re.fullmatch(r'https://[^\s"<>]+', donate), 'CRADLE_DONATE_URL must be an https:// link'
+    html = html.replace('<script type="application/json" id="siteConfig">{}</script>',
+                        '<script type="application/json" id="siteConfig">' + json.dumps({'donate': donate}).replace('</', '<\\/') + '</script>', 1)
+    print('donation link:', donate)
 
 # 2) head tags
 head = '''<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

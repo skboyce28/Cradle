@@ -120,6 +120,20 @@ nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
 .dd .item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px}
 .dd .item:hover{background:var(--panel2)}
 .dd .item.dim{opacity:.55}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 6px 6px}
+.tgrid .dalm{width:auto;margin:0;padding:7px 8px;font-size:12.5px;justify-content:flex-start}
+.tnote{display:block;text-transform:none;letter-spacing:0;font-weight:500;font-size:11px;margin-top:2px}
+.dmlist{display:grid;gap:8px;margin:10px 0 4px}
+.dmi{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px}
+.dmi:hover{background:var(--panel2)}
+.dmi>span{font-size:18px;line-height:1.3}
+.dmi b{display:block}
+.dmi.danger b{color:var(--warn)}
+.dmi.dim{opacity:.55}
+.donate{display:flex;align-items:center;gap:10px;margin:12px 0 4px;padding:10px 12px;border-radius:12px;background:var(--panel2)}
+.donate{flex-wrap:wrap}
+.donate>div{flex:1;min-width:0}
+.donate a{flex-basis:100%;text-align:center;text-decoration:none}
 .dd .item .note{margin-left:auto;font-size:11px;color:var(--muted);width:auto}
 .dd .item span{width:18px;text-align:center}
 .dd hr{border:0;border-top:1px solid var(--line);margin:6px 0}
@@ -323,6 +337,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 .ach.on .meta{color:var(--good)}
 .toast.gold{background:linear-gradient(90deg,#c98a12,#d0683a);color:#fff;font-weight:700}
 .achchip{margin-left:auto;font-size:11px;font-weight:700;color:var(--muted)}
+.dd .item span.achchip{width:auto;max-width:48%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
 
 /* Weighted feed sub-row */
 .c-wf{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:var(--panel2);font-size:13px}
@@ -593,29 +608,29 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <div class="seg" id="themeSeg">
           <button data-theme="auto">Auto</button><button data-theme="light">Light</button><button data-theme="dark">Dark</button>
         </div>
-        <button class="dalm" data-theme="dalmatian">🐾 Dalmatian mode <span class="beta">Experimental</span></button>
-        <button class="dalm hallo" data-theme="halloween">🎃 Halloween mode <span class="beta">Seasonal</span></button>
-        <button class="dalm" data-theme="thanksgiving">🦃 Thanksgiving mode <span class="beta">Seasonal</span></button>
-        <button class="dalm" data-theme="christmas">🎄 Christmas mode <span class="beta">Seasonal</span></button>
+        <div class="ddlabel">Fun themes <span class="tnote">Dalmatian is experimental; the rest are seasonal</span></div>
+        <div class="tgrid">
+          <button class="dalm" data-theme="dalmatian" title="Dalmatian mode (experimental)">🐾 Dalmatian</button>
+          <button class="dalm hallo" data-theme="halloween" title="Halloween mode (seasonal)">🎃 Halloween</button>
+          <button class="dalm" data-theme="thanksgiving" title="Thanksgiving mode (seasonal)">🦃 Thanksgiving</button>
+          <button class="dalm" data-theme="christmas" title="Christmas mode (seasonal)">🎄 Christmas</button>
+        </div>
         <hr>
         <button class="item" data-act="ach"><span>🏆</span>Achievements<span class="achchip" id="achChip"></span></button>
         <button class="item" data-act="learn"><span>🎓</span>Learning center</button>
         <button class="item" data-act="fun"><span>🎮</span>Fun center</button>
         <button class="item" data-addweight><span>⚖️</span>Weights</button>
         <button class="item" data-act="settings"><span>⚙️</span>Settings</button>
-        <button class="item" data-act="export"><span>⬇️</span>Export data</button>
-        <button class="item" data-act="import"><span>⬆️</span>Import data</button>
-        <button class="item" data-act="erase" id="ddErase" style="color:var(--warn)"><span>🗑️</span>Erase all data<span class="note" id="ddEraseNote"></span></button>
-        <button class="item" data-act="print"><span>🖨️</span>Print this tab</button>
+        <button class="item" data-act="data"><span>💾</span>Data management</button>
         <hr>
         <button class="item" data-act="help"><span>📖</span>Guide</button>
         <button class="item hidden" data-act="install" id="installItem"><span>📲</span>Install app</button>
         <button class="item" data-act="about"><span>ℹ️</span>About</button>
+        <button class="item hidden" data-act="donate" id="donateItem"><span>☕</span>Buy me a coffee</button>
         <hr>
         <button class="item" data-act="family"><span>👪</span>Family<span class="achchip" id="ddFam"></span></button>
         <button class="item" data-act="password"><span>🔑</span>Change password</button>
         <button class="item" data-act="signout"><span>🚪</span>Sign out</button>
-        <button class="item" data-act="wipe"><span>🧹</span>Sign out and remove from this phone</button>
       </div>
     </div>
   </div>
@@ -786,9 +801,9 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
           <li>Tap <b>Merge</b>. New entries are added and matching times are updated. Nothing already logged is removed.</li>
         </ol>
         <p class="sub" style="margin-top:8px">If the text button doesn’t open your messages app, use <b>📋 Copy code</b> and paste it into any message instead. Paste the whole message, including the line that starts with CRADLE.</p></div>
-      <div class="card"><div class="ico">☁︎</div><h3>Sign-in and sharing</h3><p>Sign in with your Cradle username (or email) and password. Everyone in your family shares one log: feeds, diapers, baths, notes, weights, and goals sync automatically, usually within about 15 seconds. Each phone also keeps its own copy, so Cradle works offline and catches up when it reconnects. The cloud icon in the header shows the sync status. In the profile menu, <b>Sign out</b> keeps the log on this phone for next time, and <b>Sign out and remove from this phone</b> clears the log, settings, and game scores from the phone too (it syncs first, and warns you if anything hasn’t reached your account yet). Either way, your log stays saved in your account.</p></div>
+      <div class="card"><div class="ico">☁︎</div><h3>Sign-in and sharing</h3><p>Sign in with your Cradle username (or email) and password. Everyone in your family shares one log: feeds, diapers, baths, notes, weights, and goals sync automatically, usually within about 15 seconds. Each phone also keeps its own copy, so Cradle works offline and catches up when it reconnects. The cloud icon in the header shows the sync status. In the profile menu, <b>Sign out</b> keeps the log on this phone for next time, and <b>Sign out and remove from this phone</b> (under <b>Data management</b>) clears the log, settings, and game scores from the phone too (it syncs first, and warns you if anything hasn’t reached your account yet). Either way, your log stays saved in your account.</p></div>
       <div class="card"><div class="ico">👪</div><h3>Family</h3><p>Everyone has their own login and a family shares one log. <b>New here?</b> On the sign-in screen tap <b>Create an account</b>, pick a username (or use your email) and a password. To share someone’s log, enter their <b>share key</b> (like K7QM-4XPD); leave it blank to start your own. Your share key is under <b>Family</b> in the profile menu, with a <b>Share</b> button that writes the invite text for you. The family owner can make a <b>New key</b> at any time, which stops the old one working, and can remove people. Members can leave. Other families never see your log. Everything saves as you type, with no Save button. If two of you edit the same feed, changes to different boxes are combined; if you both change the same box, the last one wins. When someone else’s change arrives, a note says who made it and the row flashes.</p></div>
-      <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Export</b> in the profile menu saves a backup file you can keep, or sends a short code by text message. <b>Import</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so only the family owner can use it; export first if you want a copy. Everyone can still delete single entries with ×. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
+      <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Data management</b> in the profile menu holds your data tools. <b>Export data</b> saves a backup file you can keep, or sends a short code by text message. <b>Import data</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so only the family owner can use it; export first if you want a copy. Everyone can still delete single entries with ×. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
       <div class="card"><div class="ico">🖨️</div><h3>Printing</h3><p>Every tab has a Print button. The Log tab prints a paper sheet for the selected day. Printing needs Cradle open in a browser like Chrome or Safari, not in a file preview.</p></div>
       <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On a phone, <b>⏰ Set alarm</b> shows the time to set in your Clock app, with the steps. Phones don’t let web apps add Clock alarms themselves, even when Cradle is installed, so that one takes a few taps.</p></div>
       <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Every weight is listed at the top of the Weights screen (<b>See all</b> on the Dashboard): tap <b>Edit</b> to fix one, or × to delete it. Weights from weighted feeds have <b>Open feed</b>, and the birth weight has <b>Settings</b>, where you change them.</p></div>
@@ -798,7 +813,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">🏆</div><h3>Achievements</h3><p>Ten badges based on your goals, like Sunshine Streak for 7 days of Vitamin D and Diaper Pro for 7 days of diaper goals. Open them from the profile menu to see progress. Streaks aren’t broken by a day that isn’t over yet.</p></div>
       <div class="card"><div class="ico">🎓</div><h3>Learning center</h3><p>In the profile menu. <b>High-contrast cards</b> are five bold black-and-white designs (Bullseye, Checkerboard, Zigzag, Spiral, and Smile) for calm, awake moments with your baby. Tap one to show it full screen, then swipe or tap the sides to change cards. <b>Invert</b> swaps black and white, and <b>Auto</b> changes cards every 10 seconds. Hold the phone about 8 to 12 inches (20 to 30 cm) away, and stop when your baby looks away or fusses. The screen stays on while a card is showing.</p></div>
       <div class="card"><div class="ico">🎮</div><h3>Fun center</h3><p>In the profile menu: <b>Bottle Catch</b>, a two-minute, one-thumb game. Drag anywhere to move the basket. Bottles are +10, golden bottles +50, and catching in a row builds up to ×4. Safety pins cost a heart (you have 3), and the pacifier slows everything for 5 seconds. It pauses by itself if you switch away or the feed alarm rings. Sound is off to start; Buzz and Sound are on the start screen. Your first posted score asks for 3 initials, which you can change on the board. <b>High scores</b> has three boards: Everyone (each person’s best across this Cradle), Our family, and My best. Only initials and scores are shown. Scores from rounds played offline post when you’re back online.</p></div>
-      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, Dark, Dalmatian mode, and the seasonal Halloween, Thanksgiving, and Christmas modes), Family, Weights, Achievements, Learning center, Fun center, Settings, Export, Import, Print, Erase all data (family owner only), this Guide, About, Change password, Sign out, and Sign out and remove from this phone. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
+      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds Appearance (Auto, Light, or Dark, plus fun themes: Dalmatian, Halloween, Thanksgiving, and Christmas), Achievements, Learning center, Fun center, Weights, Settings, <b>Data management</b> (export, import, print, erase all data, and sign out and remove from this phone), this Guide, About, Family, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
     </div>
     <p class="disc">This tracker is for keeping records only. Volumes, goals, and supplements should follow your pediatrician or lactation consultant. If you're worried about feeding, diapers, or weight gain, call your baby's doctor.</p>
   </section>
@@ -843,7 +858,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <button class="ghost" id="expCopy">📋 Copy code</button>
       <button class="ghost" id="expDownload">⬇️ Download file</button>
     </div>
-    <p class="sub" style="margin:12px 0 0"><b>Text message</b> opens your messages app with a short code. On the other phone, copy the whole message, then open Cradle and choose <b>Import data</b>, then paste it.</p>
+    <p class="sub" style="margin:12px 0 0"><b>Text message</b> opens your messages app with a short code. On the other phone, copy the whole message, then open Cradle and choose <b>Data management</b>, then <b>Import data</b>, and paste it.</p>
     <div class="mrow"><button class="ghost" data-close>Cancel</button></div>
   </div>
 </div>
@@ -1039,14 +1054,30 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
   </div>
 </div>
 
+<div class="modal" id="dataModal">
+  <div class="card">
+    <h3>Data management</h3>
+    <p class="sub" style="margin:0">Back up, restore, print, or clear Cradle’s data.</p>
+    <div class="dmlist">
+      <button class="dmi" data-dm="export"><span>⬇️</span><div><b>Export data</b><div class="sub">Save a backup file, share it, or send it as a text-message code</div></div></button>
+      <button class="dmi" data-dm="import"><span>⬆️</span><div><b>Import data</b><div class="sub">Restore a backup file or code, replacing or merging with this log</div></div></button>
+      <button class="dmi" data-dm="print"><span>🖨️</span><div><b>Print this tab</b><div class="sub">Or save it as a PDF</div></div></button>
+      <button class="dmi danger" data-dm="erase" id="ddErase"><span>🗑️</span><div><b>Erase all data</b><div class="sub" id="ddEraseNote">Clears the log on every phone in the family</div></div></button>
+      <button class="dmi danger" data-dm="wipe"><span>🧹</span><div><b>Sign out and remove from this phone</b><div class="sub">For a shared or lost phone. Your log stays in your account.</div></div></button>
+    </div>
+    <div class="mrow"><button class="ghost" data-close>Close</button></div>
+  </div>
+</div>
+
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
     <p style="margin:0 0 8px"><b>Cradle v1.13</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
-    <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data.</p>
+    <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data (in Data management).</p>
+    <div class="donate hidden" id="donateBox"><span style="font-size:22px">☕</span><div><b>Enjoying Cradle?</b><div class="sub">It’s free. If it helps your family, you can buy me a coffee.</div></div><a class="primary" id="donateLink" href="#" target="_blank" rel="noopener noreferrer">Buy me a coffee</a></div>
     <h3 style="margin-top:14px">Changelog</h3>
     <b>v1.13</b>
-    <ul class="cl"><li>🦃 Thanksgiving mode: warm cream and maple colors, falling leaves and acorns, and an acorn cap on the logo</li><li>🎄 Christmas mode: snowy white with red and evergreen, falling snowflakes, a candy-cane stripe under the header, and a Santa hat on the logo</li><li>Both are in Appearance under Halloween mode, and like every theme they’re just for this phone</li></ul>
+    <ul class="cl"><li>🦃 Thanksgiving mode: warm cream and maple colors, falling leaves and acorns, and an acorn cap on the logo</li><li>🎄 Christmas mode: snowy white with red and evergreen, falling snowflakes, a candy-cane stripe under the header, and a Santa hat on the logo</li><li>Both are in Appearance under Fun themes, next to Halloween, and like every theme they’re just for this phone</li><li>A shorter profile menu: <b>Data management</b> holds export, import, print, erase all data, and sign out and remove from this phone. Fun themes sit in a small grid.</li><li>☕ An optional Buy me a coffee button, when your Cradle has a donation link set</li></ul>
     <b>v1.12</b>
     <ul class="cl"><li>New tagline: <b>Family baby log</b> on the splash and sign-in screens, and <b>Baby log</b> everywhere else, since Cradle works however your baby is fed</li><li>🎃 Halloween mode in Appearance, under Dalmatian: a dark night theme with bats, pumpkin orange, and a jack-o’-lantern logo. It’s just for this phone.</li></ul>
     <b>v1.11</b>
@@ -1078,6 +1109,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 </div>
 
 <script type="application/json" id="cloudConfig">{}</script>
+<script type="application/json" id="siteConfig">{}</script>
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
@@ -1174,9 +1206,15 @@ $('#dd').addEventListener('click',e=>{
   const tb=e.target.closest('#dd [data-theme]');
   if(tb){S.settings.theme=tb.dataset.theme;applyTheme();save();if(tab==='dash')renderDash();const hi={halloween:'🎃 Happy Halloween!',thanksgiving:'🦃 Happy Thanksgiving!',christmas:'🎄 Merry Christmas!'}[tb.dataset.theme];if(hi)toast(hi+' Switch back anytime under Appearance.');return}
   const a=e.target.closest('[data-act]');if(!a)return;$('#menu').classList.remove('open');
-  ({settings:openSettings,export:openExport,import:openImport,erase:eraseAll,ach:openAch,print:printTab,
-    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,learn:openLearn,fun:openFun,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account, and stays on this phone until someone signs in. To clear it from this phone too, use Sign out and remove from this phone.','Sign out'))clSignOut()},wipe:signOutWipe})[a.dataset.act]();
+  ACTS[a.dataset.act]();
 });
+const ACTS={settings:openSettings,export:openExport,import:openImport,erase:eraseAll,ach:openAch,print:printTab,
+    data:()=>$('#dataModal').classList.add('open'),donate:()=>{const u=donateUrl();if(u)window.open(u,'_blank','noopener')},
+    help:()=>{tab='guide';renderAll();scrollTo(0,0)},about:()=>$('#aboutModal').classList.add('open'),install:doInstall,learn:openLearn,fun:openFun,family:openFamily,password:openPassword,signout:async()=>{if(await ask('Sign out of Cradle on this phone? Your log stays saved in your account, and stays on this phone until someone signs in. To clear it from this phone too, use Sign out and remove from this phone.','Sign out'))clSignOut()},wipe:signOutWipe};
+$('#dataModal').addEventListener('click',e=>{const b=e.target.closest('[data-dm]');if(!b)return;$('#dataModal').classList.remove('open');ACTS[b.dataset.dm]()});
+// Optional donation link, baked in at build time from CRADLE_DONATE_URL
+function donateUrl(){try{const u=(JSON.parse(document.getElementById('siteConfig').textContent)||{}).donate||'';return /^https:\/\/[^\s"<>]+$/.test(u)?u:''}catch(e){return ''}}
+(()=>{const u=donateUrl();if(!u)return;$('#donateItem').classList.remove('hidden');$('#donateBox').classList.remove('hidden');$('#donateLink').href=u})();
 $$('.modal:not(#askModal)').forEach(m=>m.addEventListener('click',e=>{if(e.target===m||e.target.closest('[data-close]'))m.classList.remove('open')}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(nightOpen||calmOpen)){nightOpen?closeNight():closeCalm();return}if(e.key==='Escape'){if($('#askModal').classList.contains('open')){$('#askCancel').click();return}$$('.modal.open').forEach(m=>m.classList.remove('open'));$('#menu').classList.remove('open')}});
 
@@ -1636,7 +1674,7 @@ async function prepExport(){
   const rng=ks.length?(ks.length>1?dlong(parseK(ks[0]))+' to '+dlong(parseK(ks[ks.length-1])):dlong(parseK(ks[0]))):'';
   $('#expSum').textContent=ks.length?`${ks.length} day${ks.length>1?'s':''}, ${nf} entries (${rng})`:'Nothing to export in this range';
   expCode=await packCode(text);
-  expBody=`Cradle update${babyName()?' for '+babyName():''}${rng?' ('+rng+')':''}. To add it: copy this whole message, open Cradle, then Import data, Paste.\n\n${expCode}`;
+  expBody=`Cradle update${babyName()?' for '+babyName():''}${rng?' ('+rng+')':''}. To add it: copy this whole message, open Cradle, then Data management, Import data, Paste.\n\n${expCode}`;
   $('#expSum').textContent+=` · code is ${expCode.length.toLocaleString()} characters`;
 }
 function openExport(){
@@ -2534,7 +2572,7 @@ async function clJoinPending(){
     setTimeout(()=>ask((e.message||'That share key didn’t work.')+' You’ve got your own log for now. You can join later under Profile, then Family.','OK'),300)}
 }
 function famName(){return (CL.fam&&CL.fam.name)||'your family'}
-function renderFamilyBits(){const el=$('#ddFam');if(el)el.textContent=CL.fam?CL.fam.name:'';const er=$('#ddErase'),m=notOwner();if(er){er.classList.toggle('dim',m);$('#ddEraseNote').textContent=m?'Owner only':''}}
+function renderFamilyBits(){const el=$('#ddFam');if(el)el.textContent=CL.fam?CL.fam.name:'';const er=$('#ddErase'),m=notOwner();if(er){er.classList.toggle('dim',m);$('#ddEraseNote').textContent=m?'Only the family owner can do this':'Clears the log on every phone in the family'}}
 function showWelcome(){
   const nm=babyName();
   $('#welTitle').textContent='Welcome to Cradle';
