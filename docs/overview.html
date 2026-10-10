@@ -161,7 +161,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent); outline-of
 .arch svg{display:block; width:100%; min-width:640px; height:auto}
 
 /* themes strip */
-.themes{display:flex; gap:clamp(12px,2vw,24px); justify-content:center; margin-top:clamp(32px,5vw,48px)}
+.themes{display:flex; flex-wrap:wrap; gap:clamp(12px,2vw,24px); justify-content:center; margin-top:clamp(32px,5vw,48px)}
 .themes figure{margin:0; text-align:center}
 .themes .phone{--w:clamp(110px,15vw,200px)}
 .themes figcaption{font:600 13px/1 var(--body); color:var(--muted); margin-top:12px}
@@ -193,7 +193,7 @@ footer code{font-family:var(--mono); font-size:13px}
   .stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .family-shots .phone{--w:44vw}
   .palettes .phone{--w:28vw}
-  .themes .phone{--w:28vw}
+  .themes .phone{--w:40vw}
 }
 </style>
 
@@ -354,12 +354,13 @@ footer code{font-family:var(--mono); font-size:13px}
 <section class="wrap" id="themes" style="padding-top:0">
   <div class="sec-head" style="margin-inline:auto;text-align:center;justify-items:center">
     <p class="eyebrow">Appearance</p>
-    <h2>Light, Dark, and one spotty experiment.</h2>
+    <h2>Light, Dark, one spotty experiment, and a spooky one.</h2>
   </div>
   <div class="themes">
     <figure><div class="phone"><img src="screenshots/log.webp" alt="Light theme"></div><figcaption>Light</figcaption></figure>
     <figure><div class="phone"><img src="screenshots/log-dark.webp" alt="Dark theme"></div><figcaption>Dark</figcaption></figure>
     <figure><div class="phone"><img src="screenshots/log-dalmatian.webp" alt="Dalmatian mode"></div><figcaption>Dalmatian (experimental)</figcaption></figure>
+    <figure><div class="phone"><img src="screenshots/log-halloween.webp" alt="Halloween mode"></div><figcaption>Halloween (seasonal)</figcaption></figure>
   </div>
 </section>
 

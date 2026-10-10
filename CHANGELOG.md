@@ -9,6 +9,12 @@
   - the printed day sheet, the doctor report footer, the family welcome, and the share invite
 - Cradle is still built around triple feeding, and the docs now say it works just as well for nursing or bottle feeding alone
 
+**🎃 Halloween mode**
+- New in the profile menu under Appearance, below Dalmatian mode, marked *Seasonal*
+- A dark night theme: deep purple-black with faint bats and stars, pumpkin-orange buttons with dark text, slime-green for goals met, and an orange line under the header
+- The logo becomes a jack-o'-lantern, in the header and on the splash and sign-in screens
+- Like the other themes, it's saved per phone and doesn't sync. Night shift and Calm keep their own colors.
+
 ## v1.11
 
 **Editing together**
