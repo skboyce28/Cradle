@@ -11,7 +11,22 @@ A tour of every screen, for the people doing the feeding. The same tips live in 
 
 ## The triple-feed cycle
 
-Each session has three parts: **nurse** at the breast, offer a **bottle** top-up, then **pump**. Log all three on **one row**. If you only nurse or only bottle feed, fill in just those parts; everything else works the same.
+Each session has three parts: **nurse** at the breast, offer a **bottle** top-up, then **pump**. Log all three on **one row**. If you only nurse or only bottle feed, turn off what you don't use in **Settings**, then **What you track** (see [below](#what-you-track)).
+
+### What you track
+
+In **Settings**, **What you track** has three switches: **🤱 Breast**, **🍼 Bottle**, and **⚡ Pump**. Turn off what your family doesn't use and Cradle hides it everywhere:
+
+| Off | What disappears |
+|---|---|
+| **Breast** | L and R, Minutes and the ▶ timer, the left and right split, weighted feeds; in Night shift, the timer and L/R (Start feed no longer starts a nursing timer); the side balance and Side starts on the Dashboard; nursing insights; the Breast and Min columns on the day sheet and Nursing on the doctor report |
+| **Bottle** | The Bottle box on each feed and the Bottle tile; in Night shift, the bottle buttons; Bottle per day; bottle insights; the Bottle columns in print |
+| **Pump** | The Pump box, the pump timer, and the Pumped tile; Pumped per day; pumping insights; the Pump columns in print |
+
+- **Daily volume chart and Bottle & pump filter:** these hide when both Bottle and Pump are off.
+- **Shared with your family:** the choice syncs like the other Settings.
+- **Nothing logged is deleted:** turning something back on brings it all back.
+- **At least one stays on.**
 
 ## Log
 

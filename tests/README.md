@@ -11,6 +11,7 @@ About 250 automated checks that run on every push (see [`.github/workflows/tests
 | `erase-and-wipe.test.mjs` | Owner-only Erase all data, and Sign out and remove from this phone |
 | `security-headers.test.mjs` | The built site under its real security headers: no policy violations, sync still works |
 | `doctor-report.test.mjs` | The doctor report, with every daily row recomputed from the log by separate code |
+| `tracking.test.mjs` | What you track: Breast, Bottle, and Pump switches hide the right parts everywhere, and desktop columns stay lined up |
 | `dashboard-filter.test.mjs`, `menu.test.mjs`, `achievements.test.mjs`, `split.test.mjs`, `bath.test.mjs`, `learning-center.test.mjs`, `halloween.test.mjs`, `holiday-themes.test.mjs`, `donate.test.mjs` | One feature each |
 | `notify/crypto.test.mjs` | Notification encryption against the RFC 8291 example, byte for byte, and the VAPID signature |
 | `notify/round.test.mjs` | A full notification round against a fake push service that decrypts each message |

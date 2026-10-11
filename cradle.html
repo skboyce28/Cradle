@@ -125,6 +125,9 @@ nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
 .tgrid .dalm small{font-size:11.5px;font-weight:500;opacity:.75}
 .tnote{display:block;text-transform:none;letter-spacing:0;font-weight:500;font-size:11px;margin-top:2px}
 .dmlist{display:grid;gap:8px;margin:10px 0 4px}
+.trkrow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.trkrow label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:600;font-size:14px;background:var(--panel)}
+.trkrow input{width:auto;margin:0}
 .dmi{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px}
 .dmi:hover{background:var(--panel2)}
 .dmi>span{font-size:18px;line-height:1.3}
@@ -189,7 +192,16 @@ nav.tabs button.on{color:var(--ink);border-color:var(--accent)}
 /* Feed log */
 .loghead{display:flex;align-items:center;gap:10px;margin:22px 0 8px;flex-wrap:wrap}
 .loghead h2{margin:0;font-size:18px}
-.cols,.feed{display:grid;grid-template-columns:44px 118px 104px 112px 1fr 1fr 48px 48px 48px 48px 1.3fr 32px;gap:8px;align-items:center}
+.cols,.feed{display:grid;grid-template-columns:44px 118px var(--wSide,104px) var(--wMin,112px) var(--wBot,1fr) var(--wPump,1fr) 48px 48px 48px var(--wWf,48px) 1.3fr 32px;gap:8px;align-items:center}
+/* What the family tracks (Settings): hide the parts they don't use */
+body.no-breast{--wSide:0px;--wMin:0px;--wWf:0px}
+body.no-bottle{--wBot:0px}
+body.no-pump{--wPump:0px}
+body.no-breast :is(.feed>.c-side,.feed>.c-min,.feed>.c-wtd,.cols>.h-side,.cols>.h-min,.cols>.h-wtd),body.no-bottle :is(.feed>.c-bottle,.cols>.h-bot),body.no-pump :is(.feed>.c-pump,.cols>.h-pump){visibility:hidden;overflow:hidden}
+body.no-breast :is(.c-split,.chk.wf,.c-wf,[data-track="breast"]),body.no-bottle [data-track="bottle"],body.no-pump [data-track="pump"],
+body.no-bottle.no-pump [data-track="bottle pump"],body.no-breast.no-bottle [data-track="breast bottle"],
+body.no-breast #print .tk-breast,body.no-bottle #print .tk-bottle,body.no-pump #print .tk-pump{display:none!important}
+@media (max-width:820px){body.no-breast :is(.feed>.c-side,.feed>.c-min),body.no-bottle .feed>.c-bottle,body.no-pump .feed>.c-pump{display:none}}
 .cols{padding:0 12px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
 .feed{background:var(--panel);border:var(--cardb);border-radius:12px;padding:8px 12px;margin-bottom:8px;box-shadow:var(--shadow);animation:pop .25s ease}
 @keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 3px transparent}}
@@ -666,7 +678,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
           <button class="ghost" id="addBlank">Add blank row</button>
         </div>
       </div>
-      <div class="card">
+      <div class="card" data-track="pump">
         <h3>Pump timer</h3>
         <div class="timer">
           <svg viewBox="0 0 110 110">
@@ -693,9 +705,9 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 
     <div class="loghead">
       <h2>Feeds</h2>
-      <span class="sub">Tap L or R for sides used. The dot marks the side you started on.</span>
+      <span class="sub" data-track="breast">Tap L or R for sides used. The dot marks the side you started on.</span>
     </div>
-    <div class="cols"><div>#</div><div>Time</div><div>Breast</div><div>Minutes</div><div>Bottle</div><div>Pump</div><div>Wet</div><div>Stool</div><div>Vit D</div><div title="Weighted feed">Wtd</div><div>Note</div><div></div></div>
+    <div class="cols"><div>#</div><div>Time</div><div class="h-side">Breast</div><div class="h-min">Minutes</div><div class="h-bot">Bottle</div><div class="h-pump">Pump</div><div>Wet</div><div>Stool</div><div>Vit D</div><div class="h-wtd" title="Weighted feed">Wtd</div><div>Note</div><div></div></div>
     <div id="feeds"></div>
 
     <div class="grid" style="grid-template-columns:1fr">
@@ -715,7 +727,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <button class="ghost sm" data-report>🩺 Doctor report</button>
       <button class="ghost sm" data-print>🖨️ Print</button>
     </div>
-    <div class="dfilter noprint" id="dashFilter" role="tablist" aria-label="Show on the Dashboard"><button data-f="all">All</button><button data-f="feeds">🤱 Feeds</button><button data-f="bottle">🍼 Bottle &amp; pump</button><button data-f="diapers">💧 Diapers</button><button data-f="vitd">☀️ Vitamin D</button><button data-f="weight">⚖️ Weight</button><button data-f="baths">🛁 Baths</button></div>
+    <div class="dfilter noprint" id="dashFilter" role="tablist" aria-label="Show on the Dashboard"><button data-f="all">All</button><button data-f="feeds">🤱 Feeds</button><button data-f="bottle" data-track="bottle pump">🍼 Bottle &amp; pump</button><button data-f="diapers">💧 Diapers</button><button data-f="vitd">☀️ Vitamin D</button><button data-f="weight">⚖️ Weight</button><button data-f="baths">🛁 Baths</button></div>
     <div class="grid kpis" id="kpis"></div>
     <div class="grid charts">
       <div class="card wide" data-cat="weight">
@@ -738,7 +750,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <div id="chart1" class="chartbox" data-chart="c1" title="Tap to enlarge"></div>
         <div class="legend"><span><i style="background:var(--bottle)"></i>Bottle</span><span><i style="background:repeating-linear-gradient(45deg,var(--pump) 0 2px,transparent 2px 4px);border:1px solid var(--pump)"></i>Pump output</span><span><i style="background:var(--accent);height:3px;vertical-align:3px"></i>Bottle target</span></div>
       </div>
-      <div class="card" data-cat="bottle">
+      <div class="card" data-cat="bottle" data-track="bottle pump">
         <div class="chead"><h3>Daily volume</h3><button class="xbtn noprint" data-chart="c2" title="Enlarge and explore">⤢</button></div>
         <div id="chart2" class="chartbox" data-chart="c2" title="Tap to enlarge"></div>
         <div class="legend"><span><i style="background:var(--bottle)"></i>Bottle total</span><span><i style="background:var(--pump)"></i>Pump total (dashed)</span></div>
@@ -753,7 +765,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
         <div id="chart5" class="chartbox" data-chart="c5" title="Tap to enlarge"></div>
         <div class="legend"><span>Hours per day. The dot shows the average gap.</span></div>
       </div>
-      <div class="card" data-cat="feeds">
+      <div class="card" data-cat="feeds" data-track="breast">
         <h3>Breast side balance</h3>
         <div id="sideBal"></div>
       </div>
@@ -784,7 +796,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <button class="ghost sm" data-print>🖨️ Print</button>
     </div>
     <div class="grid guide">
-      <div class="card"><div class="ico">🔁</div><h3>The triple-feed cycle</h3><p>Each session has three parts: nurse at the breast, offer a bottle top-up, then pump. Log all three on one row.</p></div>
+      <div class="card"><div class="ico">🔁</div><h3>The triple-feed cycle</h3><p>Each session has three parts: nurse at the breast, offer a bottle top-up, then pump. Log all three on one row. Only nursing, or only bottles? In Settings, under <b>What you track</b>, turn off what you don’t use and Cradle hides it everywhere.</p></div>
       <div class="card"><div class="ico">🤱</div><h3>Breast tracking</h3><p>If you nurse on both sides, tap both. The first side you tap gets the dot, so you know where to start next time. To time a feed, tap <b>▶</b> next to Minutes when you start and <b>■</b> when you finish. The minutes fill in for you, or you can type them. With both sides on, a <b>Left ↔ Right</b> slider appears: slide it toward the side that got more time, and it splits the minutes (for example, 20 minutes slid to 75% left is 15 left and 5 right). Leave it in the middle for an even split.</p></div>
       <div class="card"><div class="ico">💧</div><h3>Diaper checks</h3><p>If a diaper has both urine and stool, mark both on that feed. For a change between feeds, tap <b>🧷 Diaper only</b>; those rows don't count as feeds. Goals follow the baby's age: 1 of each on the birth day (Day 0), then 1 on day 1, up to 5 on day 5, then at least 4 of each per day.</p></div>
       <div class="card"><div class="ico">🛁</div><h3>Baths</h3><p>Tap <b>🛁 Bath</b> under Since last feed to log a bath with the current time. Choose <b>Sponge</b> or <b>Tub</b> and add a note if you like, such as a hair wash or nail trim. Cradle remembers which kind you used last. Baths don’t count as feeds, so they never change feed totals or when the next feed is due. The Log shows today’s bath or when the last one was, and the Dashboard, History, print sheet, and doctor report all include baths.</p></div>
@@ -834,6 +846,9 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
     <div class="field"><label for="sVitD">Vitamin D started</label><input id="sVitD" type="date"></div>
     <div class="field"><label for="sBW">Birth weight</label><input id="sBW" type="text" placeholder="e.g. 7 lb 4 oz"></div>
     <div class="field"><label for="sWU">Show weights in</label><select id="sWU"><option value="lb">lb and oz</option><option value="g">grams</option></select></div>
+    <div class="fsec">What you track</div>
+    <p class="sub" style="margin:4px 0">Turn off what your family doesn’t use, and Cradle hides it everywhere. Shared with your family. Nothing you’ve logged is deleted.</p>
+    <div class="trkrow"><label><input type="checkbox" id="sTrBreast"> 🤱 Breast</label><label><input type="checkbox" id="sTrBottle"> 🍼 Bottle</label><label><input type="checkbox" id="sTrPump"> ⚡ Pump</label></div>
     <div class="fsec">Next feed</div>
     <div class="field"><label for="sInt">Feed every (hours)</label><input id="sInt" type="number" min="1" max="8" step="0.25"></div>
     <div class="field"><label for="sAlarm">Alarm when a feed is due (while Cradle is open)</label><input id="sAlarm" type="checkbox"></div>
@@ -1095,10 +1110,12 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.16</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.17</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data (in Data management).</p>
     <div class="donate hidden" id="donateBox"><span style="font-size:22px">☕</span><div><b>Enjoying Cradle?</b><div class="sub">It’s free. If it helps your family, you can buy me a coffee.</div></div><a class="primary" id="donateLink" href="#" target="_blank" rel="noopener noreferrer">Buy me a coffee</a></div>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.17</b>
+    <ul class="cl"><li><b>What you track</b> in Settings: turn off Breast, Bottle, or Pump if your family doesn’t use them, and Cradle hides them everywhere, including the Log, Night shift, the pump timer, the Dashboard, insights, the day sheet, and the doctor report. Shared with your family. Nothing logged is deleted.</li></ul>
     <b>v1.16</b>
     <ul class="cl"><li>📣 Notifications: a phone can be told when a feed is due, or 15 or 30 minutes before, even when Cradle is closed. Turn it on in Settings, on each phone that wants it.</li><li>Needs a one-time setup in Supabase by whoever runs your Cradle</li><li>On iPhone, add Cradle to the Home Screen first</li></ul>
     <b>v1.15</b>
@@ -1142,7 +1159,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.16';
+const VERSION='1.17';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -1212,6 +1229,9 @@ const vitStartS=()=>S.settings.vitDStart?parseK(S.settings.vitDStart).toLocaleDa
 function vitGiven(d){const f=d.feeds.find(x=>x.vitD);return f?{given:true,time:f.time,feed:f}:{given:!!d.vitD,time:''}}
 const fmt12=t=>{if(!t)return '';let[h,m]=t.split(':').map(Number);const ap=h<12?'am':'pm';h=h%12||12;return h+':'+pad(m)+ap};
 const babyName=()=>(S.settings.babyName||'').trim();
+// What this family tracks (Settings, shared): breast, bottle, pump
+const trk=k=>{const t=S.settings.track;return !t||t[k]!==false};
+function applyTrack(){['breast','bottle','pump'].forEach(k=>document.body.classList.toggle('no-'+k,!trk(k)));if(!trk('bottle')&&!trk('pump')&&S.ui.dashFilter==='bottle')S.ui.dashFilter='all'}
 
 /* Theme + profile */
 function applyTheme(){
@@ -1400,8 +1420,8 @@ function renderStats(){
   let gap='--';if(times.length>1)gap=hm((times[times.length-1]-times[0])/(times.length-1));
   $('#stats').innerHTML=`
     <div class="card"><h3>Feeds</h3><div class="big">${t.n}</div><div class="sub">Avg gap ${gap}</div></div>
-    <div class="card"><h3>Bottle</h3><div class="big" style="color:var(--bottle)">${t.bottle} <span class="sub">mL</span></div><div class="sub">Avg ${avgB} / ${st.target} mL target</div></div>
-    <div class="card"><h3>Pumped</h3><div class="big" style="color:var(--pump)">${t.pump} <span class="sub">mL</span></div><div class="sub">${!d.feeds.some(f=>num(f.pump)!=null)?'No pump output logged yet':t.pump>=t.bottle?'Covering bottle use':'Bottle minus pump: '+Math.round(t.bottle-t.pump)+' mL'}</div></div>
+    <div class="card" data-track="bottle"><h3>Bottle</h3><div class="big" style="color:var(--bottle)">${t.bottle} <span class="sub">mL</span></div><div class="sub">Avg ${avgB} / ${st.target} mL target</div></div>
+    <div class="card" data-track="pump"><h3>Pumped</h3><div class="big" style="color:var(--pump)">${t.pump} <span class="sub">mL</span></div><div class="sub">${!d.feeds.some(f=>num(f.pump)!=null)?'No pump output logged yet':t.pump>=t.bottle?'Covering bottle use':'Bottle minus pump: '+Math.round(t.bottle-t.pump)+' mL'}</div></div>
     <div class="card stat">${ring(t.wet,G.wet,'var(--wet)')}<div><h3>Wet</h3><div class="sub">${gl}${G.wet}+${G.dol==null?'<br>Add birth date in Settings for day-by-day goals':''}</div></div></div>
     <div class="card stat">${ring(t.stool,G.stool,'var(--stool)')}<div><h3>Stool</h3><div class="sub">${gl}${G.stool}+</div></div></div>
     ${(()=>{const b=bathsOf(d),lb=lastBath(cur);return `<div class="card"><h3>Bath</h3><div class="big" style="color:var(--wet)">${b.length?'🛁 '+(b.length>1?b.length:''):'--'}</div><div class="sub">${b.length?bathTag(d):lb?'Last: '+bathName(lb.f).toLowerCase()+', '+(cur===key(new Date())?daysAgo(lb.k):dlong(parseK(lb.k))):'No baths logged yet'}</div></div>`})()}
@@ -1593,15 +1613,15 @@ function renderDash(){
     $('#kpis').innerHTML=`<div class="empty" style="grid-column:1/-1">No feeds logged in the ${n} days ending ${longDate(cur)}.</div>`;
   }else $('#kpis').innerHTML=`
     <div class="card kpi" data-cat="feeds"><h3>Feeds per day</h3><div class="big">${(baseFeeds.length/ld).toFixed(1)}</div><div class="sub">${baseFeeds.length} feeds over ${base.length} ${dl}${todayX&&done.length?'. Today so far: <b>'+todayX.t.n+'</b>':''}</div></div>
-    <div class="card kpi" data-cat="bottle"><h3>Bottle per day</h3><div class="big" style="color:var(--bottle)">${Math.round(totBd/ld)} <span class="sub">mL</span></div><div class="sub">Avg <b>${bottled.length?Math.round(totB/bottled.length):0} mL</b> per bottle. ${bottled.length?Math.round(hit/bottled.length*100):0}% hit ${st.target} mL</div></div>
-    <div class="card kpi" data-cat="bottle"><h3>Pumped per day</h3><div class="big" style="color:var(--pump)">${pDays.length?Math.round(totP/pDays.length):'--'} <span class="sub">mL</span></div><div class="sub">${!pDays.length?'No pump output logged in this range':totBp?'Covers <b>'+Math.round(totP/totBp*100)+'%</b> of bottle on '+pDays.length+' day'+(pDays.length>1?'s':'')+' with pumping':'Logged on '+pDays.length+' day'+(pDays.length>1?'s':'')}</div></div>
+    <div class="card kpi" data-cat="bottle" data-track="bottle"><h3>Bottle per day</h3><div class="big" style="color:var(--bottle)">${Math.round(totBd/ld)} <span class="sub">mL</span></div><div class="sub">Avg <b>${bottled.length?Math.round(totB/bottled.length):0} mL</b> per bottle. ${bottled.length?Math.round(hit/bottled.length*100):0}% hit ${st.target} mL</div></div>
+    <div class="card kpi" data-cat="bottle" data-track="pump"><h3>Pumped per day</h3><div class="big" style="color:var(--pump)">${pDays.length?Math.round(totP/pDays.length):'--'} <span class="sub">mL</span></div><div class="sub">${!pDays.length?'No pump output logged in this range':totBp?'Covers <b>'+Math.round(totP/totBp*100)+'%</b> of bottle on '+pDays.length+' day'+(pDays.length>1?'s':'')+' with pumping':'Logged on '+pDays.length+' day'+(pDays.length>1?'s':'')}</div></div>
     <div class="card kpi" data-cat="feeds"><h3>Between feeds</h3><div class="big">${avgGap?hm(avgGap):'--'}</div><div class="sub">${longest?'Longest <b>'+hm(longest.g)+'</b> on '+xlab(longest.dt):'Average gap'}</div></div>
     <div class="card kpi" data-cat="diapers"><h3>Wet goal met</h3><div class="big" style="color:var(--wet)">${wetMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.wet,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.wet+' of '+todayX.g.wet+'</b>':''}</div></div>
     <div class="card kpi" data-cat="diapers"><h3>Stool goal met</h3><div class="big" style="color:var(--stool)">${stoolMet}<span class="sub"> / ${done.length} completed day${done.length===1?'':'s'}</span></div><div class="sub">Avg ${(base.reduce((t,x)=>t+x.t.stool,0)/ld).toFixed(1)} per day${todayX?'. Today so far: <b>'+todayX.t.stool+' of '+todayX.g.stool+'</b>':''}</div></div>
     <div class="card kpi" data-cat="vitd"><h3>Vitamin D</h3><div class="big" style="color:var(--good)">${vitDays}<span class="sub"> / ${vDue} day${vDue===1?'':'s'}</span></div><div class="sub">${S.settings.vitDStart&&vDue<n?'Started '+vitStartS()+'. ':''}${streak?'<b>'+streak+' day</b> streak':'No current streak'}${usualS?'. Usually '+usualS:''}</div></div>
     ${(()=>{const bs=L.flatMap(x=>bathsOf(x.d).map(f=>({k:x.k,f}))),lb=lastBath(L[n-1].k),sp=bs.filter(b=>b.f.bath==='sponge').length,tb=bs.filter(b=>b.f.bath==='tub').length;
       return `<div class="card kpi" data-cat="baths"><h3>Baths</h3><div class="big" style="color:var(--wet)">${bs.length}<span class="sub"> in ${n} days</span></div><div class="sub">${lb?'Last <b>'+dlong(parseK(lb.k))+'</b>'+' ('+daysAgo(lb.k)+')'+(bs.length?'. '+[sp?sp+' sponge':'',tb?tb+' tub':''].filter(Boolean).join(', '):''):'No baths logged yet'}</div></div>`})()}
-    <div class="card kpi" data-cat="feeds"><h3>Side starts</h3><div class="big">${startL}<span class="sub"> L</span> ${startR}<span class="sub"> R</span></div><div class="sub">${both} of ${nursed} sessions used both sides</div></div>`;
+    <div class="card kpi" data-cat="feeds" data-track="breast"><h3>Side starts</h3><div class="big">${startL}<span class="sub"> L</span> ${startR}<span class="sub"> R</span></div><div class="sub">${both} of ${nursed} sessions used both sides</div></div>`;
   const ins=[];
   if(logged.length){
     if(todayX)ins.push(['⏳',`Today is still in progress, so it isn't counted in daily averages or goal checks yet. So far today: ${todayX.t.n} feed${todayX.t.n===1?'':'s'}, ${Math.round(todayX.t.bottle)} mL bottle, ${todayX.t.wet} of ${todayX.g.wet} wet, ${todayX.t.stool} of ${todayX.g.stool} stool${vitDue(todayK)?', Vitamin D '+(todayX.v.given?'given':'not yet'):''}.`]);
@@ -1622,6 +1642,7 @@ function renderDash(){
     {const st=sideTotals(baseFeeds),tt=st.L+st.R;if(tt>=30){const pl=Math.round(st.L/tt*100);ins.push(['⚖️',`Nursing time split ${pl}% left and ${100-pl}% right (${hm(st.L)} left, ${hm(st.R)} right)${Math.abs(pl-50)>=15?`, so the ${pl>50?'right':'left'} side has been getting less time`:''}.`])}}
     if(lastSide)ins.push(['🤱',`Started on Left ${startL} times and Right ${startR} times. Start on ${lastSide.start==='L'?'Right':'Left'} next.`]);
   }
+  {const TK={'🍼':'bottle','📈':'bottle','📉':'bottle','⚡':'pump','⏱':'breast','⚖️':'breast','🤱':'breast'};for(let i=ins.length-1;i>=0;i--)if(TK[ins[i][0]]&&!trk(TK[ins[i][0]]))ins.splice(i,1)}
   const IC={'⏳':'feeds bottle diapers vitd','🍼':'bottle','⚡':'bottle','📈':'bottle','📉':'bottle','⏱':'feeds','🌙':'feeds','💧':'diapers','💩':'diapers','☀️':'vitd','🛁':'baths','⚖️':'feeds','🤱':'feeds'};
   $('#insights').innerHTML=ins.length?ins.map(x=>`<li data-cat="${IC[x[0]]||'feeds'}"><span>${x[0]}</span><span>${x[1]}</span></li>`).join(''):'<li><span>ℹ️</span><span>Log a few feeds to see insights here.</span></li>';
   $('#vitSum').innerHTML=`${S.settings.vitDStart?'Started <b>'+vitStartS()+'</b>. ':''}Given on <b>${vitDays} of ${vDue}</b> day${vDue===1?'':'s'} since starting.${streak?' Current streak: <b>'+streak+' day'+(streak>1?'s':'')+'</b>.':''}${usualS?' Usual time: <b>'+usualS+'</b>.':''}`;
@@ -1677,8 +1698,9 @@ $('#histSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.ui.h
 
 /* Settings */
 const sf={sTarget:'target',sPMin:'pumpMin',sPMax:'pumpMax',sWet:'wetGoal',sStool:'stoolGoal'};
-function openSettings(){for(const id in sf)$('#'+id).value=S.settings[sf[id]];$('#sBirth').value=S.settings.birthDate||'';$('#sBW').value=S.settings.birthWeight?fmtW(S.settings.birthWeight):'';$('#sWU').value=S.settings.weightUnit||'lb';$('#sInt').value=S.settings.feedInterval||3;$('#sAlarm').checked=!!S.settings.alarmOn;refreshPush();$('#sVitD').value=S.settings.vitDStart||'';$('#sName').value=S.settings.babyName||'';$('#settingsModal').classList.add('open')}
+function openSettings(){for(const id in sf)$('#'+id).value=S.settings[sf[id]];$('#sBirth').value=S.settings.birthDate||'';$('#sBW').value=S.settings.birthWeight?fmtW(S.settings.birthWeight):'';$('#sWU').value=S.settings.weightUnit||'lb';$('#sInt').value=S.settings.feedInterval||3;$('#sAlarm').checked=!!S.settings.alarmOn;refreshPush();$('#sTrBreast').checked=trk('breast');$('#sTrBottle').checked=trk('bottle');$('#sTrPump').checked=trk('pump');$('#sVitD').value=S.settings.vitDStart||'';$('#sName').value=S.settings.babyName||'';$('#settingsModal').classList.add('open')}
 $('#sSave').onclick=()=>{
+  {const tr={breast:$('#sTrBreast').checked,bottle:$('#sTrBottle').checked,pump:$('#sTrPump').checked};if(!tr.breast&&!tr.bottle&&!tr.pump){toast('Track at least one: breast, bottle, or pump');return}S.settings.track=tr}
   S.settings.birthDate=$('#sBirth').value||'';S.settings.weightUnit=$('#sWU').value;{const bw=$('#sBW').value.trim();S.settings.birthWeight=bw?parseWeight(bw):null}{const iv=num($('#sInt').value);if(iv>=1&&iv<=8)S.settings.feedInterval=iv}S.settings.alarmOn=$('#sAlarm').checked;S.settings.vitDStart=$('#sVitD').value||'';S.settings.babyName=$('#sName').value.trim();
   for(const id in sf){const v=num($('#'+id).value);if(v!=null&&v>=0)S.settings[sf[id]]=v}
   if(S.settings.pumpMax<1)S.settings.pumpMax=1;if(S.settings.pumpMax<S.settings.pumpMin)S.settings.pumpMax=S.settings.pumpMin;
@@ -1812,10 +1834,11 @@ function loadImportText(text){
   $('#importModal').classList.add('open');return true;
 }
 $('#fileIn').onchange=e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=async()=>{let t=r.result;try{const u=await unpackCode(t);if(u)t=u}catch(x){}loadImportText(t)};r.readAsText(file);e.target.value=''};
-const SKEYS=['target','pumpMin','pumpMax','wetGoal','stoolGoal','birthDate','babyName','vitDStart','birthWeight'];
+const SKEYS=['target','pumpMin','pumpMax','wetGoal','stoolGoal','birthDate','babyName','vitDStart','birthWeight','track'];
 function applySettings(src,fillOnly){if(!src)return;SKEYS.forEach(k=>{if(src[k]==null||src[k]==='')return;
   const idk=k==='birthDate'||k==='babyName'||k==='vitDStart'||k==='birthWeight';if(fillOnly&&idk&&S.settings[k])return;
   if(fillOnly&&!idk)return;
+  if(k==='track'){if(typeof src.track==='object'&&src.track)S.settings.track={breast:src.track.breast!==false,bottle:src.track.bottle!==false,pump:src.track.pump!==false};return}
   S.settings[k]=src[k]})}
 $('#impReplace').onclick=async()=>{if(!pending)return;$('#importModal').classList.remove('open');if(!await ask('Replace everything in this log with the file? This cannot be undone.','Replace',true)){$('#importModal').classList.add('open');return}
   S.days=pending.days;S.weights=pending.weights||[];applySettings(pending.settings,false);finishImport(`Replaced log with ${pending.feeds} feeds`)};
@@ -1835,8 +1858,8 @@ function buildPrint(){
   const d=peek(cur),t=totals(d),st=S.settings,g=goals(cur),v=vitGiven(d),rows=d.feeds.slice();while(rows.length<12)rows.push(null);
   $('#print').innerHTML=`<h1>Daily Baby Log${babyName()?' · '+esc(babyName()):''}</h1>
   <div>Date: ${parseK(cur).toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})} | Target bottle: ${st.target} mL | Pump: ${st.pumpMin} to ${st.pumpMax} min${g.dol!=null&&g.dol>=0?' | Day '+g.dol+' of life, goal '+g.wet+' wet / '+g.stool+' stool':''}</div>
-  <table><tr><th>#</th><th>Time</th><th>Breast</th><th>Min</th><th>Bottle (mL)</th><th>Pump (mL)</th><th>Urine</th><th>Stool</th><th>Vit D</th><th>Note</th></tr>
-  ${rows.map((f,i)=>f&&f.bath?`<tr><td>${i+1}</td><td>${fmt12(f.time)}</td><td colspan="7">🛁 ${bathName(f)}</td><td>${esc(f.note)}</td></tr>`:`<tr><td>${i+1}</td><td>${f?fmt12(f.time):''}</td><td>${f?[f.left?'L':'',f.right?'R':''].filter(Boolean).join(' + ')+(f.start?' (start '+f.start+')':''):'[ ] L  [ ] R'}</td><td>${f?.mins??''}${f&&f.left&&f.right&&num(f.mins)>0?' ('+splitShort(f)+')':''}</td><td>${f?.bottle??''}</td><td>${f?.pump??''}</td><td>${f?(f.urine?'✓':''):'[ ]'}</td><td>${f?(f.stool?'✓':''):'[ ]'}</td><td>${f?(f.vitD?'✓':''):'[ ]'}</td><td>${f?esc(f.note):''}</td></tr>`).join('')}</table>
+  <table><tr><th>#</th><th>Time</th><th class="tk-breast">Breast</th><th class="tk-breast">Min</th><th class="tk-bottle">Bottle (mL)</th><th class="tk-pump">Pump (mL)</th><th>Urine</th><th>Stool</th><th>Vit D</th><th>Note</th></tr>
+  ${rows.map((f,i)=>f&&f.bath?`<tr><td>${i+1}</td><td>${fmt12(f.time)}</td><td colspan="7">🛁 ${bathName(f)}</td><td>${esc(f.note)}</td></tr>`:`<tr><td>${i+1}</td><td>${f?fmt12(f.time):''}</td><td class="tk-breast">${f?[f.left?'L':'',f.right?'R':''].filter(Boolean).join(' + ')+(f.start?' (start '+f.start+')':''):'[ ] L  [ ] R'}</td><td class="tk-breast">${f?.mins??''}${f&&f.left&&f.right&&num(f.mins)>0?' ('+splitShort(f)+')':''}</td><td class="tk-bottle">${f?.bottle??''}</td><td class="tk-pump">${f?.pump??''}</td><td>${f?(f.urine?'✓':''):'[ ]'}</td><td>${f?(f.stool?'✓':''):'[ ]'}</td><td>${f?(f.vitD?'✓':''):'[ ]'}</td><td>${f?esc(f.note):''}</td></tr>`).join('')}</table>
   <p>Vitamin D: ${v.given?'✓ Given'+(v.time?' at '+fmt12(v.time):''):'[ ]'} | Wet: ${t.wet}${g.wet?' of '+g.wet:''} | Stool: ${t.stool}${g.stool?' of '+g.stool:''} | Bottle total: ${t.bottle} mL | Pump total: ${t.pump} mL${bathsOf(d).length?' | Bath: '+bathTag(d):''}</p>
   <p>Notes: ${esc(d.notes)}</p>`;
 }
@@ -1859,6 +1882,7 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-print]'))printT
 
 /* Render */
 function renderAll(){
+  applyTrack();
   $$('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
   ['today','dash','hist','guide'].forEach(t=>$('#tab-'+t).classList.toggle('hidden',t!==tab));
   $('#dateIn').value=cur;
@@ -2147,9 +2171,9 @@ function buildReport(){
   <h3 style="margin:12px 0 4px;font-size:14px">Weight</h3>
   ${ws?`<div>Birth: <b>${ws.bw>0?fmtW(ws.bw):'not set'}</b> · Latest: <b>${fmtW(ws.latest.g)}</b> (${dlong(parseK(ws.latest.date))}, ${ws.latest.src})${ws.pct!=null?' · <b>'+(ws.pct>=0?'+':'')+ws.pct.toFixed(1)+'%</b> vs birth':''}${ws.lowest?' · Lowest: '+fmtW(ws.lowest.g)+(ws.lowPct!=null?' ('+ws.lowPct.toFixed(1)+'%)':''):''}${ws.bw>0?' · Back to birth weight: <b>'+(ws.back?dlong(parseK(ws.back.date)):'not yet')+'</b>':''}${ws.rate!=null?' · Gain since lowest: '+fmtDW(ws.rate)+'/day':''}</div>`:'<div style="color:#555">No weights logged.</div>'}
   <h3 style="margin:12px 0 4px;font-size:14px">Averages over ${done.length} completed day${done.length===1?'':'s'}</h3>
-  <div>Feeds/day: <b>${avg(r=>r.y.t.n).toFixed(1)}</b> · Nursing: <b>${Math.round(avg(r=>r.nm))} min/day</b>${(()=>{const st=sideTotals(done.flatMap(r=>r.y.fs)),tt=st.L+st.R;return tt?' (left '+Math.round(st.L/tt*100)+'%, right '+(100-Math.round(st.L/tt*100))+'%)':''})()}${(()=>{const fs=done.flatMap(r=>r.y.fs),nur=fs.filter(f=>f.left||f.right||num(f.mins)>0),tm=nur.filter(f=>num(f.mins)>0).length;return nur.length&&tm<nur.length?', timed on '+tm+' of '+nur.length+' nursing feeds':''})()} · Bottle: <b>${Math.round(avg(r=>r.y.t.bottle))} mL/day</b> · Pumped: <b>${(()=>{const pd=done.filter(r=>r.y.d.feeds.some(f=>num(f.pump)!=null));return pd.length?Math.round(pd.reduce((a,r)=>a+r.y.t.pump,0)/pd.length)+' mL/day</b> ('+(pd.length===done.length?'every day':'on '+pd.length+' day'+(pd.length>1?'s':'')+' with pumping')+')<b>':'not tracked'})()}</b> · Wet/day: <b>${avg(r=>r.y.t.wet).toFixed(1)}</b> · Stool/day: <b>${avg(r=>r.y.t.stool).toFixed(1)}</b> · Vitamin D: <b>${L.filter(x=>x.v.given&&vitDue(x.k)&&(!tdy(x.k)||x.v.given)).length} of ${L.filter(x=>vitDue(x.k)&&(!tdy(x.k)||x.v.given)).length} days</b> · Baths: <b>${(()=>{const c=L.reduce((a,x)=>a+bathsOf(x.d).length,0),lb=lastBath(L[L.length-1].k);return c+(lb?', last '+dlong(parseK(lb.k))+' ('+bathName(lb.f).toLowerCase()+')':'')})()}</b></div>
-  <table style="width:100%;border-collapse:collapse;margin-top:10px"><tr><th ${th}>Date</th><th ${th}>Day</th><th ${th}>Feeds</th><th ${th}>Nursing min</th><th ${th}>Bottle mL</th><th ${th}>Pump mL</th><th ${th}>Wet / goal</th><th ${th}>Stool / goal</th><th ${th}>Vit D</th><th ${th}>Bath</th><th ${th}>Longest gap</th></tr>
-  ${rows.map(({x,y,nm})=>`<tr><td ${td.replace('right','left')}>${dlong(x.dt)}${tdy(x.k)?' (so far)':''}</td><td ${td}>${y.g.dol!=null&&y.g.dol>=0?y.g.dol:''}</td><td ${td}>${y.t.n}</td><td ${td}>${nm||''}</td><td ${td}>${Math.round(y.t.bottle)}</td><td ${td}>${y.d.feeds.some(f=>num(f.pump)!=null)?Math.round(y.t.pump):''}</td><td ${td}>${y.t.wet} / ${y.g.wet}</td><td ${td}>${y.t.stool} / ${y.g.stool}</td><td ${td.replace('right','center')}>${y.v.given?'✓'+(y.v.time?' '+fmt12(y.v.time):''):vitDue(x.k)?'':'n/a'}</td><td ${td.replace('right','center')}>${bathsOf(y.d).map(f=>f.bath==='sponge'?'Sponge':f.bath==='tub'?'Tub':'✓').join(', ')}</td><td ${td}>${y.lg?hm(y.lg):''}</td></tr>`).join('')}</table>
+  <div>Feeds/day: <b>${avg(r=>r.y.t.n).toFixed(1)}</b><span class="tk-breast"> · Nursing: <b>${Math.round(avg(r=>r.nm))} min/day</b>${(()=>{const st=sideTotals(done.flatMap(r=>r.y.fs)),tt=st.L+st.R;return tt?' (left '+Math.round(st.L/tt*100)+'%, right '+(100-Math.round(st.L/tt*100))+'%)':''})()}${(()=>{const fs=done.flatMap(r=>r.y.fs),nur=fs.filter(f=>f.left||f.right||num(f.mins)>0),tm=nur.filter(f=>num(f.mins)>0).length;return nur.length&&tm<nur.length?', timed on '+tm+' of '+nur.length+' nursing feeds':''})()}</span><span class="tk-bottle"> · Bottle: <b>${Math.round(avg(r=>r.y.t.bottle))} mL/day</b></span><span class="tk-pump"> · Pumped: <b>${(()=>{const pd=done.filter(r=>r.y.d.feeds.some(f=>num(f.pump)!=null));return pd.length?Math.round(pd.reduce((a,r)=>a+r.y.t.pump,0)/pd.length)+' mL/day</b> ('+(pd.length===done.length?'every day':'on '+pd.length+' day'+(pd.length>1?'s':'')+' with pumping')+')<b>':'not tracked'})()}</b></span> · Wet/day: <b>${avg(r=>r.y.t.wet).toFixed(1)}</b> · Stool/day: <b>${avg(r=>r.y.t.stool).toFixed(1)}</b> · Vitamin D: <b>${L.filter(x=>x.v.given&&vitDue(x.k)&&(!tdy(x.k)||x.v.given)).length} of ${L.filter(x=>vitDue(x.k)&&(!tdy(x.k)||x.v.given)).length} days</b> · Baths: <b>${(()=>{const c=L.reduce((a,x)=>a+bathsOf(x.d).length,0),lb=lastBath(L[L.length-1].k);return c+(lb?', last '+dlong(parseK(lb.k))+' ('+bathName(lb.f).toLowerCase()+')':'')})()}</b></div>
+  <table style="width:100%;border-collapse:collapse;margin-top:10px"><tr><th ${th}>Date</th><th ${th}>Day</th><th ${th}>Feeds</th><th class="tk-breast" ${th}>Nursing min</th><th class="tk-bottle" ${th}>Bottle mL</th><th class="tk-pump" ${th}>Pump mL</th><th ${th}>Wet / goal</th><th ${th}>Stool / goal</th><th ${th}>Vit D</th><th ${th}>Bath</th><th ${th}>Longest gap</th></tr>
+  ${rows.map(({x,y,nm})=>`<tr><td ${td.replace('right','left')}>${dlong(x.dt)}${tdy(x.k)?' (so far)':''}</td><td ${td}>${y.g.dol!=null&&y.g.dol>=0?y.g.dol:''}</td><td ${td}>${y.t.n}</td><td class="tk-breast" ${td}>${nm||''}</td><td class="tk-bottle" ${td}>${Math.round(y.t.bottle)}</td><td class="tk-pump" ${td}>${y.d.feeds.some(f=>num(f.pump)!=null)?Math.round(y.t.pump):''}</td><td ${td}>${y.t.wet} / ${y.g.wet}</td><td ${td}>${y.t.stool} / ${y.g.stool}</td><td ${td.replace('right','center')}>${y.v.given?'✓'+(y.v.time?' '+fmt12(y.v.time):''):vitDue(x.k)?'':'n/a'}</td><td ${td.replace('right','center')}>${bathsOf(y.d).map(f=>f.bath==='sponge'?'Sponge':f.bath==='tub'?'Tub':'✓').join(', ')}</td><td ${td}>${y.lg?hm(y.lg):''}</td></tr>`).join('')}</table>
   ${wfs.length?`<h3 style="margin:12px 0 4px;font-size:14px">Weighted feeds</h3><table style="border-collapse:collapse"><tr><th ${th}>Date</th><th ${th}>Time</th><th ${th}>Breast</th><th ${th}>Before</th><th ${th}>After</th><th ${th}>Transfer</th></tr>${wfs.map(({k,f})=>`<tr><td ${td.replace('right','left')}>${dlong(parseK(k))}</td><td ${td}>${fmt12(f.time)}</td><td ${td}>${[f.left?'L':'',f.right?'R':''].filter(Boolean).join('+')}${f.mins?' '+f.mins+' min':''}</td><td ${td}>${f.wPre?fmtW(f.wPre):''}</td><td ${td}>${f.wPost?fmtW(f.wPost):''}</td><td ${td}>${num(f.wPre)>0&&num(f.wPost)>0?Math.round(f.wPost-f.wPre)+' mL':''}</td></tr>`).join('')}</table>`:''}
   ${notes.length?`<h3 style="margin:12px 0 4px;font-size:14px">Notes</h3>${notes.map(x=>`<div><b>${dlong(x.dt)}:</b> ${esc(x.d.notes)}</div>`).join('')}`:''}
   <h3 style="margin:14px 0 4px;font-size:14px">Questions for the visit</h3>
@@ -2176,7 +2200,7 @@ function nightNew(diaper){
   const k=todayK(),d=day(k),n=new Date();
   const f={id:uid(),time:pad(n.getHours())+':'+pad(n.getMinutes()),left:false,right:false,start:'',mins:null,bottle:null,pump:null,urine:false,stool:false,vitD:false,note:''};
   d.feeds.push(f);sortFeeds(d);nightFid=f.id;save();
-  if(!diaper)startNurse(k,f.id);renderNight(true);
+  if(!diaper&&trk('breast'))startNurse(k,f.id);renderNight(true);
 }
 function renderNight(full){
   if(!nightOpen)return;const n=new Date();
@@ -2189,13 +2213,13 @@ function renderNight(full){
   const f=cf.f,ls=(()=>{const r=[];for(let i=0;i<3;i++)r.push(...feedTimes(key(addDays(n,-i))));r.sort((a,b)=>b.dt-a.dt);return r.find(x=>x.f.start&&x.f.id!==f.id)})();
   $('#nBody').innerHTML=`<div class="nfeed">
     <div class="nhead">${isFeed(f)||run?'Feed':'Diaper'} at ${fmt12(f.time)}<span class="spacer"></span>${ls&&!f.start?`<span class="nhint">Start on ${ls.f.start==='L'?'Right':'Left'}</span>`:''}</div>
-    <div class="ntimer" id="nTimer">${run?mmss(nEl()):(f.mins?f.mins+' min':'0:00')}</div>
-    <div class="nrow n1" style="grid-template-columns:1fr"><button class="nbtn ${run?'on':''}" data-n="timer">${run?'■ Stop timer':'▶ '+(f.mins?'Resume timer':'Start timer')}</button></div>
-    <div class="nlab">Breast</div>
-    <div class="nrow n2"><button class="nbtn ${f.left?'on':''} ${f.start==='L'?'start':''}" data-n="L">L</button><button class="nbtn ${f.right?'on':''} ${f.start==='R'?'start':''}" data-n="R">R</button></div>
+    <div class="ntimer" id="nTimer" data-track="breast">${run?mmss(nEl()):(f.mins?f.mins+' min':'0:00')}</div>
+    <div class="nrow n1" style="grid-template-columns:1fr" data-track="breast"><button class="nbtn ${run?'on':''}" data-n="timer">${run?'■ Stop timer':'▶ '+(f.mins?'Resume timer':'Start timer')}</button></div>
+    <div class="nlab" data-track="breast">Breast</div>
+    <div class="nrow n2" data-track="breast"><button class="nbtn ${f.left?'on':''} ${f.start==='L'?'start':''}" data-n="L">L</button><button class="nbtn ${f.right?'on':''} ${f.start==='R'?'start':''}" data-n="R">R</button></div>
     ${f.left&&f.right?`<div class="nsplit"><span>L <span data-nsl="L">${splitText(f).L}</span></span><input type="range" min="0" max="100" step="5" data-n="split" value="${100-splitOf(f)}" aria-label="Split of nursing time: drag toward the side that got more time"><span><span data-nsl="R">${splitText(f).R}</span> R</span></div>`:''}
-    <div class="nlab">Bottle</div>
-    <div class="nml"><button data-n="b-">−5</button><div class="val">${num(f.bottle)||0} mL</div><button data-n="b+">+5</button></div>
+    <div class="nlab" data-track="bottle">Bottle</div>
+    <div class="nml" data-track="bottle"><button data-n="b-">−5</button><div class="val">${num(f.bottle)||0} mL</div><button data-n="b+">+5</button></div>
     <div class="nlab">Diaper and Vitamin D</div>
     <div class="nrow n3"><button class="nbtn ${f.urine?'on':''}" data-n="urine">💧 Wet</button><button class="nbtn ${f.stool?'on':''}" data-n="stool">💩 Stool</button><button class="nbtn ${f.vitD?'on':''}" data-n="vitD">☀️ Vit D</button></div>
     <button class="nbig" data-n="done" style="margin-top:16px">✓ Done</button></div>`;
@@ -2410,7 +2434,7 @@ async function clSignOut(){
 function clSignedOut(msg){CL.session=null;clSave();clStop();showGate('login',msg)}
 
 /* ---- items: the shared pieces of the log ---- */
-const SHARED_SETTINGS=['target','pumpMin','pumpMax','wetGoal','stoolGoal','birthDate','babyName','vitDStart','feedInterval','birthWeight'];
+const SHARED_SETTINGS=['target','pumpMin','pumpMax','wetGoal','stoolGoal','birthDate','babyName','vitDStart','feedInterval','birthWeight','track'];
 function clItems(){
   const out={};
   for(const k in S.days){const d=S.days[k];

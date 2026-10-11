@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.17
+
+**What you track**
+- New in Settings: **🤱 Breast**, **🍼 Bottle**, and **⚡ Pump** switches. Turn off what your family doesn't use and Cradle hides it everywhere:
+  - the Log's boxes and column headers (desktop columns stay lined up), the Bottle and Pumped tiles, and the pump timer
+  - Night shift's timer, L/R, and bottle buttons. With Breast off, Start feed no longer starts a nursing timer.
+  - the Dashboard's tiles, charts, side balance, the Bottle & pump filter, and insights
+  - the printed day sheet and the doctor report's columns and averages
+- Shared with the family through sync, included in exports and imports, and at least one stays on
+- Nothing logged is deleted; turning a part back on brings it all back
+- New test: `tests/tracking.test.mjs` (18 checks)
+
 ## Tests in the repo
 
 No change to the app.
