@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-const b=await chromium.launch({executablePath:process.env.CHROME_PATH||undefined});
+const b=await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{channel:'chromium'});
 const viol=[],errs=[];
 const ctx=await b.newContext({viewport:{width:390,height:844},acceptDownloads:true,userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36'});
 const p=await ctx.newPage();

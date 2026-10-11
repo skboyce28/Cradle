@@ -78,6 +78,12 @@ try {
     const r = await runTest(f); results.push(r);
     log(`${r.ok ? '✅' : '❌'} ${f.padEnd(34)} ${String(r.pass).padStart(3)} passed${r.fail ? `, ${r.fail} failed` : ''}  (${r.secs}s)`);
     if (!r.ok) log(r.text.split('\n').filter(l => /^FAIL |^errors |Error|TIMEOUT/.test(l)).slice(0, 12).map(l => '     ' + l.slice(0, 220)).join('\n'));
+    // On GitHub, also post failures as annotations, so they show on the commit and in the API
+    if (!r.ok && process.env.GITHUB_ACTIONS) {
+      const lines = r.text.split('\n').filter(l => /^FAIL |^errors \[.+\]|Error|TIMEOUT/.test(l)).slice(0, 8);
+      const esc = t => t.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
+      console.log(`::error title=${f} failed::${esc((lines.join('\n') || ('exit code ' + r.code)).slice(0, 3000))}`);
+    }
   }
 } finally {
   for (const p of procs) p.kill();

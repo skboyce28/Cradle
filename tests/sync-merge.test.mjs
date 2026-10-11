@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';import { execSync } from 'child_process';
 const KEY='sb_publishable_testkey_1234567890',DB='http://localhost:54321';
 const sql=q=>execSync(`psql "${process.env.DATABASE_URL}" -A -t -c "${q}"`).toString().trim();
-const b=await chromium.launch({executablePath:process.env.CHROME_PATH||undefined});const errs=[];
+const b=await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{channel:'chromium'});const errs=[];
 const UA='Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36';
 const EMPTY=JSON.stringify({settings:{theme:'light',v2:1,babyName:'Juniper'},baseVersion:99,days:{}});
 const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));

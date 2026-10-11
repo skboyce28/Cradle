@@ -1,7 +1,7 @@
 import { chromium } from 'playwright';import { execSync } from 'child_process';
 const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));
 const sql=q=>execSync(`psql \"${process.env.DATABASE_URL}\" -A -t -c "${q.replace(/"/g,'\\"')}"`).toString().trim();
-const b=await chromium.launch({executablePath:process.env.CHROME_PATH||undefined});const errs=[];
+const b=await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{channel:'chromium'});const errs=[];
 const ctx=await b.newContext({viewport:{width:390,height:844},timezoneId:'America/New_York'});
 await ctx.grantPermissions(['notifications'],{origin:'http://localhost:8098'});
 await ctx.route('https://demo.supabase.co/**',async r=>{const u=r.request().url().replace('https://demo.supabase.co','http://localhost:54321');

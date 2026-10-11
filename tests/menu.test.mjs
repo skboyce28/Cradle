@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';import fs from 'fs';
 const DEMO=fs.readFileSync(new URL('./fixtures/demo.json',import.meta.url),'utf8');const OUT=(process.env.CRADLE_OUT||'out')+'/';
-const b=await chromium.launch({executablePath:process.env.CHROME_PATH||undefined});const errs=[];
+const b=await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{channel:'chromium'});const errs=[];
 const FAM={household:'h1',name:"Juniper's family",join_code:'K7QM-4XPD',role:'owner',members:[{user_id:'u1',email:'alex@example.com',role:'owner',me:true},{user_id:'u2',email:'sam@example.com',role:'member',me:false},{user_id:'u3',email:'grandma',role:'member',me:false}],invites:[]};
 const CL=JSON.stringify({url:'https://demo.supabase.co',key:'sb_publishable_demo_key_000000000000',session:{access:'a',refresh:'r',exp:Date.parse('2027-01-01'),email:'alex@example.com'},owner:'u1',household:'h1',fam:FAM,init:true,welcomed:{'alex@example.com':true},synced:{},last:'2026-10-09T18:00:00Z'});
 async function phone({theme='light',signedIn=true,demo=true,w=390,h=844}={}){
