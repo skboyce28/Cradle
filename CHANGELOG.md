@@ -1,5 +1,35 @@
 # Changelog
 
+## v1.16
+
+**📣 Feed-due notifications** (optional; see [docs/notifications.md](docs/notifications.md))
+- Each phone can turn on **Notify this phone, even when Cradle is closed** in Settings: when a feed is due, or 15 or 30 minutes before
+  - Works on Android in Chrome or the installed app, and on iPhone once Cradle is on the Home Screen (iOS 16.4 or later)
+  - Settings explains what's missing when it can't be turned on yet
+- "🍼 Feed due in 15 min · Juniper" with the due and last-feed times. A newer notification replaces the older one, and tapping it opens Cradle.
+- The due time is the family's last feed plus **Feed every**, worked out on the server in each phone's own time zone
+  - Baths and diaper-only rows don't count
+  - Each feed is announced once per phone, and nothing is sent once a feed is more than 2 hours overdue
+- Each phone's subscription is refreshed when Cradle opens, so a new time zone or family is picked up
+
+**Setup, for whoever runs the Cradle** (about 10 minutes, all in the Supabase dashboard)
+- [`supabase/3-notifications.sql`](supabase/3-notifications.sql): the phones table, the keys table, and the functions
+  - The app can only add or remove its own phone
+  - Only the function can read the private key or the list of phones
+  - A phone is only told about the family it's in now
+- [`supabase/functions/cradle-notify/index.ts`](supabase/functions/cradle-notify/index.ts): the Edge Function that sends them
+  - Standard Web Push (VAPID and aes128gcm) with the built-in Web Crypto API
+  - Creates its own keys on its first run and uses the project's built-in service key, so no key is copied by hand
+  - Phones that unsubscribed are removed automatically
+- [`supabase/4-notify-schedule.sql`](supabase/4-notify-schedule.sql): runs it every minute with pg_cron and pg_net
+- The service worker shows the notifications. Admin queries 21 to 24 list phones, check the schedule, and reset.
+
+**Tested** with a real Postgres database:
+- the encryption matches the RFC 8291 example byte for byte, and the VAPID signature verifies
+- a full round against a fake push service that decrypts each message, covering timing, repeats, a new feed, overdue feeds, unsubscribed phones, and permissions
+- the function's Supabase entry point
+- the Settings control and a push delivered to the real service worker in Chromium
+
 ## v1.15
 
 **40 achievements** (up from 10)

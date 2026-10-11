@@ -24,7 +24,7 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
 - Bakes in the optional `CRADLE_DONATE_URL` (an `https://` link only), which shows the Buy me a coffee button; without it the button stays hidden
 - Writes `manifest.webmanifest` and copies the icons
 - Writes `_headers` with the site's security headers (see [Security](#security))
-- Writes `sw.js`, a service worker whose cache name is a hash of the page. Page loads try the network first (so updates arrive) and fall back to the cached copy offline.
+- Writes `sw.js`, a service worker whose cache name is a hash of the page. Page loads try the network first (so updates arrive) and fall back to the cached copy offline. It also shows [feed-due notifications](notifications.md) and opens Cradle when one is tapped.
 
 ## Sync
 
@@ -63,7 +63,7 @@ Pulling before pushing means a phone always merges in other people's edits befor
 
 ## Database
 
-Two scripts in `supabase/` build the schema. Both are idempotent and safe to rerun in any order.
+Two scripts in `supabase/` build the schema. Both are idempotent and safe to rerun in any order. Two more are optional, for [notifications](notifications.md): `3-notifications.sql` and `4-notify-schedule.sql`.
 
 ### Tables
 
@@ -76,6 +76,7 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | `cradle_join_tries` | Wrong share-key attempts, for rate limiting |
 | `cradle_players` | Each account's 3 initials for the high-score boards |
 | `cradle_scores` | Fun center scores: account, family at the time, game, initials, score, round length in seconds |
+| `cradle_push_subs`, `cradle_push_keys` | Optional, from `3-notifications.sql`: phones that get feed-due notifications, and the notification keys. See [Notifications](notifications.md#how-it-works). |
 
 A trigger (`cradle_touch`) stamps `updated_at` with the server's clock and records `owner` on every write, so phones with wrong clocks can't confuse sync. Deleting an account clears `owner` on its entries but **never deletes entries**.
 
@@ -102,6 +103,9 @@ All changes to families go through these functions, which check permissions them
 | `cradle_scores_board(game)` | anyone signed in | The three boards: Everyone (each person's best, top 10), Our family (top 10), My best (top 10), plus your initials and rank. Only initials and scores. |
 | `cradle_set_initials(initials)` | anyone signed in | Saves your 3 initials and updates your past scores |
 | `cradle_submit_score(score, seconds, initials)` | anyone signed in | Posts a score. Refuses rounds over 130 seconds, more than 100 points per second played, posting within 10 seconds of your last score, more than 200 scores a day, and initials on a short blocklist. |
+| `cradle_push_info(endpoint)` | anyone signed in | Optional notifications: the public notification key, and this phone's setting |
+| `cradle_push_subscribe(…)` / `cradle_push_unsubscribe(endpoint)` | anyone signed in | Turns notifications on or off for one phone, in the caller's current family |
+| `cradle_push_due()`, `cradle_push_result()`, `cradle_push_get_keys()`, `cradle_push_set_keys()` | the cradle-notify function only (service role) | Finds phones to tell, records results, and manages the notification keys |
 
 Share keys are 8 characters from an alphabet without look-alikes (no 0/O, 1/I/L), shown as `XXXX-XXXX`: about 850 billion combinations.
 

@@ -55,6 +55,7 @@ The Log shows when the next feed is due: the last feed's time plus your feed int
 - **It only rings while Cradle is open on screen.** Tap the screen once after opening Cradle so your phone allows sound. Night shift and Calm keep the screen awake when Cradle is installed as an app.
 - **On a phone, ⏰ Set alarm** shows the time to set in your Clock app, big and clear, with the steps (Open Clock, Tap +, Pick the time). Phones don't let web apps create Clock alarms themselves, even when Cradle is installed, so that one is a few quick taps.
 - **Turn the in-app alarm off** in Settings.
+- **📣 Notifications, even with Cradle closed:** in Settings, choose **Notify this phone**: when a feed is due, or 15 or 30 minutes before. Each phone chooses for itself. This needs a one-time setup by whoever runs your Cradle; see [Notifications](notifications.md). On iPhone, add Cradle to the Home Screen first.
 
 ### Diaper goals
 

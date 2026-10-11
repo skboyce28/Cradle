@@ -1,0 +1,30 @@
+-- Cradle, step 4 (optional): run the cradle-notify function every minute
+-- Do this after 3-notifications.sql and after deploying the cradle-notify Edge Function.
+-- See docs/notifications.md.
+--
+-- Before running: replace YOUR-PROJECT-REF below with your project's ref, the part before
+-- .supabase.co in your Project URL. (Don't commit your edited copy.)
+
+create extension if not exists pg_cron;
+create extension if not exists pg_net;
+
+-- Replaces the job if it already exists, so this is safe to run again
+select cron.unschedule('cradle-notify') where exists (select 1 from cron.job where jobname = 'cradle-notify');
+
+select cron.schedule(
+  'cradle-notify',
+  '* * * * *',
+  $$ select net.http_post(
+       url := 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/cradle-notify',
+       headers := '{"Content-Type": "application/json"}'::jsonb,
+       body := '{}'::jsonb
+     ) $$
+);
+
+-- Check it's running (a row per run, newest first):
+--   select status, return_message, start_time from cron.job_run_details
+--   where jobid = (select jobid from cron.job where jobname = 'cradle-notify')
+--   order by start_time desc limit 5;
+--
+-- Turn it off:
+--   select cron.unschedule('cradle-notify');

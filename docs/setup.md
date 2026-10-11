@@ -106,7 +106,11 @@ Installed, Cradle opens full screen, works offline, and keeps the screen awake d
 
 Rebuild and redeploy (or push to GitHub with Option A). Phones get the new version the next time Cradle is opened with a connection. The app checks the network first, then falls back to its saved copy offline. If a phone seems stuck on an old version, close Cradle completely and open it again.
 
-When an update includes changes to `supabase/2-family.sql`, run it again in the SQL Editor. Check the [changelog](../CHANGELOG.md).
+When an update includes changes to `supabase/2-family.sql` (or `3-notifications.sql`, if you use notifications), run it again in the SQL Editor. If `supabase/functions/cradle-notify/index.ts` changed, paste it into the function again and choose **Deploy updates**. Check the [changelog](../CHANGELOG.md).
+
+## Optional: notifications
+
+So phones can get a notification when a feed is due, even with Cradle closed: run [`supabase/3-notifications.sql`](../supabase/3-notifications.sql), create the `cradle-notify` Edge Function, and schedule it with [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql). About 10 minutes, all in the Supabase dashboard. Step by step: [Notifications](notifications.md#setting-them-up-once-for-your-cradle).
 
 ## Optional: real emails
 
@@ -120,7 +124,7 @@ When someone taps an invite or reset link, Cradle signs them in and asks them to
 
 ## Optional: an Android app file (APK)
 
-The installed web app is usually all you need. If you want an APK to share, [PWABuilder](https://www.pwabuilder.com) can package your Netlify link into one. It's still the same web app inside, with the same limits (for example, it can't set Clock alarms).
+The installed web app is usually all you need. If you want an APK to share, [PWABuilder](https://www.pwabuilder.com) can package your Netlify link into one. It's still the same web app inside, with the same limits (for example, it can't set Clock alarms, but [notifications](notifications.md) work).
 
 ## Keeping it awake
 

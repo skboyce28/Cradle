@@ -148,3 +148,32 @@ where user_id = (select id from auth.users where email = 'their@email.com');
 
 -- 20. CHANGES DATA. Reset the whole board for everyone
 delete from public.cradle_scores where game = 'bottles';
+
+
+-- ============================================================
+-- Notifications (after 3-notifications.sql; see docs/notifications.md)
+-- ============================================================
+
+-- 21. Phones that get feed-due notifications, by family
+select h.name as family, u.email, s.lead_min as minutes_before, s.tz as time_zone,
+       s.last_sent_due as last_announced_feed, s.fails, s.created_at,
+       split_part(s.endpoint, '/', 3) as push_service
+from public.cradle_push_subs s
+join auth.users u on u.id = s.user_id
+join public.cradle_households h on h.id = s.household_id
+order by h.name, u.email;
+
+-- 22. Is the schedule running? Last 5 runs of the cradle-notify job
+select status, return_message, start_time
+from cron.job_run_details
+where jobid = (select jobid from cron.job where jobname = 'cradle-notify')
+order by start_time desc limit 5;
+
+-- 23. CHANGES DATA. Stop notifications for one account's phones
+delete from public.cradle_push_subs
+where user_id = (select id from auth.users where email = 'their@email.com');
+
+-- 24. CHANGES DATA. New notification keys. Every phone must turn notifications on again
+--     afterward; the function makes a new key pair on its next run.
+delete from public.cradle_push_subs;
+delete from public.cradle_push_keys;

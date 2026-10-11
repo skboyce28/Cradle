@@ -29,11 +29,12 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 | **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |
+| **Notifications** | Optional: a notification on each phone that asks, even with Cradle closed, when a feed is due or 15 or 30 minutes before. Sent by a small Supabase Edge Function in your own project. |
 | **Calm** | The 🌙 button at the top right: a slow screensaver with the time, time since the last feed, and spa music, ocean, rain, or white noise. |
 | **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, and baths. Every tab also prints. |
 | **Weighted feeds** | Before and after weights on a feed, with the estimated transfer (1 g ≈ 1 mL). |
 | **Weights** | A list of every weight to review, edit, or delete, and a chart against birth weight. |
-| **Achievements** | Ten badges based on your goals, like a 7-day Vitamin D streak. |
+| **Achievements** | Forty badges in seven groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
 | **Fun center** | **Bottle Catch**: a two-minute, one-thumb game for the waiting moments, with arcade-style high scores (3 initials) for everyone, your family, and you. |
 | **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs in seconds. Join with a share key like `K7QM-4XPD`. |
@@ -51,6 +52,7 @@ Cradle opens to a sign-in screen, so it needs a database to sign in to: a free S
 3. **Put your project address and publishable key** in environment variables: `.env` on your computer, or Netlify's environment variables. Never in the repo.
 4. **Build and deploy** to Netlify (drag and drop, or connect this repo).
 5. **Open the site on your phone**, tap *Create an account*, and install it to your home screen.
+6. **Optional: notifications.** Three more steps in Supabase so phones can be told when a feed is due: [docs/notifications.md](docs/notifications.md).
 
 Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 
@@ -63,6 +65,7 @@ Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 | [Using Cradle](docs/using-cradle.md) | Every screen and feature, for the people doing the feeding |
 | [How it works](docs/how-it-works.md) | Architecture, sync, data model, database rules, security |
 | [Deployment and architecture](docs/deployment.md) | How it's deployed (GitHub, Netlify, Supabase), the schema, admin queries, and the design decisions behind it |
+| [Notifications](docs/notifications.md) | Optional feed-due notifications: using them, the 10-minute setup in Supabase, how they work, privacy |
 | [Troubleshooting](docs/troubleshooting.md) | Sign-in problems, missing data, sync, alarms, printing |
 | [Product overview](docs/overview.html) | A one-page visual tour with screenshots (download and open in a browser) |
 | [Changelog](CHANGELOG.md) | What changed in each version |
@@ -78,6 +81,9 @@ icons/                 App icons used by the build
 supabase/
   1-setup.sql          Step 1: the log table
   2-family.sql         Step 2: families, accounts, share keys
+  3-notifications.sql  Optional: feed-due notifications (phones, keys, due times)
+  4-notify-schedule.sql  Optional: runs the cradle-notify function every minute
+  functions/cradle-notify/  The Edge Function that sends the notifications
   admin-queries.sql    Queries for running Cradle: confirm accounts, find families, fix problems
   invite-email.html    Optional "Welcome to Cradle" email template
 netlify.toml           Lets Netlify build and publish straight from this repo
@@ -92,7 +98,7 @@ Your log lives in your browser and in **your** Supabase project; it never touche
 
 ## Known limits
 
-- **Alarms only ring while Cradle is open.** Phones don't let web apps create Clock alarms, even installed, so **⏰ Set alarm** shows the time to set by hand. Notifications with the app closed would need push notifications, which aren't built yet.
+- **The in-app alarm only rings while Cradle is open.** Phones don't let web apps create Clock alarms, even installed, so **⏰ Set alarm** shows the time to set by hand. With the app closed, turn on [notifications](docs/notifications.md) instead (needs the optional setup; on iPhone, Cradle must be on the Home Screen).
 - **No password reset email** unless you connect your own email sender (SMTP) in Supabase. Encourage people to sign up with a real email.
 - **Free Supabase projects pause after about a week without use.** Daily logging keeps it awake; a paused project can be restored from the dashboard.
 - **One baby per family.** Twins or siblings would each need their own family for now.

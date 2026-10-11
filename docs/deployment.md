@@ -18,7 +18,10 @@ How Cradle is deployed today, what each piece does, how to run it day to day, an
         │   log kept on each device (localStorage), works offline
         ▼   sync every ~15 s while open, over HTTPS
  Supabase project ── Auth (accounts, sign-in)  +  Postgres (the shared log)
-                     reached directly through Supabase's REST API; no server code of our own
+                     reached directly through Supabase's REST API
+        │
+        └─ optional: pg_cron every minute ──▶ cradle-notify Edge Function ──▶ Web Push
+                     (feed-due notifications; see notifications.md)
 ```
 
 | Piece | Service | What it holds | Configured in |
@@ -45,6 +48,7 @@ Built by two scripts, both safe to rerun in any order:
 
 1. [`supabase/1-setup.sql`](../supabase/1-setup.sql): the log table.
 2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, share keys, Fun center high scores, and the security rules.
+3. Optional, for [notifications](notifications.md): [`supabase/3-notifications.sql`](../supabase/3-notifications.sql) (tables and functions) and [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql) (the every-minute job), plus the [`cradle-notify`](../supabase/functions/cradle-notify/index.ts) Edge Function.
 
 **Tables:**
 
@@ -57,6 +61,8 @@ Built by two scripts, both safe to rerun in any order:
 | `cradle_join_tries` | `user_id` · `at` | Wrong share-key attempts, for the lockout of 10 per hour |
 | `cradle_players` | `user_id` · `initials` · `updated_at` | Each account's 3 initials for the high-score boards |
 | `cradle_scores` | `id` · `user_id` · `household_id` · `game` · `initials` · `score` · `seconds` · `created_at` | Fun center scores. Only readable through `cradle_scores_board`, which shows initials and scores only. |
+| `cradle_push_subs` | `endpoint` · `user_id` · `household_id` · `p256dh` · `auth` · `tz` · `lead_min` · `last_sent_due` · `fails` | Optional. One row per phone with notifications on. No app access; changed only through `cradle_push_subscribe` and `cradle_push_unsubscribe`. |
+| `cradle_push_keys` | `public_key` · `private_jwk` | Optional. The notification (VAPID) key pair, made by the function on its first run. Only the service role can read it. |
 
 **What goes in `cradle_items`:**
 
@@ -179,3 +185,4 @@ The main choices so far, why they were made, and what they cost.
 | 14 | **Built with AI assistance (Claude), tested in a simulation** | Fast iteration. Each feature was checked with a real Postgres database, stand-ins for Supabase's sign-in service, and an automated browser playing several phones. | Those tests aren't in the repo or run automatically yet, and nothing has had an independent security review. |
 | 15 | **Fun center high scores checked by the server, shown as initials only** | Scores post from the phone, so the server is the only place to enforce rules. Initials keep the shared board fun without exposing who anyone is. | The checks stop impossible and spammy scores, but a careful cheater could still post a believable fake. Only the best queued offline score posts. |
 | 16 | **Strict security headers generated at build time; Erase all data for owners; a sign-out that clears the phone** | Blocks injected or outside scripts and data leaving for other sites. Protects the family log from an accidental wipe. Gives shared or lost phones a clean exit. | Styles still allow inline CSS, since the app uses it everywhere (lower risk than scripts). Owner-only erase is an app check, not a database rule. |
+| 17 | **Notifications by Web Push from a Supabase Edge Function, run every minute by pg_cron** | The only way a web app can alert a phone that's closed. It stays inside the same free Supabase project with nothing new to sign up for. The function creates its own keys and uses the project's built-in service key, so no secret is ever copied by hand. Due times are worked out in Postgres, in each phone's time zone. | Optional setup (about 10 minutes). Arrives up to a minute late. Only knows about feeds that have synced. On iPhone, Cradle must be on the Home Screen. The function runs without JWT verification so the schedule can start it; extra starts do nothing, since each feed is announced once per phone. |

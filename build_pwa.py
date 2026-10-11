@@ -104,6 +104,11 @@ self.addEventListener('fetch',e=>{{
   }}
   e.respondWith(caches.match(r).then(hit=>hit||fetch(r).then(res=>{{const cp=res.clone();caches.open(CACHE).then(c=>c.put(r,cp));return res}})));
 }});
+// Feed-due notifications (sent by the cradle-notify function; see docs/notifications.md)
+self.addEventListener('push',e=>{{let d={{}};try{{d=e.data?e.data.json():{{}}}}catch(x){{}}
+  e.waitUntil(self.registration.showNotification(d.title||'Cradle',{{body:d.body||'',tag:d.tag||'cradle',renotify:true,icon:'./icons/icon-192.png',badge:'./icons/icon-192.png',data:{{url:'./'}}}}))}});
+self.addEventListener('notificationclick',e=>{{e.notification.close();
+  e.waitUntil(self.clients.matchAll({{type:'window',includeUncontrolled:true}}).then(cs=>{{for(const c of cs)if('focus' in c)return c.focus();return self.clients.openWindow('./')}}))}});
 """
 open(os.path.join(out, 'sw.js'), 'w').write(sw)
 

@@ -806,7 +806,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">👪</div><h3>Family</h3><p>Everyone has their own login and a family shares one log. <b>New here?</b> On the sign-in screen tap <b>Create an account</b>, pick a username (or use your email) and a password. To share someone’s log, enter their <b>share key</b> (like K7QM-4XPD); leave it blank to start your own. Your share key is under <b>Family</b> in the profile menu, with a <b>Share</b> button that writes the invite text for you. The family owner can make a <b>New key</b> at any time, which stops the old one working, and can remove people. Members can leave. Other families never see your log. Everything saves as you type, with no Save button. If two of you edit the same feed, changes to different boxes are combined; if you both change the same box, the last one wins. When someone else’s change arrives, a note says who made it and the row flashes.</p></div>
       <div class="card"><div class="ico">💾</div><h3>Backups and files</h3><p>Your log is saved in your account and on each signed-in phone. <b>Data management</b> in the profile menu holds your data tools. <b>Export data</b> saves a backup file you can keep, or sends a short code by text message. <b>Import data</b> brings a file or code back: <b>Merge</b> adds to your log, <b>Replace</b> clears it first. <b>Erase all data</b> removes every entry from your family’s log on every phone, so only the family owner can use it; export first if you want a copy. Everyone can still delete single entries with ×. If a phone already has a log when you reach the sign-in screen, Cradle offers to download a backup before you sign in.</p></div>
       <div class="card"><div class="ico">🖨️</div><h3>Printing</h3><p>Every tab has a Print button. The Log tab prints a paper sheet for the selected day. Printing needs Cradle open in a browser like Chrome or Safari, not in a file preview.</p></div>
-      <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On a phone, <b>⏰ Set alarm</b> shows the time to set in your Clock app, with the steps. Phones don’t let web apps add Clock alarms themselves, even when Cradle is installed, so that one takes a few taps.</p></div>
+      <div class="card"><div class="ico">⏰</div><h3>Next feed and alarm</h3><p>The Log tab shows when the next feed is due, based on the last feed and the interval in Settings (3 hours to start). When it's due, Cradle chimes, vibrates, and shows Snooze and Dismiss. This only works while Cradle is open on screen, so tap the screen once after opening it to allow sound. On a phone, <b>⏰ Set alarm</b> shows the time to set in your Clock app, with the steps. Phones don’t let web apps add Clock alarms themselves, even when Cradle is installed, so that one takes a few taps. To be told when Cradle is closed, turn on <b>📣 Notify this phone</b> in Settings: when a feed is due, or 15 or 30 minutes before. Each phone chooses for itself. On iPhone, add Cradle to the Home Screen first.</p></div>
       <div class="card"><div class="ico">⚖️</div><h3>Weighted feeds and weight</h3><p>For a weighted feed, tap ⚖️ on the feed and enter the weight before and after. Cradle shows about how much was transferred (1 gram is about 1 mL). Log weights from visits with <b>+ Add weight</b> on the Dashboard or <b>Weights</b> in the profile menu. Type weights like 7 lb 3.5 oz or 3270 g. Every weight is listed at the top of the Weights screen (<b>See all</b> on the Dashboard): tap <b>Edit</b> to fix one, or × to delete it. Weights from weighted feeds have <b>Open feed</b>, and the birth weight has <b>Settings</b>, where you change them.</p></div>
       <div class="card"><div class="ico">🩺</div><h3>Doctor report</h3><p>On the Dashboard, <b>🩺 Doctor report</b> prints one page for appointments: weight against birth weight, daily feeds, nursing minutes with the left and right split, bottle and pump volumes, diapers against goals, Vitamin D, baths, weighted feeds, your day notes, and lines for questions. It covers the 7 or 14 days shown on the Dashboard.</p></div>
       <div class="card"><div class="ico">🌙</div><h3>Night shift</h3><p>Tap the <b>Night shift</b> tab for a dim, low-glare screen with huge buttons for one-handed night feeds. The three dots at the top switch colors: Warm, Moonlight, or Red. <b>Start feed</b> logs the time and starts the timer. Then tap L or R (with both on, a slider splits the time between sides), adjust the bottle by 5 mL, mark wet, stool, or Vitamin D, and tap <b>Done</b>. Everything saves as you go. Between feeds, <b>🧷 Diaper only</b> and <b>🛁 Bath</b> log those with the current time.</p></div>
@@ -837,6 +837,8 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
     <div class="fsec">Next feed</div>
     <div class="field"><label for="sInt">Feed every (hours)</label><input id="sInt" type="number" min="1" max="8" step="0.25"></div>
     <div class="field"><label for="sAlarm">Alarm when a feed is due (while Cradle is open)</label><input id="sAlarm" type="checkbox"></div>
+    <div class="field"><label for="sPush">📣 Notify this phone, even when Cradle is closed</label><select id="sPush"><option value="off">Off</option><option value="0">When a feed is due</option><option value="15">15 minutes before</option><option value="30">30 minutes before</option></select></div>
+    <p class="sub" id="pushNote" style="margin:2px 0 8px"></p>
     <div class="fsec">Goals</div>
     <p class="sub" style="margin:4px 0">The birth date is Day 0 (goal 1 of each). Days 1 to 5, the goal matches the day: 1 on day 1, up to 5 on day 5. After that, the goals below apply.</p>
     <div class="field"><label for="sWet">Wet goal after day 5</label><input id="sWet" type="number" min="0" step="1"></div>
@@ -1093,10 +1095,12 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <div class="modal" id="aboutModal">
   <div class="card">
     <h3>About Cradle</h3>
-    <p style="margin:0 0 8px"><b>Cradle v1.15</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
+    <p style="margin:0 0 8px"><b>Cradle v1.16</b><br><span class="sub">A baby log that works offline and syncs between family phones through your own Supabase project. No external libraries.</span></p>
     <p class="sub" style="margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--accent-soft)"><b>Not medical advice.</b> Cradle is a notebook. Goals in the app are placeholders, so follow your pediatrician or care team, and call them if you’re worried about your baby.<br><br><b>Built with AI.</b> Cradle was built with help from Claude, an AI model by Anthropic. It has been tested but not independently reviewed, so keep backups with Export data (in Data management).</p>
     <div class="donate hidden" id="donateBox"><span style="font-size:22px">☕</span><div><b>Enjoying Cradle?</b><div class="sub">It’s free. If it helps your family, you can buy me a coffee.</div></div><a class="primary" id="donateLink" href="#" target="_blank" rel="noopener noreferrer">Buy me a coffee</a></div>
     <h3 style="margin-top:14px">Changelog</h3>
+    <b>v1.16</b>
+    <ul class="cl"><li>📣 Notifications: a phone can be told when a feed is due, or 15 or 30 minutes before, even when Cradle is closed. Turn it on in Settings, on each phone that wants it.</li><li>Needs a one-time setup in Supabase by whoever runs your Cradle</li><li>On iPhone, add Cradle to the Home Screen first</li></ul>
     <b>v1.15</b>
     <ul class="cl"><li>40 achievements (up from 10), grouped by topic: higher tiers of the originals (★★ and ★★★) and new ones like Night Owl, Perfect Day, Liquid Gold, Splish Splash, Back to Birth Weight, and One Month Old</li><li>Themes now open from one <b>🎨 Themes</b> item in the profile menu</li><li>Doctor report: pumping is averaged over the days you pumped, Vitamin D only counts days since its start date, days before birth are left out, and nursing shows how many feeds were timed</li><li>Dashboard: the same fixes for pumping and Vitamin D</li></ul>
     <b>v1.14</b>
@@ -1138,7 +1142,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
 <script type="application/json" id="baseData">{}</script>
 <script>
 (function(){
-const VERSION='1.15';
+const VERSION='1.16';
 const LS='cradle-feeding-v1';
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
@@ -1673,7 +1677,7 @@ $('#histSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.ui.h
 
 /* Settings */
 const sf={sTarget:'target',sPMin:'pumpMin',sPMax:'pumpMax',sWet:'wetGoal',sStool:'stoolGoal'};
-function openSettings(){for(const id in sf)$('#'+id).value=S.settings[sf[id]];$('#sBirth').value=S.settings.birthDate||'';$('#sBW').value=S.settings.birthWeight?fmtW(S.settings.birthWeight):'';$('#sWU').value=S.settings.weightUnit||'lb';$('#sInt').value=S.settings.feedInterval||3;$('#sAlarm').checked=!!S.settings.alarmOn;$('#sVitD').value=S.settings.vitDStart||'';$('#sName').value=S.settings.babyName||'';$('#settingsModal').classList.add('open')}
+function openSettings(){for(const id in sf)$('#'+id).value=S.settings[sf[id]];$('#sBirth').value=S.settings.birthDate||'';$('#sBW').value=S.settings.birthWeight?fmtW(S.settings.birthWeight):'';$('#sWU').value=S.settings.weightUnit||'lb';$('#sInt').value=S.settings.feedInterval||3;$('#sAlarm').checked=!!S.settings.alarmOn;refreshPush();$('#sVitD').value=S.settings.vitDStart||'';$('#sName').value=S.settings.babyName||'';$('#settingsModal').classList.add('open')}
 $('#sSave').onclick=()=>{
   S.settings.birthDate=$('#sBirth').value||'';S.settings.weightUnit=$('#sWU').value;{const bw=$('#sBW').value.trim();S.settings.birthWeight=bw?parseWeight(bw):null}{const iv=num($('#sInt').value);if(iv>=1&&iv<=8)S.settings.feedInterval=iv}S.settings.alarmOn=$('#sAlarm').checked;S.settings.vitDStart=$('#sVitD').value||'';S.settings.babyName=$('#sName').value.trim();
   for(const id in sf){const v=num($('#'+id).value);if(v!=null&&v>=0)S.settings[sf[id]]=v}
@@ -2294,6 +2298,43 @@ let installEvt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;$('#installItem').classList.remove('hidden')});
 window.addEventListener('appinstalled',()=>{installEvt=null;$('#installItem').classList.add('hidden');toast('Cradle installed. Open it from your home screen.')});
 async function doInstall(){if(!installEvt){toast('Use your browser menu, then Install app or Add to Home screen.');return}installEvt.prompt();try{await installEvt.userChoice}catch(e){}installEvt=null;$('#installItem').classList.add('hidden')}
+/* ---- feed-due notifications (Web Push via the cradle-notify function) ---- */
+const pushOK=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+async function pushReg(){if(!pushOK())return null;try{return await navigator.serviceWorker.getRegistration()||null}catch(e){return null}}
+const b64uBytes=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'==='.slice((s.length+3)%4)),c=>c.charCodeAt(0));
+const pushTz=()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'}catch(e){return 'UTC'}};
+const notSetUp=e=>/PGRST202|Could not find the function/.test(e&&e.message||'');
+async function refreshPush(){const sel=$('#sPush'),note=$('#pushNote');if(!sel)return;
+  const say=(v,t,dis)=>{sel.value=v;note.textContent=t;sel.disabled=!!dis};
+  if(!pushOK())return say('off',/iPhone|iPad/.test(navigator.userAgent)?'On iPhone, add Cradle to your Home Screen first (Share, then Add to Home Screen) and open it from there.':'This browser can’t show notifications.',true);
+  const reg=await pushReg();
+  if(!reg)return say('off','Open Cradle from its web address or install it (profile menu, Install app) to turn these on.',true);
+  if(Notification.permission==='denied')return say('off','Notifications are blocked for Cradle in your phone’s settings. Allow them there, then come back.',true);
+  if(!CL.session)return say('off','Sign in to turn these on.',true);
+  const sub=await reg.pushManager.getSubscription().catch(()=>null);
+  let info;try{info=await clRpc('cradle_push_info',{p_endpoint:sub?sub.endpoint:null})}
+  catch(e){return say('off',notSetUp(e)?'Not set up for this Cradle yet. Whoever runs it can turn them on (see Notifications in the docs).':navigator.onLine?'Couldn’t check notifications right now. Try again in a moment.':'You’re offline. Changing notifications needs a connection.',true)}
+  if(!info||!info.public_key)return say('off','Almost ready: this Cradle’s notification service hasn’t run yet. Try again in a few minutes.',true);
+  const on=sub&&info.lead_min!=null;
+  say(on?String(info.lead_min):'off',on?'On. This phone is notified even when Cradle is closed, as long as it has a connection.':'Get a notification on this phone when the next feed is due. Each phone chooses for itself.');
+}
+async function pushSubscribe(lead,quiet){const reg=await pushReg();if(!reg)return false;
+  const info=await clRpc('cradle_push_info',{p_endpoint:null});if(!info||!info.public_key)throw new Error('not ready');
+  let sub=await reg.pushManager.getSubscription();
+  if(sub){const k=sub.options&&sub.options.applicationServerKey,want=b64uBytes(info.public_key);
+    if(k&&(new Uint8Array(k)).join()!==want.join()){await sub.unsubscribe().catch(()=>{});sub=null}}
+  if(!sub){if(quiet)return false;sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64uBytes(info.public_key)})}
+  const j=sub.toJSON();await clRpc('cradle_push_subscribe',{p_endpoint:j.endpoint,p_p256dh:j.keys.p256dh,p_auth:j.keys.auth,p_tz:pushTz(),p_lead:lead});return true}
+// On each app start: keep this phone's subscription current (time zone, family) if it's on
+async function pushResync(){try{if(S.ui.pushLead==null||!pushOK()||Notification.permission!=='granted')return;await pushSubscribe(S.ui.pushLead,true)}catch(e){}}
+$('#sPush').addEventListener('change',async e=>{const v=e.target.value,reg=await pushReg();if(!reg)return refreshPush();
+  if(v==='off'){const sub=await reg.pushManager.getSubscription().catch(()=>null);
+    if(sub){try{await clRpc('cradle_push_unsubscribe',{p_endpoint:sub.endpoint})}catch(x){}try{await sub.unsubscribe()}catch(x){}}
+    S.ui.pushLead=null;save();toast('Notifications are off on this phone');return refreshPush()}
+  if(await Notification.requestPermission()!=='granted'){toast('Allow notifications for Cradle to turn these on');return refreshPush()}
+  try{await pushSubscribe(+v,false);S.ui.pushLead=+v;save();toast(v==='0'?'You’ll be notified when a feed is due':'You’ll be notified '+v+' minutes before a feed is due')}
+  catch(err){toast(notSetUp(err)?'Notifications aren’t set up for this Cradle yet':'Couldn’t turn on notifications. Check your connection and try again.')}
+  refreshPush()});
 if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
   window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
@@ -2454,7 +2495,7 @@ async function clSync(){
   clBusy=true;clSetState('syncing');
   try{
     if(CL.pendingKey)await clJoinPending();
-    if(!CL.household||!clBooted){await clBootstrap();clBooted=true}
+    if(!CL.household||!clBooted){await clBootstrap();clBooted=true;setTimeout(pushResync,2000)}
     // Pull first so other phones' edits are merged in, then upload the result
     const first=!CL.init;await clPull();if(first){CL.init=true;clSave()}
     await clPush();clLastErr='';clSetState('ok');

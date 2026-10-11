@@ -103,6 +103,9 @@ Profile menu, then **Weights** (or **See all** on the Dashboard), then **Edit** 
 - Check that the alarm is on in Settings.
 - When installed as an app, Night shift and Calm keep the screen awake.
 
+**I want to be told when Cradle is closed**
+Turn on **Notify this phone** in Settings. If it says *Not set up* or *Almost ready*, see [Notifications](notifications.md#troubleshooting).
+
 **⏰ Set alarm doesn't open my Clock app**
 That's expected, even with Cradle installed: phones don't let web apps create Clock alarms. The button shows the time and the steps (Open Clock, Tap +, Pick the time). See [Known limits](../README.md#known-limits).
 
