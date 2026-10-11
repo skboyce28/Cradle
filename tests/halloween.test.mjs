@@ -1,0 +1,50 @@
+import { chromium } from 'playwright';import fs from 'fs';
+const DEMO=fs.readFileSync(new URL('./fixtures/demo.json',import.meta.url),'utf8');const OUT=(process.env.CRADLE_OUT||'out')+'/';
+const b=await chromium.launch({executablePath:process.env.CHROME_PATH||undefined});const errs=[];
+const FAM={household:'h1',name:"Juniper's family",join_code:'K7QM-4XPD',role:'owner',members:[{user_id:'u1',email:'alex@example.com',role:'owner',me:true},{user_id:'u2',email:'sam@example.com',role:'member',me:false},{user_id:'u3',email:'grandma',role:'member',me:false}],invites:[]};
+const CL=JSON.stringify({url:'https://demo.supabase.co',key:'sb_publishable_demo_key_000000000000',session:{access:'a',refresh:'r',exp:Date.parse('2027-01-01'),email:'alex@example.com'},owner:'u1',household:'h1',fam:FAM,init:true,welcomed:{'alex@example.com':true},synced:{},last:'2026-10-09T18:00:00Z'});
+async function phone({theme='light',signedIn=true,demo=true,w=390,h=844}={}){
+  const ctx=await b.newContext({viewport:{width:w,height:h},deviceScaleFactor:2,colorScheme:theme==='dark'?'dark':'light',userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36'});
+  const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));
+  await p.clock.install({time:new Date('2026-10-09T14:40:00')});
+  await p.route('https://demo.supabase.co/**',r=>{const u=r.request().url();const H={'access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'*'};
+    if(r.request().method()==='OPTIONS')return r.fulfill({status:204,headers:H});
+    if(u.includes('/rpc/'))return r.fulfill({status:200,headers:H,contentType:'application/json',body:JSON.stringify(Object.assign({claimed:false},FAM))});
+    if(r.request().method()==='GET')return r.fulfill({status:200,headers:H,contentType:'application/json',body:'[]'});
+    return r.fulfill({status:201,headers:H,body:''})});
+  await p.goto(process.env.CRADLE_APP);
+  await p.evaluate(([d,c,theme,si])=>{localStorage.clear();if(!d)return;const S=JSON.parse(d);S.settings.theme=theme;localStorage.setItem('cradle-feeding-v1',JSON.stringify(S));if(si)localStorage.setItem('cradle-cloud-v1',c)},[demo?DEMO:'',CL,theme,signedIn]);
+  await p.reload();await p.clock.runFor(2500);await p.waitForTimeout(400);
+  return p}
+const snap=async(p,n)=>{await p.waitForTimeout(350);await p.screenshot({path:(process.env.CRADLE_OUT||'out')+'/hw-'+n+'.png'})};
+const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));
+const txt=async(p,s)=>(await p.innerText(s)).replace(/\s+/g,' ').trim();
+let p=await phone({theme:'light'});
+await p.click('#menuBtn');await p.click('[data-act=themes]');await p.waitForTimeout(150);
+const items=await p.$$eval('#themeModal .dalm',bs=>bs.map(b=>b.textContent.trim()));
+ok('Halloween mode sits under Dalmatian',items.length>=2&&/Dalmatian/.test(items[0])&&/Halloween/.test(items[1]),JSON.stringify(items));
+await p.click('#themeModal [data-theme=halloween]');await p.waitForTimeout(200);
+ok('switching sets the theme',await p.evaluate(()=>document.documentElement.dataset.theme)==='halloween');
+ok('button shows as on',await p.isVisible('.hallo.on')&&!(await p.isVisible('.dalm.on:not(.hallo)')));
+ok('greeting toast',/Happy Halloween/.test(await txt(p,'#toast')));
+await snap(p,'menu');
+await p.evaluate(()=>{document.getElementById('menu').classList.remove('open');document.getElementById('themeModal').classList.remove('open')});
+ok('pumpkin face on the logo',await p.isVisible('header .jack'));
+const bg=await p.evaluate(()=>getComputedStyle(document.body).backgroundColor),pb=await p.evaluate(()=>getComputedStyle(document.body).backgroundImage);
+ok('dark night background with bats',bg==='rgb(20, 16, 27)'&&/svg/.test(pb),bg);
+const pc=await p.evaluate(()=>{const b=document.querySelector('#logNow');return getComputedStyle(b).color});
+ok('dark text on orange buttons',pc==='rgb(27, 16, 34)',pc);
+await snap(p,'log');
+await p.click('#tabs [data-tab=dash]');await p.waitForTimeout(400);await snap(p,'dash');
+await p.click('#tabs [data-tab=hist]');await p.waitForTimeout(300);await snap(p,'hist');
+await p.click('#tabs [data-tab=today]');await p.waitForTimeout(200);
+await p.reload();await p.clock.runFor(2500);await p.waitForTimeout(300);
+ok('stays on after reload',await p.evaluate(()=>document.documentElement.dataset.theme)==='halloween');
+await p.evaluate(()=>document.getElementById('themeModal').classList.add('open'));await p.click('#themeModal [data-theme=light]');await p.waitForTimeout(150);
+ok('Light turns it off',!(await p.evaluate(()=>document.documentElement.dataset.theme==='halloween'))&&!(await p.isVisible('header .jack'))&&!(await p.isVisible('.hallo.on')));
+// sign-in screen in Halloween
+const q=await phone({theme:'halloween',signedIn:false});await q.waitForTimeout(300);await snap(q,'signin');
+ok('splash logo gets the face too',await q.isVisible('#gate .glogo .jack'));
+// desktop
+const d=await phone({theme:'halloween',w:1280,h:800});await snap(d,'desktop');
+console.log('errors',errs);await b.close();

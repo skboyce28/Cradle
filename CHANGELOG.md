@@ -1,5 +1,16 @@
 # Changelog
 
+## Tests in the repo
+
+No change to the app.
+- The automated tests now live in [`tests/`](tests/): 18 files and about 250 checks
+  - one runner: `cd tests && node run.mjs`
+  - it sets up a throwaway Postgres with Cradle's real scripts, builds the site, and starts stand-ins for Supabase's API and Netlify's headers
+  - it runs Chromium as several phones
+- **GitHub Actions** runs them on every push and pull request ([`.github/workflows/tests.yml`](.github/workflows/tests.yml)), with a ✅ or ❌ next to each commit and a badge on the README
+- The doctor report test now recomputes every daily row from the log. The game test no longer depends on random play or leftover scores.
+- Test data is a made-up baby, and the test accounts are made up
+
 ## v1.16
 
 **📣 Feed-due notifications** (optional; see [docs/notifications.md](docs/notifications.md))

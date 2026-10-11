@@ -1,0 +1,50 @@
+import { chromium } from 'playwright';import fs from 'fs';
+const DEMO=fs.readFileSync(new URL('./fixtures/demo.json',import.meta.url),'utf8');const OUT=(process.env.CRADLE_OUT||'out')+'/';
+const b=await chromium.launch({executablePath:process.env.CHROME_PATH||undefined});const errs=[];
+const FAM={household:'h1',name:"Juniper's family",join_code:'K7QM-4XPD',role:'owner',members:[{user_id:'u1',email:'alex@example.com',role:'owner',me:true},{user_id:'u2',email:'sam@example.com',role:'member',me:false},{user_id:'u3',email:'grandma',role:'member',me:false}],invites:[]};
+const CL=JSON.stringify({url:'https://demo.supabase.co',key:'sb_publishable_demo_key_000000000000',session:{access:'a',refresh:'r',exp:Date.parse('2027-01-01'),email:'alex@example.com'},owner:'u1',household:'h1',fam:FAM,init:true,welcomed:{'alex@example.com':true},synced:{},last:'2026-10-09T18:00:00Z'});
+async function phone({theme='light',signedIn=true,demo=true,w=390,h=844}={}){
+  const ctx=await b.newContext({viewport:{width:w,height:h},deviceScaleFactor:2,colorScheme:theme==='dark'?'dark':'light',userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36'});
+  const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));
+  await p.clock.install({time:new Date('2026-10-09T14:40:00')});
+  await p.route('https://demo.supabase.co/**',r=>{const u=r.request().url();const H={'access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'*'};
+    if(r.request().method()==='OPTIONS')return r.fulfill({status:204,headers:H});
+    if(u.includes('/rpc/'))return r.fulfill({status:200,headers:H,contentType:'application/json',body:JSON.stringify(Object.assign({claimed:false},FAM))});
+    if(r.request().method()==='GET')return r.fulfill({status:200,headers:H,contentType:'application/json',body:'[]'});
+    return r.fulfill({status:201,headers:H,body:''})});
+  await p.goto(process.env.CRADLE_APP);
+  await p.evaluate(([d,c,theme,si])=>{localStorage.clear();if(!d)return;const S=JSON.parse(d);S.settings.theme=theme;localStorage.setItem('cradle-feeding-v1',JSON.stringify(S));if(si)localStorage.setItem('cradle-cloud-v1',c)},[demo?DEMO:'',CL,theme,signedIn]);
+  await p.reload();await p.clock.runFor(2500);await p.waitForTimeout(400);
+  return p}
+const snap=async(p,n)=>{await p.waitForTimeout(350);await p.screenshot({path:(process.env.CRADLE_OUT||'out')+'/hol-'+n+'.png'})};
+const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));
+const txt=async(p,s)=>(await p.innerText(s)).replace(/\s+/g,' ').trim();
+let p=await phone({theme:'light'});
+await p.click('#menuBtn');await p.click('[data-act=themes]');await p.waitForTimeout(150);
+const items=await p.$$eval('#themeModal .dalm',bs=>bs.map(b=>b.textContent.trim().replace(/\s+/g,' ')));
+ok('order: Dalmatian, Halloween, Thanksgiving, Christmas',items.length===4&&/Dalmatian/.test(items[0])&&/Halloween/.test(items[1])&&/Thanksgiving/.test(items[2])&&/Christmas/.test(items[3]),JSON.stringify(items));
+for(const [th,deco,bgc,greet] of [['thanksgiving','acorn','rgb(251, 243, 230)','Happy Thanksgiving'],['christmas','santa','rgb(248, 250, 248)','Merry Christmas']]){
+  if(!(await p.isVisible('#themeModal')))await p.evaluate(()=>document.getElementById('themeModal').classList.add('open'));
+  await p.click(`#themeModal [data-theme=${th}]`);await p.waitForTimeout(200);
+  ok(th+': theme set',await p.evaluate(()=>document.documentElement.dataset.theme)===th);
+  const on=await p.$$eval('#themeModal .dalm.on',bs=>bs.map(b=>b.dataset.theme));ok(th+': only its button is on',on.length===1&&on[0]===th,JSON.stringify(on));
+  ok(th+': greeting',new RegExp(greet).test(await txt(p,'#toast')));
+  await snap(p,th+'-menu');await p.evaluate(()=>{document.getElementById('menu').classList.remove('open');document.getElementById('themeModal').classList.remove('open')});
+  ok(th+': logo touch shows',await p.isVisible('header .'+deco)&&!(await p.isVisible('header .jack')));
+  const bg=await p.evaluate(()=>getComputedStyle(document.body).backgroundColor),pb=await p.evaluate(()=>getComputedStyle(document.body).backgroundImage);
+  ok(th+': background and pattern',bg===bgc&&/svg/.test(pb),bg);
+  await p.evaluate(()=>{document.getElementById('toast').classList.remove('show')});
+  await snap(p,th+'-log');
+  await p.click('#tabs [data-tab=dash]');await p.waitForTimeout(400);await snap(p,th+'-dash');
+  await p.click('#tabs [data-tab=today]');await p.waitForTimeout(200);
+  const q=await phone({theme:th,signedIn:false});await q.waitForTimeout(300);await snap(q,th+'-signin');
+  ok(th+': splash logo touch',await q.isVisible('#gate .glogo .'+deco));
+  const d=await phone({theme:th,w:1280,h:800});await snap(d,th+'-desktop');
+}
+await p.reload();await p.clock.runFor(2500);await p.waitForTimeout(300);
+ok('stays on after reload',await p.evaluate(()=>document.documentElement.dataset.theme)==='christmas');
+await p.evaluate(()=>document.getElementById('themeModal').classList.add('open'));await p.click('#themeModal [data-theme=halloween]');await p.waitForTimeout(150);
+ok('switching to Halloween still works',await p.isVisible('header .jack')&&!(await p.isVisible('header .santa')));
+await p.click('#themeModal [data-theme=auto]').catch(async()=>{await p.evaluate(()=>document.getElementById('themeModal').classList.add('open'));await p.click('#themeModal [data-theme=auto]')});await p.waitForTimeout(150);
+ok('Auto turns them all off',!(await p.evaluate(()=>document.documentElement.hasAttribute('data-theme')))&&!(await p.isVisible('header .santa, header .acorn, header .jack')));
+console.log('errors',errs);await b.close();

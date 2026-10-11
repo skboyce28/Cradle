@@ -1,0 +1,11 @@
+{
+  "name": "cradle-tests",
+  "private": true,
+  "type": "module",
+  "description": "Browser and database tests for Cradle. See tests/README.md.",
+  "scripts": { "test": "node run.mjs" },
+  "dependencies": {
+    "pg": "8.23.1",
+    "playwright": "1.63.0"
+  }
+}

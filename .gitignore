@@ -21,3 +21,7 @@ Thumbs.db
 .vscode/
 .idea/
 __pycache__/
+
+# test outputs
+tests/node_modules/
+tests/out/

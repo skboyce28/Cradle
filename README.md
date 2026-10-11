@@ -4,6 +4,8 @@
 
 <h1 align="center">Cradle</h1>
 
+<p align="center"><a href="https://github.com/skboyce28/Cradle/actions/workflows/tests.yml"><img src="https://github.com/skboyce28/Cradle/actions/workflows/tests.yml/badge.svg" alt="Tests"></a></p>
+
 <p align="center"><b>A baby log for tired parents.</b><br>
 Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family phones and usable one-handed at 3am. Built for triple feeding, and just as handy if you only nurse or only bottle feed.</p>
 
@@ -87,6 +89,7 @@ supabase/
   admin-queries.sql    Queries for running Cradle: confirm accounts, find families, fix problems
   invite-email.html    Optional "Welcome to Cradle" email template
 netlify.toml           Lets Netlify build and publish straight from this repo
+tests/                 About 250 automated checks; run on every push by .github/workflows/tests.yml
 docs/                  The guides above, the product overview page, and screenshots
 ```
 

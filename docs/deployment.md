@@ -151,17 +151,15 @@ where email = 'their@email.com' and email_confirmed_at is null;
 - **Limits that come from being a web app:**
   - **No Clock alarms.** Android won't let it create alarms in the Clock app, installed or not; **⏰ Set alarm** shows the time to set.
   - **Alarms need Cradle open.** Its own feed alarm rings only while Cradle is open.
-  - **No notifications with the app closed.** That would need push notifications, which aren't built.
+  - **Notifications with the app closed need the optional setup.** See [Notifications](notifications.md). On iPhone, Cradle must be on the Home Screen.
 
 ## Releasing a change
 
 1. Edit `cradle.html`. Bump `VERSION` and add to the About changelog inside it.
 2. Update the in-app guide, the README, the guides in `docs/`, `CHANGELOG.md`, and the [overview page](overview.html) and screenshots when the change is visible.
-3. Test in a browser, including on a phone-sized screen.
-4. Commit and push to `main`. Netlify builds and deploys automatically.
-5. If `supabase/2-family.sql` changed, run it again in the SQL Editor. It's safe to rerun.
-
-There's no automated test run on push yet. Tests have been run by hand in a simulated setup (see [Architecture decisions](#architecture-decisions)).
+3. Add or update a test in [`tests/`](../tests/) and run the suite (`cd tests && node run.mjs`; see [tests/README.md](../tests/README.md)). Also check in a browser at phone size.
+4. Commit and push to `main`. Netlify builds and deploys automatically. GitHub runs the tests on every push and shows ✅ or ❌ next to the commit; a ❌ means look before relying on that deploy.
+5. If `supabase/2-family.sql` (or `3-notifications.sql`) changed, run it again in the SQL Editor. It's safe to rerun. If the notification function changed, deploy it again in Supabase.
 
 ## Architecture decisions
 
@@ -182,7 +180,7 @@ The main choices so far, why they were made, and what they cost.
 | 11 | **Diaper-only rows and baths share the feed list; `isFeed()` decides what counts** | Simple data model; everything syncs, exports, and imports the same way. | Every feed calculation must use `isFeed()`. |
 | 12 | **Personal starter log stripped at build** | The author's copy can preload real data without it reaching the public site. | The public copy keeps the block empty (`{}`). |
 | 13 | **PolyForm Noncommercial license** | Free for families, friends, and charities; no commercial reuse without permission. | Not "open source" by the official definition. |
-| 14 | **Built with AI assistance (Claude), tested in a simulation** | Fast iteration. Each feature was checked with a real Postgres database, stand-ins for Supabase's sign-in service, and an automated browser playing several phones. | Those tests aren't in the repo or run automatically yet, and nothing has had an independent security review. |
+| 14 | **Built with AI assistance (Claude), tested in a simulation** | Fast iteration. Each feature is checked with a real Postgres database running the real scripts, a stand-in for Supabase's API, and Chromium playing several phones. The suite lives in [`tests/`](../tests/) and runs on every push with GitHub Actions. | A simulation isn't the real Supabase or a real phone, and nothing has had an independent security review. Netlify deploys even if the tests fail, so check the ✅. |
 | 15 | **Fun center high scores checked by the server, shown as initials only** | Scores post from the phone, so the server is the only place to enforce rules. Initials keep the shared board fun without exposing who anyone is. | The checks stop impossible and spammy scores, but a careful cheater could still post a believable fake. Only the best queued offline score posts. |
 | 16 | **Strict security headers generated at build time; Erase all data for owners; a sign-out that clears the phone** | Blocks injected or outside scripts and data leaving for other sites. Protects the family log from an accidental wipe. Gives shared or lost phones a clean exit. | Styles still allow inline CSS, since the app uses it everywhere (lower risk than scripts). Owner-only erase is an app check, not a database rule. |
 | 17 | **Notifications by Web Push from a Supabase Edge Function, run every minute by pg_cron** | The only way a web app can alert a phone that's closed. It stays inside the same free Supabase project with nothing new to sign up for. The function creates its own keys and uses the project's built-in service key, so no secret is ever copied by hand. Due times are worked out in Postgres, in each phone's time zone. | Optional setup (about 10 minutes). Arrives up to a minute late. Only knows about feeds that have synced. On iPhone, Cradle must be on the Home Screen. The function runs without JWT verification so the schedule can start it; extra starts do nothing, since each feed is announced once per phone. |

@@ -133,7 +133,7 @@ An invite can only be claimed by an account that **existed when the invite was m
 - **Erase all data** is limited to the family owner in the app. It's a safeguard against accidents, not a database rule: members can still delete entries one at a time, which everyday logging needs.
 - **The hosted build removes the starter-log block**, and the build fails if it can't. Personal starter data belongs only in a local copy, never in a commit.
 
-**Review status:** the database scripts and the app were tested in a simulated setup:
+**Review status:** the database scripts and the app are tested in a simulated setup, with the suite in [`tests/`](../tests/) running on every push:
 - a real Postgres 16 database running these scripts
 - stand-ins for Supabase's sign-in service
 - an automated browser playing several phones
@@ -156,3 +156,4 @@ It's **not** an independent security audit. See [DISCLAIMER.md](../DISCLAIMER.md
 - **Bump `VERSION`** and add to the changelog in the About dialog and in `CHANGELOG.md`.
 - **Database changes** go in `supabase/2-family.sql`, written so they're safe to rerun (`if not exists`, `create or replace`, `drop … if exists`).
 - **Build:** `python3 build_pwa.py`, then serve `pwa/` over http(s) to test install and offline. For example: `python3 -m http.server -d pwa 8080`.
+- **Tests:** `cd tests && npm ci && node run.mjs` runs about 250 checks against a throwaway Postgres. GitHub runs the same suite on every push. See [tests/README.md](../tests/README.md).
