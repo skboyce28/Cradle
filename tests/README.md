@@ -1,6 +1,6 @@
 # Tests
 
-About 250 automated checks that run on every push (see [`.github/workflows/tests.yml`](../.github/workflows/tests.yml)). A ✅ or ❌ next to each commit on GitHub shows the result. Click it for the details.
+Over 250 automated checks that run on every push (see [`.github/workflows/tests.yml`](../.github/workflows/tests.yml)). A ✅ or ❌ next to each commit on GitHub shows the result. Click it for the details.
 
 ## What they cover
 
@@ -23,12 +23,12 @@ About 250 automated checks that run on every push (see [`.github/workflows/tests
 `run.mjs` does everything:
 1. Sets up a test database:
    - a small stand-in for Supabase's auth (`support/auth-shim.sql`)
-   - Cradle's real scripts from `supabase/`
+   - Cradle's real scripts from `supabase/` (1 to 3; the every-minute schedule in 4 needs Supabase's pg_cron, so it's left out)
 2. Builds the site three times with fake settings.
-3. Starts two local servers:
+3. Starts local servers:
    - `support/supabase-standin.mjs`, a stand-in for Supabase's API
-   - `support/site-server.mjs`, a stand-in for Netlify that applies `_headers`
-4. Runs each `*.test.mjs` in Chromium.
+   - `support/site-server.mjs` twice (ports 8099 and 8098), stand-ins for Netlify that apply `_headers`
+4. Runs each `*.test.mjs`. Most drive Chromium; `notify/crypto`, `notify/round`, and `notify/entry` run in plain Node.
 
 A test file passes when it prints no `FAIL` lines and no page errors. Logs and screenshots go to `tests/out/` (not committed).
 

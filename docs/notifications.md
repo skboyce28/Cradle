@@ -35,7 +35,7 @@ In Supabase, open **SQL Editor**, then **New query**. Paste all of [`supabase/3-
 ### 2. Create the cradle-notify function
 
 1. In Supabase, open **Edge Functions**, then **Deploy a new function**, then **Via Editor**.
-2. Name it exactly `cradle-notify`.
+2. Name it exactly `cradle-notify`: **all lowercase, with a hyphen**. The name becomes part of the function's web address, and that's case-sensitive, so `Cradle-notify` or `cradle_notify` won't be found by the schedule (you'd see `"Requested function was not found"`).
 3. Delete the starter code, paste all of [`supabase/functions/cradle-notify/index.ts`](../supabase/functions/cradle-notify/index.ts), and choose **Deploy function**.
 4. Open the function's settings and turn **off** JWT verification (shown as **Verify JWT** or **Enforce JWT verification**).
    - This lets the schedule in step 3 start it.
@@ -50,7 +50,7 @@ The function uses your project's own service key, which Supabase gives every fun
 2. Replace `YOUR-PROJECT-REF` with your project's ref (the part before `.supabase.co` in your Project URL).
 3. Paste it into **SQL Editor** and press **Run**.
 
-It turns on Supabase's `pg_cron` and `pg_net` extensions and schedules the function every minute. You can also schedule it from **Integrations**, then **Cron**, as a job that calls the `cradle-notify` Edge Function every minute (`* * * * *`).
+It turns on Supabase's `pg_cron` and `pg_net` extensions and schedules the function every minute. You can also schedule it from **Integrations**, then **Cron**, as a job named `cradle-notify` that calls the `cradle-notify` Edge Function every minute (`* * * * *`). Use that job name so the unschedule command and admin queries find it.
 
 ### 4. Check it
 
@@ -111,11 +111,12 @@ Notification on the lock screen ◀───────────────
 Step 1 hasn't been run on this Supabase project.
 
 **Settings says "Almost ready"**
-The function hasn't run yet: check steps 2 and 3. Opening the function's address (step 4) runs it once.
+The function hasn't run yet: check steps 2 and 3. Opening the function's address (step 4) runs it once. If that address says *Requested function was not found*, the function's name isn't exactly `cradle-notify` in lowercase.
 
 **The choice is greyed out**
 Settings explains why:
 - the browser can't show notifications
+- Cradle was opened as a file instead of from its web address
 - on iPhone, Cradle needs to be on the Home Screen
 - notifications are blocked for Cradle in the phone's settings
 - you're signed out or offline

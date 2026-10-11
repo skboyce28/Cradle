@@ -4,7 +4,7 @@
 --
 -- Usernames are stored as email addresses: the username "grandma" is grandma@cradle.cfg.
 -- Queries that change data are marked CHANGES DATA. Export the family's log from the
--- app first if you're unsure (profile menu > Export data).
+-- app first if you're unsure (profile menu > Data management > Export data).
 
 
 -- ============================================================

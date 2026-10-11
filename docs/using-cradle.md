@@ -173,6 +173,7 @@ In the profile menu. **Bottle Catch** is a two-minute, one-thumb game for the in
 - **What's shown:** only initials and scores, never names or emails.
 - **Offline:** a round played offline is saved on the phone and posts when you're back online. If several are waiting, your best one posts.
 
+## Profile menu
 
 The round button at the top right:
 
@@ -184,7 +185,7 @@ The round button at the top right:
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch and its high scores. See [Fun center](#fun-center). |
 | **Achievements** | Forty badges with progress, in seven groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, and Weight and milestones. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
-| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, feed interval, alarm, and goals |
+| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About** | In-app help, version, and changelog |
 | **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |

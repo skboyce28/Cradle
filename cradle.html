@@ -806,11 +806,11 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card wide-guide"><div class="ico">💬</div><h3>Send updates by text</h3>
         <p>Each phone keeps its own copy of the log. To catch the other person up:</p>
         <ol class="steps">
-          <li><b>On your phone:</b> tap the profile button, then <b>Export data</b>.</li>
+          <li><b>On your phone:</b> tap the profile button, then <b>Data management</b>, then <b>Export data</b>.</li>
           <li>Pick <b>Last 2 days</b> for a quick shift handoff, or <b>Everything</b> for a full copy.</li>
           <li>Tap <b>💬 Text message</b>. Your messages app opens with the update ready. Send it.</li>
           <li><b>On their phone:</b> long-press the message and tap <b>Copy</b>.</li>
-          <li>Open Cradle, tap the profile button, then <b>Import data</b>. Paste into the box and tap <b>Continue</b>.</li>
+          <li>Open Cradle, tap the profile button, then <b>Data management</b>, then <b>Import data</b>. Paste into the box and tap <b>Continue</b>.</li>
           <li>Tap <b>Merge</b>. New entries are added and matching times are updated. Nothing already logged is removed.</li>
         </ol>
         <p class="sub" style="margin-top:8px">If the text button doesn’t open your messages app, use <b>📋 Copy code</b> and paste it into any message instead. Paste the whole message, including the line that starts with CRADLE.</p></div>
@@ -826,7 +826,7 @@ body.night-on .toast{background:#2c2621;color:#d9c3a5}
       <div class="card"><div class="ico">🏆</div><h3>Achievements</h3><p>Forty badges in seven groups (Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, and Weight and milestones), like Sunshine Streak for 7 days of Vitamin D, Night Owl for 10 feeds between midnight and 5am, and Perfect Day. Stars mark the higher tiers of a badge. Open them from the profile menu to see progress. Streaks aren’t broken by a day that isn’t over yet.</p></div>
       <div class="card"><div class="ico">🎓</div><h3>Learning center</h3><p>In the profile menu. <b>High-contrast cards</b> are five bold black-and-white designs (Bullseye, Checkerboard, Zigzag, Spiral, and Smile) for calm, awake moments with your baby. Tap one to show it full screen, then swipe or tap the sides to change cards. <b>Invert</b> swaps black and white, and <b>Auto</b> changes cards every 10 seconds. Hold the phone about 8 to 12 inches (20 to 30 cm) away, and stop when your baby looks away or fusses. The screen stays on while a card is showing.</p></div>
       <div class="card"><div class="ico">🎮</div><h3>Fun center</h3><p>In the profile menu: <b>Bottle Catch</b>, a two-minute, one-thumb game. Drag anywhere to move the basket. Bottles are +10, golden bottles +50, and catching in a row builds up to ×4. Safety pins cost a heart (you have 3), and the pacifier slows everything for 5 seconds. It pauses by itself if you switch away or the feed alarm rings. Sound is off to start; Buzz and Sound are on the start screen. Your first posted score asks for 3 initials, which you can change on the board. <b>High scores</b> has three boards: Everyone (each person’s best across this Cradle), Our family, and My best. Only initials and scores are shown. Scores from rounds played offline post when you’re back online.</p></div>
-      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds <b>Themes</b> (Auto, Light, or Dark, plus fun themes: Dalmatian, Halloween, Thanksgiving, and Christmas), Achievements, Learning center, Fun center, Weights, Settings, <b>Data management</b> (export, import, print, erase all data, and sign out and remove from this phone), this Guide, About, Family, Change password, and Sign out. Settings is where you set the baby’s name, birth date, Vitamin D start date, feed interval, and goals. The moon button next to it opens Calm.</p></div>
+      <div class="card"><div class="ico">👤</div><h3>Profile menu</h3><p>The round button at the top right holds <b>Themes</b> (Auto, Light, or Dark, plus fun themes: Dalmatian, Halloween, Thanksgiving, and Christmas), Achievements, Learning center, Fun center, Weights, Settings, <b>Data management</b> (export, import, print, erase all data, and sign out and remove from this phone), this Guide, About, Family, Change password, and Sign out. Settings is where you set the baby’s name, birth date, birth weight, Vitamin D start date, what you track (breast, bottle, pump), feed interval, alarm, notifications, and goals. The moon button next to it opens Calm.</p></div>
     </div>
     <p class="disc">This tracker is for keeping records only. Volumes, goals, and supplements should follow your pediatrician or lactation consultant. If you're worried about feeding, diapers, or weight gain, call your baby's doctor.</p>
   </section>
@@ -2679,7 +2679,7 @@ function renderFamilyBits(){const el=$('#ddFam');if(el)el.textContent=CL.fam?CL.
 function showWelcome(){
   const nm=babyName();
   $('#welTitle').textContent='Welcome to Cradle';
-  $('#welBody').innerHTML=`<p style="margin:0 0 10px">You’re now part of <b>${esc(famName())}</b>${nm?', sharing the baby log for <b>'+esc(nm)+'</b>':''}. Every feed, diaper, and note you log shows up for everyone in the family, and theirs show up for you, usually within a few seconds.</p>
+  $('#welBody').innerHTML=`<p style="margin:0 0 10px">You’re now part of <b>${esc(famName())}</b>${nm?', sharing the baby log for <b>'+esc(nm)+'</b>':''}. Every feed, diaper, and note you log shows up for everyone in the family, and theirs show up for you, usually within about 15 seconds while Cradle is open.</p>
     <p style="margin:0 0 6px"><b>A few things to try:</b></p>
     <ul class="cl" style="margin-top:0"><li><b>+ Log feed now</b> when a feed starts</li><li><b>Night shift</b> for big, dim buttons at 3am</li><li>The <b>Dashboard</b> for trends and a doctor report</li><li><b>Change password</b> in the profile menu to make the account yours</li></ul>
     <p style="margin:10px 0 0">So glad you’re here. 💛</p>`;

@@ -28,7 +28,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 |---|---|
 | **Log** | One row per feed: left/right breast (with which side you started), nursing minutes with a ▶ timer, a slider that splits the minutes between sides, bottle mL, pump mL, wet, stool, Vitamin D, notes. 🧷 diaper-only and 🛁 bath rows (sponge or tub) that don't count as feeds. |
 | **Night shift** | A dim, low-glare screen with huge buttons for one-handed night feeds, plus quick Diaper only and Bath buttons. Warm, Moonlight, or Red colors. |
-| **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
+| **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, baths, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |
 | **Notifications** | Optional: a notification on each phone that asks, even with Cradle closed, when a feed is due or 15 or 30 minutes before. Sent by a small Supabase Edge Function in your own project. |
@@ -39,7 +39,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 | **Achievements** | Forty badges in seven groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
 | **Fun center** | **Bottle Catch**: a two-minute, one-thumb game for the waiting moments, with arcade-style high scores (3 initials) for everyone, your family, and you. |
-| **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs in seconds. Join with a share key like `K7QM-4XPD`. |
+| **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs within about 15 seconds. Join with a share key like `K7QM-4XPD`. |
 | **Works offline** | Every phone keeps its own copy and catches up when it reconnects. Installs to the home screen like an app. |
 | **Your data, your database** | Sync runs through **your own** free Supabase project. No analytics, no ads, no third-party scripts. Export to a file or a text message at any time. |
 
@@ -54,7 +54,7 @@ Cradle opens to a sign-in screen, so it needs a database to sign in to: a free S
 3. **Put your project address and publishable key** in environment variables: `.env` on your computer, or Netlify's environment variables. Never in the repo.
 4. **Build and deploy** to Netlify (drag and drop, or connect this repo).
 5. **Open the site on your phone**, tap *Create an account*, and install it to your home screen.
-6. **Optional: notifications.** Three more steps in Supabase so phones can be told when a feed is due: [docs/notifications.md](docs/notifications.md).
+6. **Optional: notifications.** Three more steps in Supabase (the function must be named exactly `cradle-notify`, lowercase) so phones can be told when a feed is due: [docs/notifications.md](docs/notifications.md).
 
 Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 
@@ -89,7 +89,7 @@ supabase/
   admin-queries.sql    Queries for running Cradle: confirm accounts, find families, fix problems
   invite-email.html    Optional "Welcome to Cradle" email template
 netlify.toml           Lets Netlify build and publish straight from this repo
-tests/                 About 250 automated checks; run on every push by .github/workflows/tests.yml
+tests/                 Over 250 automated checks; run on every push by .github/workflows/tests.yml
 docs/                  The guides above, the product overview page, and screenshots
 ```
 
@@ -97,7 +97,7 @@ docs/                  The guides above, the product overview page, and screensh
 
 ## Privacy and security in one paragraph
 
-Your log lives in your browser and in **your** Supabase project; it never touches a server run by anyone else. The database itself enforces who sees what (Postgres row-level security), so one family can never read or change another family's log, even with a modified copy of the app. Your project address and publishable key stay out of the repo, in `.env` or your host's environment variables. The publishable key is designed to be seen by browsers, so it's visible in the hosted page; the database rules are what protect the data. The hosted site also sends strict security headers: it only runs Cradle's own code, only talks to your Supabase project, and can't be embedded in other sites. **Never** put your `sb_secret_…` key in this repo or the app. As the project owner, you can see every family's rows in the Supabase dashboard; tell people that if you share your Cradle with friends. More in [How it works](docs/how-it-works.md#security).
+Your log lives in your browser and in **your** Supabase project; it never touches a server run by anyone else. (If you turn on notifications, an encrypted "feed due" message passes through Google's, Apple's, or Mozilla's push service, which can't read it.) The database itself enforces who sees what (Postgres row-level security), so one family can never read or change another family's log, even with a modified copy of the app. Your project address and publishable key stay out of the repo, in `.env` or your host's environment variables. The publishable key is designed to be seen by browsers, so it's visible in the hosted page; the database rules are what protect the data. The hosted site also sends strict security headers: it only runs Cradle's own code, only talks to your Supabase project, and can't be embedded in other sites. **Never** put your `sb_secret_…` key in this repo or the app. As the project owner, you can see every family's rows in the Supabase dashboard; tell people that if you share your Cradle with friends. More in [How it works](docs/how-it-works.md#security).
 
 ## Known limits
 

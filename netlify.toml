@@ -1,5 +1,6 @@
 # Netlify builds Cradle from this repo: runs the build script and publishes pwa/
 # Set CRADLE_SUPABASE_URL and CRADLE_SUPABASE_KEY under Site configuration > Environment variables.
+# Optional: CRADLE_DONATE_URL shows a "Buy me a coffee" button (an https:// link).
 [build]
   command = "python3 build_pwa.py"
   publish = "pwa"

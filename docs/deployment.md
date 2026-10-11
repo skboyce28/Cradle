@@ -91,6 +91,7 @@ Built by two scripts, both safe to rerun in any order:
 |---|---|
 | 1 | List accounts |
 | 2, 3 | Confirm accounts stuck at "confirm your email" |
+| 4 | Delete an account: done in the dashboard (Authentication, then Users); the file explains how |
 | 5 to 7 | List families, see who's in one, find someone's family |
 | 8 | New share key |
 | 9 | Transfer ownership |
@@ -101,6 +102,7 @@ Built by two scripts, both safe to rerun in any order:
 | 16 | Tidy old deletion markers |
 | 17 | Top Bottle Catch scores, with the account behind each |
 | 18 to 20 | Remove one score, clear one player's scores, or reset the whole board |
+| 21 to 24 | Notifications: phones that get them, check the every-minute job, stop one account's phones, new notification keys |
 
 Queries that change data are marked **CHANGES DATA**.
 
@@ -149,7 +151,7 @@ where email = 'their@email.com' and email_confirmed_at is null;
 - **Offline support:** `sw.js` caches the app. Page loads try the network first, so updates arrive, and fall back to the cached copy offline. The cache name changes with every build.
 - **Updates** reach a phone the next time Cradle opens with a connection.
 - **Limits that come from being a web app:**
-  - **No Clock alarms.** Android won't let it create alarms in the Clock app, installed or not; **⏰ Set alarm** shows the time to set.
+  - **No Clock alarms.** Phones don't let web apps create alarms in the Clock app, installed or not; **⏰ Set alarm** shows the time to set.
   - **Alarms need Cradle open.** Its own feed alarm rings only while Cradle is open.
   - **Notifications with the app closed need the optional setup.** See [Notifications](notifications.md). On iPhone, Cradle must be on the Home Screen.
 
@@ -176,7 +178,7 @@ The main choices so far, why they were made, and what they cost.
 | 7 | **Invites by email only for accounts that already existed when invited** | With unverified emails, a stranger could otherwise register someone's address and take their invite. | Invites are rarely needed; share keys are the main path. |
 | 8 | **Keys in environment variables, never in the repo** | Keeps project details out of the code history. | The publishable key is still visible in the hosted page; that's by design and safe. |
 | 9 | **Netlify builds from GitHub and fails without the keys** | Every push deploys. A broken config never goes live. | Netlify's environment variables are one more place to keep right. |
-| 10 | **A web app (PWA) instead of a native Android app** | One codebase for every phone, instant updates, no app store. | No Clock alarms, no alarms or notifications while closed. |
+| 10 | **A web app (PWA) instead of a native Android app** | One codebase for every phone, instant updates, no app store. | No Clock alarms. Notifications while closed need the optional Web Push setup (decision 17). |
 | 11 | **Diaper-only rows and baths share the feed list; `isFeed()` decides what counts** | Simple data model; everything syncs, exports, and imports the same way. | Every feed calculation must use `isFeed()`. |
 | 12 | **Personal starter log stripped at build** | The author's copy can preload real data without it reaching the public site. | The public copy keeps the block empty (`{}`). |
 | 13 | **PolyForm Noncommercial license** | Free for families, friends, and charities; no commercial reuse without permission. | Not "open source" by the official definition. |

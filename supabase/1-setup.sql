@@ -1,4 +1,4 @@
--- Cradle, step 1 of 2: the log table
+-- Cradle, step 1: the log table (then 2-family.sql; 3 and 4 are optional, for notifications)
 -- Paste all of this into Supabase > SQL Editor > New query, then press Run.
 -- Then run 2-family.sql. Both are safe to run more than once.
 

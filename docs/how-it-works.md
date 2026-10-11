@@ -35,7 +35,7 @@ The log is split into small **items**, each synced on its own:
 | `feed:<id>` | One row from a day's log (a feed, a diaper-only row, or a bath), plus its date |
 | `day:<YYYY-MM-DD>` | That day's notes and Vitamin D flag |
 | `weight:<id>` | One weight |
-| `settings` | Shared settings: goals, baby name, birth date and weight, Vitamin D start, feed interval |
+| `settings` | Shared settings: goals, baby name, birth date and weight, Vitamin D start, feed interval, and what you track (breast, bottle, pump) |
 
 Theme, weight units, the alarm switch, and layout preferences stay per phone.
 
@@ -154,6 +154,6 @@ It's **not** an independent security audit. See [DISCLAIMER.md](../DISCLAIMER.md
 - **Edit `cradle.html` directly.** Keep it dependency-free.
 - **Personal starter log:** to preload a log in your own copy, put it in the `<script type="application/json" id="baseData">` block. The format is the same as an export file plus a `baseVersion` number. Keep the committed file's block as `{}`.
 - **Bump `VERSION`** and add to the changelog in the About dialog and in `CHANGELOG.md`.
-- **Database changes** go in `supabase/2-family.sql`, written so they're safe to rerun (`if not exists`, `create or replace`, `drop … if exists`).
+- **Database changes** go in `supabase/2-family.sql` (or `3-notifications.sql` for notifications), written so they're safe to rerun (`if not exists`, `create or replace`, `drop … if exists`).
 - **Build:** `python3 build_pwa.py`, then serve `pwa/` over http(s) to test install and offline. For example: `python3 -m http.server -d pwa 8080`.
-- **Tests:** `cd tests && npm ci && node run.mjs` runs about 250 checks against a throwaway Postgres. GitHub runs the same suite on every push. See [tests/README.md](../tests/README.md).
+- **Tests:** `cd tests && npm ci && node run.mjs` runs over 250 checks against a throwaway Postgres. GitHub runs the same suite on every push. See [tests/README.md](../tests/README.md).

@@ -1,6 +1,6 @@
 # Accounts and families
 
-Everyone who uses Cradle has **their own account**. Accounts belong to a **family**, and a family shares **one log**: every feed, diaper, note, weight, and setting anyone in the family saves shows up on everyone's phones, usually within a few seconds.
+Everyone who uses Cradle has **their own account**. Accounts belong to a **family**, and a family shares **one log**: every feed, diaper, note, weight, and setting anyone in the family saves shows up on everyone's phones, usually within about 15 seconds while Cradle is open.
 
 A family is one baby's log. Different families on the same Cradle site are completely separate.
 

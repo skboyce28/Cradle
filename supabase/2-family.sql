@@ -1,4 +1,4 @@
--- Cradle, step 2 of 2: families, accounts, share keys, and Fun center high scores (run after 1-setup.sql)
+-- Cradle, step 2: families, accounts, share keys, and Fun center high scores (run after 1-setup.sql)
 -- Paste all of this into Supabase > SQL Editor > New query, then press Run.
 -- Safe to run more than once. Your existing log is moved into your family automatically.
 -- Includes share keys for open sign-up (turn on sign-ups and turn off Confirm email in Supabase Auth settings).

@@ -6,7 +6,7 @@ Cradle is a personal notebook for logging feeds, diapers, pumping, weights, and 
 
 - The feeding, diaper, and pumping goals in the app are **placeholders**, not clinical guidance. Use the numbers your pediatrician, lactation consultant, or care team gives you.
 - Totals, streaks, "goal met" markers, achievements, estimated transfer from weighted feeds, and the doctor report are simple arithmetic on what you typed. They can be wrong if an entry is wrong, missing, or synced late.
-- **Don't rely on Cradle's alarm.** It only rings while the app is open on screen, and a phone can silence it.
+- **Don't rely on Cradle's alarm or notifications.** The in-app alarm only rings while the app is open on screen, and a phone can silence it. Notifications need a connection, only know about feeds that have synced, and can arrive late or not at all.
 - **If you're worried about your baby,** for example too few wet diapers, signs of dehydration, poor feeding, jaundice, fever, or anything that feels off, **call your pediatrician right away**. In an emergency, call your local emergency number.
 
 ## Built with AI
@@ -19,7 +19,7 @@ It was tested in a simulated environment: a real Postgres database, stand-ins fo
 - testing on many real phones and browsers
 - clinical validation of any kind
 
-AI-written code can contain mistakes that look correct. Read it before trusting it with anything important, keep backups (profile menu, then **Export data**), and report problems in the repository's Issues.
+AI-written code can contain mistakes that look correct. Read it before trusting it with anything important, keep backups (profile menu, then **Data management**, then **Export data**), and report problems in the repository's Issues.
 
 ## No warranty
 
