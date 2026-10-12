@@ -42,7 +42,7 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 | **Pump** | mL pumped. |
 | **Wet / Stool** | Mark both if a diaper had both. |
 | **☀️ Vitamin D** | Tap on the feed where you gave the drops. Cradle warns you if it's already logged that day. |
-| **⚖️ Weighted feed** | Enter the baby's weight before and after. Cradle shows the estimated transfer (1 gram is about 1 mL). |
+| **⚖️ Weighted feed** | Enter the baby's weight before and after, in **grams** or in **lb** and **oz** (separate boxes, with the number keyboard). Tap **g** or **lb oz** to switch; what you've typed converts. Cradle shows the estimated transfer (1 gram is about 1 mL). |
 | **Note** | Anything else. |
 
 **🧷 Diaper only** adds a row for a change between feeds. Those rows don't count as feeds.
@@ -113,7 +113,7 @@ The 7 or 14 days ending on the selected day:
 
 **Tap any chart to enlarge it**, then tap a day or a feed for details. **Today counts as "in progress"** until midnight, so a goal that isn't met *yet* isn't shown as missed.
 
-**+ Add weight** logs a weight from a visit. Type it like `7 lb 3.5 oz` or `3270 g`.
+**+ Add weight** logs a weight from a visit, in grams or in lb and oz, the way the scale shows it. Tap **g** or **lb oz** to switch. In grams, a small number like `3.27` is read as kilograms.
 
 **See all** (or **Weights** in the profile menu) lists every weight, newest first, above the form:
 - **Edit** fills the form with that weight. Change it and tap **Save changes**, or **Cancel edit**.

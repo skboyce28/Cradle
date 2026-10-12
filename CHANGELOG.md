@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.23
+
+**Weights in grams, or pounds and ounces**
+- Weighted feeds, the Weights screen, and the birth weight in Settings now have number boxes instead of one text box: **g**, or **lb** and **oz** side by side, with the number keyboard on phones. No typing "lb" or "oz"
+- A **g / lb oz** switch next to the boxes changes units. Whatever you've typed converts, and weights everywhere follow (it's the same as Settings > Show weights in)
+- In grams, a small number like 3.27 is read as kilograms (3270 g)
+- Weights are still saved in grams, so nothing already logged changes
+- New test: `tests/weights.test.mjs` (17 checks)
+
 ## v1.22
 
 **Profile pictures**

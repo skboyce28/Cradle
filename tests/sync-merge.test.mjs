@@ -73,26 +73,26 @@ ok('no toast for your own changes',!/updated/.test(await txt(A,'#toast')),await 
 // 7. weights: add, review, edit
 await A.click('#tabs [data-tab=dash]');await A.waitForTimeout(200);
 await A.click('#dash [data-addweight=add]').catch(async()=>{await A.click('[data-addweight=add]')});await A.waitForTimeout(200);
-ok('+ Add weight puts the cursor in the weight box',await A.evaluate(()=>document.activeElement.id==='wVal'));
-await A.fill('#wVal','7 lb 2 oz');await A.click('#wAdd');await A.waitForTimeout(150);
+ok('+ Add weight puts the cursor in the weight box',await A.evaluate(()=>!!document.activeElement.closest('#wVal')));
+await A.fill('#wVal [data-w=lb]','7');await A.fill('#wVal [data-w=oz]','2');await A.click('#wAdd');await A.waitForTimeout(150);
 ok('weight shows in the list at the top',/7 lb 2\.0 oz/.test(await txt(A,'#wList')));
 await A.click('#wList [data-wedit]');await A.waitForTimeout(300);
-ok('Edit fills the form',(await A.inputValue('#wVal'))==='7 lb 2.0 oz'&&/Edit weight/i.test(await txt(A,'#wFormTitle'))&&await A.isVisible('#wCancel'));
+ok('Edit fills the form',(await A.inputValue('#wVal [data-w=lb]'))==='7'&&(await A.inputValue('#wVal [data-w=oz]'))==='2'&&/Edit weight/i.test(await txt(A,'#wFormTitle'))&&await A.isVisible('#wCancel'));
 ok('row being edited is highlighted',await A.isVisible('#wList .wrow.editing'));
-await A.fill('#wVal','7 lb 4 oz');await A.fill('#wNote','Pediatrician visit');await A.click('#wAdd');await A.waitForTimeout(150);
+await A.fill('#wVal [data-w=lb]','7');await A.fill('#wVal [data-w=oz]','4');await A.fill('#wNote','Pediatrician visit');await A.click('#wAdd');await A.waitForTimeout(150);
 let ws=(await S_(A)).weights;
 ok('edit changes the same weight, not a new one',ws.length===1&&Math.abs(ws[0].g-3289)<3&&ws[0].note==='Pediatrician visit',JSON.stringify(ws));
 ok('list shows the new value and form resets',/7 lb 4\.0 oz/.test(await txt(A,'#wList'))&&!/7 lb 2\.0/.test(await txt(A,'#wList'))&&/Add a weight/i.test(await txt(A,'#wFormTitle')));
-await A.click('#wList [data-wedit]');await A.click('#wCancel');ok('Cancel edit goes back to adding',/Add a weight/i.test(await txt(A,'#wFormTitle'))&&(await A.inputValue('#wVal'))==='');
+await A.click('#wList [data-wedit]');await A.click('#wCancel');ok('Cancel edit goes back to adding',/Add a weight/i.test(await txt(A,'#wFormTitle'))&&(await A.inputValue('#wVal [data-w=lb]'))===''&&(await A.inputValue('#wVal [data-w=oz]'))==='');
 await A.screenshot({path:(process.env.CRADLE_OUT||'out')+'/w-modal.png'});
 await closeModals(A);await settle(A);await settle(B);
 ws=(await S_(B)).weights||[];ok('edited weight syncs to the other phone',ws.length===1&&Math.abs(ws[0].g-3289)<3,JSON.stringify(ws));
 await A.waitForTimeout(100);ok('dashboard has See all',await A.isVisible('[data-addweight=list]'));
-await A.click('[data-addweight=list]');await A.waitForTimeout(200);ok('See all opens the list without focusing the form',await A.evaluate(()=>document.activeElement.id!=='wVal')&&/7 lb 4\.0 oz/.test(await txt(A,'#wList')));
+await A.click('[data-addweight=list]');await A.waitForTimeout(200);ok('See all opens the list without focusing the form',await A.evaluate(()=>!document.activeElement.closest('#wVal'))&&/7 lb 4\.0 oz/.test(await txt(A,'#wList')));
 // birth weight row links to Settings
 await closeModals(A);await A.evaluate(()=>{});
 await A.click('#menuBtn');await A.click('[data-act=settings]').catch(()=>{});await A.waitForTimeout(200);
-if(await A.isVisible('#settingsModal')){await A.fill('#sBirth','2026-09-27');await A.fill('#sBW','7 lb 6 oz');await A.click('#settingsModal .primary');await A.waitForTimeout(200);await closeModals(A)}
+if(await A.isVisible('#settingsModal')){await A.fill('#sBirth','2026-09-27');await A.fill('#sBW [data-w=lb]','7');await A.fill('#sBW [data-w=oz]','6');await A.click('#settingsModal .primary');await A.waitForTimeout(200);await closeModals(A)}
 await A.click('[data-addweight=list]');await A.waitForTimeout(200);
 if(await A.isVisible('#wList [data-wgo=birth]')){await A.click('#wList [data-wgo=birth]');await A.waitForTimeout(200);ok('birth weight row opens Settings',await A.isVisible('#settingsModal'))}else ok('birth weight row opens Settings',false,await txt(A,'#wList'));
 await closeModals(A);
