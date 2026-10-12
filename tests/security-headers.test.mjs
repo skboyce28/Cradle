@@ -43,4 +43,15 @@ const r=await p.evaluate(async()=>{try{await fetch('https://evil.example.com/ste
 // cannot be framed
 const f=await b.newPage();await f.setContent('<iframe src="http://localhost:8099/" id="f"></iframe>');await f.waitForTimeout(1500);
 ok('page refuses to load inside another site’s frame',await f.evaluate(()=>{try{return !document.getElementById('f').contentDocument||!document.getElementById('f').contentDocument.querySelector('#gate')}catch(e){return true}}));
+// the product overview is published at /overview/ with its own policy, and the app keeps working
+const o=await ctx.newPage();const ov=[];o.on('console',m=>{const t=m.text();if(/Content Security Policy|Refused to/i.test(t))ov.push(t.slice(0,160))});
+await o.addInitScript(()=>{document.addEventListener('securitypolicyviolation',e=>{(window.__v=window.__v||[]).push(e.violatedDirective+' '+e.blockedURI)})});
+const resp=await o.goto('http://localhost:8099/overview/');await o.waitForTimeout(800);
+ok('overview page is published at /overview/',resp.status()===200&&/Every feed, every/.test(await o.innerText('body')));
+ok('overview has its own policy (Google Fonts allowed, nothing else)',/fonts\.googleapis\.com/.test(resp.headers()['content-security-policy']||'')&&/connect-src 'none'/.test(resp.headers()['content-security-policy']||''));
+await o.evaluate(async()=>{for(let y=0;y<document.body.scrollHeight;y+=700){scrollTo(0,y);await new Promise(r=>setTimeout(r,30))}});await o.waitForTimeout(500);
+const imgs=await o.$$eval('img',is=>is.map(i=>[i.getAttribute('src'),i.naturalWidth]));
+ok('all its screenshots load',imgs.length>10&&imgs.every(([,w])=>w>0),JSON.stringify(imgs.filter(([,w])=>!w)));
+const ovv=(await o.evaluate(()=>window.__v||[])).filter(x=>!/fonts\.g/.test(x));ok('no policy violations on the overview',ovv.length===0&&ov.filter(x=>!/fonts\.g/.test(x)).length===0,ovv.concat(ov).join(' || '));
+const app=await ctx.newPage();await app.goto('http://localhost:8099/');await app.waitForTimeout(800);ok('the app still opens after visiting the overview (not replaced by it)',await app.evaluate(()=>!!document.getElementById('menuBtn')));
 console.log('errors',errs);await b.close();

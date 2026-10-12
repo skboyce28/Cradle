@@ -18,7 +18,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
   <img src="docs/screenshots/dash.webp" width="200" alt="Dashboard">
   <img src="docs/screenshots/family.webp" width="200" alt="Family screen with pictures and a share key">
 </p>
-<p align="center"><sub>Screenshots show example data for a made-up baby. Product overview: <a href="docs/overview.html">docs/overview.html</a> (open it in a browser).</sub></p>
+<p align="center"><sub>Screenshots show example data for a made-up baby. Product overview: <a href="docs/overview.html">docs/overview.html</a>, also published with your Cradle at <code>/overview/</code>.</sub></p>
 
 ---
 
@@ -70,7 +70,7 @@ Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 | [Deployment and architecture](docs/deployment.md) | How it's deployed (GitHub, Netlify, Supabase), the schema, admin queries, and the design decisions behind it |
 | [Notifications](docs/notifications.md) | Optional feed-due notifications: using them, the 10-minute setup in Supabase, how they work, privacy |
 | [Troubleshooting](docs/troubleshooting.md) | Sign-in problems, missing data, sync, alarms, printing |
-| [Product overview](docs/overview.html) | A one-page visual tour with screenshots (download and open in a browser) |
+| [Product overview](docs/overview.html) | A one-page visual tour with screenshots. Your Netlify site publishes it at `/overview/` (for example `https://your-cradle.netlify.app/overview/`), which is the easiest link to share. |
 | [Changelog](CHANGELOG.md) | What changed in each version |
 
 ## Repository layout

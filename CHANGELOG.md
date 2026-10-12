@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.24
+
+**The product overview is on the web**
+- The build now publishes [docs/overview.html](docs/overview.html) and its screenshots at your Cradle's address plus `/overview/` (for example `https://your-cradle.netlify.app/overview/`). It's one link to share that introduces Cradle, and it updates with every deploy
+- **About** in the app links to it
+- It has its own security policy (Google Fonts and nothing else), and the app's offline service worker leaves it alone, so visiting it never replaces the app's offline copy
+- The security-headers test now also checks the overview page
+
 ## v1.23
 
 **Weights in grams, or pounds and ounces**
