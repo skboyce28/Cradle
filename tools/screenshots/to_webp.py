@@ -6,8 +6,11 @@ from PIL import Image
 
 here = os.path.dirname(os.path.abspath(__file__))
 repo = os.path.abspath(os.path.join(here, '..', '..'))
+used = open(os.path.join(repo, 'docs', 'overview.html')).read() + open(os.path.join(repo, 'README.md')).read()
 for src in sorted(glob.glob(os.path.join(repo, 'tests', 'out', 'shots', '*.png'))):
     name = os.path.splitext(os.path.basename(src))[0]
+    if 'screenshots/' + name + '.webp' not in used:
+        continue  # only the pictures the overview or README show
     im = Image.open(src).convert('RGB')
     w = 640
     im = im.resize((w, round(im.height * w / im.width)), Image.LANCZOS)

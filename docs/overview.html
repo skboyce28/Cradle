@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
 /* Layout: a warm daytime page that settles into a night-blue band (Night shift, Calm), then returns to day.
-   The signature piece is a 24-hour feed clock for one example day. Colors come from the app itself. */
+   Every picture is a real screenshot from the app, with example data. Colors come from the app itself. */
 :root{
   --bg:#f6f1ea; --panel:#fffaf4; --panel2:#efe6da; --ink:#2b2420; --muted:#76685d; --line:#e4d8ca;
   --accent:#d0683a; --accent-ink:#b5532a; --accent-soft:#f6dccd;
@@ -86,15 +86,12 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent); outline-of
 .tag{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:10px; background:var(--panel2); font-weight:600}
 .tag.b{color:var(--bottle)} .tag.p{color:var(--pump)} .tag.w{color:var(--wet)} .tag.s{color:var(--stool)} .tag.a{color:var(--accent-ink)} .tag.v{color:var(--sun)}
 
-/* feed clock */
-.clock-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,5vw,64px); align-items:center}
-.clock{width:100%; max-width:520px; justify-self:center}
-.clock svg{width:100%; height:auto; display:block}
-.stats{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:18px; overflow:hidden}
-.stat{background:var(--panel); padding:18px 20px; display:grid; gap:4px}
-.stat .v{font:800 34px/1 var(--display); letter-spacing:-.02em; font-variant-numeric:tabular-nums}
-.stat .v small{font:600 15px var(--body); color:var(--muted); margin-left:3px}
-.stat .k{font-size:13px; color:var(--muted)}
+/* patterns (the Dashboard's charts) */
+.pat-grid{display:grid; grid-template-columns:auto minmax(0,1fr); gap:clamp(28px,5vw,72px); align-items:center}
+.pat-phone{--w:clamp(220px,24vw,300px)}
+.pat-list{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+.pat-list li{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:12px 14px; color:var(--muted); font-size:14px}
+.pat-list b{display:block; color:var(--ink); font-size:15px; font-weight:600; margin-bottom:2px}
 .legend{display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:16px; font-size:13px; color:var(--muted)}
 .legend span{display:inline-flex; align-items:center; gap:7px}
 .legend i{width:12px; height:12px; border-radius:3px; display:inline-block}
@@ -136,11 +133,6 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent); outline-of
 .sounds{display:flex; flex-wrap:wrap; gap:8px; margin-top:20px}
 .sounds span{font:600 13px/1 var(--body); padding:9px 13px; border-radius:999px; border:1px solid var(--night-line); color:var(--night-ink)}
 
-/* goals chart */
-.goal-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:clamp(28px,5vw,64px); align-items:center}
-.chart{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:22px 20px 16px}
-.chart svg{width:100%; height:auto; display:block}
-
 /* family */
 .family-grid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(28px,5vw,64px); align-items:center}
 .key{display:inline-flex; align-items:center; gap:14px; margin-top:22px; padding:14px 18px; border-radius:16px; background:var(--panel); border:1.5px dashed var(--accent)}
@@ -180,7 +172,8 @@ footer .wrap{display:flex; flex-wrap:wrap; gap:12px 28px; justify-content:space-
 footer code{font-family:var(--mono); font-size:13px}
 
 @media (max-width:900px){
-  .hero-grid,.clock-grid,.night-grid,.goal-grid,.family-grid{grid-template-columns:minmax(0,1fr)}
+  .hero-grid,.pat-grid,.night-grid,.family-grid{grid-template-columns:minmax(0,1fr)}
+  .pat-phone{justify-self:center}
   .screens{grid-template-columns:repeat(2,minmax(0,1fr))}
   .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fine{grid-template-columns:minmax(0,1fr)}
@@ -194,7 +187,6 @@ footer code{font-family:var(--mono); font-size:13px}
   .fan .phone{--w:150px}
   .fan .p1{transform:translateX(-62%) rotate(-7deg) translateY(14px)}
   .fan .p3{transform:translateX(62%) rotate(7deg) translateY(14px)}
-  .stats{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .family-shots .phone{--w:44vw}
   .palettes .phone{--w:28vw}
   .themes{grid-template-columns:repeat(2,auto)}
@@ -239,7 +231,7 @@ footer code{font-family:var(--mono); font-size:13px}
   </div>
   <div class="feats">
     <div class="feat"><span class="fi">🍼</span><h3>Feeds, your way</h3><p>Breast with a timer and which side to start on, bottles in mL, and pumping, alone or together. Triple feeding fits on one row.</p></div>
-    <div class="feat"><span class="fi">🧷</span><h3>Diapers with goals</h3><p>Wet and stool on each feed or on their own, with daily goals that grow with your baby's day of life.</p></div>
+    <div class="feat"><span class="fi">🧷</span><h3>Diapers with goals</h3><p>Wet and stool on each feed or on their own. Daily goals follow your baby's day of life: one each on the birth day, rising through Day 5, then your own goal.</p></div>
     <div class="feat"><span class="fi">⚖️</span><h3>Weight and growth</h3><p>Visit weights and weighted feeds in grams or lb and oz, charted against birth weight.</p></div>
     <div class="feat"><span class="fi">☀️</span><h3>Vitamin D and baths</h3><p>A daily Vitamin D check with streaks, and sponge or tub baths with a note.</p></div>
     <div class="feat"><span class="fi">🌙</span><h3>Night shift</h3><p>A dim screen with huge buttons for one-handed feeds in the dark, in warm, moonlight, or red colors.</p></div>
@@ -250,24 +242,23 @@ footer code{font-family:var(--mono); font-size:13px}
   </div>
 </section>
 
-<section class="wrap" id="day" style="padding-top:0">
-  <div class="clock-grid">
-    <div class="clock" id="clock" aria-label="24-hour clock of the example day's feeds"></div>
+<section class="wrap" id="patterns" style="padding-top:0">
+  <div class="pat-grid">
+    <div class="phone pat-phone"><img src="screenshots/rhythm.webp" alt="The Dashboard's Feeding rhythm chart, enlarged, with one day's details: feeds, bottle, pumped, diapers, Vitamin D, gaps, and nursing time"></div>
     <div>
-      <div class="sec-head" style="margin-bottom:28px">
-        <p class="eyebrow">One day, at a glance</p>
-        <h2>Day 11, around the clock.</h2>
-        <p class="lede">Each feed gets two bars on the same scale: the bottle top-up and what was pumped. Dots outside the ring mark diapers. The shaded part is night, 8pm to 6am.</p>
+      <div class="sec-head" style="margin-bottom:24px">
+        <p class="eyebrow">Patterns at a glance</p>
+        <h2>The answers to the pediatrician's questions.</h2>
+        <p class="lede">Every chart on the Dashboard opens big. Tap a day or a single feed to see everything about it: feeds, bottle and pumped totals, diapers against the goals, Vitamin D, the longest stretch, and nursing time on each side.</p>
       </div>
-      <div class="stats" id="stats"></div>
-      <div class="legend">
-        <span><i style="background:var(--bottle)"></i>Bottle mL</span>
-        <span><i style="background:var(--pump)"></i>Pumped mL</span>
-        <span><i style="background:var(--wet);border-radius:50%"></i>Wet</span>
-        <span><i style="background:var(--stool);border-radius:50%"></i>Stool</span>
-        <span><i style="background:var(--sun);border-radius:50%"></i>Vitamin D</span>
-      </div>
-      <p class="note">Example data for a made-up baby, Juniper. Goals shown are Cradle's defaults, not medical guidance.</p>
+      <ul class="pat-list">
+        <li><b>This day by feed</b>each bottle and pump, with your per-feed target</li>
+        <li><b>Daily volume</b>bottle and pumped totals, day by day</li>
+        <li><b>Daily diapers</b>wet and stool against the day-of-life goals</li>
+        <li><b>Longest stretch</b>the biggest gap between feeds each day</li>
+        <li><b>Feeding rhythm</b>when feeds happen across the week</li>
+        <li><b>🩺 Doctor report</b>all of it on one printable page</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -323,17 +314,6 @@ footer code{font-family:var(--mono); font-size:13px}
         <div class="sounds"><span>Spa music</span><span>Ocean</span><span>Rain</span><span>White noise</span></div>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="wrap" id="goals">
-  <div class="goal-grid">
-    <div class="sec-head" style="margin-bottom:0">
-      <p class="eyebrow">Goals that grow with the baby</p>
-      <h2>Diaper goals follow the day of life.</h2>
-      <p class="lede">The birth day counts as Day 0. Goals climb one a day through Day 5, then hold at four of each. Every number can be changed in Settings to match what your care team tells you.</p>
-    </div>
-    <div class="chart" id="goalChart" aria-label="Chart of daily wet and stool diaper goals by day of life"></div>
   </div>
 </section>
 
@@ -455,66 +435,10 @@ footer code{font-family:var(--mono); font-size:13px}
 
 <script>
 (function(){
-  // Example day: Day 11 for the made-up baby in the screenshots
-  const feeds=[{"t":"01:50","s":"L","m":28,"b":49,"p":75,"w":true,"st":true,"v":false},{"t":"04:35","s":"L+R","m":22,"b":50,"p":70,"w":true,"st":false,"v":false},{"t":"07:05","s":"L+R","m":28,"b":49,"p":75,"w":false,"st":true,"v":true},{"t":"09:35","s":"L+R","m":12,"b":44,"p":70,"w":true,"st":true,"v":false},{"t":"12:05","s":"L","m":15,"b":44,"p":70,"w":true,"st":false,"v":false},{"t":"14:35","s":"L+R","m":18,"b":50,"p":70,"w":true,"st":false,"v":false},{"t":"17:45","s":"L+R","m":22,"b":49,"p":60,"w":true,"st":false,"v":false},{"t":"20:30","s":"L+R","m":15,"b":49,"p":70,"w":false,"st":true,"v":false},{"t":"23:50","s":"L+R","m":28,"b":49,"p":70,"w":false,"st":true,"v":false}];
   const NS='http://www.w3.org/2000/svg';
   const el=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
   const mins=t=>{const[h,m]=t.split(':').map(Number);return h*60+m};
   const fmt=m=>{let h=Math.floor(m/60)%24,mm=m%60,ap=h<12?'am':'pm';h=h%12||12;return h+(mm?':'+String(mm).padStart(2,'0'):'')+ap};
-
-  // ---- 24-hour feed clock
-  const S=520,C=S/2,R0=92,RB=196,svg=el('svg',{viewBox:`0 0 ${S} ${S}`,role:'img'});
-  const ang=m=>(m/1440)*Math.PI*2-Math.PI/2, pt=(m,r)=>[C+r*Math.cos(ang(m)),C+r*Math.sin(ang(m))];
-  const arc=(m1,m2,r1,r2)=>{const [a,b]=pt(m1,r2),[c,d]=pt(m2,r2),[e,f]=pt(m2,r1),[g,h]=pt(m1,r1),L=(m2-m1)>720?1:0;
-    return `M${a} ${b}A${r2} ${r2} 0 ${L} 1 ${c} ${d}L${e} ${f}A${r1} ${r1} 0 ${L} 0 ${g} ${h}Z`};
-  el('circle',{cx:C,cy:C,r:228,fill:'var(--panel)',stroke:'var(--line)'},svg);
-  // night shading 8pm to 6am
-  el('path',{d:arc(1200,1440,R0-8,226),fill:'var(--night)',opacity:.1},svg);
-  el('path',{d:arc(0,360,R0-8,226),fill:'var(--night)',opacity:.1},svg);
-  // one mL scale for bottle and pump; rings at 40 and 80 mL
-  const scale=v=>R0+(RB-R0)*(v/80);
-  [40,80].forEach(v=>{el('circle',{cx:C,cy:C,r:scale(v),fill:'none',stroke:'var(--line)','stroke-dasharray':'3 5'},svg);
-    const[x,y]=pt(1440*0.125,scale(v));const t=el('text',{x:x+4,y:y-4,'font-size':10,fill:'var(--muted)','font-family':'JetBrains Mono, monospace'},svg);t.textContent=v+' mL'});
-  // hour ticks + labels
-  for(let h=0;h<24;h++){const m=h*60,[x1,y1]=pt(m,222),[x2,y2]=pt(m,h%6?216:208);el('line',{x1,y1,x2,y2,stroke:'var(--muted)','stroke-width':h%6?1:2,opacity:h%6?.5:.9},svg);
-    if(h%3===0){const[x,y]=pt(m,R0-24);const t=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'central','font-size':h%6?11:13,'font-weight':h%6?500:700,fill:'var(--muted)','font-family':'Figtree, system-ui, sans-serif'},svg);t.textContent=h===0?'12am':h===12?'12pm':(h%12)+(h<12?'a':'p')}}
-  // feeds
-  feeds.forEach(f=>{const m=mins(f.t);
-    const bar=(mm,v,c)=>{const[x1,y1]=pt(mm,R0),[x2,y2]=pt(mm,scale(v));el('line',{x1,y1,x2,y2,stroke:c,'stroke-width':7,'stroke-linecap':'round'},svg)};
-    bar(m-9,f.b,'var(--bottle)');bar(m+9,f.p,'var(--pump)');
-    let r=RB+16;
-    if(f.w){const[x,y]=pt(m-12,r);el('circle',{cx:x,cy:y,r:5,fill:'var(--wet)'},svg)}
-    if(f.st){const[x,y]=pt(m+12,r);el('circle',{cx:x,cy:y,r:5,fill:'var(--stool)'},svg)}
-    if(f.v){const[x,y]=pt(m,R0-48);el('circle',{cx:x,cy:y,r:6,fill:'var(--sun)'},svg)}
-    const tt=el('title',{},svg);tt.textContent=`${fmt(m)}: ${f.s}, ${f.m} min, bottle ${f.b} mL, pumped ${f.p} mL`;
-  });
-  // center
-  el('circle',{cx:C,cy:C,r:R0-44,fill:'var(--bg)',stroke:'var(--line)'},svg);
-  const t1=el('text',{x:C,y:C-6,'text-anchor':'middle','font-size':44,'font-weight':800,fill:'var(--ink)','font-family':'Bricolage Grotesque, system-ui, sans-serif'},svg);t1.textContent=feeds.length;
-  const t2=el('text',{x:C,y:C+20,'text-anchor':'middle','font-size':13,fill:'var(--muted)','font-family':'Figtree, system-ui, sans-serif'},svg);t2.textContent='feeds';
-  document.getElementById('clock').appendChild(svg);
-
-  // ---- stats, computed from the same data
-  const sum=k=>feeds.reduce((a,f)=>a+(typeof f[k]==='number'?f[k]:(f[k]?1:0)),0);
-  const ts=feeds.map(f=>mins(f.t));let longest=0,lf='';for(let i=1;i<ts.length;i++){const g=ts[i]-ts[i-1];if(g>longest){longest=g;lf=fmt(ts[i-1])+' to '+fmt(ts[i])}}
-  const avgGap=Math.round((ts[ts.length-1]-ts[0])/(ts.length-1));
-  const hm=m=>Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';
-  const stats=[[sum('b'),'mL','bottle top-ups'],[sum('p'),'mL','pumped'],[sum('w')+' / '+sum('st'),'','wet / stool (goal 4 / 4)'],[hm(avgGap),'','average time between feeds'],[hm(longest),'','longest stretch, '+lf],[Math.round(sum('m')/60*10)/10,'h','nursing, Vitamin D at '+fmt(mins(feeds.find(f=>f.v).t))]];
-  document.getElementById('stats').innerHTML=stats.map(([v,u,k])=>`<div class="stat"><span class="v">${v}${u?`<small>${u}</small>`:''}</span><span class="k">${k}</span></div>`).join('');
-
-  // ---- diaper goal chart (Day 0 = 1, days 1-5 = day number, then 4)
-  const goal=d=>d===0?1:(d<=5?d:4), days=[0,1,2,3,4,5,6,7,8,9];
-  const W=560,H=260,L=36,B=36,T=18,Rr=10,bw=(W-L-Rr)/days.length,ys=v=>H-B-(v/5)*(H-B-T);
-  const g=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
-  [0,1,2,3,4,5].forEach(v=>{el('line',{x1:L,x2:W-Rr,y1:ys(v),y2:ys(v),stroke:'var(--line)'},g);const t=el('text',{x:L-10,y:ys(v),'text-anchor':'end','dominant-baseline':'central','font-size':12,fill:'var(--muted)','font-family':'JetBrains Mono, monospace'},g);t.textContent=v});
-  days.forEach((d,i)=>{const x=L+i*bw,v=goal(d),w=(bw-10)/2;
-    el('rect',{x:x+4,y:ys(v),width:w,height:ys(0)-ys(v),rx:4,fill:'var(--wet)'},g);
-    el('rect',{x:x+6+w,y:ys(v),width:w,height:ys(0)-ys(v),rx:4,fill:'var(--stool)'},g);
-    const t=el('text',{x:x+bw/2,y:H-B+20,'text-anchor':'middle','font-size':12,fill:d===0?'var(--accent-ink)':'var(--muted)','font-weight':d===0?700:500,'font-family':'Figtree, system-ui, sans-serif'},g);t.textContent=d===0?'Day 0':d;
-    const tl=el('title',{},g);tl.textContent=`Day ${d}: ${v} wet, ${v} stool`;
-  });
-  const lg=el('text',{x:W-Rr,y:T-2,'text-anchor':'end','font-size':12,fill:'var(--muted)','font-family':'Figtree, system-ui, sans-serif'},g);lg.textContent='Wet (blue) and stool (amber) per day; Day 6 on: at least 4';
-  document.getElementById('goalChart').appendChild(g);
 
   // ---- a few stars in the night band
   const st=document.getElementById('stars');st.setAttribute('viewBox','0 0 1000 600');st.setAttribute('preserveAspectRatio','xMidYMid slice');

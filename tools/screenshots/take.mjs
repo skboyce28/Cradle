@@ -41,7 +41,9 @@ await shot(p,'log');
 await p.click('#tabs [data-tab=dash]');await p.clock.runFor(500);await p.waitForTimeout(300);await shot(p,'dash');
 await p.click('.xbtn[data-chart=c1]');await p.clock.runFor(400);await p.waitForTimeout(300);
 const hits=await p.$$('#cmChart .hit');if(hits[2])await hits[2].click();await p.waitForTimeout(300);await shot(p,'zoom');
-await p.keyboard.press('Escape');await p.click('#tabs [data-tab=hist]');await p.clock.runFor(500);await p.waitForTimeout(300);await shot(p,'hist');
+await p.keyboard.press('Escape');
+for(const [c,n] of [['c4','rhythm'],['c2','volume'],['c3','diapers']]){await closeAll(p);await p.click(`.xbtn[data-chart=${c}]`);await p.clock.runFor(400);await p.waitForTimeout(300);await shot(p,n);await p.keyboard.press('Escape')}
+await closeAll(p);await p.click('#tabs [data-tab=hist]');await p.clock.runFor(500);await p.waitForTimeout(300);await shot(p,'hist');
 await p.click('#tabs [data-tab=today]');await p.clock.runFor(300);
 await p.click('#addBath');await p.clock.runFor(400);
 await p.click('.feed.bathrow .bseg button:nth-child(2)');await p.fill('.feed.bathrow input[type=text], .feed.bathrow textarea, .feed.bathrow .c-note input','Hair wash').catch(()=>{});await p.evaluate(()=>document.activeElement&&document.activeElement.blur());await p.clock.runFor(4000);

@@ -7,6 +7,7 @@ No change to the app.
 - A "What's inside" grid of nine features replaces the triple-feeding explainer (triple feeding is one line under Feeds, your way)
 - The Fun center picture stacks all three games, Stork Flight on top
 - New screenshots for Bottle Catch, Stork Flight, and Achievements (53 badges); `tools/screenshots/take.mjs` retakes them
+- Every picture is now a real app screenshot: the made-up 24-hour feed clock and diaper-goal chart are gone, replaced by "Patterns at a glance" with the Dashboard's Feeding rhythm chart and a list of the charts in the app
 
 ## v1.24
 
