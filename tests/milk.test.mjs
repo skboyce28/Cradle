@@ -63,8 +63,8 @@ const ten=r.find(x=>/120 mL/.test(x.t));ok('10-day-old frozen milk is fine, with
 await P.screenshot({path:OUT+'milk-list.png',fullPage:false});
 
 // rules
-await add(P,{date:ago(0),ml:60,place:'fridge',code:'abc123'});ok('the same label twice is refused',/already has the label/.test(await txt(P,'#toast'))&&(await S(P)).milk.length===6);
-await add(P,{date:ago(0),ml:60,count:2,code:'NEW1'});ok('a label with How many above 1 is refused',/A label is for one container/.test(await txt(P,'#toast')));
+await add(P,{date:ago(0),ml:60,place:'fridge',code:'abc123'});ok('a label already in storage asks first',/already has the label abc123/.test(await txt(P,'#askMsg')));
+await P.click('#askCancel');await P.waitForTimeout(150);ok('…and Cancel doesn’t save it',(await S(P)).milk.length===6&&await P.isVisible('#milkModal'));
 await P.fill('#mkCount','1');await P.fill('#mkCode','');
 await add(P,{date:ago(-2),ml:60});ok('a time in the future is refused',/in the future/.test(await txt(P,'#toast')));
 await P.click(`[data-mkid="${f5.id}"] [data-mk=freeze]`);ok('milk over 4 days in the fridge can’t be frozen',/too long to freeze/.test(await txt(P,'#toast')));
@@ -99,18 +99,32 @@ ok('Edit fills the form',(await P.inputValue('#mkMl'))==='120'&&await P.isVisibl
 await P.fill('#mkMl','130');await P.fill('#mkCode','BAG-1');await P.click('#mkAdd');await P.waitForTimeout(200);
 st=await S(P);ok('edit saved',st.milk.find(m=>m.id===ten.id).ml===130&&st.milk.find(m=>m.id===ten.id).code==='BAG-1');
 await P.evaluate(()=>{window.print=()=>{dispatchEvent(new Event('beforeprint'))}});
-await P.click('#mkPrint');ok('Print labels asks first, for the ones without a label',/Print labels for the 3 containers without one/.test(await txt(P,'#askMsg')),await txt(P,'#askMsg'));
-await P.click('#askOk');await P.waitForTimeout(400);
+await P.click('#mkPrint');await P.waitForTimeout(150);
+ok('Print labels asks which kind, for the ones without a label, starting on the 40 × 14 label printer',await P.isVisible('#mkLblModal')&&/Labels for the 3 containers without one/.test(await txt(P,'#mkLblWhat'))&&await P.isChecked('#mkLblModal input[value=p21]'),await txt(P,'#mkLblWhat'));
+await P.check('#mkLblModal input[value=sheet]');await P.click('#mkLblGo');await P.waitForTimeout(400);
 const lbl=await P.$$eval('#print .mklbl',ls=>ls.map(l=>({code:l.querySelector('.lc').textContent,bars:l.querySelectorAll('.c128 rect').length,w:+l.querySelector('.c128').getAttribute('viewBox').split(' ')[2]})));
 st=await S(P);
 ok('labels made: CM-xxxxx codes saved on each container, with barcodes',lbl.length===3&&lbl.every(l=>/^CM-[A-Z2-9]{5}$/.test(l.code)&&st.milk.some(m=>m.code===l.code))&&lbl.every(l=>l.w===20+11*(l.code.length+2)+13&&l.bars===3*(l.code.length+2)+4),JSON.stringify(lbl));
 ok('printing uses the label sheet',await P.evaluate(()=>document.body.classList.contains('print-labels')));
 await P.evaluate(()=>dispatchEvent(new Event('afterprint')));await P.screenshot({path:OUT+'milk-labels.png'});
 // a known label: BAG-1 is start B, 5 characters, a check character, and stop = 7 symbols, 25 bars
-await P.click(`[data-mkid="${ten.id}"] [data-mk=edit]`);await P.waitForTimeout(200);await P.click('#mkOneLabel');await P.waitForTimeout(300);
+await P.click(`[data-mkid="${ten.id}"] [data-mk=edit]`);await P.waitForTimeout(200);await P.click('#mkOneLabel');await P.waitForTimeout(150);
+ok('the sheet choice is remembered',await P.isChecked('#mkLblModal input[value=sheet]')&&/One label, for 130 mL/.test(await txt(P,'#mkLblWhat')));await P.click('#mkLblGo');await P.waitForTimeout(300);
 const one=await P.$eval('#print .mklbl .c128',s=>({n:s.querySelectorAll('rect').length,w:s.getAttribute('viewBox').split(' ')[2],first:s.querySelector('rect').getAttribute('width')}));
 ok('Code 128 for BAG-1: start B (2-wide bar first), 25 bars, 90 modules',one.n===25&&one.first==='2'&&+one.w===20+7*11+13,JSON.stringify(one));
 await P.evaluate(()=>dispatchEvent(new Event('afterprint')));await P.click('#mkCancel');
+// 40 x 14 mm pictures for a label printer's app
+await P.click(`[data-mkid="${ten.id}"] [data-mk=edit]`);await P.waitForTimeout(200);await P.click('#mkOneLabel');await P.check('#mkLblModal input[value=p21]');await P.click('#mkLblGo');await P.waitForTimeout(600);
+const im=await P.$$eval('#mkImgGrid img',is=>is.map(i=>({w:i.naturalWidth,h:i.naturalHeight,src:i.src.slice(0,22)})));
+ok('label printer: a 960 × 336 picture (40 × 14 mm) with a download link',im.length===1&&im[0].w===960&&im[0].h===336&&im[0].src==='data:image/png;base64,'&&await P.isVisible('#mkImgGrid a[download="cradle-label-BAG-1.png"]'),JSON.stringify(im));
+fs.writeFileSync(OUT+'milk-p21.png',Buffer.from((await P.$eval('#mkImgGrid img',i=>i.src)).split(',')[1],'base64'));
+await P.screenshot({path:OUT+'milk-p21-modal.png'});await P.click('#mkImgModal [data-close]');await P.waitForTimeout(150);ok('Done goes back to Milk storage',await P.isVisible('#milkModal'));await P.click('#mkCancel');
+// a label written like the NIIMBOT template gives the date and time
+await P.fill('#mkFind','');await P.type('#mkFind','10/10/2026 - 8 A');await P.press('#mkFind','Enter');await P.waitForTimeout(300);
+ok('a new label like “10/10/2026 - 8 A” fills in Oct 10, 8:00am',(await P.inputValue('#mkCode'))==='10/10/2026 - 8 A'&&(await P.inputValue('#mkDate'))==='2026-10-10'&&(await P.inputValue('#mkTime'))==='08:00'&&/came from the label/.test(await txt(P,'#toast')));
+await P.fill('#mkCode','10/9/26 7:30 PM');await P.dispatchEvent('#mkCode','change');ok('…and “10/9/26 7:30 PM” too',(await P.inputValue('#mkDate'))==='2026-10-09'&&(await P.inputValue('#mkTime'))==='19:30');
+await P.click('#mkUnit [data-mku=ml]');await P.fill('#mkMl','100');await P.fill('#mkCount','2');await P.click('#mkAdd');await P.waitForTimeout(200);
+ok('several containers pumped together can share that label',(await S(P)).milk.filter(m=>m.code==='10/9/26 7:30 PM').length===2);
 // syncs to another phone in the family; the menu shows the stash
 await settle(P);
 const famKey=sql(`select join_code from cradle_households h join cradle_members m on m.household_id=h.id join auth.users u on u.id=m.user_id where u.email='amilk${sfx}@cradle.cfg'`);

@@ -173,7 +173,12 @@ These are guidelines, not medical advice; ask your care team if you're unsure.
 **Labels** are optional. Three ways to use them:
 - **Your own labels:** type the label or code into **Label**.
 - **Scanning:** tap 📷 to scan a barcode or QR code with the camera. This works where the browser has a built-in barcode reader, like Chrome on Android; elsewhere (Safari and other iPhone browsers, for example), the 📷 buttons are hidden and you type the label. A Bluetooth or USB barcode scanner works anywhere, because it types the code for you.
-- **Cradle's labels:** **Print labels** gives each container without a label a code like `CM-7KQ2M` and prints a sheet of barcode labels (Code 128) with the amount, the date pumped, and the baby's name. Use sticker paper or tape them on. **Edit**, then **Print label**, reprints one.
+- **Cradle's labels:** **Print labels** gives each container without a label a code like `CM-7KQ2M`, then asks which kind:
+  - **Label printer, 40 × 14 mm** (the NIIMBOT P21 and similar): Cradle makes a picture of each label (the baby's name and amount, a Code 128 barcode, and the code with the date pumped). Tap **Share or save** to save them to your photos, or **Download** one. In the printer's app, start a 40 × 14 mm label, add a picture, pick the label, and print it at full size.
+  - **Sheet of labels** for a regular printer, three across, with the same details. Use sticker paper or tape them on.
+
+  **Edit**, then **Print label**, makes one again. Cradle remembers which kind you picked.
+- **Labels with a date:** a label written like `10/10/2026 - 8 A` or `10/9/26 7:30 PM` (typed, scanned, or found) fills in the date and time pumped. Containers pumped together can share a label; saving a label that's already in storage asks first.
 
 **Find by label** at the top filters the list as you type. Press Enter, scan with **📷 Scan**, or use a Bluetooth scanner to jump to that container. A label Cradle hasn't seen starts a new container with it.
 

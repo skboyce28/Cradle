@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.27
+
+**Milk storage: units and label printers**
+- The amount box has an **mL / oz** switch next to it. On iPhone the number keyboard has no letters, so "4 oz" couldn't be typed. The choice is remembered on each phone (oz to start when weights are in lb), switching converts what's in the box, and Edit shows the amount in that unit. (Shipped first as a quick fix)
+- **Print labels** now asks which kind: **Label printer, 40 × 14 mm** (the NIIMBOT P21 and similar) or **Sheet of labels** for a regular printer. The choice is remembered
+- For the label printer, Cradle makes a 960 × 336 picture of each label (three times the printer's 320 × 112 dots, so bars land on whole dots): the baby's name and amount, a Code 128 barcode, and the code with the date and time pumped. **Share or save** sends them to the phone's share sheet (to save them to Photos, for example); each also has **Download**. Print them from the printer's app as a picture. Checked with a separate barcode reader at full size and at the printer's resolution
+- A label written like `10/10/2026 - 8 A` or `10/9/26 7:30 PM`, typed or scanned, fills in the date and time pumped
+- Several containers can share a label (milk pumped together); saving a label that's already in storage asks first instead of refusing
+- Printing straight to the label printer over Bluetooth isn't included: iPhone browsers can't use Bluetooth printers, and the P21 isn't among the models the open-source NIIMBOT protocol work supports, so it couldn't be built or checked reliably
+- milk.test.mjs now 47 checks
+
 ## v1.26
 
 **Milk storage**
