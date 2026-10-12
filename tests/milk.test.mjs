@@ -23,8 +23,8 @@ const S=p=>p.evaluate(()=>JSON.parse(localStorage.getItem('cradle-feeding-v1')))
 const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const ago=days=>dkey(new Date(Date.now()-days*864e5));
 const openMilk=async p=>{await p.click('#menuBtn');await p.click('#dd [data-milk]');await p.waitForTimeout(300)};
-async function add(p,{date,time='09:00',ml,place='freezer',box='bag',count=1,code='',note=''}){
-  await p.fill('#mkDate',date);await p.fill('#mkTime',time);await p.fill('#mkMl',String(ml));await p.click(`#mkPlace [data-mp=${place}]`);await p.selectOption('#mkBox',box);
+async function add(p,{date,time='09:00',ml,unit='ml',place='freezer',box='bag',count=1,code='',note=''}){
+  await p.click(`#mkUnit [data-mku=${unit}]`);await p.fill('#mkDate',date);await p.fill('#mkTime',time);await p.fill('#mkMl',String(ml));await p.click(`#mkPlace [data-mp=${place}]`);await p.selectOption('#mkBox',box);
   await p.fill('#mkCount',String(count));await p.fill('#mkCode',code);await p.fill('#mkNote',note);await p.click('#mkAdd');await p.waitForTimeout(250)}
 const rows=p=>p.$$eval('#mkList .mkrow',rs=>rs.map(r=>({id:r.dataset.mkid,t:r.innerText.replace(/\s+/g,' '),lvl:(r.className.match(/lvl-(\w+)/)||[])[1],sec:r.closest('.wlist').previousElementSibling.textContent})));
 const row=async(p,f)=>(await rows(p)).find(f);
@@ -39,6 +39,7 @@ ok('Guide and About share a row, so the menu still fits',await P.evaluate(()=>{c
 await P.click('#menuBtn');
 await openMilk(P);
 ok('starts empty',/Nothing stored yet/.test(await txt(P,'#mkList'))&&/Freezer Empty/.test(await txt(P,'#mkStats')));
+ok('amount box: number keyboard, with an mL / oz switch that starts on oz (weights are in lb)',await P.$eval('#mkMl',i=>i.inputMode)==='decimal'&&await P.$eval('#mkUnit [data-mku=oz]',b=>b.classList.contains('on'))&&(await P.getAttribute('#mkMl','placeholder')).startsWith('oz'));
 ok('scan buttons show where the browser can scan',await P.isVisible('#mkScan')&&await P.isVisible('#mkCodeScan'));
 
 // add: 3 bags to the freezer, an old one, and two fridge bags (one in oz)
@@ -47,7 +48,12 @@ let st=await S(P);ok('3 bags saved to the freezer',st.milk.length===3&&st.milk.e
 await add(P,{date:ago(220),ml:150,box:'bottle'});
 await add(P,{date:ago(5),ml:'3 oz',place:'fridge'});
 await add(P,{date:ago(0),time:'07:30',ml:100,place:'fridge',code:'ABC123'});
-st=await S(P);ok('oz is converted to mL',st.milk.some(m=>m.ml===89&&m.place==='fridge'));
+st=await S(P);ok('typing “3 oz” still works',st.milk.some(m=>m.ml===89&&m.place==='fridge'));
+await add(P,{date:ago(0),time:'06:00',ml:4,unit:'oz',place:'fridge'});st=await S(P);const oz4=st.milk.find(m=>m.ml===118);
+ok('with oz picked, a plain 4 is 4 oz (118 mL), and oz is remembered',!!oz4&&st.ui.milkUnit==='oz'&&await P.$eval('#mkUnit [data-mku=oz]',b=>b.classList.contains('on')));
+await P.click(`[data-mkid="${oz4.id}"] [data-mk=edit]`);await P.waitForTimeout(200);ok('editing shows it in oz',(await P.inputValue('#mkMl'))==='4');
+await P.click('#mkUnit [data-mku=ml]');ok('switching to mL converts what’s in the box',(await P.inputValue('#mkMl'))==='118');
+await P.click('#mkDel');await P.click('#askOk');await P.waitForTimeout(200);
 ok('totals: freezer 4 containers, 510 mL',/Freezer 510 mL · 17\.2 oz 4 containers/.test(await txt(P,'#mkStats')),await txt(P,'#mkStats'));
 let r=await rows(P);
 const old=r.find(x=>/150 mL/.test(x.t));ok('7-month-old frozen milk: use soon, and it’s first',old&&old.lvl==='soon'&&/past 6 months/.test(old.t)&&/Use first/.test(old.t)&&r.filter(x=>/Freezer/.test(x.sec))[0].id===old.id,old&&old.t);

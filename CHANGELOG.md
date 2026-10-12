@@ -3,7 +3,7 @@
 ## v1.26
 
 **Milk storage**
-- **Milk storage** in the profile menu (after Weights): pumped milk in the fridge and freezer. Each container records when it was pumped, the amount (mL, or typed like `4 oz`), the container (storage bag, bottle, tray or cubes, other), an optional label, and a note. **How many** adds several identical containers at once
+- **Milk storage** in the profile menu (after Weights): pumped milk in the fridge and freezer. Each container records when it was pumped, the amount (a number, with an **mL / oz** switch next to the box), the container (storage bag, bottle, tray or cubes, other), an optional label, and a note. **How many** adds several identical containers at once
 - Totals for the freezer, fridge, and thawed milk, in mL and oz; the menu shows the total stored
 - Oldest first, with CDC limits: fresh milk 4 days in the fridge; frozen best within 6 months, fine up to 12; thawed 24 hours, never refrozen. Rows turn amber when it's time to use them and orange when they're past the limit, and the oldest frozen milk is marked **Use first**
 - **Freeze** (fridge to freezer, refused after 4 days), **Thaw** (freezer to fridge, starts the 24 hours), and **Use**: log a bottle feed now with that amount, mark it used, or throw it away. **Recently used** keeps the last 10, with **Undo**

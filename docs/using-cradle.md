@@ -146,7 +146,7 @@ In the profile menu, after Weights. It keeps track of pumped milk in the fridge 
 
 **Adding milk.** Fill in the form at the bottom as milk goes in:
 - **Pumped:** the date and time it was pumped (now, to start with). For milk already in the freezer, use the date on the bag.
-- **Amount:** in mL, or type it like `4 oz`.
+- **Amount:** type the number, and tap **mL** or **oz** next to the box. Your choice is remembered on that phone (it starts on oz when weights are in lb and oz).
 - **Goes in:** Freezer or Fridge.
 - **Container:** storage bag, bottle, tray or cubes, or other.
 - **How many:** to add several containers of the same amount at once.
