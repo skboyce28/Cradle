@@ -47,6 +47,8 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 
 **🧷 Diaper only** adds a row for a change between feeds. Those rows don't count as feeds.
 
+**The day's totals** sit above the list, in pairs on a phone: **Feeds** and **Vitamin D**, **Pumped** and **Bottle**, **Wet** and **Stool**, then **Bath**.
+
 ### Baths
 
 **🛁 Bath** adds a bath with the current time. Each bath row has:

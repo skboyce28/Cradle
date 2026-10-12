@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.21
+
+- The day's totals on the Log are now in pairs on a phone: **Feeds** and **Vitamin D**, **Pumped** and **Bottle**, **Wet** and **Stool**, then **Bath**. Before, Vitamin D sat alone at the end and the diaper rings were split across rows.
+
 ## v1.20
 
 **The bottle target is per feed, and now says so everywhere**
