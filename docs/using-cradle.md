@@ -3,8 +3,8 @@
 A tour of every screen, for the people doing the feeding. The same tips live in the app under the profile menu, then **Guide**.
 
 **Finding your way around:**
-- **Tabs:** Log, Night shift, Dashboard, History, left to right.
-- **Top right:** the 🌙 moon button opens Calm; the round profile button opens everything else.
+- **Tabs:** Log, Dashboard, History, left to right.
+- **Top right:** the 🍼 bottle button opens Night shift, the 🌙 moon button opens Calm, and the round profile button (with your picture) opens everything else.
 - **Changing days:** use the date arrows under the title; **Today** jumps back.
 
 ---
@@ -88,7 +88,7 @@ The day-6-on numbers are set in Settings. Follow whatever your care team tells y
 
 ## Night shift
 
-A dim, low-glare screen with huge buttons, for one-handed feeds in the dark.
+A dim, low-glare screen with huge buttons, for one-handed feeds in the dark. Open it with the 🍼 bottle button at the top right, next to the moon.
 
 1. Tap **Start feed**. It logs the time and starts the timer.
 2. Tap **L** or **R**. With both on, a slider splits the time between them, like on the Log.
@@ -232,7 +232,8 @@ The round button at the top right:
 | Item | What it does |
 |---|---|
 | **🎨 Themes** | Opens a window with Auto, Light, or Dark, plus **Fun themes**: Dalmatian (experimental) and three seasonal themes:<br>🎃 **Halloween**: a dark night theme with bats and a jack-o'-lantern logo<br>🦃 **Thanksgiving**: warm cream and maple with falling leaves, and an acorn cap on the logo<br>🎄 **Christmas**: snowy white with red and evergreen, snowflakes, a candy-cane stripe, and a Santa hat on the logo<br>The theme is per phone. |
-| **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
+| **Your picture** | At the top of the menu. See [Your picture](#your-picture). |
+| **Family** | Share key, people (with their pictures), joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch, Daily Word, Stork Flight, and their high scores. See [Fun center](#fun-center). |
@@ -244,6 +245,24 @@ The round button at the top right:
 | **Install app** | Shown when your browser can install Cradle |
 | **Change password** | Your account |
 | **Sign out** | Signs you out. The log stays on this phone for next time. |
+
+### Your picture
+
+Tap **Your picture** at the top of the profile menu.
+
+- **Choose a picture:** upload a photo, keep the **Letter** (the baby's first initial, as before), or pick a built-in one: Dad, Mom, Person, Bear, Bunny, Fox, or Owl.
+- **Photos** are cropped to the middle square and shrunk on your phone (to about 5 KB) before they're saved. Tap **Photo** again to choose a different one.
+- **Who can see it:**
+
+  | Choice | Who sees your picture |
+  |---|---|
+  | **Only me** | Just you, on your own phones. Everyone else sees the letter. |
+  | **Me and my family** (to start) | Everyone who shares your log, on the Family screen |
+  | **Everyone on this Cradle** | Also everyone else who uses the same Cradle site, next to your initials on the high-score boards |
+
+- **Where it shows:** your profile button at the top right, the Family screen, and (if you chose Everyone) the high-score boards.
+- **Removing a photo:** choose **Letter** or a built-in picture and Save. The photo is deleted from the database.
+- Signed out, the picture is saved on this phone only.
 
 ### Data management
 

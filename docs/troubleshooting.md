@@ -117,6 +117,17 @@ Open Cradle in a real browser (Chrome, Safari) or as the installed app, not insi
 **Text message export doesn't open Messages**
 Use **📋 Copy code** on the export screen and paste it into any message, or use **Download file** or **Share file**.
 
+## Profile pictures
+
+**"Profile pictures need a quick database update"**
+Whoever runs your Cradle needs to run [`supabase/2-family.sql`](../supabase/2-family.sql) again (v1.22 added pictures).
+
+**My family sees a letter instead of my picture**
+Check **Who can see it** under **Your picture**: **Only me** shows the letter to everyone else. Pictures refresh on other phones within about 10 minutes, or right away when they open the Family screen.
+
+**A photo won't upload**
+Use a regular photo (JPEG, PNG, WebP, or an iPhone photo, which the phone converts). Very unusual formats may not open in the browser.
+
 ## Fun center
 
 **"High scores aren't set up on this Cradle yet"**

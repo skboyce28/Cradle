@@ -66,7 +66,7 @@ ok('Oct 7 log row labeled 🛁',(await txt(p,'.feed.bathrow .n'))==='🛁');
 await p.click('#tabs [data-tab=today]');await p.click('#todayBtn').catch(()=>{});await p.clock.runFor(200);
 await p.evaluate(()=>{const S=JSON.parse(localStorage.getItem('cradle-feeding-v1'));});
 await p.clock.runFor(2*3600e3);// 2h later: no recent feed so Night shift opens idle
-await p.click('#tabs [data-tab=night]');await p.clock.runFor(500);
+await p.click('#nightBtn');await p.clock.runFor(500);
 ok('Night shift idle has Bath button',await p.isVisible('#night [data-n=bath]'));await p.screenshot({path:OUT+'b-night.png'});
 await p.click('#night [data-n=bath]');await p.clock.runFor(300);s=await S(p);
 ok('Night shift logs a bath',s.days['2026-10-09'].feeds.filter(f=>f.bath).length===2,await txt(p,'#toast'));

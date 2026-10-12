@@ -35,7 +35,7 @@ ok('Dashboard: no bottle or pump tiles',!kp.some(k=>/Bottle|Pumped/.test(k))&&kp
 ok('Dashboard: daily volume chart and Bottle & pump chip hidden',!(await shown(p,'#chart2'))&&!(await shown(p,'#dashFilter [data-f=bottle]')));
 const ins=await p.$$eval('#insights li span:first-child',s=>s.map(x=>x.textContent));ok('no bottle or pump insights',!ins.some(x=>['🍼','⚡','📈','📉'].includes(x))&&ins.includes('⏱'),ins.join(''));
 const r1=await report(p);ok('doctor report: no Bottle or Pump columns, Nursing kept',!r1.heads.includes('Bottle mL')&&!r1.heads.includes('Pump mL')&&r1.heads.includes('Nursing min'),r1.heads.join(','));
-await p.click('#tabs [data-tab=today]');await p.click('#tabs [data-tab=night]');await p.waitForTimeout(300);await p.click('#night [data-n=start]').catch(()=>{});await p.waitForTimeout(300);
+await p.click('#tabs [data-tab=today]');await p.click('#nightBtn');await p.waitForTimeout(300);await p.click('#night [data-n=start]').catch(()=>{});await p.waitForTimeout(300);
 ok('Night shift: breast and timer, no bottle',await shown(p,'#night [data-n=L]')&&await shown(p,'#nTimer')&&!(await shown(p,'#night .nml')));
 await p.keyboard.press('Escape');await p.waitForTimeout(200);
 // --- bottle only ---
@@ -46,7 +46,7 @@ await p.click('#tabs [data-tab=dash]');await p.waitForTimeout(300);
 ok('Dashboard: side balance and Side starts hidden',!(await shown(p,'#sideBal'))&&!(await p.$$eval('#kpis .kpi',ks=>ks.some(k=>getComputedStyle(k).display!=='none'&&/Side starts/.test(k.textContent)))));
 const r2=await report(p);ok('doctor report: no Nursing column; Bottle kept',!r2.heads.includes('Nursing min')&&r2.heads.includes('Bottle mL'),r2.heads.join(','));
 await p.click('#tabs [data-tab=today]');
-await p.click('#tabs [data-tab=night]');await p.waitForTimeout(300);
+await p.click('#nightBtn');await p.waitForTimeout(300);
 if(await p.isVisible('#night [data-n=done]')){await p.click('#night [data-n=done]');await p.waitForTimeout(300)}
 if(await p.isVisible('#night [data-n=start]')){await p.click('#night [data-n=start]');await p.waitForTimeout(300)}
 ok('Night shift: Start feed doesn’t start a nursing timer; bottle shown, breast hidden',!(await S(p)).nurse&&await shown(p,'#night .nml')&&!(await shown(p,'#night [data-n=L]')),JSON.stringify((await S(p)).nurse));

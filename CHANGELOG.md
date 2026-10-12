@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.22
+
+**Profile pictures**
+- **Your picture**, at the top of the profile menu: upload a photo, keep the letter, or pick a built-in picture (Dad, Mom, Person, Bear, Bunny, Fox, Owl)
+- Photos are cropped to a square and shrunk on the phone to about 5 KB before saving
+- **Who can see it:** Only me, Me and my family (to start), or Everyone on this Cradle. Everyone also shows it next to your initials on the high-score boards. The database decides who gets it; everyone else sees the letter
+- Shown on the profile button and the Family screen. Choosing the letter or a built-in picture deletes a stored photo
+
+**Night shift** is now a 🍼 button at the top right, next to the moon, instead of a tab. The tabs are Log, Dashboard, and History.
+
+**For whoever runs your Cradle:** run [`supabase/2-family.sql`](supabase/2-family.sql) again. It adds the `cradle_profiles` table and the functions `cradle_my_profile`, `cradle_set_profile`, `cradle_family_pics`, and `cradle_pic`, and puts pictures on the high-score boards. Safe to rerun. New admin queries 25 and 26.
+
+- New test: `tests/avatar.test.mjs` (22 checks); the Night shift tests now use the button
+
 ## v1.21
 
 - The day's totals on the Log are now in pairs on a phone: **Feeds** and **Vitamin D**, **Pumped** and **Bottle**, **Wet** and **Stool**, then **Bath**. Before, Vitamin D sat alone at the end and the diaper rings were split across rows.

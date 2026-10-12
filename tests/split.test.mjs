@@ -54,7 +54,7 @@ await p.click('#tabs [data-tab=today]');await p.evaluate(()=>{const b=[...docume
 await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
 const ps=(await p.evaluate(()=>[...document.querySelectorAll('#print td')].map(e=>e.textContent).join(' | ')));ok('print sheet shows minutes per side',/25 \(L15\/R10\)/.test(ps));
 // night shift on the newest feed
-await p.click('#tabs [data-tab=night]');await p.clock.runFor(800);
+await p.click('#nightBtn');await p.clock.runFor(800);
 ok('Night shift shows the slider',await p.isVisible('#night .nsplit'),await txt(p,'#night .nsplit').catch(()=>''));
 await p.focus('#night [data-n=split]');await p.keyboard.press('ArrowRight');await p.keyboard.press('ArrowRight');await p.keyboard.press('ArrowRight');await p.clock.runFor(200);
 ok('Night shift slider moves time to the right',/L 11 min.*14 min R/.test(await txt(p,'#night .nsplit'))&&feedById(await S_(p),id).split===45,await txt(p,'#night .nsplit'));

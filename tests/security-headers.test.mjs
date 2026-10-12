@@ -25,7 +25,7 @@ ok('signed in and synced through the allowed connection',!(await p.isVisible('#g
 await p.click('#logNow');await p.click('#addBath');await p.waitForTimeout(1500);ok('entries upload (connect-src works)',posted>0,posted+' uploads');
 for(const t of ['dash','hist','today']){await p.click(`#tabs [data-tab=${t}]`);await p.waitForTimeout(300)}
 await p.click('.chartbox >> nth=0').catch(()=>{});await p.waitForTimeout(300);await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
-await p.click('#tabs [data-tab=night]');await p.waitForTimeout(400);await p.click('[data-n=exit]').catch(()=>p.click('[data-n=exit2]'));
+await p.click('#nightBtn');await p.waitForTimeout(400);await p.click('[data-n=exit]').catch(()=>p.click('[data-n=exit2]'));
 await p.click('#calmBtn');await p.waitForTimeout(400);await p.mouse.click(200,400);await p.click('#calm [data-snd=spa]').catch(()=>{});await p.waitForTimeout(300);await p.keyboard.press('Escape');
 await p.click('#menuBtn');await p.click('[data-act=themes]');await p.click('#themeModal [data-theme=dalmatian]');await p.waitForTimeout(300);await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
 await p.click('#menuBtn');await p.click('[data-act=learn]');await p.click('#lcGrid [data-hci="3"]');await p.waitForTimeout(300);await p.click('#hc [data-hc=close]');await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));

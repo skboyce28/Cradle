@@ -27,7 +27,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 | | |
 |---|---|
 | **Log** | One row per feed: left/right breast (with which side you started), nursing minutes with a ▶ timer, a slider that splits the minutes between sides, bottle mL, pump mL, wet, stool, Vitamin D, notes. 🧷 diaper-only and 🛁 bath rows (sponge or tub) that don't count as feeds. |
-| **Night shift** | A dim, low-glare screen with huge buttons for one-handed night feeds, plus quick Diaper only and Bath buttons. Warm, Moonlight, or Red colors. |
+| **Night shift** | The bottle button at the top right opens a dim, low-glare screen with huge buttons for one-handed night feeds, plus quick Diaper only and Bath buttons. Warm, Moonlight, or Red colors. |
 | **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, baths, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |
@@ -38,6 +38,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 | **Weights** | A list of every weight to review, edit, or delete, and a chart against birth weight. |
 | **Achievements** | Fifty-three badges in eight groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
+| **Profile pictures** | A photo or a built-in picture (silhouettes and animals) for each person, shown on the profile button and the Family screen. Each person chooses who sees it: only them, their family, or everyone on the Cradle (also on the high-score boards). |
 | **Fun center** | **Bottle Catch**: a two-minute, one-thumb arcade game. **Daily Word**: a new word every day to guess in 6 tries, at 4, 5, or 6 letters (each person picks), with hard mode, streaks, and practice. **Stork Flight**: tap to flap a stork through the clouds and chimneys over a sleeping town, with stars and deliveries. All three have high scores (3 initials) for everyone, your family, and you. |
 | **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs within about 15 seconds. Join with a share key like `K7QM-4XPD`. |
 | **Works offline** | Every phone keeps its own copy and catches up when it reconnects. Installs to the home screen like an app. |

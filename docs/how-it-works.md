@@ -11,7 +11,7 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
   - `migrate()` upgrades older saved shapes when the app loads
 - **Game state.** Fun center settings live in the log's UI preferences. For Bottle Catch, your best score per account, remembered initials, and scores waiting to post (from rounds played offline) live under `cradle-game-v1`. For Stork Flight, your best score and most deliveries in one flight per account, and flights waiting to post, live under `cradle-stork-v1` (the initials are shared with Bottle Catch). For Daily Word, each account's chosen length, hard mode, practice word, and about a year of days (guesses, result, and whether it posted) live under `cradle-word-v1`. Neither is part of the log, exports, or sync. **Erase all data** and **Sign out and remove from this phone** clear all three.
 - **Daily Word.** The word lists are a JSON block in the page (`wordData`): for each length, the answers and the other allowed guesses, each a run of fixed-length words. The day's word is `answers[(days since 2026-10-12) mod count]` for the phone's own date, so everyone who picks the same length gets the same word, and it changes at local midnight. Colors follow the usual rule for repeated letters (greens first, then yellows up to the number left). [`tools/words/build_words.py`](../tools/words/build_words.py) builds the lists from SCOWL and never reorders words already published.
-- **Sync state.** Sign-in and sync bookkeeping live separately under `cradle-cloud-v1`: session tokens, the family id, the last sync time, and a fingerprint of each item as last synced.
+- **Sync state.** Sign-in and sync bookkeeping live separately under `cradle-cloud-v1`: session tokens, the family id, the last sync time, and a fingerprint of each item as last synced. It also keeps your picture (`pic`) and your family's pictures (`fpics`) so the profile button shows yours right away; they're refreshed from the database every 10 minutes at most.
 - **Day of life.** The birth date in Settings is **Day 0**. Diaper goals are computed from it.
 - **Left and right split.** A feed with both sides has `split`, the percent of its minutes on the left (0 to 100, in steps of 5). Missing means 50/50; a one-side feed is all on that side. `sideMins()` turns minutes and split into whole minutes per side, used by the Dashboard, the chart explorer, the day sheet, and the doctor report.
 - **Feeds vs. other rows.** A 🧷 diaper-only row (no breast, bottle, or pump) and a 🛁 bath row (`bath: "sponge"` or `"tub"`, plus `time` and `note`) live in the same `feeds` list but never count as feeds in stats, streaks, gaps, or the next-feed time. `isFeed()` checks for `bath` first.
@@ -76,6 +76,7 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | `cradle_invites` | Pending "add by email" invites |
 | `cradle_join_tries` | Wrong share-key attempts, for rate limiting |
 | `cradle_players` | Each account's 3 initials for the high-score boards |
+| `cradle_profiles` | Each account's picture: `default` (the letter), a built-in `preset`, or a `photo` (a small JPEG as a data URL, at most 16,000 characters), and who may see it (`me`, `family`, or `everyone`) |
 | `cradle_scores` | Fun center scores: account, family at the time, game (`bottles`, `word`, or `stork`), initials, score, round length in seconds, and for Daily Word the day and the grid as colors only (like `5h:01200/22222`: 5 letters, hard mode, 0 gray, 1 yellow, 2 green). One Daily Word result per account per day. |
 | `cradle_push_subs`, `cradle_push_keys` | Optional, from `3-notifications.sql`: phones that get feed-due notifications, and the notification keys. See [Notifications](notifications.md#how-it-works). |
 
@@ -87,7 +88,7 @@ Every table has row-level security on.
 
 - **`cradle_items`:** you can read and write a row only if its `household_id` is one of your families, via `cradle_my_households()`. You also can't write a row into a family you're not in.
 - **Families, members, invites:** you can only *read* rows for your own families. You can't write them directly at all.
-- **`cradle_join_tries`, `cradle_players`, `cradle_scores`:** no direct access from the app; only through the functions below.
+- **`cradle_join_tries`, `cradle_players`, `cradle_scores`, `cradle_profiles`:** no direct access from the app; only through the functions below.
 
 All changes to families go through these functions, which check permissions themselves and are callable only by signed-in users:
 
@@ -102,6 +103,9 @@ All changes to families go through these functions, which check permissions them
 | `cradle_remove_member(h, user)` | owner | Removes someone |
 | `cradle_leave(h)` | members | Leaves the family |
 | `cradle_scores_board(game)` | anyone signed in | The three boards: Everyone (each person's best, top 10), Our family (top 10), My best (top 10), plus your initials and rank. Only initials and scores. |
+| `cradle_my_profile()` / `cradle_set_profile(kind, preset, photo, visibility)` | anyone signed in | Reads or saves your own picture. Refuses anything that isn't a built-in name or a small JPEG, WebP, or PNG data URL. Choosing the letter or a built-in picture deletes a stored photo. |
+| `cradle_family_pics(h)` | members | The pictures in your family that you may see, by account |
+| `cradle_pic(user)` | used inside the functions above only | Someone's picture if the caller may see it: their own, `everyone`, or `family` when they share a family. The high-score boards use it too. |
 | `cradle_set_initials(initials)` | anyone signed in | Saves your 3 initials and updates your past scores |
 | `cradle_submit_score(score, seconds, initials, game)` | anyone signed in | Posts a Bottle Catch (`bottles`) or Stork Flight (`stork`) score. Refuses Bottle Catch rounds over 130 seconds or more than 100 points per second played, Stork Flight flights over an hour or more than 40 points per second, posting within 10 seconds of your last score, more than 200 scores a day, and initials on a short blocklist. |
 | `cradle_word_board(day)` | anyone signed in | Daily Word boards: Everyone (total points, top 10, with current streak), Our family (totals and each person's grid for that day), My days (your last 10), plus your totals and rank. Only initials, points, and colors. |

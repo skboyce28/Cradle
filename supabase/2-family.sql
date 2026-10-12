@@ -229,6 +229,82 @@ begin
   return public.cradle_bootstrap();
 end $$;
 
+-- 5a) Profile pictures (v1.22)
+--    Each account picks a built-in picture or uploads a photo, which the app shrinks to a small
+--    square (about 5 KB) and stores here, and chooses who can see it: only them, their family,
+--    or everyone on this Cradle (which also shows it on the high-score boards). Others see the
+--    default letter. No direct access from the app; only through the functions below.
+create table if not exists public.cradle_profiles (
+  user_id    uuid primary key references auth.users(id) on delete cascade,
+  kind       text not null default 'default',
+  preset     text,
+  photo      text,
+  visibility text not null default 'family',
+  updated_at timestamptz not null default now()
+);
+alter table public.cradle_profiles drop constraint if exists cradle_profiles_check;
+alter table public.cradle_profiles add constraint cradle_profiles_check check (
+  kind in ('default', 'preset', 'photo')
+  and visibility in ('me', 'family', 'everyone')
+  and (preset is null or preset in ('dad', 'mom', 'person', 'bear', 'bunny', 'fox', 'owl'))
+  and (kind <> 'preset' or preset is not null)
+  and (kind <> 'photo' or photo is not null)
+  and (photo is null or (length(photo) <= 16000 and photo ~ '^data:image/(jpeg|webp|png);base64,[A-Za-z0-9+/]+=*$')));
+alter table public.cradle_profiles enable row level security;
+
+-- Someone's picture, if the caller may see it (null means show the default letter)
+create or replace function public.cradle_pic(p_user uuid) returns json
+language sql stable security definer set search_path = public as $$
+  select json_build_object('kind', p.kind, 'preset', p.preset, 'photo', case when p.kind = 'photo' then p.photo end,
+                           'v', floor(extract(epoch from p.updated_at))::bigint)
+  from cradle_profiles p
+  where p.user_id = p_user and p.kind <> 'default'
+    and (p.user_id = auth.uid() or p.visibility = 'everyone'
+         or (p.visibility = 'family' and exists (
+               select 1 from cradle_members a join cradle_members b on b.household_id = a.household_id
+               where a.user_id = auth.uid() and b.user_id = p.user_id)))
+$$;
+
+-- Your own picture and setting
+create or replace function public.cradle_my_profile() returns json
+language sql stable security definer set search_path = public as $$
+  select coalesce((select json_build_object('kind', kind, 'preset', preset, 'photo', photo, 'visibility', visibility,
+                                            'v', floor(extract(epoch from updated_at))::bigint)
+                   from cradle_profiles where user_id = auth.uid()),
+                  json_build_object('kind', 'default', 'visibility', 'family'))
+$$;
+
+-- Save your picture. Choosing a built-in picture or the default removes any stored photo.
+create or replace function public.cradle_set_profile(p_kind text, p_preset text default null, p_photo text default null, p_visibility text default 'family')
+returns json language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); old text;
+begin
+  if uid is null then raise exception 'not signed in'; end if;
+  if p_kind not in ('default', 'preset', 'photo') then raise exception 'Pick a picture.'; end if;
+  if p_visibility not in ('me', 'family', 'everyone') then raise exception 'Choose who can see it.'; end if;
+  if p_kind = 'preset' and (p_preset is null or p_preset not in ('dad', 'mom', 'person', 'bear', 'bunny', 'fox', 'owl')) then raise exception 'Pick a picture.'; end if;
+  if p_kind = 'photo' and p_photo is null then
+    select photo into old from cradle_profiles where user_id = uid;   -- keep the photo already saved
+    if old is null then raise exception 'Upload a photo first.'; end if;
+  end if;
+  if p_photo is not null and (length(p_photo) > 16000 or p_photo !~ '^data:image/(jpeg|webp|png);base64,[A-Za-z0-9+/]+=*$') then
+    raise exception 'That photo is too large or isn''t an image.';
+  end if;
+  insert into cradle_profiles (user_id, kind, preset, photo, visibility, updated_at)
+  values (uid, p_kind, case when p_kind = 'preset' then p_preset end, case when p_kind = 'photo' then coalesce(p_photo, old) end, p_visibility, now())
+  on conflict (user_id) do update set kind = excluded.kind, preset = excluded.preset, photo = excluded.photo,
+    visibility = excluded.visibility, updated_at = now();
+  return cradle_my_profile();
+end $$;
+
+-- Pictures for everyone in one of your families, keyed by account id (only those you may see)
+create or replace function public.cradle_family_pics(h uuid) returns json
+language sql stable security definer set search_path = public as $$
+  select coalesce(json_object_agg(m.user_id, cradle_pic(m.user_id)) filter (where cradle_pic(m.user_id) is not null), '{}'::json)
+  from cradle_members m
+  where m.household_id = h and exists (select 1 from cradle_members me where me.household_id = h and me.user_id = auth.uid())
+$$;
+
 -- 5) Fun center: high scores (Bottle Catch, Daily Word, and Stork Flight)
 --    Only initials and scores are ever shown to other people. All reads and writes go
 --    through the functions below; the tables themselves aren't readable from the app.
@@ -292,9 +368,9 @@ language sql stable security definer set search_path = public as $$
     order by s.user_id, s.score desc, s.created_at asc)
   select json_build_object(
     'initials', (select initials from cradle_players where user_id = (select uid from me)),
-    'everyone', coalesce((select json_agg(json_build_object('initials', b.initials, 'score', b.score, 'me', b.user_id = (select uid from me), 'at', b.created_at) order by b.score desc, b.created_at)
+    'everyone', coalesce((select json_agg(json_build_object('initials', b.initials, 'score', b.score, 'me', b.user_id = (select uid from me), 'at', b.created_at, 'pic', cradle_pic(b.user_id)) order by b.score desc, b.created_at)
                           from (select * from best order by score desc, created_at limit 10) b), '[]'::json),
-    'family',   coalesce((select json_agg(json_build_object('initials', f.initials, 'score', f.score, 'me', f.user_id = (select uid from me), 'at', f.created_at) order by f.score desc, f.created_at)
+    'family',   coalesce((select json_agg(json_build_object('initials', f.initials, 'score', f.score, 'me', f.user_id = (select uid from me), 'at', f.created_at, 'pic', cradle_pic(f.user_id)) order by f.score desc, f.created_at)
                           from (select * from famscores order by score desc, created_at limit 10) f), '[]'::json),
     'mine',     coalesce((select json_agg(json_build_object('score', x.score, 'at', x.created_at) order by x.score desc, x.created_at)
                           from (select score, created_at from cradle_scores where user_id = (select uid from me) and game = p_game order by score desc, created_at limit 10) x), '[]'::json),
@@ -368,9 +444,9 @@ language sql stable security definer set search_path = public as $$
   select json_build_object(
     'initials', (select initials from cradle_players where user_id = (select uid from me)),
     'day',      (select day from d),
-    'everyone', coalesce((select json_agg(json_build_object('initials', x.initials, 'score', x.total, 'played', x.played, 'won', x.won, 'streak', x.streak, 'me', x.me, 'at', x.at) order by x.total desc, x.at)
+    'everyone', coalesce((select json_agg(json_build_object('initials', x.initials, 'score', x.total, 'played', x.played, 'won', x.won, 'streak', x.streak, 'me', x.me, 'at', x.at, 'pic', cradle_pic(x.user_id)) order by x.total desc, x.at)
                           from (select * from b order by total desc, at limit 10) x), '[]'::json),
-    'family',   coalesce((select json_agg(json_build_object('initials', x.initials, 'score', x.total, 'played', x.played, 'won', x.won, 'streak', x.streak, 'me', x.me, 'at', x.at, 'today', x.today) order by x.total desc, x.at)
+    'family',   coalesce((select json_agg(json_build_object('initials', x.initials, 'score', x.total, 'played', x.played, 'won', x.won, 'streak', x.streak, 'me', x.me, 'at', x.at, 'today', x.today, 'pic', cradle_pic(x.user_id)) order by x.total desc, x.at)
                           from (select * from f order by total desc, at limit 20) x), '[]'::json),
     'mine',     coalesce((select json_agg(json_build_object('day', x.day, 'score', x.score, 'detail', x.detail) order by x.day desc)
                           from (select day, score, detail from w where user_id = (select uid from me) order by day desc limit 10) x), '[]'::json),
@@ -418,11 +494,15 @@ grant execute on function public.cradle_bootstrap(), public.cradle_family_info(u
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
   public.cradle_new_code(uuid), public.cradle_leave(uuid),
   public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text),
-  public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text)
+  public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text),
+  public.cradle_my_profile(), public.cradle_set_profile(text,text,text,text), public.cradle_family_pics(uuid)
   to authenticated;
 revoke execute on function public.cradle_bootstrap(), public.cradle_family_info(uuid), public.cradle_invite(uuid,text),
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
   public.cradle_new_code(uuid), public.cradle_leave(uuid),
   public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text),
-  public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text)
+  public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text),
+  public.cradle_my_profile(), public.cradle_set_profile(text,text,text,text), public.cradle_family_pics(uuid)
   from anon, public;
+-- cradle_pic is only used inside the functions above
+revoke execute on function public.cradle_pic(uuid) from anon, authenticated, public;

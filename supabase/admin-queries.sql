@@ -198,3 +198,18 @@ where user_id = (select id from auth.users where email = 'their@email.com');
 --     afterward; the function makes a new key pair on its next run.
 delete from public.cradle_push_subs;
 delete from public.cradle_push_keys;
+
+
+-- ============================================================
+-- Profile pictures (v1.22)
+-- ============================================================
+
+-- 25. Who has a picture, what kind, and who can see it
+select u.email, p.kind, p.preset, p.visibility, length(p.photo) as photo_chars, p.updated_at
+from public.cradle_profiles p
+join auth.users u on u.id = p.user_id
+order by p.updated_at desc;
+
+-- 26. CHANGES DATA. Remove someone's photo (they go back to the letter)
+update public.cradle_profiles set kind = 'default', preset = null, photo = null, updated_at = now()
+where user_id = (select id from auth.users where email = 'their@email.com');
