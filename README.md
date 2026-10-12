@@ -36,6 +36,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 | **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, and baths. Every tab also prints. |
 | **Weighted feeds** | Before and after weights on a feed, in grams or lb and oz, with the estimated transfer (1 g ≈ 1 mL). |
 | **Weights** | A list of every weight to review, edit, or delete, and a chart against birth weight. |
+| **Milk storage** | Pumped milk in the fridge and freezer, oldest first, with CDC age limits flagged. Thaw, freeze, or use a container (it can log the bottle feed). Optional labels: type them, scan barcodes, or print Cradle's own. |
 | **Achievements** | Fifty-three badges in eight groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
 | **Profile pictures** | A photo or a built-in picture (silhouettes and animals) for each person, shown on the profile button and the Family screen. Each person chooses who sees it: only them, their family, or everyone on the Cradle (also on the high-score boards). |

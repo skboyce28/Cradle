@@ -7,7 +7,7 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
 - **One file.** `cradle.html` holds all the HTML, CSS, and JavaScript. There's no framework, no build step for the code itself, and no external libraries, fonts, or analytics. Charts are inline SVG. The only network requests go to your own Supabase project.
 - **State.** The whole log is one object kept in `localStorage` under `cradle-feeding-v1`:
   - `days`: keyed by date (`YYYY-MM-DD`); each day has `feeds`, `notes`, and a Vitamin D flag
-  - `weights`, `settings`, plus UI preferences
+  - `weights`, `milk` (stored milk: when pumped, mL, container, `fridge` / `freezer` / `thawed`, optional label, and `done` once used), `settings`, plus UI preferences
   - `migrate()` upgrades older saved shapes when the app loads
 - **Game state.** Fun center settings live in the log's UI preferences. For Bottle Catch, your best score per account, remembered initials, and scores waiting to post (from rounds played offline) live under `cradle-game-v1`. For Stork Flight, your best score and most deliveries in one flight per account, and flights waiting to post, live under `cradle-stork-v1` (the initials are shared with Bottle Catch). For Daily Word, each account's chosen length, hard mode, practice word, and about a year of days (guesses, result, and whether it posted) live under `cradle-word-v1`. Neither is part of the log, exports, or sync. **Erase all data** and **Sign out and remove from this phone** clear all three.
 - **Daily Word.** The word lists are a JSON block in the page (`wordData`): for each length, the answers and the other allowed guesses, each a run of fixed-length words. The day's word is `answers[(days since 2026-10-12) mod count]` for the phone's own date, so everyone who picks the same length gets the same word, and it changes at local midnight. Colors follow the usual rule for repeated letters (greens first, then yellows up to the number left). [`tools/words/build_words.py`](../tools/words/build_words.py) builds the lists from SCOWL and never reorders words already published.
@@ -36,6 +36,7 @@ The log is split into small **items**, each synced on its own:
 | `feed:<id>` | One row from a day's log (a feed, a diaper-only row, or a bath), plus its date |
 | `day:<YYYY-MM-DD>` | That day's notes and Vitamin D flag |
 | `weight:<id>` | One weight |
+| `milk:<id>` | One stored container of milk |
 | `settings` | Shared settings: goals, baby name, birth date and weight, Vitamin D start, feed interval, and what you track (breast, bottle, pump) |
 
 Theme, weight units, the alarm switch, and layout preferences stay per phone.
@@ -130,7 +131,7 @@ An invite can only be claimed by an account that **existed when the invite was m
   - a **Content-Security-Policy** that only runs Cradle's own inline script, allowed by its SHA-256 hash
   - network connections limited to the site itself and your Supabase project
   - no plugins or embedding in other sites (`frame-ancestors 'none'`, `X-Frame-Options: DENY`)
-  - `nosniff`, `Referrer-Policy: no-referrer`, a Permissions-Policy that turns off camera, microphone, location, and payment, and HSTS
+  - `nosniff`, `Referrer-Policy: no-referrer`, a Permissions-Policy that turns off microphone, location, and payment and allows the camera only for Cradle itself (for scanning milk labels), and HSTS
 
   Even if someone found a way to inject a script into the page, the browser wouldn't run it, and couldn't send data anywhere else.
 - **Two-step sign-in** (optional per person, or required by the family owner) uses Supabase's authenticator-app sign-in (TOTP). Supabase stores the secrets and checks the codes; the app calls `/auth/v1/factors` to set one up, challenge, and verify, and reads the `aal` level from the token. The database rule above, not the app, is what keeps a password-only sign-in out.

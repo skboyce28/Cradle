@@ -140,6 +140,43 @@ The 🌙 button at the top right. A slow, soothing screensaver with the time, ti
 
 The feed alarm still works here.
 
+## Milk storage
+
+In the profile menu, after Weights. It keeps track of pumped milk in the fridge and freezer, so you know what you have and what to use first. Everyone in the family sees the same stash.
+
+**Adding milk.** Fill in the form at the bottom as milk goes in:
+- **Pumped:** the date and time it was pumped (now, to start with). For milk already in the freezer, use the date on the bag.
+- **Amount:** in mL, or type it like `4 oz`.
+- **Goes in:** Freezer or Fridge.
+- **Container:** storage bag, bottle, tray or cubes, or other.
+- **How many:** to add several containers of the same amount at once.
+- **Label** and **Note:** optional. See labels below.
+
+**The list.** Totals for the freezer, fridge, and any thawed milk come first, in mL and oz. Each section lists the oldest first, and the oldest frozen milk is marked **Use first**. Cradle follows the [CDC's storage guidelines](https://www.cdc.gov/breastfeeding/breast-milk-preparation-and-storage/handling-breastmilk.html):
+
+| Where | Cradle shows | Amber (use soon) | Orange (past the limit) |
+|---|---|---|---|
+| Fridge, fresh | Use or freeze by (4 days after pumping) | Under a day left | Over 4 days |
+| Freezer | Age and best-by date (6 months) | Past 6 months | Past 12 months |
+| Thawed, in the fridge | Use by (24 hours after thawing) | Under 6 hours left | Over 24 hours |
+
+These are guidelines, not medical advice; ask your care team if you're unsure.
+
+**Buttons on each container:**
+- **Freeze** (fridge): moves it to the freezer. Not offered once it's over 4 days old.
+- **Thaw** (freezer): moves it to the fridge and starts the 24 hours. Thawed milk can't go back in the freezer.
+- **Use** (fridge or thawed): **Log a bottle feed now** adds a bottle feed with that amount to today and shows it on the Log; or **Used, don't log a feed**; or **Throw it away**.
+- **Edit:** change it, print its label, or **Delete** a mistake.
+
+**Recently used** shows the last 10 containers used or thrown away, with **Undo** (a bottle feed it logged stays in the Log).
+
+**Labels** are optional. Three ways to use them:
+- **Your own labels:** type the label or code into **Label**.
+- **Scanning:** tap 📷 to scan a barcode or QR code with the camera. This works where the browser has a built-in barcode reader, like Chrome on Android; elsewhere (Safari and other iPhone browsers, for example), the 📷 buttons are hidden and you type the label. A Bluetooth or USB barcode scanner works anywhere, because it types the code for you.
+- **Cradle's labels:** **Print labels** gives each container without a label a code like `CM-7KQ2M` and prints a sheet of barcode labels (Code 128) with the amount, the date pumped, and the baby's name. Use sticker paper or tape them on. **Edit**, then **Print label**, reprints one.
+
+**Find by label** at the top filters the list as you type. Press Enter, scan with **📷 Scan**, or use a Bluetooth scanner to jump to that container. A label Cradle hasn't seen starts a new container with it.
+
 ## Learning center
 
 In the profile menu. **High-contrast cards** are five original black-and-white designs: Bullseye, Checkerboard, Zigzag, Spiral, and Smile. Bold contrast is among the first things newborns can make out, so they're something to share during calm, awake moments.
@@ -235,12 +272,13 @@ The round button at the top right:
 | **Your picture** | At the top of the menu. See [Your picture](#your-picture). |
 | **Family** | Share key, people (with their pictures), joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
+| **🧊 Milk storage** | Pumped milk in the fridge and freezer, oldest first. Shows how much is stored. See [Milk storage](#milk-storage). |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch, Daily Word, Stork Flight, and their high scores. See [Fun center](#fun-center). |
 | **Achievements** | Fifty-three badges with progress, in eight groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, and Fun center. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, and wet and stool diapers per day |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
-| **Guide / About** | In-app help, version, and changelog |
+| **Guide / About** (one row) | In-app help, version, and changelog |
 | **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |
 | **Install app** | Shown when your browser can install Cradle |
 | **Sign-in and security** | **Change password**, and two-step sign-in: a 6-digit code from an authenticator app after your password. Shows **On** when it's on. See [Two-step sign-in](accounts-and-families.md#two-step-sign-in). |

@@ -22,7 +22,7 @@ const txt=async(p,s)=>(await p.innerText(s)).replace(/\s+/g,' ').trim();
 let p=await phone({theme:'light'});
 await p.click('#menuBtn');await p.waitForTimeout(150);
 const items=await p.$$eval('#dd .item:not(.hidden)',bs=>bs.map(b=>b.textContent.trim().replace(/\s+/g,' ')));
-ok('menu items',['Themes','Achievements','Learning center','Fun center','Weights','Settings','Data management','Guide','About','Family','Sign-in and security','Sign out'].every((n,k)=>items[k]&&items[k].replace(/^\W+/u,'').startsWith(n))&&items.length===12,JSON.stringify(items));
+ok('menu items',['Themes','Achievements','Learning center','Fun center','Weights','Milk storage','Settings','Data management','Guide','About','Family','Sign-in and security','Sign out'].every((n,k)=>items[k]&&items[k].replace(/^\W+/u,'').startsWith(n))&&items.length===13,JSON.stringify(items));
 ok('no export/import/erase/print/wipe in the menu itself',!/Export|Import|Erase|Print this|remove from this phone/.test(await txt(p,'#dd')));
 ok('themes in a 2x2 grid in the Themes window',await p.click('[data-act=themes]').then(()=>p.$$eval('#themeModal .tgrid .dalm',bs=>bs.length===4&&bs[0].getBoundingClientRect().top===bs[1].getBoundingClientRect().top&&bs[2].getBoundingClientRect().top>bs[0].getBoundingClientRect().top)));await p.screenshot({path:(process.env.CRADLE_OUT||'out')+'/menu-themes.png'});await p.keyboard.press('Escape');await p.click('#menuBtn');
 ok('donate hidden without a link',!(await p.isVisible('#donateItem')));

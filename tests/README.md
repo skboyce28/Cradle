@@ -10,6 +10,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 | `game.test.mjs` | Bottle Catch: pause, scoring, initials, the three high-score boards, server-side limits |
 | `stork.test.mjs` | Stork Flight: hovering until the first tap, flapping, pausing, crashing, posting, the three-way game switch, server-side limits, offline posting, the Night Flyer badge |
 | `avatar.test.mjs` | Profile pictures: built-in and uploaded, who can see them (only me, family, everyone) on the Family screen and the boards, deleting a photo, database checks; and the Night shift button |
+| `milk.test.mjs` | Milk storage: adding to the freezer and fridge, oz to mL, CDC age flags, rules, freeze, thaw, use as a bottle feed, undo, labels (find, unknown label, scanning with a pretend camera, printing Code 128), syncing to another phone, export |
 | `mfa.test.mjs` | Two-step sign-in: setting it up, wrong and right codes, the code step on a new phone, the owner's require-it rule, setting it up when required, turning it off, and the database refusing password-only sign-ins |
 | `weights.test.mjs` | Weight entry in grams or lb and oz: weighted feeds, switching units, the Weights screen, birth weight |
 | `word.test.mjs` | Daily Word: the word lists, the day's word worked out separately, colors, too-short and unknown words, hard mode, points and posting, one result per day, a second phone, the family and Everyone boards, practice, offline posting, switching boards |

@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.26
+
+**Milk storage**
+- **Milk storage** in the profile menu (after Weights): pumped milk in the fridge and freezer. Each container records when it was pumped, the amount (mL, or typed like `4 oz`), the container (storage bag, bottle, tray or cubes, other), an optional label, and a note. **How many** adds several identical containers at once
+- Totals for the freezer, fridge, and thawed milk, in mL and oz; the menu shows the total stored
+- Oldest first, with CDC limits: fresh milk 4 days in the fridge; frozen best within 6 months, fine up to 12; thawed 24 hours, never refrozen. Rows turn amber when it's time to use them and orange when they're past the limit, and the oldest frozen milk is marked **Use first**
+- **Freeze** (fridge to freezer, refused after 4 days), **Thaw** (freezer to fridge, starts the 24 hours), and **Use**: log a bottle feed now with that amount, mark it used, or throw it away. **Recently used** keeps the last 10, with **Undo**
+- **Labels**: type the label on your bag; tap 📷 to scan a barcode or QR code where the browser can (Chrome on Android, for example; it uses the browser's built-in barcode reader); or **Print labels**, which gives containers without one a code like `CM-7KQ2M` and prints a sheet of Code 128 barcode labels with the amount and date. **Find by label** filters the list, and Enter (or a Bluetooth scanner) jumps to that container, or starts a new one with that label
+- Syncs to the whole family like the rest of the log, and is included in export and import. No database change
+- The site now allows the camera for Cradle itself (`Permissions-Policy: camera=(self)`), for scanning; other sites still can't use it
+- The profile menu puts Guide and About on one row so it still fits on a phone
+- The overview has a Milk storage card (Diapers, Vitamin D, and baths now share one, so the grid stays at nine)
+- New test: `tests/milk.test.mjs` (37 checks). The printed labels were also checked with a separate barcode reader
+
 ## v1.25
 
 **Two-step sign-in**
