@@ -117,6 +117,23 @@ Open Cradle in a real browser (Chrome, Safari) or as the installed app, not insi
 **Text message export doesn't open Messages**
 Use **📋 Copy code** on the export screen and paste it into any message, or use **Download file** or **Share file**.
 
+## Fun center
+
+**"High scores aren't set up on this Cradle yet"**
+Whoever runs your Cradle needs to run [`supabase/2-family.sql`](../supabase/2-family.sql) again in the Supabase SQL Editor. Daily Word (v1.18) added to it. It's safe to rerun and keeps everything already there.
+
+**Daily Word says "Already posted for this day from another phone"**
+Each account gets one Daily Word result per day, from whichever phone finishes first. The other phone shows that result.
+
+**Daily Word says "Too late to post this day's word"**
+A result can only post within about a day, so one played offline and synced days later stays on the phone. It still counts toward your stats and badges there.
+
+**Someone wants to play a day again**
+An admin can remove that day's result with query 20c in [`supabase/admin-queries.sql`](../supabase/admin-queries.sql). The phone that played it still remembers it, so they'd play again on another phone.
+
+**Everyone in the family got a different word**
+The word depends on the length you picked (4, 5, or 6) and the phone's date. Pick the same length to get the same word. Around midnight, phones in different time zones can be a day apart.
+
 ## Updates
 
 **A phone is stuck on an old version**

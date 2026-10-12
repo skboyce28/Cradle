@@ -229,7 +229,7 @@ begin
   return public.cradle_bootstrap();
 end $$;
 
--- 5) Fun center: arcade-style high scores (Bottle Catch)
+-- 5) Fun center: high scores (Bottle Catch and Daily Word)
 --    Only initials and scores are ever shown to other people. All reads and writes go
 --    through the functions below; the tables themselves aren't readable from the app.
 create table if not exists public.cradle_players (
@@ -250,6 +250,13 @@ create table if not exists public.cradle_scores (
 );
 create index if not exists cradle_scores_game_score on public.cradle_scores (game, score desc);
 create index if not exists cradle_scores_user on public.cradle_scores (user_id, created_at desc);
+-- Daily Word (v1.18): one result per person per day. detail is the colored grid only, never the
+-- letters: "5h:01200/22222" means 5 letters, hard mode, two guesses (0 gray, 1 yellow, 2 green).
+alter table public.cradle_scores add column if not exists day date;
+alter table public.cradle_scores add column if not exists detail text;
+alter table public.cradle_scores drop constraint if exists cradle_scores_detail;
+alter table public.cradle_scores add constraint cradle_scores_detail check (detail is null or length(detail) <= 60);
+create unique index if not exists cradle_scores_one_a_day on public.cradle_scores (user_id, game, day) where day is not null;
 
 alter table public.cradle_players enable row level security;
 alter table public.cradle_scores  enable row level security;
@@ -315,7 +322,7 @@ begin
   if p_game <> 'bottles' then raise exception 'unknown game'; end if;
   if p_seconds is null or p_seconds < 0 or p_seconds > 130 then raise exception 'That round length isn''t possible.'; end if;
   if p_score is null or p_score < 0 or p_score > 100 * greatest(p_seconds, 1) then raise exception 'That score isn''t possible for a round that long.'; end if;
-  select max(created_at) into last from cradle_scores where user_id = uid;
+  select max(created_at) into last from cradle_scores where user_id = uid and game = p_game;
   if last is not null and last > now() - interval '10 seconds' then raise exception 'Scores are coming in too fast. Try again in a moment.'; end if;
   if (select count(*) from cradle_scores where user_id = uid and created_at > now() - interval '1 day') >= 200 then
     raise exception 'That''s a lot of rounds today. Scores will post again tomorrow.';
@@ -333,13 +340,82 @@ begin
   return cradle_scores_board(p_game);
 end $$;
 
+-- Daily Word boards: total points (a win in 1 guess is 70, in 6 is 20, +10 in hard mode),
+-- current streak of days won, and each family member's grid for p_day (colors only).
+create or replace function public.cradle_word_board(p_day date default null) returns json
+language sql stable security definer set search_path = public as $$
+  with me as (select auth.uid() as uid),
+  d as (select coalesce(p_day, (now() at time zone 'utc')::date) as day),
+  fam as (select household_id from cradle_members where user_id = (select uid from me) order by joined_at desc limit 1),
+  w as (select user_id, initials, score, day, detail, created_at from cradle_scores where game = 'word' and day is not null),
+  wins as (select user_id, day, day - (row_number() over (partition by user_id order by day))::int as grp from w where score > 0),
+  runs as (select user_id, max(day) as last_day, count(*)::int as n from wins group by user_id, grp),
+  streak as (select user_id, coalesce(max(n) filter (where last_day >= (select day from d) - 1), 0) as cur, max(n) as best from runs group by user_id),
+  tot as (
+    select w.user_id, (array_agg(w.initials order by w.created_at desc))[1] as initials, sum(w.score)::int as total,
+           count(*)::int as played, (count(*) filter (where w.score > 0))::int as won, max(w.created_at) as at,
+           max(w.detail) filter (where w.day = (select day from d)) as today
+    from w group by w.user_id),
+  b as (select t.*, coalesce(s.cur, 0) as streak, coalesce(s.best, 0) as best_streak, t.user_id = (select uid from me) as me from tot t left join streak s on s.user_id = t.user_id),
+  f as (select b.* from b join cradle_members m on m.user_id = b.user_id and m.household_id = (select household_id from fam))
+  select json_build_object(
+    'initials', (select initials from cradle_players where user_id = (select uid from me)),
+    'day',      (select day from d),
+    'everyone', coalesce((select json_agg(json_build_object('initials', x.initials, 'score', x.total, 'played', x.played, 'won', x.won, 'streak', x.streak, 'me', x.me, 'at', x.at) order by x.total desc, x.at)
+                          from (select * from b order by total desc, at limit 10) x), '[]'::json),
+    'family',   coalesce((select json_agg(json_build_object('initials', x.initials, 'score', x.total, 'played', x.played, 'won', x.won, 'streak', x.streak, 'me', x.me, 'at', x.at, 'today', x.today) order by x.total desc, x.at)
+                          from (select * from f order by total desc, at limit 20) x), '[]'::json),
+    'mine',     coalesce((select json_agg(json_build_object('day', x.day, 'score', x.score, 'detail', x.detail) order by x.day desc)
+                          from (select day, score, detail from w where user_id = (select uid from me) order by day desc limit 10) x), '[]'::json),
+    'me',       (select json_build_object('score', total, 'played', played, 'won', won, 'streak', streak, 'best_streak', best_streak, 'today', today) from b where me),
+    'rank',     (select count(*) + 1 from b where total > coalesce((select total from b where me), -1)),
+    'players',  (select count(*) from b)
+  );
+$$;
+
+-- Post a Daily Word result: the day (the player's own date), the length, the grid as digits
+-- ("01200/22222"), and hard mode. Points are worked out here, and each day counts once.
+create or replace function public.cradle_submit_word(p_day date, p_len int, p_rows text, p_hard boolean default false, p_initials text default null) returns json
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); i text; h uuid; r text[]; n int; won boolean; pts int; today date := (now() at time zone 'utc')::date;
+begin
+  if uid is null then raise exception 'not signed in'; end if;
+  if p_len is null or p_len not in (4, 5, 6) then raise exception 'Words are 4, 5, or 6 letters.'; end if;
+  if p_day is null or p_day < today - 1 or p_day > today + 1 then raise exception 'That isn''t today''s word.'; end if;
+  r := string_to_array(coalesce(p_rows, ''), '/');
+  n := coalesce(array_length(r, 1), 0);
+  if n < 1 or n > 6 then raise exception 'That result isn''t possible.'; end if;
+  for k in 1..n loop
+    if r[k] !~ ('^[012]{' || p_len || '}$') or (k < n and r[k] = repeat('2', p_len)) then raise exception 'That result isn''t possible.'; end if;
+  end loop;
+  won := r[n] = repeat('2', p_len);
+  if not won and n < 6 then raise exception 'That result isn''t possible.'; end if;
+  pts := case when won then (8 - n) * 10 + case when p_hard then 10 else 0 end else 0 end;
+  if p_initials is not null and p_initials <> '' then
+    i := cradle_clean_initials(p_initials);
+    insert into cradle_players (user_id, initials) values (uid, i)
+      on conflict (user_id) do update set initials = excluded.initials, updated_at = now();
+  else
+    select initials into i from cradle_players where user_id = uid;
+    if i is null then raise exception 'Pick your initials first.'; end if;
+  end if;
+  select household_id into h from cradle_members where user_id = uid order by joined_at desc limit 1;
+  insert into cradle_scores (user_id, household_id, game, initials, score, seconds, day, detail)
+  values (uid, h, 'word', i, pts, 0, p_day, p_len || case when p_hard then 'h' else '' end || ':' || p_rows)
+  on conflict (user_id, game, day) where day is not null do nothing;
+  if not found then raise exception 'You already played this day''s word.'; end if;
+  return cradle_word_board(p_day);
+end $$;
+
 grant execute on function public.cradle_bootstrap(), public.cradle_family_info(uuid), public.cradle_invite(uuid,text),
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
   public.cradle_new_code(uuid), public.cradle_leave(uuid),
-  public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text)
+  public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text),
+  public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text)
   to authenticated;
 revoke execute on function public.cradle_bootstrap(), public.cradle_family_info(uuid), public.cradle_invite(uuid,text),
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
   public.cradle_new_code(uuid), public.cradle_leave(uuid),
-  public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text)
+  public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text),
+  public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text)
   from anon, public;

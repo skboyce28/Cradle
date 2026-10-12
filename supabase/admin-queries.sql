@@ -128,10 +128,10 @@ where deleted and updated_at < now() - interval '90 days';
 
 
 -- ============================================================
--- Fun center (Bottle Catch) high scores
+-- Fun center high scores (Bottle Catch and Daily Word)
 -- ============================================================
 
--- 17. Top 20 scores, with the account behind each (only you see emails; players see initials)
+-- 17. Bottle Catch: top 20 scores, with the account behind each (only you see emails; players see initials)
 select s.id, s.initials, s.score, s.seconds, s.created_at, u.email
 from public.cradle_scores s
 join auth.users u on u.id = s.user_id
@@ -142,12 +142,26 @@ limit 20;
 -- 18. CHANGES DATA. Remove one score (use the id from query 17)
 delete from public.cradle_scores where id = 0;
 
--- 19. CHANGES DATA. Clear every score for one account (their initials stay saved)
+-- 19. CHANGES DATA. Clear every score for one account, in every game (their initials stay saved)
 delete from public.cradle_scores
 where user_id = (select id from auth.users where email = 'their@email.com');
 
--- 20. CHANGES DATA. Reset the whole board for everyone
+-- 20. CHANGES DATA. Reset the whole Bottle Catch board for everyone
 delete from public.cradle_scores where game = 'bottles';
+
+-- 20b. Daily Word: points, days played and won, by account (players see initials only)
+select s.initials, u.email, sum(s.score) as points, count(*) as played,
+       count(*) filter (where s.score > 0) as won, max(s.day) as last_played
+from public.cradle_scores s
+join auth.users u on u.id = s.user_id
+where s.game = 'word'
+group by s.initials, u.email
+order by points desc;
+
+-- 20c. CHANGES DATA. Remove one day's Daily Word result for one account (lets them post that day again)
+delete from public.cradle_scores
+where game = 'word' and day = '2026-10-12'
+  and user_id = (select id from auth.users where email = 'their@email.com');
 
 
 -- ============================================================

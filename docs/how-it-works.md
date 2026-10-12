@@ -9,7 +9,8 @@ For anyone reading, changing, or reviewing the code. For how it's deployed and w
   - `days`: keyed by date (`YYYY-MM-DD`); each day has `feeds`, `notes`, and a Vitamin D flag
   - `weights`, `settings`, plus UI preferences
   - `migrate()` upgrades older saved shapes when the app loads
-- **Game state.** Fun center settings live in the log's UI preferences. Your best score per account, remembered initials, and scores waiting to post (from rounds played offline) live under `cradle-game-v1`.
+- **Game state.** Fun center settings live in the log's UI preferences. For Bottle Catch, your best score per account, remembered initials, and scores waiting to post (from rounds played offline) live under `cradle-game-v1`. For Daily Word, each account's chosen length, hard mode, practice word, and about a year of days (guesses, result, and whether it posted) live under `cradle-word-v1`. Neither is part of the log, exports, or sync. **Erase all data** and **Sign out and remove from this phone** clear both.
+- **Daily Word.** The word lists are a JSON block in the page (`wordData`): for each length, the answers and the other allowed guesses, each a run of fixed-length words. The day's word is `answers[(days since 2026-10-12) mod count]` for the phone's own date, so everyone who picks the same length gets the same word, and it changes at local midnight. Colors follow the usual rule for repeated letters (greens first, then yellows up to the number left). [`tools/words/build_words.py`](../tools/words/build_words.py) builds the lists from SCOWL and never reorders words already published.
 - **Sync state.** Sign-in and sync bookkeeping live separately under `cradle-cloud-v1`: session tokens, the family id, the last sync time, and a fingerprint of each item as last synced.
 - **Day of life.** The birth date in Settings is **Day 0**. Diaper goals are computed from it.
 - **Left and right split.** A feed with both sides has `split`, the percent of its minutes on the left (0 to 100, in steps of 5). Missing means 50/50; a one-side feed is all on that side. `sideMins()` turns minutes and split into whole minutes per side, used by the Dashboard, the chart explorer, the day sheet, and the doctor report.
@@ -75,7 +76,7 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | `cradle_invites` | Pending "add by email" invites |
 | `cradle_join_tries` | Wrong share-key attempts, for rate limiting |
 | `cradle_players` | Each account's 3 initials for the high-score boards |
-| `cradle_scores` | Fun center scores: account, family at the time, game, initials, score, round length in seconds |
+| `cradle_scores` | Fun center scores: account, family at the time, game (`bottles` or `word`), initials, score, round length in seconds, and for Daily Word the day and the grid as colors only (like `5h:01200/22222`: 5 letters, hard mode, 0 gray, 1 yellow, 2 green). One Daily Word result per account per day. |
 | `cradle_push_subs`, `cradle_push_keys` | Optional, from `3-notifications.sql`: phones that get feed-due notifications, and the notification keys. See [Notifications](notifications.md#how-it-works). |
 
 A trigger (`cradle_touch`) stamps `updated_at` with the server's clock and records `owner` on every write, so phones with wrong clocks can't confuse sync. Deleting an account clears `owner` on its entries but **never deletes entries**.
@@ -102,7 +103,9 @@ All changes to families go through these functions, which check permissions them
 | `cradle_leave(h)` | members | Leaves the family |
 | `cradle_scores_board(game)` | anyone signed in | The three boards: Everyone (each person's best, top 10), Our family (top 10), My best (top 10), plus your initials and rank. Only initials and scores. |
 | `cradle_set_initials(initials)` | anyone signed in | Saves your 3 initials and updates your past scores |
-| `cradle_submit_score(score, seconds, initials)` | anyone signed in | Posts a score. Refuses rounds over 130 seconds, more than 100 points per second played, posting within 10 seconds of your last score, more than 200 scores a day, and initials on a short blocklist. |
+| `cradle_submit_score(score, seconds, initials)` | anyone signed in | Posts a Bottle Catch score. Refuses rounds over 130 seconds, more than 100 points per second played, posting within 10 seconds of your last score, more than 200 scores a day, and initials on a short blocklist. |
+| `cradle_word_board(day)` | anyone signed in | Daily Word boards: Everyone (total points, top 10, with current streak), Our family (totals and each person's grid for that day), My days (your last 10), plus your totals and rank. Only initials, points, and colors. |
+| `cradle_submit_word(day, len, rows, hard, initials)` | anyone signed in | Posts a Daily Word result. Works out the points itself (70 for 1 guess down to 20 for 6, +10 hard, 0 if not solved), checks the grid is possible (1 to 6 rows of the right length, solved only on the last row, 6 rows if not solved) and that the day is within a day of today, and takes one result per account per day. |
 | `cradle_push_info(endpoint)` | anyone signed in | Optional notifications: the public notification key, and this phone's setting |
 | `cradle_push_subscribe(…)` / `cradle_push_unsubscribe(endpoint)` | anyone signed in | Turns notifications on or off for one phone, in the caller's current family |
 | `cradle_push_due()`, `cradle_push_result()`, `cradle_push_get_keys()`, `cradle_push_set_keys()` | the cradle-notify function only (service role) | Finds phones to tell, records results, and manages the notification keys |
@@ -156,4 +159,4 @@ It's **not** an independent security audit. See [DISCLAIMER.md](../DISCLAIMER.md
 - **Bump `VERSION`** and add to the changelog in the About dialog and in `CHANGELOG.md`.
 - **Database changes** go in `supabase/2-family.sql` (or `3-notifications.sql` for notifications), written so they're safe to rerun (`if not exists`, `create or replace`, `drop … if exists`).
 - **Build:** `python3 build_pwa.py`, then serve `pwa/` over http(s) to test install and offline. For example: `python3 -m http.server -d pwa 8080`.
-- **Tests:** `cd tests && npm ci && node run.mjs` runs over 250 checks against a throwaway Postgres. GitHub runs the same suite on every push. See [tests/README.md](../tests/README.md).
+- **Tests:** `cd tests && npm ci && node run.mjs` runs over 300 checks against a throwaway Postgres. GitHub runs the same suite on every push. See [tests/README.md](../tests/README.md).

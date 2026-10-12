@@ -21,7 +21,7 @@ sql('delete from cradle_scores');  // start from an empty board (test database o
 const {p:A}=await phone('A');await up(A,'gdad'+sfx);
 const famKey=sql(`select join_code from cradle_households h join cradle_members m on m.household_id=h.id join auth.users u on u.id=m.user_id where u.email='gdad${sfx}@cradle.cfg'`);
 await A.click('#menuBtn');ok('menu has Fun center under Learning center',/Learning center\s*\n?\s*🎮?\s*Fun center/.test(await A.innerText('#dd'))||(await txt(A,'#dd')).indexOf('Learning center')<(await txt(A,'#dd')).indexOf('Fun center'));
-await A.click('[data-act=fun]');await A.waitForTimeout(200);ok('Fun center shows Bottle Catch',/Bottle Catch/.test(await txt(A,'#funModal'))&&/Your best: --/.test(await txt(A,'#funModal')));
+await A.click('[data-act=fun]');await A.waitForTimeout(200);ok('Fun center shows Bottle Catch and Daily Word',/Bottle Catch/.test(await txt(A,'#funModal'))&&/Daily Word/.test(await txt(A,'#funModal'))&&/Your best: --/.test(await txt(A,'#funModal')));
 await A.screenshot({path:(process.env.CRADLE_OUT||'out')+'/g-fun.png'});
 await A.click('#funPlay');await A.waitForTimeout(200);ok('start screen with how-to and toggles',/Catch bottles: \+10/.test(await txt(A,'#gPanel'))&&/Buzz on Sound off/.test(await txt(A,'#gPanel')));
 await A.screenshot({path:(process.env.CRADLE_OUT||'out')+'/g-start.png'});
@@ -52,7 +52,7 @@ let r1=await scoringRound(A,150,'tst');ok('first posted score asks for initials,
 ok('score in database',sql(`select initials||' '||score from cradle_scores order by id desc limit 1`)===`TST ${r1.sc}`);
 await A.screenshot({path:(process.env.CRADLE_OUT||'out')+'/g-over.png'});
 let r2=await scoringRound(A,90,'xxx');ok('next round posts without asking',/Posted/.test(r2.post)&&!(await A.isVisible('#gIni')),r2.post);
-await A.click('#gPanel [data-g=board]');await A.waitForTimeout(900);let bd=await txt(A,'#gList');ok('Everyone board lists TST',/TST/.test(bd),bd);await A.screenshot({path:(process.env.CRADLE_OUT||'out')+'/g-board.png'});
+await A.click('#gPanel [data-g=board]');await A.waitForTimeout(900);let bd=await txt(A,'#gList');ok('Everyone board lists TST',/TST/.test(bd),bd);ok('board has the game switch: Bottle Catch and Daily Word',/Bottle Catch Daily Word/.test(await txt(A,'#gPanel .g-games')));await A.screenshot({path:(process.env.CRADLE_OUT||'out')+'/g-board.png'});
 // wife joins the family, stranger in another family
 const {p:W}=await phone('W');await up(W,'gmom'+sfx,famKey);await W.click('#menuBtn');await W.click('[data-act=fun]');await W.click('#funPlay');
 const rw=await scoringRound(W,250,'mom');ok('family member posts',/Posted/.test(rw.post),rw.post);

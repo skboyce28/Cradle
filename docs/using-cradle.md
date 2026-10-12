@@ -149,7 +149,11 @@ In the profile menu. **High-contrast cards** are five original black-and-white d
 
 ## Fun center
 
-In the profile menu. **Bottle Catch** is a two-minute, one-thumb game for the in-between moments.
+In the profile menu: two games for the in-between moments, with shared high scores.
+
+### Bottle Catch
+
+A two-minute, one-thumb arcade game.
 
 | Falls | What it does |
 |---|---|
@@ -163,15 +167,45 @@ In the profile menu. **Bottle Catch** is a two-minute, one-thumb game for the in
 - **Pausing:** the game pauses by itself when you switch apps or the feed alarm rings. **❚❚** pauses it by hand; **End round** finishes early and keeps your score.
 - **Sound and buzz:** sound starts **off** so it won't wake anyone. **Buzz** (a light vibration) and **Sound** switch on the start and pause screens.
 
+### Daily Word
+
+A new word every day at midnight. Guess it in 6 tries.
+
+- **Pick 4, 5, or 6 letters** on the start screen (the **?** button). Everyone who picks the same length gets the same word that day, so the family can compare. Once you've made today's first guess, a new choice applies from tomorrow (and to practice).
+- **Colors:**
+
+  | Color | Means |
+  |---|---|
+  | 🟩 Green | Right letter, right spot |
+  | 🟨 Yellow | In the word, wrong spot |
+  | ⬛ Gray | Not in the word |
+
+  A letter you typed twice only turns yellow as many times as it's in the word. The keyboard shows what you've found.
+- **Guesses must be real words.** You can type about 3,100 four-letter, 6,400 five-letter, and 10,700 six-letter words. The answers come from a smaller list of common words (about 1,400, 1,900, and 2,400), with no plurals, past tenses, or anything rude or grim.
+- **Hard mode:** green letters must stay in their spot and yellow letters must be used in every later guess. Worth 10 extra points. Choose it before today's first guess.
+- **Points:** 70 for solving in 1 guess, 60 in 2, down to 20 in 6, and 0 if you don't get it. +10 in hard mode.
+- **Your stats:** played, win %, current streak, best streak, and how many guesses your wins took. A streak is days in a row solved; a lost or skipped day starts it over.
+- **Share** copies your colored squares (never the letters) to paste into a text.
+- **Practice:** unlimited random words at your length. No points, no stats, and nothing is posted.
+- **Stop anytime.** Your guesses are saved on the phone, so a feed in the middle of a word is no problem.
+- **One result per day per account.** If you already played today's word on another phone, this one shows your result (as colors) instead of a new game.
+- **On a computer,** type with the keyboard: letters, Enter, and Backspace.
+
 ### High scores
 
-- **Initials:** your first posted score asks for **3 initials**. They're remembered for your account, and **Change** on the board updates them, past scores included.
-- **Three boards:**
+Each game has its own boards; the buttons at the top of the High scores screen switch between them.
+
+- **Initials:** your first posted score asks for **3 initials**. Both games use the same ones. They're remembered for your account, and **Change** on the board updates them, past scores included.
+- **Bottle Catch boards:**
   - **Everyone:** each player's best score across this Cradle site, top 10.
   - **Our family:** your family's top 10.
   - **My best:** your own top 10, with your rank.
-- **What's shown:** only initials and scores, never names or emails.
-- **Offline:** a round played offline is saved on the phone and posts when you're back online. If several are waiting, your best one posts.
+- **Daily Word boards:**
+  - **Everyone:** total points across this Cradle site, top 10, with each player's 🔥 streak and words solved.
+  - **Our family:** your family's totals, plus each person's grid for today. Grids show colors only, and stay hidden until you've finished today's word, so nothing is spoiled.
+  - **My days:** your last 10 days, with your grids.
+- **What's shown:** only initials, scores, and colored grids, never names, emails, or letters.
+- **Offline:** a Bottle Catch round played offline is saved on the phone and posts when you're back online (if several are waiting, your best one posts). A Daily Word result posts when you're back online too, as long as that's within about a day.
 
 ## Profile menu
 
@@ -183,8 +217,8 @@ The round button at the top right:
 | **Family** | Share key, people, joining and leaving. See [Accounts and families](accounts-and-families.md). |
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
-| **Fun center** | Bottle Catch and its high scores. See [Fun center](#fun-center). |
-| **Achievements** | Forty badges with progress, in seven groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, and Weight and milestones. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
+| **Fun center** | Bottle Catch, Daily Word, and their high scores. See [Fun center](#fun-center). |
+| **Achievements** | Fifty badges with progress, in eight groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, and Fun center. Fun center badges (like *First Word*, *Week of Words*, and *Bottle Pro*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About** | In-app help, version, and changelog |

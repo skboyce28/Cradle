@@ -1,5 +1,27 @@
 # Changelog
 
+## v1.18
+
+**Daily Word** (in the Fun center)
+- A new word every day at midnight. Guess it in 6 tries, with green, yellow, and gray letters and a keyboard that shows what you've found
+- **Each person picks 4, 5, or 6 letters.** Everyone who picks the same length gets the same word that day
+- **Hard mode:** found letters must be used in later guesses, for 10 extra points
+- **Points:** 70 for solving in 1 guess down to 20 in 6, 0 if not solved. Stats for played, win %, streak, best streak, and guesses per win
+- **Share** copies your colored squares (no letters). **Practice** gives unlimited random words with no points
+- Stop mid-word anytime; your guesses are saved on the phone. One result per account per day: another phone shows the result instead of a new game
+- Real words only: about 3,100, 6,400, and 10,700 allowed words for 4, 5, and 6 letters, and common words as answers (no plurals or past tenses, nothing rude or grim). From SCOWL; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). [`tools/words/build_words.py`](tools/words/build_words.py) builds them
+
+**High scores for both games**
+- The High scores screen has a switch for **Bottle Catch** and **Daily Word**. Both use the same 3 initials
+- Daily Word boards: **Everyone** (total points, with 🔥 streaks), **Our family** (totals, plus each person's grid for today, colors only, hidden until you've played), and **My days**
+- Results played offline post when you're back online (within about a day)
+
+**Achievements:** 10 new Fun center badges (50 in all, in eight groups): First Word, Word Lover, Wordsmith, Week of Words, Month of Words, Lucky Guess, Hard Mode Hero, Every Length, Bottle Pro, and Bottle Legend. They count the games played on each phone by whoever is signed in.
+
+**For whoever runs your Cradle:** run [`supabase/2-family.sql`](supabase/2-family.sql) again in the SQL Editor. It adds two columns to `cradle_scores` and the functions `cradle_word_board` and `cradle_submit_word`, and now limits the 10-second Bottle Catch posting gap to Bottle Catch. Safe to rerun. New admin queries 20b and 20c.
+
+- New tests: `tests/word.test.mjs` (36 checks), plus updates to the achievements and Bottle Catch tests
+
 ## Notification setup guide
 
 No change to the app.

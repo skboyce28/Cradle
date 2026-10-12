@@ -36,9 +36,9 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
 | **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, and baths. Every tab also prints. |
 | **Weighted feeds** | Before and after weights on a feed, with the estimated transfer (1 g ≈ 1 mL). |
 | **Weights** | A list of every weight to review, edit, or delete, and a chart against birth weight. |
-| **Achievements** | Forty badges in seven groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
+| **Achievements** | Fifty badges in eight groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
-| **Fun center** | **Bottle Catch**: a two-minute, one-thumb game for the waiting moments, with arcade-style high scores (3 initials) for everyone, your family, and you. |
+| **Fun center** | **Bottle Catch**: a two-minute, one-thumb arcade game. **Daily Word**: a new word every day to guess in 6 tries, at 4, 5, or 6 letters (each person picks), with hard mode, streaks, and practice. Both have high scores (3 initials) for everyone, your family, and you. |
 | **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs within about 15 seconds. Join with a share key like `K7QM-4XPD`. |
 | **Works offline** | Every phone keeps its own copy and catches up when it reconnects. Installs to the home screen like an app. |
 | **Your data, your database** | Sync runs through **your own** free Supabase project. No analytics, no ads, no third-party scripts. Export to a file or a text message at any time. |
@@ -77,19 +77,21 @@ Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 ```
 cradle.html            The whole app: one file, no dependencies
 LICENSE.md             PolyForm Noncommercial 1.0.0
+THIRD-PARTY-NOTICES.md Credits and license for Daily Word's word lists (SCOWL)
 build_pwa.py           Builds the installable web app into pwa/ (python3 build_pwa.py)
 .env.example           Template for your Supabase address + publishable key (copy to .env, which git ignores)
 icons/                 App icons used by the build
 supabase/
   1-setup.sql          Step 1: the log table
-  2-family.sql         Step 2: families, accounts, share keys
+  2-family.sql         Step 2: families, accounts, share keys, Fun center high scores
   3-notifications.sql  Optional: feed-due notifications (phones, keys, due times)
   4-notify-schedule.sql  Optional: runs the cradle-notify function every minute
   functions/cradle-notify/  The Edge Function that sends the notifications
   admin-queries.sql    Queries for running Cradle: confirm accounts, find families, fix problems
   invite-email.html    Optional "Welcome to Cradle" email template
 netlify.toml           Lets Netlify build and publish straight from this repo
-tests/                 Over 250 automated checks; run on every push by .github/workflows/tests.yml
+tools/words/           Builds Daily Word's word lists into cradle.html
+tests/                 Over 300 automated checks; run on every push by .github/workflows/tests.yml
 docs/                  The guides above, the product overview page, and screenshots
 ```
 
@@ -105,7 +107,7 @@ Your log lives in your browser and in **your** Supabase project; it never touche
 - **No password reset email** unless you connect your own email sender (SMTP) in Supabase. Encourage people to sign up with a real email.
 - **Free Supabase projects pause after about a week without use.** Daily logging keeps it awake; a paused project can be restored from the dashboard.
 - **One baby per family.** Twins or siblings would each need their own family for now.
-- **High scores are checked, not cheat-proof.** The server refuses impossible scores, but like any web game, a determined cheater could post a believable fake.
+- **High scores are checked, not cheat-proof.** The server refuses impossible scores and takes one Daily Word result per day, but like any web game, a determined cheater could post a believable fake. Daily Word's word lists are inside the app, so the answer isn't secret from someone who goes looking.
 
 ## Built with AI
 
@@ -118,5 +120,7 @@ Cradle is licensed under the **[PolyForm Noncommercial License 1.0.0](LICENSE.md
 - **You can** use it, change it, and share it for any noncommercial purpose: your own family, friends, hobby projects, study, and charities, schools, or public health organizations.
 - **You can't** use it commercially, for example selling it, charging for a hosted version, or building it into a paid product, without separate permission. Open an issue to ask.
 - Anyone you share it with must get the license terms and this notice: `Required Notice: Copyright (c) 2026 skboyce28 (https://github.com/skboyce28/Cradle)`.
+
+Daily Word's word lists come from [SCOWL](http://wordlist.aspell.net/), Copyright 2000-2016 Kevin Atkinson, used under its permissive license: see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 PolyForm Noncommercial is source-available, not "open source" by the Open Source Initiative's definition, because it limits commercial use.

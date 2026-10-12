@@ -60,7 +60,7 @@ Built by two scripts, both safe to rerun in any order:
 | `cradle_invites` | `household_id` · `email` · `invited_by` · `created_at` | Pending "add by email" invites |
 | `cradle_join_tries` | `user_id` · `at` | Wrong share-key attempts, for the lockout of 10 per hour |
 | `cradle_players` | `user_id` · `initials` · `updated_at` | Each account's 3 initials for the high-score boards |
-| `cradle_scores` | `id` · `user_id` · `household_id` · `game` · `initials` · `score` · `seconds` · `created_at` | Fun center scores. Only readable through `cradle_scores_board`, which shows initials and scores only. |
+| `cradle_scores` | `id` · `user_id` · `household_id` · `game` · `initials` · `score` · `seconds` · `created_at` · `day` · `detail` | Fun center scores. `game` is `bottles` (Bottle Catch) or `word` (Daily Word, with its `day` and the grid as colors in `detail`; one per account per day). Only readable through `cradle_scores_board` and `cradle_word_board`, which show initials, scores, and colors only. |
 | `cradle_push_subs` | `endpoint` · `user_id` · `household_id` · `p256dh` · `auth` · `tz` · `lead_min` · `last_sent_due` · `fails` | Optional. One row per phone with notifications on. No app access; changed only through `cradle_push_subscribe` and `cradle_push_unsubscribe`. |
 | `cradle_push_keys` | `public_key` · `private_jwk` | Optional. The notification (VAPID) key pair, made by the function on its first run. Only the service role can read it. |
 
@@ -101,8 +101,9 @@ Built by two scripts, both safe to rerun in any order:
 | 15 | Check storage |
 | 16 | Tidy old deletion markers |
 | 17 | Top Bottle Catch scores, with the account behind each |
-| 18 to 20 | Remove one score, clear one player's scores, or reset the whole board |
-| 21 to 24 | Notifications: phones that get them, check the every-minute job, stop one account's phones, new notification keys |
+| 18 to 20 | Remove one score, clear one player's scores, or reset the whole Bottle Catch board |
+| 20b, 20c | Daily Word points by account; remove one day's result so someone can post that day again |
+| 21 to 24 | Notifications: phones that get them, check the every-minute job (22) and what the function answered (22b), stop one account's phones, new notification keys |
 
 Queries that change data are marked **CHANGES DATA**.
 
@@ -183,6 +184,7 @@ The main choices so far, why they were made, and what they cost.
 | 12 | **Personal starter log stripped at build** | The author's copy can preload real data without it reaching the public site. | The public copy keeps the block empty (`{}`). |
 | 13 | **PolyForm Noncommercial license** | Free for families, friends, and charities; no commercial reuse without permission. | Not "open source" by the official definition. |
 | 14 | **Built with AI assistance (Claude), tested in a simulation** | Fast iteration. Each feature is checked with a real Postgres database running the real scripts, a stand-in for Supabase's API, and Chromium playing several phones. The suite lives in [`tests/`](../tests/) and runs on every push with GitHub Actions. | A simulation isn't the real Supabase or a real phone, and nothing has had an independent security review. Netlify deploys even if the tests fail, so check the ✅. |
-| 15 | **Fun center high scores checked by the server, shown as initials only** | Scores post from the phone, so the server is the only place to enforce rules. Initials keep the shared board fun without exposing who anyone is. | The checks stop impossible and spammy scores, but a careful cheater could still post a believable fake. Only the best queued offline score posts. |
+| 15 | **Fun center high scores checked by the server, shown as initials only** | Scores post from the phone, so the server is the only place to enforce rules. Initials keep the shared board fun without exposing who anyone is. Daily Word points are worked out by the server from the grid, and the board only stores colors, never letters. | The checks stop impossible and spammy scores, but a careful cheater could still post a believable fake. Only the best queued offline score posts. Daily Word's answers ship inside the app, so they aren't secret from someone who looks. |
 | 16 | **Strict security headers generated at build time; Erase all data for owners; a sign-out that clears the phone** | Blocks injected or outside scripts and data leaving for other sites. Protects the family log from an accidental wipe. Gives shared or lost phones a clean exit. | Styles still allow inline CSS, since the app uses it everywhere (lower risk than scripts). Owner-only erase is an app check, not a database rule. |
 | 17 | **Notifications by Web Push from a Supabase Edge Function, run every minute by pg_cron** | The only way a web app can alert a phone that's closed. It stays inside the same free Supabase project with nothing new to sign up for. The function creates its own keys and uses the project's built-in service key, so no secret is ever copied by hand. Due times are worked out in Postgres, in each phone's time zone. | Optional setup (about 10 minutes). Arrives up to a minute late. Only knows about feeds that have synced. On iPhone, Cradle must be on the Home Screen. The function runs without JWT verification so the schedule can start it; extra starts do nothing, since each feed is announced once per phone. |
+| 18 | **Daily Word picks the word on the phone, from built-in lists, by date** | Works offline, needs no server for play, and everyone with the same length gets the same word. Each person picks 4, 5, or 6 letters, so the family can play at their own level. Lists come from SCOWL under a permissive license (see [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md)). | Adds about 110 KB to the page. The day follows each phone's own date, so for a few hours around midnight two time zones can be on different words. Changing the lists would change future words, so the build script only appends. |

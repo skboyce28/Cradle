@@ -18,7 +18,7 @@ You'll need: a computer for the first setup, about 15 minutes, and Python 3 if y
 In your project, open **SQL Editor**, then **New query**. Run each script by pasting the **whole file** and pressing **Run**:
 
 1. [`supabase/1-setup.sql`](../supabase/1-setup.sql): the table that holds the log.
-2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, accounts, share keys, and the rules for who can see what.
+2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, accounts, share keys, Fun center high scores, and the rules for who can see what.
 
 Each should finish with *Success. No rows returned*. If Supabase warns that a query is destructive, that's expected for `2-family.sql`: it changes the table's key so entries belong to a family. Your entries stay put.
 
