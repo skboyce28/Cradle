@@ -83,7 +83,25 @@ Everything saves as you type; there's no Save button.
 
 ## Changing your password
 
-Profile menu, then **Change password**. At least 8 characters.
+Profile menu, then **Sign-in and security**, then **Change password**. At least 8 characters.
+
+## Two-step sign-in
+
+Two-step sign-in adds a second step after your password: a 6-digit code from an **authenticator app** on your phone, like Google Authenticator, Microsoft Authenticator, 1Password, or Passwords on iPhone. Someone who learns your password still can't open your family's log.
+
+**Turning it on for yourself:** profile menu, then **Sign-in and security**, then **Set up**.
+1. On the phone you're using, tap **Add to authenticator app**. From another phone, scan the code with the authenticator app. Or type the **setup key** in by hand.
+2. Enter the 6-digit code the app shows for Cradle, then **Turn on two-step sign-in**.
+
+From then on, signing in on a phone asks for the code after your password, once per sign-in. The menu shows **On**. To turn it off, open **Sign-in and security** again and tap **Turn off** (not offered while your family requires it).
+
+**Requiring it for your family (owner only):** open **Family** and tick **Require it for everyone in this family**. You need to use it yourself first. Everyone who hasn't set it up is shown the setup screen the next time they open Cradle, and can't see the log until they finish. The Family screen shows **🔐 Two-step on** or **Two-step not set up yet** next to each person. Untick it to make it optional again; people who set it up keep using it unless they turn it off.
+
+If you're the only one in your family, it's simply your own choice.
+
+**Lost your phone?** There are no backup codes. Ask whoever runs your Cradle to reset it ([admin query 27](deployment.md#admin-queries)); you then sign in with just your password, and set it up again if your family requires it.
+
+The database enforces this, not just the app: a sign-in that skipped the code step gets none of the log, can't add to it, doesn't see the share key, and can't change the family.
 
 ## Signing out
 
@@ -97,4 +115,5 @@ If you share your site with friends, each of their families is separate from you
 
 - **Anyone with your link can create an account.** They only ever get their own empty family. To close sign-ups, turn off **Allow new users to sign up** in Supabase (**Authentication**, then **Sign In / Providers**). Existing accounts keep working.
 - **To reset a forgotten password** without email set up, you can delete the person's account in Supabase (**Authentication**, then **Users**) and have them sign up again with the same share key. Their family's log is untouched: entries belong to the family, not the person, and deleting an account never deletes entries. If they were a family's only member, export the log first, because nobody else could reach it.
+- **To reset someone's two-step sign-in** (lost phone), run admin query 27 with their email. Supabase has no backup codes.
 - Everything lives in your free Supabase project, which has storage and activity limits. A handful of families is no problem.

@@ -213,3 +213,22 @@ order by p.updated_at desc;
 -- 26. CHANGES DATA. Remove someone's photo (they go back to the letter)
 update public.cradle_profiles set kind = 'default', preset = null, photo = null, updated_at = now()
 where user_id = (select id from auth.users where email = 'their@email.com');
+
+
+-- ============================================================
+-- Two-step sign-in (v1.25)
+-- ============================================================
+
+-- 27. CHANGES DATA. Reset someone's two-step sign-in (lost phone or authenticator app).
+--     They sign in with just their password next time. If their family requires it, Cradle
+--     then walks them through setting it up again.
+delete from auth.mfa_factors
+where user_id = (select id from auth.users where email = 'their@email.com');
+
+-- 28. Who uses two-step sign-in, and which families require it
+select u.email, f.status, f.created_at
+from auth.mfa_factors f join auth.users u on u.id = f.user_id
+order by f.created_at desc;
+select h.name, h.require_mfa, count(m.*) as people
+from public.cradle_households h left join public.cradle_members m on m.household_id = h.id
+group by h.id order by h.require_mfa desc, h.name;

@@ -39,6 +39,9 @@ create table if not exists public.cradle_invites (
   primary key (household_id, email)
 );
 
+-- Two-step sign-in (v1.25): the family owner can require it for everyone in the family
+alter table public.cradle_households add column if not exists require_mfa boolean not null default false;
+
 -- Upgrade older 6-character codes to the longer share keys
 alter table public.cradle_households alter column join_code set default public.cradle_fmt_code(public.cradle_gen_code());
 update public.cradle_households set join_code = public.cradle_fmt_code(public.cradle_gen_code())
@@ -115,13 +118,44 @@ drop policy if exists "cradle: family invites" on public.cradle_invites;
 create policy "cradle: family invites" on public.cradle_invites for select to authenticated
   using (household_id in (select public.cradle_my_households()));
 
+-- 3b) Two-step sign-in (v1.25). Supabase keeps the authenticator apps in auth.mfa_factors, and
+--     a sign-in that finished the 6-digit code step carries aal2 in its token. Anyone who has
+--     turned two-step sign-in on, and everyone in a family whose owner requires it, can only reach
+--     the log after the code step. A stolen password alone isn't enough.
+create or replace function public.cradle_mfa_on(p_user uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from auth.mfa_factors f where f.user_id = p_user and f.status::text = 'verified')
+$$;
+create or replace function public.cradle_mfa_ok(h uuid) returns boolean
+language sql stable security definer set search_path = public as $$
+  select coalesce(auth.jwt()->>'aal', 'aal1') = 'aal2'
+      or (not public.cradle_mfa_on(auth.uid())
+          and not coalesce((select require_mfa from public.cradle_households where id = h), false))
+$$;
+create or replace function public.cradle_mfa_check(h uuid) returns void
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not cradle_mfa_ok(h) then raise exception 'Finish two-step sign-in first.'; end if;
+end $$;
+
+-- A second, restrictive rule on the log: both this and "family rows" must pass
+drop policy if exists "cradle: two-step sign-in" on public.cradle_items;
+create policy "cradle: two-step sign-in" on public.cradle_items as restrictive for all to authenticated
+  using (public.cradle_mfa_ok(household_id))
+  with check (public.cradle_mfa_ok(household_id));
+
 -- 4) Actions the app can call
+--    mfa_ok says whether this sign-in may see the log; require_mfa is the family rule; each
+--    member's mfa says whether they've set up an authenticator app. The share key stays hidden
+--    until the code step is done.
 create or replace function public.cradle_family_info(h uuid) returns json
 language sql stable security definer set search_path = public as $$
   select json_build_object(
-    'household', hh.id, 'name', hh.name, 'join_code', hh.join_code,
+    'household', hh.id, 'name', hh.name,
+    'join_code', case when cradle_mfa_ok(hh.id) then hh.join_code end,
+    'require_mfa', hh.require_mfa, 'mfa_ok', cradle_mfa_ok(hh.id),
     'role', (select role from cradle_members where household_id = hh.id and user_id = auth.uid()),
-    'members', coalesce((select json_agg(json_build_object('user_id', m.user_id, 'email', m.email, 'role', m.role, 'me', m.user_id = auth.uid()) order by m.joined_at) from cradle_members m where m.household_id = hh.id), '[]'::json),
+    'members', coalesce((select json_agg(json_build_object('user_id', m.user_id, 'email', m.email, 'role', m.role, 'me', m.user_id = auth.uid(), 'mfa', cradle_mfa_on(m.user_id)) order by m.joined_at) from cradle_members m where m.household_id = hh.id), '[]'::json),
     'invites', coalesce((select json_agg(i.email order by i.created_at) from cradle_invites i where i.household_id = hh.id), '[]'::json)
   )
   from cradle_households hh
@@ -153,6 +187,7 @@ create or replace function public.cradle_invite(h uuid, p_email text) returns js
 language plpgsql security definer set search_path = public as $$
 begin
   if h not in (select cradle_my_households()) then raise exception 'not in this family'; end if;
+  perform cradle_mfa_check(h);
   if position('@' in coalesce(p_email,'')) = 0 then raise exception 'enter an email address'; end if;
   if not exists (select 1 from auth.users where lower(email) = lower(trim(p_email))) then
     raise exception 'No Cradle account uses that email yet. Send them your share key instead.';
@@ -165,6 +200,7 @@ create or replace function public.cradle_uninvite(h uuid, p_email text) returns 
 language plpgsql security definer set search_path = public as $$
 begin
   if h not in (select cradle_my_households()) then raise exception 'not in this family'; end if;
+  perform cradle_mfa_check(h);
   delete from cradle_invites where household_id = h and lower(email) = lower(trim(p_email));
   return cradle_family_info(h);
 end $$;
@@ -194,6 +230,7 @@ begin
   if not exists (select 1 from cradle_members where household_id = h and user_id = auth.uid() and role = 'owner') then
     raise exception 'only the family owner can remove people';
   end if;
+  perform cradle_mfa_check(h);
   if p_user = auth.uid() then raise exception 'the owner cannot remove themselves'; end if;
   delete from cradle_members where household_id = h and user_id = p_user;
   return cradle_family_info(h);
@@ -203,6 +240,7 @@ create or replace function public.cradle_rename(h uuid, p_name text) returns jso
 language plpgsql security definer set search_path = public as $$
 begin
   if h not in (select cradle_my_households()) then raise exception 'not in this family'; end if;
+  perform cradle_mfa_check(h);
   update cradle_households set name = left(trim(p_name), 60) where id = h and length(trim(p_name)) > 0;
   return cradle_family_info(h);
 end $$;
@@ -214,7 +252,23 @@ begin
   if not exists (select 1 from cradle_members where household_id = h and user_id = auth.uid() and role = 'owner') then
     raise exception 'only the family owner can change the share key';
   end if;
+  perform cradle_mfa_check(h);
   update cradle_households set join_code = cradle_fmt_code(cradle_gen_code()) where id = h;
+  return cradle_family_info(h);
+end $$;
+
+-- Owner turns "everyone needs two-step sign-in" on or off. They must be using it themselves,
+-- signed in with the code, so nobody can lock a family out with just a password.
+create or replace function public.cradle_set_mfa_policy(h uuid, p_on boolean) returns json
+language plpgsql security definer set search_path = public as $$
+begin
+  if not exists (select 1 from cradle_members where household_id = h and user_id = auth.uid() and role = 'owner') then
+    raise exception 'only the family owner can change this';
+  end if;
+  if coalesce(auth.jwt()->>'aal', 'aal1') <> 'aal2' or not cradle_mfa_on(auth.uid()) then
+    raise exception 'Turn on two-step sign-in for yourself first.';
+  end if;
+  update cradle_households set require_mfa = coalesce(p_on, false) where id = h;
   return cradle_family_info(h);
 end $$;
 
@@ -492,17 +546,22 @@ end $$;
 
 grant execute on function public.cradle_bootstrap(), public.cradle_family_info(uuid), public.cradle_invite(uuid,text),
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
-  public.cradle_new_code(uuid), public.cradle_leave(uuid),
+  public.cradle_new_code(uuid), public.cradle_leave(uuid), public.cradle_set_mfa_policy(uuid,boolean),
   public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text),
   public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text),
   public.cradle_my_profile(), public.cradle_set_profile(text,text,text,text), public.cradle_family_pics(uuid)
   to authenticated;
 revoke execute on function public.cradle_bootstrap(), public.cradle_family_info(uuid), public.cradle_invite(uuid,text),
   public.cradle_uninvite(uuid,text), public.cradle_join(text), public.cradle_remove_member(uuid,uuid), public.cradle_rename(uuid,text),
-  public.cradle_new_code(uuid), public.cradle_leave(uuid),
+  public.cradle_new_code(uuid), public.cradle_leave(uuid), public.cradle_set_mfa_policy(uuid,boolean),
   public.cradle_scores_board(text), public.cradle_set_initials(text), public.cradle_submit_score(int,int,text,text),
   public.cradle_word_board(date), public.cradle_submit_word(date,int,text,boolean,text),
   public.cradle_my_profile(), public.cradle_set_profile(text,text,text,text), public.cradle_family_pics(uuid)
   from anon, public;
 -- cradle_pic is only used inside the functions above
 revoke execute on function public.cradle_pic(uuid) from anon, authenticated, public;
+-- the two-step helpers are used by the rules and functions above; cradle_mfa_ok must stay
+-- callable by signed-in accounts because the log's row rule calls it
+revoke execute on function public.cradle_mfa_on(uuid), public.cradle_mfa_check(uuid) from anon, authenticated, public;
+revoke execute on function public.cradle_mfa_ok(uuid) from anon, public;
+grant execute on function public.cradle_mfa_ok(uuid) to authenticated;

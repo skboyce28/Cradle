@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.25
+
+**Two-step sign-in**
+- After the password, Cradle can ask for a 6-digit code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, Passwords on iPhone). It uses Supabase's built-in authenticator-app sign-in (TOTP), which is free and on by default
+- **Profile, then Sign-in and security** (the new home of Change password too, keeping the menu the same length): set it up with a QR code, an **Add to authenticator app** link for the same phone, or the setup key; turn it off again (unless your family requires it). The menu shows **On** when it's on
+- **The code step**: on a phone that signs in with a password, Cradle asks for the code before showing the log. Six digits submit by themselves
+- **Family rule**: the family owner can tick **Require it for everyone in this family** under Family, once they use it themselves. Anyone who hasn't set it up is shown the setup screen the next time they open Cradle, and the Family screen marks who has it on
+- **Enforced by the database**: `supabase/2-family.sql` adds `require_mfa` to families, a second (restrictive) rule on the log, and `cradle_set_mfa_policy`. A password-only sign-in of someone who uses two-step sign-in, or is in a family that requires it, can't read or write the log, see the share key, or change the family. Rerun `2-family.sql` in the SQL Editor
+- No backup codes (Supabase doesn't have them). Admin query 27 resets someone's two-step sign-in if they lose their phone; 28 lists who uses it
+- Test stand-in: Supabase's authenticator endpoints, real 6-digit codes, and `aal` in tokens. New test: `tests/mfa.test.mjs` (31 checks)
+
 ## Product overview refresh
 
 No change to the app.

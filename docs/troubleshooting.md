@@ -34,6 +34,25 @@ The site was built without `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY`. On N
 **Netlify build failed: "Missing CRADLE_SUPABASE_URL and CRADLE_SUPABASE_KEY"**
 Same fix. The build stops on purpose so a site that asks users for database details never goes live; your previous deploy stays up meanwhile. See [Setup](setup.md#4-point-cradle-at-your-project).
 
+## Two-step sign-in
+
+**"That code didn't match"**
+- Use the newest code in the app; each lasts 30 seconds.
+- Codes depend on the phone's clock. Make sure the phone with the authenticator app sets its date and time automatically.
+- Use the code listed under **Cradle** in the app, not another site's.
+
+**Lost the phone with the authenticator app**
+There are no backup codes. Whoever runs your Cradle resets it with [admin query 27](deployment.md#admin-queries). Then sign in with just your password, and set it up again if your family requires it.
+
+**"Two-step sign-in is turned off for this database"**
+In Supabase, open **Authentication**, then **Multi-Factor** (or **Sign In / Providers**, depending on the dashboard version) and make sure **TOTP (App Authenticator)** is enabled. It's on by default.
+
+**A family member sees "Set up two-step sign-in" and can't get past it**
+The family owner requires it. They can finish setting it up (it takes about a minute), tap **Sign out**, or the owner can untick **Require it for everyone** under **Family**.
+
+**The Family screen has no Two-step sign-in section**
+The database script is older than v1.25. Run `supabase/2-family.sql` again in the SQL Editor. Turning it on for yourself works without it, but the database only enforces it after the rerun.
+
 ## Families
 
 **Joined at sign-up but don't see the family's log**
@@ -73,7 +92,7 @@ Profile menu, then **Data management**, then **Import data**, then choose the fi
 Erase all data is limited to the family owner, because it clears every phone in the family. Members can still delete single entries with ×. To change who the owner is, see query 9 in [`supabase/admin-queries.sql`](../supabase/admin-queries.sql).
 
 **Clearing Cradle off a shared or lost phone**
-Profile menu, then **Data management**, then **Sign out and remove from this phone**. If the phone is lost, also change your password from another phone (profile menu, then **Change password**).
+Profile menu, then **Data management**, then **Sign out and remove from this phone**. If the phone is lost, also change your password from another phone (profile menu, then **Sign-in and security**, then **Change password**).
 
 ## Sync
 

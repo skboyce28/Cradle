@@ -10,6 +10,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 | `game.test.mjs` | Bottle Catch: pause, scoring, initials, the three high-score boards, server-side limits |
 | `stork.test.mjs` | Stork Flight: hovering until the first tap, flapping, pausing, crashing, posting, the three-way game switch, server-side limits, offline posting, the Night Flyer badge |
 | `avatar.test.mjs` | Profile pictures: built-in and uploaded, who can see them (only me, family, everyone) on the Family screen and the boards, deleting a photo, database checks; and the Night shift button |
+| `mfa.test.mjs` | Two-step sign-in: setting it up, wrong and right codes, the code step on a new phone, the owner's require-it rule, setting it up when required, turning it off, and the database refusing password-only sign-ins |
 | `weights.test.mjs` | Weight entry in grams or lb and oz: weighted feeds, switching units, the Weights screen, birth weight |
 | `word.test.mjs` | Daily Word: the word lists, the day's word worked out separately, colors, too-short and unknown words, hard mode, points and posting, one result per day, a second phone, the family and Everyone boards, practice, offline posting, switching boards |
 | `erase-and-wipe.test.mjs` | Owner-only Erase all data, and Sign out and remove from this phone |
@@ -26,11 +27,11 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 
 `run.mjs` does everything:
 1. Sets up a test database:
-   - a small stand-in for Supabase's auth (`support/auth-shim.sql`)
+   - a small stand-in for Supabase's auth (`support/auth-shim.sql`), with its users and authenticator-app tables
    - Cradle's real scripts from `supabase/` (1 to 3; the every-minute schedule in 4 needs Supabase's pg_cron, so it's left out)
 2. Builds the site three times with fake settings.
 3. Starts local servers:
-   - `support/supabase-standin.mjs`, a stand-in for Supabase's API
+   - `support/supabase-standin.mjs`, a stand-in for Supabase's API, including the authenticator-app (two-step sign-in) endpoints; `support/totp.mjs` makes and checks the 6-digit codes
    - `support/site-server.mjs` twice (ports 8099 and 8098), stand-ins for Netlify that apply `_headers`
 4. Runs each `*.test.mjs`. Most drive Chromium; `notify/crypto`, `notify/round`, and `notify/entry` run in plain Node.
 

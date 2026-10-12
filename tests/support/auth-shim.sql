@@ -11,3 +11,5 @@ grant execute on function auth.uid(), auth.jwt() to anon, authenticated, service
 grant usage on schema public to anon, authenticated, service_role;
 alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
 alter default privileges in schema public grant execute on functions to anon, authenticated, service_role;
+-- Supabase keeps authenticator apps (two-step sign-in) here; the stand-in fills it in
+create table if not exists auth.mfa_factors(id uuid primary key default gen_random_uuid(), user_id uuid not null references auth.users(id) on delete cascade, friendly_name text, factor_type text not null default 'totp', status text not null default 'unverified', secret text, created_at timestamptz not null default now(), updated_at timestamptz not null default now());

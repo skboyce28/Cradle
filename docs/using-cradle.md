@@ -243,7 +243,7 @@ The round button at the top right:
 | **Guide / About** | In-app help, version, and changelog |
 | **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |
 | **Install app** | Shown when your browser can install Cradle |
-| **Change password** | Your account |
+| **Sign-in and security** | **Change password**, and two-step sign-in: a 6-digit code from an authenticator app after your password. Shows **On** when it's on. See [Two-step sign-in](accounts-and-families.md#two-step-sign-in). |
 | **Sign out** | Signs you out. The log stays on this phone for next time. |
 
 ### Your picture

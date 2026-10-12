@@ -44,7 +44,7 @@ Theme, weight units, the alarm switch, and layout preferences stay per phone.
 
 A round runs when the app opens, about a second after any save, every 15 seconds while the app is on screen, and when the phone comes back online:
 
-1. **Bootstrap** (first round after sign-in): ask the database which family this account belongs to. It creates a family if there isn't one, and accepts any pending invite.
+1. **Bootstrap** (first round after sign-in, then every 5 minutes): ask the database which family this account belongs to. It creates a family if there isn't one, and accepts any pending invite. If the answer says this sign-in still needs two-step sign-in (`mfa_ok` is false), the round stops and Cradle shows the code step, or the setup screen when the family requires it.
 2. **Pull:** download items changed since the last pull (`updated_at >= last`) and apply them, merging any that this phone has also changed (see below).
 3. **Push:** compare every local item with its fingerprint from the last sync, and upload only what changed. A deletion is uploaded as a tombstone (`deleted = true`), so other phones remove it too.
 
@@ -60,7 +60,7 @@ Pulling before pushing means a phone always merges in other people's edits befor
 
 **Offline.** Saves always go to the phone first. Failed rounds just retry later; nothing is lost while offline.
 
-**Tokens.** Sign-in uses Supabase Auth's REST API directly. The access token is refreshed before it expires; if refreshing fails, the app asks you to sign in again.
+**Tokens.** Sign-in uses Supabase Auth's REST API directly. The access token is refreshed before it expires; if refreshing fails, the app asks you to sign in again. After a password sign-in, Cradle reads the account's authenticator apps (`GET /auth/v1/user`); if one is verified, it asks for the code and exchanges it (`/auth/v1/factors/{id}/challenge`, then `/verify`) for a token marked `aal2`, which refreshing keeps.
 
 ## Database
 
@@ -71,7 +71,7 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | Table | Purpose |
 |---|---|
 | `cradle_items` | Every synced item. Primary key `(household_id, id)`. Columns: `kind`, `data` (JSON), `deleted`, `updated_at` (set by the server), and `owner`, the account that last saved it. |
-| `cradle_households` | Families: `name` and `join_code` (the share key) |
+| `cradle_households` | Families: `name`, `join_code` (the share key), and `require_mfa` (the owner requires two-step sign-in) |
 | `cradle_members` | Who belongs to which family, with role `owner` or `member` |
 | `cradle_invites` | Pending "add by email" invites |
 | `cradle_join_tries` | Wrong share-key attempts, for rate limiting |
@@ -87,6 +87,7 @@ A trigger (`cradle_touch`) stamps `updated_at` with the server's clock and recor
 Every table has row-level security on.
 
 - **`cradle_items`:** you can read and write a row only if its `household_id` is one of your families, via `cradle_my_households()`. You also can't write a row into a family you're not in.
+- **Two-step sign-in on `cradle_items`:** a second, *restrictive* rule (both must pass) calls `cradle_mfa_ok(household_id)`. It passes when the sign-in finished the code step (`aal2` in the token), or when the account doesn't use two-step sign-in and its family doesn't require it. So a password-only sign-in of someone who uses it, or of anyone in a family that requires it, sees no rows and can't write any.
 - **Families, members, invites:** you can only *read* rows for your own families. You can't write them directly at all.
 - **`cradle_join_tries`, `cradle_players`, `cradle_scores`, `cradle_profiles`:** no direct access from the app; only through the functions below.
 
@@ -95,13 +96,15 @@ All changes to families go through these functions, which check permissions them
 | Function | Who | Does |
 |---|---|---|
 | `cradle_bootstrap()` | anyone signed in | Accepts invites for your email, returns your family (creating one if needed) |
-| `cradle_family_info(h)` | members | Name, share key, people, pending invites |
+| `cradle_family_info(h)` | members | Name, share key, people (each with whether they use two-step sign-in), pending invites, `require_mfa`, and `mfa_ok` (whether this sign-in may see the log). The share key is left out until `mfa_ok`. |
 | `cradle_join(code)` | anyone signed in | Joins the family with that key. Wrong keys are counted; 10 in an hour locks joining for that hour. |
 | `cradle_invite(h, email)` / `cradle_uninvite` | members | Adds or cancels an invite for an **existing** account |
 | `cradle_rename(h, name)` | members | Renames the family |
 | `cradle_new_code(h)` | owner | New share key; the old one stops working |
 | `cradle_remove_member(h, user)` | owner | Removes someone |
 | `cradle_leave(h)` | members | Leaves the family |
+| `cradle_set_mfa_policy(h, on)` | owner, signed in with the code | Requires two-step sign-in for everyone in the family, or stops requiring it. Refused unless the owner uses it and finished the code step. |
+| `cradle_mfa_on(user)`, `cradle_mfa_ok(h)`, `cradle_mfa_check(h)` | used by the rules and functions only | Whether an account has a verified authenticator app (`auth.mfa_factors`); whether this sign-in passes; and the check that stops invites, renaming, new keys, and removing people until the code step is done |
 | `cradle_scores_board(game)` | anyone signed in | The three boards: Everyone (each person's best, top 10), Our family (top 10), My best (top 10), plus your initials and rank. Only initials and scores. |
 | `cradle_my_profile()` / `cradle_set_profile(kind, preset, photo, visibility)` | anyone signed in | Reads or saves your own picture. Refuses anything that isn't a built-in name or a small JPEG, WebP, or PNG data URL. Choosing the letter or a built-in picture deletes a stored photo. |
 | `cradle_family_pics(h)` | members | The pictures in your family that you may see, by account |
@@ -130,6 +133,7 @@ An invite can only be claimed by an account that **existed when the invite was m
   - `nosniff`, `Referrer-Policy: no-referrer`, a Permissions-Policy that turns off camera, microphone, location, and payment, and HSTS
 
   Even if someone found a way to inject a script into the page, the browser wouldn't run it, and couldn't send data anywhere else.
+- **Two-step sign-in** (optional per person, or required by the family owner) uses Supabase's authenticator-app sign-in (TOTP). Supabase stores the secrets and checks the codes; the app calls `/auth/v1/factors` to set one up, challenge, and verify, and reads the `aal` level from the token. The database rule above, not the app, is what keeps a password-only sign-in out.
 - **The secret key** (`sb_secret_…` or `service_role`) bypasses every rule. It must never be in this repo, the app, or a chat, and Cradle never needs it.
 
 **What to know:**
@@ -148,6 +152,7 @@ An invite can only be claimed by an account that **existed when the invite was m
 That testing covered:
 - families staying separate
 - the owner-only actions
+- two-step sign-in (real 6-digit codes, the family rule, and password-only sign-ins being refused)
 - share-key lockout
 - invite claiming
 - reruns of the scripts in any order

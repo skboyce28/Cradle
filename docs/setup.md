@@ -33,6 +33,8 @@ Open **Authentication**, then **Sign In / Providers**:
 
 Why turn off confirmation? Supabase's built-in email service only delivers to members of your Supabase team, and only a few emails an hour. With confirmation on, friends and family would wait for an email that never arrives. If you later connect your own email sender (see [Optional: real emails](#optional-real-emails)), you can turn it back on.
 
+**Two-step sign-in** (authenticator-app codes, optional in Cradle) needs nothing here: Supabase turns on **TOTP (App Authenticator)** for every project by default. If you've turned it off, turn it back on under **Authentication**, then **Multi-Factor**.
+
 > **Already have accounts stuck at "confirm your email"?** Turning the setting off doesn't fix accounts created before the change. Confirm them in **SQL Editor**:
 > ```sql
 > update auth.users set email_confirmed_at = now()
