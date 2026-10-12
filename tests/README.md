@@ -8,6 +8,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 |---|---|
 | `sync-merge.test.mjs` | Two phones editing the same log: field-by-field merge, typing while changes arrive, deletes, who-changed-what notes, editing weights |
 | `game.test.mjs` | Bottle Catch: pause, scoring, initials, the three high-score boards, server-side limits |
+| `stork.test.mjs` | Stork Flight: hovering until the first tap, flapping, pausing, crashing, posting, the three-way game switch, server-side limits, offline posting, the Night Flyer badge |
 | `word.test.mjs` | Daily Word: the word lists, the day's word worked out separately, colors, too-short and unknown words, hard mode, points and posting, one result per day, a second phone, the family and Everyone boards, practice, offline posting, switching boards |
 | `erase-and-wipe.test.mjs` | Owner-only Erase all data, and Sign out and remove from this phone |
 | `security-headers.test.mjs` | The built site under its real security headers: no policy violations, sync still works |

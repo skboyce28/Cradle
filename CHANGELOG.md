@@ -1,5 +1,24 @@
 # Changelog
 
+## v1.19
+
+**Stork Flight** (in the Fun center)
+- Tap to flap a stork carrying a bundle through the gaps between the clouds and the chimneys of a sleeping town
+- **Points:** +10 for each gap, +5 for a star, and +25 more for a delivery (passing a house with a lit window)
+- The stork hovers until your first tap. The first gaps are wide; then they move, narrow, and come faster. One bump ends the flight
+- Pauses itself when you switch away or the feed alarm rings. Sound starts off; Buzz and Sound are on the start screen. Space or the up arrow flaps on a computer
+- High scores like Bottle Catch (Everyone, Our family, My best), with the same initials. Flights played offline post when you're back online
+
+**High scores:** the game switch at the top now has all three games.
+
+**Achievements:** 3 new Fun center badges (53 in all): Night Flyer (250 in one flight), Sky Captain (1,000), and Special Delivery (10 deliveries in one flight).
+
+**Also:** Bottle Catch's start screen has a Close button.
+
+**For whoever runs your Cradle:** run [`supabase/2-family.sql`](supabase/2-family.sql) again. It lets `cradle_submit_score` take Stork Flight scores (flights up to an hour, at most 40 points a second) and raises the `seconds` limit on `cradle_scores` to an hour. Bottle Catch keeps its 130-second rounds. Until it's run, Stork Flight scores wait on the phone.
+
+- New test: `tests/stork.test.mjs` (26 checks)
+
 ## v1.18
 
 **Daily Word** (in the Fun center)

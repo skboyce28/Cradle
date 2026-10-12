@@ -117,8 +117,8 @@ const {p:X}=await phone('X');await up(X,'wzed'+sfx);await X.click('#menuBtn');aw
 const xe=await txt(X,'#wdList');ok('stranger sees Everyone with initials only',/DAD/.test(xe)&&/MOM/.test(xe)&&!/@|wdad|cradle\.cfg/.test(xe),xe);
 await X.click('#wPanel [data-wt=family]');await X.waitForTimeout(300);ok('stranger’s family board is empty',/No family results yet/.test(await txt(X,'#wdList')),await txt(X,'#wdList'));
 // switch between the two games' boards
-await X.click('#wPanel [data-w=tobottles]');await X.waitForTimeout(600);ok('board switches to Bottle Catch',await X.isVisible('#game')&&/High scores/.test(await txt(X,'#gPanel'))&&/Bottle Catch/.test(await txt(X,'#gPanel .g-games')));
-await X.click('#gPanel [data-g=toword]');await X.waitForTimeout(600);ok('and back to Daily Word',await X.isVisible('#word')&&!(await X.isVisible('#game'))&&/Daily Word/.test(await txt(X,'#wPanel .g-games')));
+await X.click('#wPanel [data-fg=bottles]');await X.waitForTimeout(600);ok('board switches to Bottle Catch',await X.isVisible('#game')&&/High scores/.test(await txt(X,'#gPanel'))&&/Bottle Catch/.test(await txt(X,'#gPanel .g-games')));
+await X.click('#gPanel [data-fg=word]');await X.waitForTimeout(600);ok('and back to Daily Word',await X.isVisible('#word')&&!(await X.isVisible('#game'))&&/Daily Word/.test(await txt(X,'#wPanel .g-games')));
 // practice: unlimited, no points, not posted
 await X.click('#wPanel [data-w=back]');await X.click('#wPanel [data-w=practice]');await X.waitForTimeout(200);
 const pa=await X.evaluate(()=>{const s=JSON.parse(localStorage.getItem('cradle-word-v1'));return Object.values(s).find(x=>x.prac).prac.ans});

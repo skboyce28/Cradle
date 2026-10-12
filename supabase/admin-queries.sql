@@ -128,10 +128,11 @@ where deleted and updated_at < now() - interval '90 days';
 
 
 -- ============================================================
--- Fun center high scores (Bottle Catch and Daily Word)
+-- Fun center high scores (Bottle Catch, Daily Word, and Stork Flight)
 -- ============================================================
 
--- 17. Bottle Catch: top 20 scores, with the account behind each (only you see emails; players see initials)
+-- 17. Top 20 scores in one game, with the account behind each (only you see emails; players see initials).
+--     Use 'bottles' for Bottle Catch or 'stork' for Stork Flight.
 select s.id, s.initials, s.score, s.seconds, s.created_at, u.email
 from public.cradle_scores s
 join auth.users u on u.id = s.user_id
@@ -146,7 +147,7 @@ delete from public.cradle_scores where id = 0;
 delete from public.cradle_scores
 where user_id = (select id from auth.users where email = 'their@email.com');
 
--- 20. CHANGES DATA. Reset the whole Bottle Catch board for everyone
+-- 20. CHANGES DATA. Reset one game's board for everyone ('bottles' or 'stork'; Daily Word is 'word')
 delete from public.cradle_scores where game = 'bottles';
 
 -- 20b. Daily Word: points, days played and won, by account (players see initials only)

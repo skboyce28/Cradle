@@ -60,7 +60,7 @@ Built by two scripts, both safe to rerun in any order:
 | `cradle_invites` | `household_id` · `email` · `invited_by` · `created_at` | Pending "add by email" invites |
 | `cradle_join_tries` | `user_id` · `at` | Wrong share-key attempts, for the lockout of 10 per hour |
 | `cradle_players` | `user_id` · `initials` · `updated_at` | Each account's 3 initials for the high-score boards |
-| `cradle_scores` | `id` · `user_id` · `household_id` · `game` · `initials` · `score` · `seconds` · `created_at` · `day` · `detail` | Fun center scores. `game` is `bottles` (Bottle Catch) or `word` (Daily Word, with its `day` and the grid as colors in `detail`; one per account per day). Only readable through `cradle_scores_board` and `cradle_word_board`, which show initials, scores, and colors only. |
+| `cradle_scores` | `id` · `user_id` · `household_id` · `game` · `initials` · `score` · `seconds` · `created_at` · `day` · `detail` | Fun center scores. `seconds` is the round or flight length (up to an hour). `game` is `bottles` (Bottle Catch), `stork` (Stork Flight), or `word` (Daily Word, with its `day` and the grid as colors in `detail`; one per account per day). Only readable through `cradle_scores_board` and `cradle_word_board`, which show initials, scores, and colors only. |
 | `cradle_push_subs` | `endpoint` · `user_id` · `household_id` · `p256dh` · `auth` · `tz` · `lead_min` · `last_sent_due` · `fails` | Optional. One row per phone with notifications on. No app access; changed only through `cradle_push_subscribe` and `cradle_push_unsubscribe`. |
 | `cradle_push_keys` | `public_key` · `private_jwk` | Optional. The notification (VAPID) key pair, made by the function on its first run. Only the service role can read it. |
 
@@ -100,8 +100,8 @@ Built by two scripts, both safe to rerun in any order:
 | 12 to 14 | Read a family's log, count entries, count baths |
 | 15 | Check storage |
 | 16 | Tidy old deletion markers |
-| 17 | Top Bottle Catch scores, with the account behind each |
-| 18 to 20 | Remove one score, clear one player's scores, or reset the whole Bottle Catch board |
+| 17 | Top scores in one game (Bottle Catch or Stork Flight), with the account behind each |
+| 18 to 20 | Remove one score, clear one player's scores, or reset one game's board |
 | 20b, 20c | Daily Word points by account; remove one day's result so someone can post that day again |
 | 21 to 24 | Notifications: phones that get them, check the every-minute job (22) and what the function answered (22b), stop one account's phones, new notification keys |
 

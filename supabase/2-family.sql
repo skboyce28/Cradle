@@ -229,7 +229,7 @@ begin
   return public.cradle_bootstrap();
 end $$;
 
--- 5) Fun center: high scores (Bottle Catch and Daily Word)
+-- 5) Fun center: high scores (Bottle Catch, Daily Word, and Stork Flight)
 --    Only initials and scores are ever shown to other people. All reads and writes go
 --    through the functions below; the tables themselves aren't readable from the app.
 create table if not exists public.cradle_players (
@@ -257,6 +257,9 @@ alter table public.cradle_scores add column if not exists detail text;
 alter table public.cradle_scores drop constraint if exists cradle_scores_detail;
 alter table public.cradle_scores add constraint cradle_scores_detail check (detail is null or length(detail) <= 60);
 create unique index if not exists cradle_scores_one_a_day on public.cradle_scores (user_id, game, day) where day is not null;
+-- Stork Flight (v1.19): a flight can last longer than a Bottle Catch round, up to an hour
+alter table public.cradle_scores drop constraint if exists cradle_scores_seconds_check;
+alter table public.cradle_scores add constraint cradle_scores_seconds_check check (seconds between 0 and 3600);
 
 alter table public.cradle_players enable row level security;
 alter table public.cradle_scores  enable row level security;
@@ -314,14 +317,18 @@ begin
 end $$;
 
 -- Post a score. The server refuses scores a round couldn't produce and posting too often.
+--   bottles (Bottle Catch): rounds up to 130 seconds, at most 100 points a second
+--   stork (Stork Flight): flights up to an hour, at most 40 points a second
 create or replace function public.cradle_submit_score(p_score int, p_seconds int, p_initials text default null, p_game text default 'bottles') returns json
 language plpgsql security definer set search_path = public as $$
-declare uid uuid := auth.uid(); i text; h uuid; last timestamptz;
+declare uid uuid := auth.uid(); i text; h uuid; last timestamptz; maxsecs int; rate int;
 begin
   if uid is null then raise exception 'not signed in'; end if;
-  if p_game <> 'bottles' then raise exception 'unknown game'; end if;
-  if p_seconds is null or p_seconds < 0 or p_seconds > 130 then raise exception 'That round length isn''t possible.'; end if;
-  if p_score is null or p_score < 0 or p_score > 100 * greatest(p_seconds, 1) then raise exception 'That score isn''t possible for a round that long.'; end if;
+  if p_game is null or p_game not in ('bottles', 'stork') then raise exception 'unknown game'; end if;
+  maxsecs := case when p_game = 'bottles' then 130 else 3600 end;
+  rate := case when p_game = 'bottles' then 100 else 40 end;
+  if p_seconds is null or p_seconds < 0 or p_seconds > maxsecs then raise exception 'That round length isn''t possible.'; end if;
+  if p_score is null or p_score < 0 or p_score > rate * greatest(p_seconds, 1) then raise exception 'That score isn''t possible for a round that long.'; end if;
   select max(created_at) into last from cradle_scores where user_id = uid and game = p_game;
   if last is not null and last > now() - interval '10 seconds' then raise exception 'Scores are coming in too fast. Try again in a moment.'; end if;
   if (select count(*) from cradle_scores where user_id = uid and created_at > now() - interval '1 day') >= 200 then
