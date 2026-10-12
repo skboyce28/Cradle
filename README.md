@@ -16,7 +16,7 @@ Nurse, bottle, pump, diapers, Vitamin D, and baths, shared live between family p
   <img src="docs/screenshots/log.webp" width="200" alt="Log tab">
   <img src="docs/screenshots/night.webp" width="200" alt="Night shift">
   <img src="docs/screenshots/dash.webp" width="200" alt="Dashboard">
-  <img src="docs/screenshots/family.webp" width="200" alt="Family screen with a share key">
+  <img src="docs/screenshots/family.webp" width="200" alt="Family screen with pictures and a share key">
 </p>
 <p align="center"><sub>Screenshots show example data for a made-up baby. Product overview: <a href="docs/overview.html">docs/overview.html</a> (open it in a browser).</sub></p>
 
@@ -92,6 +92,7 @@ supabase/
   invite-email.html    Optional "Welcome to Cradle" email template
 netlify.toml           Lets Netlify build and publish straight from this repo
 tools/words/           Builds Daily Word's word lists into cradle.html
+tools/screenshots/     Retakes the screenshots in docs/ with the made-up baby
 tests/                 Over 300 automated checks; run on every push by .github/workflows/tests.yml
 docs/                  The guides above, the product overview page, and screenshots
 ```
