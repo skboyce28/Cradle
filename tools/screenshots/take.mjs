@@ -5,7 +5,7 @@
 //   node ../tools/screenshots/take.mjs     then     python3 ../tools/screenshots/to_webp.py
 //
 // Full-screen views that don't show the header (Night shift, Calm, Learning center cards, the
-// sign-in screen) and the Daily Word and Achievements pictures are left as they are.
+// sign-in screen) and the Daily Word picture are left as they are.
 import { chromium } from '../../tests/node_modules/playwright/index.mjs';
 import fs from 'fs';import path from 'path';import { fileURLToPath, pathToFileURL } from 'url';
 const here=path.dirname(fileURLToPath(import.meta.url)),repo=path.resolve(here,'../..'),out=path.join(repo,'tests/out/shots');
@@ -33,6 +33,7 @@ async function phone(theme='light'){
   await p.evaluate(()=>{document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'));window.print=()=>{}});
   await p.clock.runFor(4000);await p.waitForTimeout(200);// let any toast fade
   return p}
+const closeAll=p=>p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
 const shot=(p,name)=>p.screenshot({path:path.join(out,name+'.png')});
 
 let p=await phone();
@@ -46,5 +47,15 @@ await p.click('#addBath');await p.clock.runFor(400);
 await p.click('.feed.bathrow .bseg button:nth-child(2)');await p.fill('.feed.bathrow input[type=text], .feed.bathrow textarea, .feed.bathrow .c-note input','Hair wash').catch(()=>{});await p.evaluate(()=>document.activeElement&&document.activeElement.blur());await p.clock.runFor(4000);
 await p.evaluate(()=>{const r=document.querySelector('.feed.bathrow');if(r){const y=r.getBoundingClientRect().top+scrollY-window.innerHeight*0.55;scrollTo(0,y)}});await p.waitForTimeout(300);await shot(p,'bath');
 await p.evaluate(()=>scrollTo(0,0));await p.click('#menuBtn');await p.click('[data-act=family]');await p.clock.runFor(800);await p.waitForTimeout(500);await shot(p,'family');
+await closeAll(p);await p.click('#menuBtn');await p.click('[data-act=ach]');await p.waitForTimeout(400);await shot(p,'ach');
+// Fun center: a Bottle Catch round and a Stork Flight, mid-game
+await p.keyboard.press('Escape');await closeAll(p);
+await p.click('#menuBtn');await p.click('[data-act=fun]');await p.click('#funPlay');await p.click('#gPanel [data-g=play]');
+await p.mouse.move(195,600);await p.mouse.down();for(let i=0;i<14;i++){await p.clock.runFor(500);await p.mouse.move(120+((i*53)%160),600)}
+await p.mouse.up();await shot(p,'bottle');
+await p.evaluate(()=>{document.getElementById('game').classList.remove('open')});await p.keyboard.press('Escape').catch(()=>{});
+const q0=await phone();await q0.click('#menuBtn');await q0.click('[data-act=fun]');await q0.click('#funStorkPlay');await q0.click('#skPanel [data-s=play]');
+for(let i=0;i<6;i++){await q0.mouse.click(195,420);await q0.clock.runFor(660)}
+await q0.mouse.click(195,420);await q0.clock.runFor(200);await shot(q0,'stork');await q0.context().close();
 for(const t of ['dark','dalmatian','halloween','thanksgiving','christmas']){const q=await phone(t);await q.clock.runFor(1500);await q.waitForTimeout(500);await shot(q,'log-'+t);await q.context().close()}
 await b.close();console.log('screenshots in',out);

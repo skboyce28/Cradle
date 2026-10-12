@@ -1,5 +1,13 @@
 # Changelog
 
+## Product overview refresh
+
+No change to the app.
+- The overview now reads like an app preview: "The baby log the whole family shares", with the Log in the middle of the hero and History and the Dashboard beside it
+- A "What's inside" grid of nine features replaces the triple-feeding explainer (triple feeding is one line under Feeds, your way)
+- The Fun center picture stacks all three games, Stork Flight on top
+- New screenshots for Bottle Catch, Stork Flight, and Achievements (53 badges); `tools/screenshots/take.mjs` retakes them
+
 ## v1.24
 
 **The product overview is on the web**

@@ -47,7 +47,7 @@ ok('page refuses to load inside another site’s frame',await f.evaluate(()=>{tr
 const o=await ctx.newPage();const ov=[];o.on('console',m=>{const t=m.text();if(/Content Security Policy|Refused to/i.test(t))ov.push(t.slice(0,160))});
 await o.addInitScript(()=>{document.addEventListener('securitypolicyviolation',e=>{(window.__v=window.__v||[]).push(e.violatedDirective+' '+e.blockedURI)})});
 const resp=await o.goto('http://localhost:8099/overview/');await o.waitForTimeout(800);
-ok('overview page is published at /overview/',resp.status()===200&&/Every feed, every/.test(await o.innerText('body')));
+ok('overview page is published at /overview/',resp.status()===200&&/The baby log/.test(await o.innerText("body")));
 ok('overview has its own policy (Google Fonts allowed, nothing else)',/fonts\.googleapis\.com/.test(resp.headers()['content-security-policy']||'')&&/connect-src 'none'/.test(resp.headers()['content-security-policy']||''));
 await o.evaluate(async()=>{for(let y=0;y<document.body.scrollHeight;y+=700){scrollTo(0,y);await new Promise(r=>setTimeout(r,30))}});await o.waitForTimeout(500);
 const imgs=await o.$$eval('img',is=>is.map(i=>[i.getAttribute('src'),i.naturalWidth]));

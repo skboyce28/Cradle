@@ -78,15 +78,11 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent); outline-of
   .fan:hover .p3{transform:translateX(66%) rotate(9deg) translateY(10px)}
 }
 
-/* triple-feed cycle */
-.cycle{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(12px,2vw,20px); counter-reset:step}
-.step{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:24px; display:grid; gap:10px; position:relative}
-.step .num{font:700 13px/1 var(--mono); color:var(--muted)}
-.step .big{font:800 clamp(40px,5vw,56px)/1 var(--display); letter-spacing:-.03em}
-.step:nth-child(1) .big{color:var(--accent)} .step:nth-child(2) .big{color:var(--bottle)} .step:nth-child(3) .big{color:var(--pump)}
-.step p{color:var(--muted); font-size:15px}
-.row-demo{margin-top:clamp(20px,3vw,28px); background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px 18px; display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; font-size:14px}
-.row-demo .t{font:700 15px/1 var(--mono)}
+/* features */
+.feats{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(12px,2vw,20px)}
+.feat{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:22px; display:grid; gap:8px; align-content:start}
+.feat .fi{font-size:28px; line-height:1}
+.feat p{color:var(--muted); font-size:15px}
 .tag{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:10px; background:var(--panel2); font-weight:600}
 .tag.b{color:var(--bottle)} .tag.p{color:var(--pump)} .tag.w{color:var(--wet)} .tag.s{color:var(--stool)} .tag.a{color:var(--accent-ink)} .tag.v{color:var(--sun)}
 
@@ -106,10 +102,17 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent); outline-of
 
 /* screens gallery */
 .screens{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:clamp(18px,3vw,32px) clamp(14px,2.4vw,28px)}
-.screens figure{margin:0; display:grid; justify-items:center; text-align:center}
+.screens figure{margin:0; display:grid; justify-items:center; align-content:start; text-align:center}
+.screens .phone{align-self:start}
 .screens .phone{--w:100%; width:100%; border-radius:30px; padding:8px}
 .screens .phone img{border-radius:23px}
 .screens .cap{margin-inline:auto}
+.pstack{position:relative; width:100%; aspect-ratio:390/844}
+.pstack .phone{position:absolute; top:0; left:0; --w:100%; width:76%; border-radius:24px; padding:6px}
+.pstack .phone img{border-radius:18px}
+.pstack .s1{transform:translate(-2%,9%) rotate(-8deg); z-index:1}
+.pstack .s2{transform:translate(14%,5%) rotate(-2deg); z-index:2}
+.pstack .s3{transform:translate(31%,1%) rotate(4deg); z-index:3}
 
 /* night band */
 .night{background:radial-gradient(1200px 500px at 80% -10%, var(--night2), transparent 60%), var(--night); color:var(--night-ink); position:relative; overflow:hidden}
@@ -181,11 +184,12 @@ footer code{font-family:var(--mono); font-size:13px}
   .screens{grid-template-columns:repeat(2,minmax(0,1fr))}
   .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fine{grid-template-columns:minmax(0,1fr)}
+  .feats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .calm-row{grid-template-columns:minmax(0,1fr); justify-items:center}
   .calm-row > div{justify-self:stretch}
 }
 @media (max-width:560px){
-  .cycle{grid-template-columns:minmax(0,1fr)}
+  .feats{grid-template-columns:minmax(0,1fr)}
   .fan{height:400px}
   .fan .phone{--w:150px}
   .fan .p1{transform:translateX(-62%) rotate(-7deg) translateY(14px)}
@@ -207,43 +211,42 @@ footer code{font-family:var(--mono); font-size:13px}
   </div>
   <div class="hero-grid">
     <div>
-      <p class="eyebrow">Baby log</p>
-      <h1 style="margin-top:14px">Every feed, every diaper, <em>every 3am</em>, on one row.</h1>
-      <p class="lede">Nurse, bottle top-up, pump, wet, stool, Vitamin D, and bath time, logged in a few taps and shared live with everyone on feeding duty. Built for tired hands, dark rooms, and the pediatrician's questions.</p>
+      <p class="eyebrow">Family baby log</p>
+      <h1 style="margin-top:14px">The baby log <em>the whole family</em> shares.</h1>
+      <p class="lede">Feeds, diapers, pumping, Vitamin D, baths, and weights, logged in a few taps and on every family phone within seconds. Big buttons for 3am, clear trends for the pediatrician, and a few games for the waiting moments.</p>
       <div class="chips">
         <span class="chip"><i style="background:var(--accent)"></i>Works offline</span>
         <span class="chip"><i style="background:var(--bottle)"></i>Syncs between family phones</span>
         <span class="chip"><i style="background:var(--good)"></i>Your own database</span>
         <span class="chip"><i style="background:var(--pump)"></i>Installs like an app</span>
+        <span class="chip"><i style="background:var(--stool)"></i>Feed-due notifications</span>
       </div>
     </div>
-    <div class="fan" aria-label="Cradle on three phones: the Log, Night shift, and the Dashboard">
-      <div class="phone p1"><img src="screenshots/log.webp" alt="The Log tab: time since last feed, next feed due, and the pump timer"></div>
-      <div class="phone p2"><img src="screenshots/night.webp" alt="Night shift: a dim screen with large buttons for breast side, bottle, and diapers"></div>
+    <div class="fan" aria-label="Cradle on three phones: History, the Log, and the Dashboard">
+      <div class="phone p1"><img src="screenshots/hist.webp" alt="History: a card for each day with feeds, volumes, and diaper goals"></div>
+      <div class="phone p2"><img src="screenshots/log.webp" alt="The Log: time since the last feed, which side to start on, when the next feed is due"></div>
       <div class="phone p3"><img src="screenshots/dash.webp" alt="The Dashboard: feeds per day, bottle and pump totals, time between feeds"></div>
     </div>
   </div>
 </header>
 
 <main>
-<section class="wrap" id="cycle">
+<section class="wrap" id="features">
   <div class="sec-head">
-    <p class="eyebrow">The triple-feed cycle</p>
-    <h2>Three parts of one feed, logged as one row.</h2>
-    <p class="lede">Triple feeding means nursing, then a bottle top-up, then pumping, every few hours, around the clock. Cradle keeps the whole session together so the totals add up the way your care team asks about them. Only nursing, or only bottles? Turn off what you don’t use in Settings, and it’s hidden everywhere.</p>
+    <p class="eyebrow">What's inside</p>
+    <h2>Everything the first months ask you to keep track of.</h2>
+    <p class="lede">One app for the whole routine, set up for how your family feeds. Turn off breast, bottle, or pumping in Settings if you don't use them, and they disappear everywhere.</p>
   </div>
-  <div class="cycle">
-    <div class="step"><span class="num">1 · Nurse</span><span class="big">L + R</span><p>Tap the sides you used. The first side gets a dot, so you know where to start next time. A ▶ timer fills in the minutes, and a slider splits them between sides.</p></div>
-    <div class="step"><span class="num">2 · Top up</span><span class="big">45 mL</span><p>Bottle volume, with a bar that fills toward your target. Night shift adjusts it in 5 mL steps.</p></div>
-    <div class="step"><span class="num">3 · Pump</span><span class="big">70 mL</span><p>Pumped volume, plus a pump timer with a green arc for your 15 to 20 minute window.</p></div>
-  </div>
-  <div class="row-demo" aria-label="Example row">
-    <span class="t">7:05am</span>
-    <span class="tag a">L + R · 28 min</span>
-    <span class="tag b">Bottle 49 mL</span>
-    <span class="tag p">Pump 75 mL</span>
-    <span class="tag s">Stool</span>
-    <span class="tag v">☀️ Vitamin D</span>
+  <div class="feats">
+    <div class="feat"><span class="fi">🍼</span><h3>Feeds, your way</h3><p>Breast with a timer and which side to start on, bottles in mL, and pumping, alone or together. Triple feeding fits on one row.</p></div>
+    <div class="feat"><span class="fi">🧷</span><h3>Diapers with goals</h3><p>Wet and stool on each feed or on their own, with daily goals that grow with your baby's day of life.</p></div>
+    <div class="feat"><span class="fi">⚖️</span><h3>Weight and growth</h3><p>Visit weights and weighted feeds in grams or lb and oz, charted against birth weight.</p></div>
+    <div class="feat"><span class="fi">☀️</span><h3>Vitamin D and baths</h3><p>A daily Vitamin D check with streaks, and sponge or tub baths with a note.</p></div>
+    <div class="feat"><span class="fi">🌙</span><h3>Night shift</h3><p>A dim screen with huge buttons for one-handed feeds in the dark, in warm, moonlight, or red colors.</p></div>
+    <div class="feat"><span class="fi">📊</span><h3>Dashboard and doctor report</h3><p>7 or 14 days of trends, insights, and a one-page report to bring to appointments.</p></div>
+    <div class="feat"><span class="fi">👪</span><h3>Family sharing</h3><p>Everyone gets their own login and picture, the family shares one log, and changes appear on every phone in seconds.</p></div>
+    <div class="feat"><span class="fi">📣</span><h3>Next feed, on time</h3><p>When the next feed is due, an in-app alarm, and optional notifications even when Cradle is closed.</p></div>
+    <div class="feat"><span class="fi">🎮</span><h3>A little fun</h3><p>Daily Word, Bottle Catch, and Stork Flight with family high scores, plus 53 achievements and seasonal themes.</p></div>
   </div>
 </section>
 
@@ -279,7 +282,11 @@ footer code{font-family:var(--mono); font-size:13px}
     <figure><div class="phone"><img src="screenshots/log.webp" alt="Log tab"></div><figcaption class="cap"><b>Log</b>Time since the last feed, which side to start on, when the next feed is due, with an optional notification even when Cradle is closed.</figcaption></figure>
     <figure><div class="phone"><img src="screenshots/dash.webp" alt="Dashboard tab"></div><figcaption class="cap"><b>Dashboard</b>7 or 14 days of trends, with chips to show one topic at a time. Today counts as in progress until midnight.</figcaption></figure>
     <figure><div class="phone"><img src="screenshots/zoom.webp" alt="An enlarged dashboard chart with the details of one feed"></div><figcaption class="cap"><b>Tap any chart</b>Enlarge it, then tap a day or a single feed for the details.</figcaption></figure>
-    <figure><div class="phone"><img src="screenshots/word.webp" alt="Daily Word: a grid of letter tiles in green, yellow, and gray above an on-screen keyboard"></div><figcaption class="cap"><b>Fun center</b>Daily Word, a new word every day at 4, 5, or 6 letters, plus two arcade games: Bottle Catch and Stork Flight. High scores with your initials.</figcaption></figure>
+    <figure><div class="pstack" aria-label="The three Fun center games, stacked">
+      <div class="phone s1"><img src="screenshots/bottle.webp" alt="Bottle Catch: a basket catching falling bottles"></div>
+      <div class="phone s2"><img src="screenshots/word.webp" alt="Daily Word: letter tiles in green, yellow, and gray"></div>
+      <div class="phone s3"><img src="screenshots/stork.webp" alt="Stork Flight: a stork carrying a bundle between clouds and chimneys"></div>
+    </div><figcaption class="cap"><b>Fun center</b>Stork Flight, Daily Word (a new word every day at 4, 5, or 6 letters), and Bottle Catch, with high scores for the family.</figcaption></figure>
     <figure><div class="phone"><img src="screenshots/hist.webp" alt="History tab with a card for each day"></div><figcaption class="cap"><b>History</b>Every day as a card or a table, with diaper goals checked off.</figcaption></figure>
     <figure><div class="phone"><img src="screenshots/ach.webp" alt="Achievements list with earned badges"></div><figcaption class="cap"><b>Achievements</b>Fifty-three badges in eight groups, with starred higher tiers. A day in progress never breaks a streak.</figcaption></figure>
     <figure><div class="phone"><img src="screenshots/bath.webp" alt="A bath row on the Log with Sponge and Tub choices"></div><figcaption class="cap"><b>Bath time</b>Sponge or tub, with a note. Baths never count as feeds, and the Dashboard shows when the last one was.</figcaption></figure>
