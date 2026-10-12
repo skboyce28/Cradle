@@ -169,6 +169,12 @@ from cron.job_run_details
 where jobid = (select jobid from cron.job where jobname = 'cradle-notify')
 order by start_time desc limit 5;
 
+-- 22b. What did the function answer? 200 = working; 404 = the schedule's address doesn't
+--      match the function's (it's case-sensitive). Kept by pg_net for about 6 hours.
+select status_code, content, created
+from net._http_response
+order by created desc limit 5;
+
 -- 23. CHANGES DATA. Stop notifications for one account's phones
 delete from public.cradle_push_subs
 where user_id = (select id from auth.users where email = 'their@email.com');

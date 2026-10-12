@@ -35,9 +35,12 @@ In Supabase, open **SQL Editor**, then **New query**. Paste all of [`supabase/3-
 ### 2. Create the cradle-notify function
 
 1. In Supabase, open **Edge Functions**, then **Deploy a new function**, then **Via Editor**.
-2. Name it exactly `cradle-notify`: **all lowercase, with a hyphen**. The name becomes part of the function's web address, and that's case-sensitive, so `Cradle-notify` or `cradle_notify` won't be found by the schedule (you'd see `"Requested function was not found"`).
+2. Name it `cradle-notify` (all lowercase, with a hyphen). The name you type becomes part of the function's web address, which is what the schedule in step 3 calls.
 3. Delete the starter code, paste all of [`supabase/functions/cradle-notify/index.ts`](../supabase/functions/cradle-notify/index.ts), and choose **Deploy function**.
-4. Open the function's settings and turn **off** JWT verification (shown as **Verify JWT** or **Enforce JWT verification**).
+4. **Write down the function's web address.** It's shown on the function's page (its endpoint URL), ending in `/functions/v1/` and then the name. Web addresses are case-sensitive:
+   - If you typed `Cradle-notify` with a capital C, the address ends in `/functions/v1/Cradle-notify`, and that's what the schedule must call.
+   - Renaming the function later in the dashboard changes only its display name. The address stays the same.
+5. Open the function's settings and turn **off** JWT verification (shown as **Verify JWT** or **Enforce JWT verification**).
    - This lets the schedule in step 3 start it.
    - The function only sends notifications that are due, once each, so starting it extra times does nothing.
    - With the Supabase CLI instead: `supabase functions deploy cradle-notify --no-verify-jwt`.
@@ -47,15 +50,26 @@ The function uses your project's own service key, which Supabase gives every fun
 ### 3. Run it every minute
 
 1. Open [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql).
-2. Replace `YOUR-PROJECT-REF` with your project's ref (the part before `.supabase.co` in your Project URL).
+2. Replace the address in it with your function's web address from step 2, **exactly, including any capitals**. Usually that just means replacing `YOUR-PROJECT-REF` with your project's ref (the part before `.supabase.co` in your Project URL).
 3. Paste it into **SQL Editor** and press **Run**.
 
-It turns on Supabase's `pg_cron` and `pg_net` extensions and schedules the function every minute. You can also schedule it from **Integrations**, then **Cron**, as a job named `cradle-notify` that calls the `cradle-notify` Edge Function every minute (`* * * * *`). Use that job name so the unschedule command and admin queries find it.
+It turns on Supabase's `pg_cron` and `pg_net` extensions and schedules the function every minute. You can also schedule it from **Integrations**, then **Cron**, as a job named `cradle-notify` that calls the Edge Function every minute (`* * * * *`). Use that job name so the unschedule command and admin queries find it.
 
 ### 4. Check it
 
-- **Edge Functions**, then **cradle-notify**, then **Logs** shows a run every minute.
-- Opening `https://YOUR-PROJECT-REF.supabase.co/functions/v1/cradle-notify` in a browser shows something like `{"sent":0,"failed":0,"keys_ready":true}`.
+Wait two minutes, then run this in **SQL Editor**. It shows what the function answered the schedule:
+
+```sql
+select status_code, content, created from net._http_response order by created desc limit 5;
+```
+
+- **200** with `{"sent":0,"failed":0,"keys_ready":true}`: it's working. `sent` stays 0 until a feed comes due, then shows how many phones were told.
+- **404** with `"Requested function was not found"`: the schedule's address doesn't match the function's. Compare them letter by letter, capitals included, and run step 3 again with the right one.
+- **401**: JWT verification is still on (step 2.5).
+
+Also:
+- **Edge Functions**, then your function, then **Logs** shows a run every minute.
+- Opening the function's web address in a browser runs it once and shows the same `{"sent":…}` answer.
 - In Cradle, **Settings** now offers the **Notify this phone** choices. Before the function's first run, it says *Almost ready*.
 
 To stop notifications for everyone, unschedule the job (`select cron.unschedule('cradle-notify');`). To remove them completely, also delete the function.
@@ -111,7 +125,10 @@ Notification on the lock screen ◀───────────────
 Step 1 hasn't been run on this Supabase project.
 
 **Settings says "Almost ready"**
-The function hasn't run yet: check steps 2 and 3. Opening the function's address (step 4) runs it once. If that address says *Requested function was not found*, the function's name isn't exactly `cradle-notify` in lowercase.
+The function hasn't run yet: check steps 2 and 3. Opening the function's address (step 4) runs it once. If that address says *Requested function was not found*, check the function's web address on its page in Supabase: the part after `/functions/v1/` is case-sensitive.
+
+**The schedule runs but nothing is sent ever**
+Run the check in step 4. A 404 there means the schedule calls a different address from the function's (often a capital letter, such as `Cradle-notify`). Copy the function's address exactly into `4-notify-schedule.sql` and run it again. Renaming the function in the dashboard doesn't change its address.
 
 **The choice is greyed out**
 Settings explains why:

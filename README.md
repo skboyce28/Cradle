@@ -54,7 +54,7 @@ Cradle opens to a sign-in screen, so it needs a database to sign in to: a free S
 3. **Put your project address and publishable key** in environment variables: `.env` on your computer, or Netlify's environment variables. Never in the repo.
 4. **Build and deploy** to Netlify (drag and drop, or connect this repo).
 5. **Open the site on your phone**, tap *Create an account*, and install it to your home screen.
-6. **Optional: notifications.** Three more steps in Supabase (the function must be named exactly `cradle-notify`, lowercase) so phones can be told when a feed is due: [docs/notifications.md](docs/notifications.md).
+6. **Optional: notifications.** Three more steps in Supabase (the schedule must call the function's web address exactly, capitals included) so phones can be told when a feed is due: [docs/notifications.md](docs/notifications.md).
 
 Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 

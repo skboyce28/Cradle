@@ -1,5 +1,11 @@
 # Changelog
 
+## Notification setup guide
+
+No change to the app.
+- [Notifications](docs/notifications.md) setup: the schedule must call the function's web address **exactly as Supabase shows it**, capitals included. A function created as `Cradle-notify` keeps that address even after renaming it in the dashboard.
+- New check after scheduling: a SQL query that shows what the function answered (200 working, 404 address mismatch, 401 JWT verification still on). Also added as admin query 22b and in the comments of `4-notify-schedule.sql`.
+
 ## v1.17
 
 **What you track**

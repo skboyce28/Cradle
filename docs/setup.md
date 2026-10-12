@@ -110,7 +110,7 @@ When an update includes changes to `supabase/2-family.sql` (or `3-notifications.
 
 ## Optional: notifications
 
-So phones can get a notification when a feed is due, even with Cradle closed: run [`supabase/3-notifications.sql`](../supabase/3-notifications.sql), create the Edge Function (named exactly `cradle-notify`, all lowercase), and schedule it with [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql). About 10 minutes, all in the Supabase dashboard. Step by step: [Notifications](notifications.md#setting-them-up-once-for-your-cradle).
+So phones can get a notification when a feed is due, even with Cradle closed: run [`supabase/3-notifications.sql`](../supabase/3-notifications.sql), create the `cradle-notify` Edge Function, and schedule it with [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql), using the function's web address exactly (it's case-sensitive). Then check the schedule gets a 200 answer, not 404. About 10 minutes, all in the Supabase dashboard. Step by step: [Notifications](notifications.md#setting-them-up-once-for-your-cradle).
 
 ## Optional: real emails
 
