@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.20
+
+**The bottle target is per feed, and now says so everywhere**
+- It always worked per feed (each bottle's bar, the chart line, the Dashboard's hit rate, and the Full Bottle badges), but the labels didn't say so, and the Log's Bottle card showed the day's total right next to "target"
+- Now: **Bottle target per feed** in Settings; "Avg 45 mL per bottle feed · target 30 mL per feed" on the Log; "30 mL target per feed" on the chart; "% of bottle feeds hit 30 mL" on the Dashboard; "Bottle target: 30 mL per feed" on the printed day sheet; and "Reach the 30 mL bottle target in a feed" on the Full Bottle badges
+
+**Achievements:** the Bottle Catch badges are renamed **Catch Pro** and **Catch Legend**, so Catch Legend isn't confused with the bottle-feeding badge Bottle Legend. Earned badges stay earned.
+
+No database changes.
+
 ## v1.19
 
 **Stork Flight** (in the Fun center)

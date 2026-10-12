@@ -25,7 +25,7 @@ const A=await p.$$eval('#achGrid .ach',as=>as.map(a=>({name:a.querySelector('b')
 const cats=await p.$$eval('#achGrid .achcat',cs=>cs.map(c=>c.textContent));
 ok('53 achievements',A.length===53&&/ \/ 53$/.test(chip),A.length+' / chip '+chip);
 ok('eight groups with counts, Fun center last',cats.length===8&&cats[0].startsWith('Feeds')&&cats[7].startsWith('Fun center'),cats.join(' | '));
-ok('Fun center badges: all three games, none earned yet',['First Word','Word Lover','Wordsmith','Week of Words','Month of Words','Lucky Guess','Hard Mode Hero','Every Length','Bottle Pro','Bottle Legend','Night Flyer','Sky Captain','Special Delivery'].every(n=>A.some(a=>a.name===n&&!a.on))&&A.find(a=>a.name==='Week of Words').meta==='Best 0 · Now 0 of 7',A.find(a=>a.name==='Week of Words')?.meta);
+ok('Fun center badges: all three games, none earned yet',['First Word','Word Lover','Wordsmith','Week of Words','Month of Words','Lucky Guess','Hard Mode Hero','Every Length','Catch Pro','Catch Legend','Night Flyer','Sky Captain','Special Delivery'].every(n=>A.some(a=>a.name===n&&!a.on))&&A.find(a=>a.name==='Week of Words').meta==='Best 0 · Now 0 of 7',A.find(a=>a.name==='Week of Words')?.meta);
 ok('original ten still there',['First Latch','Week One','Eight Is Great','Diaper Duty','Diaper Pro','Sunshine Streak','Full Bottle','Big Day','Pump It Up','Side Switcher'].every(n=>A.some(a=>a.name===n)));
 ok('higher tiers have stars',A.filter(a=>a.tier).length===25&&A.find(a=>a.name==='One Thousand Feeds').tier==='★★★',String(A.filter(a=>a.tier).length));
 const S=await p.evaluate(()=>JSON.parse(localStorage.getItem('cradle-feeding-v1')));

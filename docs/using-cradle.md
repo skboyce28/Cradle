@@ -38,7 +38,7 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 | **L / R** | Which breast. If you nurse on both sides, tap both. The first side you tap gets a dot, so you know where to start next time. |
 | **Minutes** | How long you nursed. Tap ▶ when you start and ■ when you finish to fill it in, or type it. |
 | **Left ↔ Right** | Appears when both sides are on. Slide it toward the side that got more time and it divides the minutes: 20 minutes slid to 75% left is 15 left and 5 right. The middle is an even split. Before minutes are entered it shows percentages. |
-| **Bottle** | mL of the top-up. The bar fills toward your bottle target (Settings). |
+| **Bottle** | mL of the top-up. The bar fills toward your bottle target **per feed** (Settings). |
 | **Pump** | mL pumped. |
 | **Wet / Stool** | Mark both if a diaper had both. |
 | **☀️ Vitamin D** | Tap on the feed where you gave the drops. Cradle warns you if it's already logged that day. |
@@ -234,8 +234,8 @@ The round button at the top right:
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch, Daily Word, Stork Flight, and their high scores. See [Fun center](#fun-center). |
-| **Achievements** | Fifty-three badges with progress, in eight groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, and Fun center. Fun center badges (like *First Word*, *Week of Words*, *Bottle Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
-| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals |
+| **Achievements** | Fifty-three badges with progress, in eight groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, and Fun center. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
+| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, and wet and stool diapers per day |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About** | In-app help, version, and changelog |
 | **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |
