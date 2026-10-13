@@ -22,6 +22,8 @@ async function up(p,u,key=''){await p.clock.runFor(1500);await p.waitForSelector
 const S=p=>p.evaluate(()=>JSON.parse(localStorage.getItem('cradle-feeding-v1')));
 const dkey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const ago=days=>dkey(new Date(Date.now()-days*864e5));
+// a moment `mins` minutes ago, as the form's date and time (so “today” entries are never in the future, whatever time the tests run)
+const rec=mins=>{const d=new Date(Date.now()-mins*60e3);return {date:dkey(d),time:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}};
 const openMilk=async p=>{await p.click('#menuBtn');await p.click('#dd [data-milk]');await p.waitForTimeout(300)};
 async function add(p,{date,time='09:00',ml,unit='ml',place='freezer',box='bag',count=1,code='',note=''}){
   await p.click(`#mkUnit [data-mku=${unit}]`);await p.fill('#mkDate',date);await p.fill('#mkTime',time);await p.fill('#mkMl',String(ml));await p.click(`#mkPlace [data-mp=${place}]`);await p.selectOption('#mkBox',box);
@@ -47,9 +49,9 @@ await add(P,{date:ago(10),ml:120,count:3,note:'Morning pump'});
 let st=await S(P);ok('3 bags saved to the freezer',st.milk.length===3&&st.milk.every(m=>m.place==='freezer'&&m.ml===120&&m.box==='bag'&&m.at===ago(10)+'T09:00'),JSON.stringify(st.milk[0]));
 await add(P,{date:ago(220),ml:150,box:'bottle'});
 await add(P,{date:ago(5),ml:'3 oz',place:'fridge'});
-await add(P,{date:ago(0),time:'07:30',ml:100,place:'fridge',code:'ABC123'});
+await add(P,{...rec(120),ml:100,place:'fridge',code:'ABC123'});
 st=await S(P);ok('typing “3 oz” still works',st.milk.some(m=>m.ml===89&&m.place==='fridge'));
-await add(P,{date:ago(0),time:'06:00',ml:4,unit:'oz',place:'fridge'});st=await S(P);const oz4=st.milk.find(m=>m.ml===118);
+await add(P,{...rec(180),ml:4,unit:'oz',place:'fridge'});st=await S(P);const oz4=st.milk.find(m=>m.ml===118);
 ok('with oz picked, a plain 4 is 4 oz (118 mL), and oz is remembered',!!oz4&&st.ui.milkUnit==='oz'&&await P.$eval('#mkUnit [data-mku=oz]',b=>b.classList.contains('on')));
 await P.click(`[data-mkid="${oz4.id}"] [data-mk=edit]`);await P.waitForTimeout(200);ok('editing shows it in oz',(await P.inputValue('#mkMl'))==='4');
 await P.click('#mkUnit [data-mku=ml]');ok('switching to mL converts what’s in the box',(await P.inputValue('#mkMl'))==='118');
@@ -63,7 +65,7 @@ const ten=r.find(x=>/120 mL/.test(x.t));ok('10-day-old frozen milk is fine, with
 await P.screenshot({path:OUT+'milk-list.png',fullPage:false});
 
 // rules
-await add(P,{date:ago(0),ml:60,place:'fridge',code:'abc123'});ok('a label already in storage asks first',/already has the label abc123/.test(await txt(P,'#askMsg')));
+await add(P,{...rec(30),ml:60,place:'fridge',code:'abc123'});ok('a label already in storage asks first',/already has the label abc123/.test(await txt(P,'#askMsg')));
 await P.click('#askCancel');await P.waitForTimeout(150);ok('…and Cancel doesn’t save it',(await S(P)).milk.length===6&&await P.isVisible('#milkModal'));
 await P.fill('#mkCount','1');await P.fill('#mkCode','');
 await add(P,{date:ago(-2),ml:60});ok('a time in the future is refused',/in the future/.test(await txt(P,'#toast')));

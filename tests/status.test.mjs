@@ -18,9 +18,9 @@ const asAnon=q=>{try{return sql(`set role anon; ${q}`)}catch(e){return String(e.
 ok('the app can’t start checks or change the address',/permission denied/.test(asAnon(`select cradle_probe()`))&&/permission denied/.test(asAnon(`select cradle_status_set_site('https://evil.example')`)));
 ok('the app can’t read the checks or the config directly',/permission denied/.test(asAnon(`select * from cradle_probes`))||asAnon(`select count(*) from cradle_probes`).split('\n').pop()==='0');
 ok('the address must be a web address',/full address/.test((()=>{try{return sql(`select cradle_status_set_site('not a url')`)}catch(e){return String(e.stderr)}})()));
-sql(`select cradle_status_set_site('https://cradle-test.netlify.app/')`);sql(`select cradle_probe()`);
+sql(`select cradle_status_set_site('https://cradle-test.netlify.app/status/')`);sql(`select cradle_probe()`);
 const req=sql(`select url from net.test_requests order by id desc limit 1`);
-ok('a check asks the site for version.json',/^https:\/\/cradle-test\.netlify\.app\/version\.json\?probe=\d+$/.test(req),req);
+ok('a check asks the site for version.json (a pasted /status/ is dropped)',/^https:\/\/cradle-test\.netlify\.app\/version\.json\?probe=\d+$/.test(req),req);
 // answer it: up in 180 ms; plus history: 2 days ago one failure out of 288, and yesterday all up
 sql(`insert into net._http_response(id,status_code,created) select p.req_id,200,p.at+interval '180 ms' from public.cradle_probes p where p.done_at is null`);
 sql(`insert into public.cradle_probes(at,done_at,code,ok,ms) select now()-interval '2 days'+g*interval '5 min',now(),200,true,150 from generate_series(1,287) g`);

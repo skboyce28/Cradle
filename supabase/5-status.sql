@@ -31,7 +31,8 @@ create or replace function public.cradle_status_set_site(p_url text) returns voi
 language plpgsql security definer set search_path = public as $$
 begin
   if p_url !~ '^https?://[^\s/]+' then raise exception 'Use your site''s full address, like https://your-cradle.netlify.app'; end if;
-  insert into cradle_status_config (id, site_url) values (1, rtrim(p_url, '/'))
+  -- keep just https://host (a pasted /status/ or /index.html would make every check a 404)
+  insert into cradle_status_config (id, site_url) values (1, substring(trim(p_url) from '^https?://[^\s/?#]+'))
     on conflict (id) do update set site_url = excluded.site_url;
 end $$;
 

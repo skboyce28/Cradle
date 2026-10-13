@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.28 fixes
+
+- **Uptime checks:** the address saved for the checks keeps only `https://` and the host, so pasting a page address like `…/status/` no longer makes every check a 404. The status page now names the address it checks and, when a check gets a 404 while the site answers, says the address is probably wrong
+- **Tests:** the milk storage test entered "today" times like 6:00am, which are in the future when the tests run just after midnight (GitHub runs them in UTC), so the 9:10pm Eastern push failed. Those entries are now a set number of minutes in the past
+
 ## v1.28
 
 **Status page at `/status/`**

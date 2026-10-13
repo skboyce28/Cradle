@@ -161,7 +161,7 @@ function render(){
   const last=U&&U.last,lastFresh=last&&(Date.now()-new Date(last.at))<20*60e3;
   let site={k:'ok',t:'Operational'};
   if(ver.err)site={k:'bad',t:'Not reachable'};else if(last&&lastFresh&&!last.ok)site={k:'warn',t:'Last check failed'};
-  comps.push({name:'Website',pill:site,detail:`Right now: ${ver.err?'no answer':ver.ms+' ms from your browser'}${last?` · last scheduled check ${ago(last.at)}: ${last.ok?'up':'down'}${last.ms!=null&&last.ok?', ~'+last.ms+' ms':''}`:' · scheduled checks not set up'}`});
+  comps.push({name:'Website',pill:site,detail:`Right now: ${ver.err?'no answer':ver.ms+' ms from your browser'}${last?` · last scheduled check ${ago(last.at)}: ${last.ok?'up':'down'}${last.ms!=null&&last.ok?', ~'+last.ms+' ms':''}${!last.ok&&last.code===404&&!ver.err?` (HTTP 404 while the site answers here, so the checked address is probably wrong: it’s ${esc(U.site||'not set')}; rerun 6-status-schedule.sql with ${esc(location.origin)})`:''}`:' · scheduled checks not set up'}`});
   // Database (Supabase)
   let dbk={k:'ok',t:'Operational'},dbd=`Right now: ${db.ms} ms from your browser`;
   if(db.err){if(db.err.code===404){dbk={k:'',t:'Not set up'};dbd='Run supabase/5-status.sql to show database health here'}else if(db.err.message==='not configured'){dbk={k:'',t:'Not configured'};dbd='This site was built without database settings'}else{dbk={k:'bad',t:'Not reachable'};dbd='No answer: '+esc(db.err.message)}}
@@ -191,7 +191,7 @@ function render(){
     for(let i=89;i>=0;i--){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-i)).toISOString().slice(0,10),x=byDay[d];
       const p=x?x.up/x.n:null,cls=p==null?'':p>=.999?'ok':p>=.95?'warn':'bad';
       html+=`<i class="${cls}" title="${d}: ${x?(100*p).toFixed(1)+'% of '+x.n+' checks':'no data'}"></i>`}
-    $('#strip').innerHTML=html;$('#stripMid').textContent=U.checks_30d+' checks in 30 days';
+    $('#strip').innerHTML=html;$('#stripMid').textContent=U.checks_30d+' check'+(U.checks_30d===1?'':'s')+' in 30 days'+(U.site?' of '+U.site.replace(/^https?:\/\//,''):'');
     const inc=U.incidents||[];
     $('#incidents').innerHTML=inc.length?`<div class="sub" style="margin-top:10px">Recent failed checks: ${inc.slice(0,5).map(i=>esc(when(i.at))+' ('+(i.code?'HTTP '+i.code:esc(i.err||'no answer'))+')').join(', ')}</div>`:'<div class="sub" style="margin-top:10px">No failed checks on record.</div>';
   }else{
