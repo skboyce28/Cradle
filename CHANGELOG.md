@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.32
+
+**Sleep (optional)**
+- **Turn it on in Settings**, under What you track: **😴 Sleep** (off to start). It's shared with the family. Turning it off hides it everywhere and deletes nothing
+- **😴 Asleep** under Since last feed adds a sleep with the current time; the button becomes **☀️ Woke up**, which saves the wake time and length. A sleep in progress syncs, so every phone shows the baby asleep and anyone can tap Woke up
+- **Wake window:** the line under Since last feed shows *Asleep 1h 35m since 2:40pm* or *Awake 1h 05m since 4:15pm*
+- Each sleep row has a start and a wake time to type or change. Sleeps starting 7pm to 7am are **night sleep** (🌙), others **naps** (😴). A sleep across midnight is split between the two days. Sleep never counts as a feed
+- **Daily goal** in Settings: *Sleep goal (hours a day)*, 15 to start, 0 turns it off
+- **Log:** a Sleep tile with a ring toward the goal, naps and night. **Night shift:** a 😴 Asleep / ☀️ Woke up button
+- **Dashboard:** *Sleep per day* (over the days with sleep logged, goal met, longest stretch, today so far), a *Daily sleep* chart of night and naps with the goal line, an insight, and a **😴 Sleep** filter chip
+- **History**, the **day sheet**, and the **doctor report** include sleep when it's on. Export and import keep sleeps, the switch, and the goal
+- New test: `tests/sleep.test.mjs` (31 checks)
+
 ## Status page: a link to each deployment
 
 No change to the app.

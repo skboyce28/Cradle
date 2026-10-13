@@ -15,18 +15,19 @@ Each session has three parts: **nurse** at the breast, offer a **bottle** top-up
 
 ### What you track
 
-In **Settings**, **What you track** has three switches: **🤱 Breast**, **🍼 Bottle**, and **⚡ Pump**. Turn off what your family doesn't use and Cradle hides it everywhere:
+In **Settings**, **What you track** has switches for **🤱 Breast**, **🍼 Bottle**, and **⚡ Pump** (on to start), and **😴 Sleep** (off to start). Turn off what your family doesn't use and Cradle hides it everywhere:
 
 | Off | What disappears |
 |---|---|
 | **Breast** | L and R, Minutes and the ▶ timer, the left and right split, weighted feeds; in Night shift, the timer and L/R (Start feed no longer starts a nursing timer); the side balance and Side starts on the Dashboard; nursing insights; the Breast and Min columns on the day sheet and Nursing on the doctor report |
 | **Bottle** | The Bottle box on each feed and the Bottle tile; in Night shift, the bottle buttons; Bottle per day; bottle insights; the Bottle columns in print |
 | **Pump** | The Pump box, the pump timer, and the Pumped tile; Pumped per day; pumping insights; the Pump columns in print |
+| **Sleep** | [Sleep](#sleep): the 😴 Asleep button, the asleep or awake line, sleep rows, and the Sleep tile on the Log; the Night shift button; the sleep goal in Settings; the Dashboard tile, chart, filter, and insight; the Sleep column and tag in History, print, and the doctor report |
 
 - **Daily volume chart and Bottle & pump filter:** these hide when both Bottle and Pump are off.
 - **Shared with your family:** the choice syncs like the other Settings.
 - **Nothing logged is deleted:** turning something back on brings it all back.
-- **At least one stays on.**
+- **At least one of Breast, Bottle, and Pump stays on.**
 
 ## Log
 
@@ -73,6 +74,19 @@ Baths **never count as feeds**, so they don't change feed totals, the time betwe
 
 Only one tummy time timer runs at a time. On an earlier day there's no timer, so enter the time and minutes. Tummy time **never counts as a feed**. The **Tummy time** tile under the day's totals fills toward your daily goal (Settings, 15 minutes to start; 0 turns it off) and turns green when you reach it. Start with a few minutes a few times a day and build up; ask your pediatrician what fits your baby.
 
+### Sleep
+
+Turn on **😴 Sleep** in Settings, under What you track. It's off to start.
+
+- **😴 Asleep**, under Since last feed, adds a sleep row with the current time. The button becomes **☀️ Woke up**; tap it (or **■ Woke up** on the row) when the baby wakes and the wake time and length are saved.
+- **Everyone sees it:** a sleep in progress syncs like any entry, so another phone shows the baby asleep and can tap Woke up.
+- **The line under Since last feed** shows **Asleep 1h 35m since 2:40pm**, or between sleeps the wake window: **Awake 1h 05m since 4:15pm**.
+- **Typing times:** each row has a start and a wake time; change either and the length updates. On an earlier day, enter both.
+- **Naps and night:** a sleep that starts between 7pm and 7am is night sleep (🌙); others are naps (😴).
+- **Across midnight:** a sleep from 9pm to 2am counts 3 hours on the first day and 2 on the next.
+- **Never a feed:** sleep doesn't change feed counts, gaps, or the next feed.
+- **The Sleep tile** fills toward your daily goal (Settings, 15 hours to start; 0 turns it off) and shows naps and night separately. Newborns often sleep 14 to 17 hours a day in short stretches; ask your pediatrician what fits your baby.
+
 **Day notes** sit at the bottom of the day.
 
 **Pump timer:** start it when you start pumping. The green arc shows your target window (15 to 20 minutes to start; change it in Settings).
@@ -108,7 +122,7 @@ A dim, low-glare screen with huge buttons, for one-handed feeds in the dark. Ope
 4. Mark wet, stool, or Vitamin D.
 5. Tap **Done**.
 
-Between feeds, the start screen also has **🧷 Diaper only** and **🛁 Bath**, which log those with the current time. Change a bath's kind or add a note on the Log afterward.
+Between feeds, the start screen also has **🧷 Diaper only** and **🛁 Bath**, which log those with the current time, and, with Sleep turned on, **😴 Asleep** (it becomes **☀️ Woke up** with how long the baby has slept). Change a bath's kind or add a note on the Log afterward.
 
 Everything saves as you go. The three dots at the top switch colors: **Warm**, **Moonlight**, or **Red** (easiest on night vision). ✕ closes it.
 
@@ -120,9 +134,10 @@ The 7 or 14 days ending on the selected day:
 - Diapers against goals, Vitamin D streak, side balance (which side you started on, and nursing time on each side from the split slider), longest stretch between feeds
 - Baths: how many, sponge or tub, and when the last one was
 - Tummy time: minutes per day, how many completed days met your goal, today so far, and a daily chart with the goal line
+- Sleep (when turned on): hours per day over the days with sleep logged, how many met your goal, the longest stretch, today so far, and a daily chart of night sleep and naps with the goal line
 - Weight against birth weight: weigh-ins are filled dots joined by a line. A weighted feed shows its before weight as an open circle and its after weight (which includes the milk just taken) as a small dot above it, joined by a dashed line. Only before weights count toward Latest, Lowest, and the other weight numbers
 
-**Filter chips** under the Print button narrow the Dashboard to one topic: **Feeds**, **Bottle & pump**, **Diapers**, **Vitamin D**, **Tummy time**, **Weight**, or **Baths**. Only that topic's cards and insights show; **All** brings everything back. Cradle remembers your choice on this phone, and **Print** prints what's showing.
+**Filter chips** under the Print button narrow the Dashboard to one topic: **Feeds**, **Bottle & pump**, **Diapers**, **Vitamin D**, **Tummy time**, **Sleep** (when turned on), **Weight**, or **Baths**. Only that topic's cards and insights show; **All** brings everything back. Cradle remembers your choice on this phone, and **Print** prints what's showing.
 
 **Tap any chart to enlarge it**, then tap a day or a feed for details. **Today counts as "in progress"** until midnight, so a goal that isn't met *yet* isn't shown as missed.
 
@@ -137,12 +152,13 @@ The 7 or 14 days ending on the selected day:
 - weight against birth weight
 - daily feeds, nursing minutes with the left and right split, and bottle and pump volumes
 - diapers against goals, Vitamin D, baths, and tummy time
+- sleep per day and a Sleep column, when Sleep is turned on
 - weighted feeds and your day notes
 - lines for questions
 
 ## History
 
-Every day at a glance, as cards or a table. A 🛁 tag or the Bath column shows each day's baths, and a 🤸 tag or the Tummy column its tummy time (green when the goal was met).
+Every day at a glance, as cards or a table. A 🛁 tag or the Bath column shows each day's baths, a 🤸 tag or the Tummy column its tummy time, and a 😴 tag or the Sleep column its sleep (green when the goal was met).
 
 ## Calm
 
@@ -294,7 +310,7 @@ The round button at the top right:
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch, Daily Word, Stork Flight, and their high scores. See [Fun center](#fun-center). |
 | **Achievements** | Fifty-five badges with progress, in nine groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, Fun center, and Support. Support badges (*Quality Assurance* and *Compliance Officer*) count your feedback that has been reviewed. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
-| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, wet and stool diapers per day, and tummy time minutes per day |
+| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump, sleep), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, wet and stool diapers per day, and tummy time minutes per day |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About / Support** (one row) | In-app help; version and changelog; and [Support](#support) for sending feedback. A number on Support means there's an update on your feedback (or, for admins, new feedback). |
 | **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |
@@ -348,7 +364,7 @@ Tap **Your picture** at the top of the profile menu.
 |---|---|
 | **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |
 | **Import data** | **Choose a file**, or paste a `CRADLE1:` code. **Merge** adds to your log without removing anything; **Replace** clears your log first. |
-| **Print this tab** | Prints the current tab (or saves it as a PDF). The Log prints a paper sheet for the selected day, baths and tummy time included. |
+| **Print this tab** | Prints the current tab (or saves it as a PDF). The Log prints a paper sheet for the selected day, baths, tummy time, and sleep included. |
 | **Erase all data** | Removes every entry from your family's log **on every phone**. Only the **family owner** can use it; for others it says *Only the family owner can do this*. Everyone can still delete single entries with ×. Export first if you want a copy. |
 | **Sign out and remove from this phone** | Signs you out and clears the log, settings, and game scores from this phone, for a shared or lost phone. It syncs first and warns you if any changes haven't reached your account. Everything comes back when you sign in again. |
 

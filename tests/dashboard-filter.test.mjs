@@ -21,7 +21,7 @@ const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));
 const vis=p=>p.$$eval('#tab-dash .card',cs=>cs.filter(c=>c.offsetParent!==null).map(c=>(c.querySelector('h3')||{}).textContent.trim()));
 let p=await phone({theme:'light'});
 await p.click('#tabs [data-tab=dash]');await p.waitForTimeout(400);
-const chips=await p.$$eval('#dashFilter button',bs=>bs.map(b=>b.textContent.trim()));
+const chips=await p.$$eval('#dashFilter button',bs=>bs.filter(b=>b.offsetParent).map(b=>b.textContent.trim()));
 ok('chips across the top',chips.join('|')==='All|🤱 Feeds|🍼 Bottle & pump|💧 Diapers|☀️ Vitamin D|🤸 Tummy time|⚖️ Weight|🛁 Baths',chips.join('|'));
 ok('All is selected and shows everything',await p.isVisible('#dashFilter [data-f=all].on')&&(await vis(p)).length>=17,String((await vis(p)).length));
 await snap(p,'all');

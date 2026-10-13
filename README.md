@@ -7,7 +7,7 @@
 <p align="center"><a href="https://github.com/skboyce28/Cradle/actions/workflows/tests.yml"><img src="https://github.com/skboyce28/Cradle/actions/workflows/tests.yml/badge.svg" alt="Tests"></a></p>
 
 <p align="center"><b>A baby log for tired parents.</b><br>
-Nurse, bottle, pump, diapers, Vitamin D, baths, and tummy time, shared live between family phones and usable one-handed at 3am. Built for triple feeding, and just as handy if you only nurse or only bottle feed: turn off what you don't use in Settings and it's hidden everywhere.</p>
+Nurse, bottle, pump, diapers, Vitamin D, baths, tummy time, and sleep, shared live between family phones and usable one-handed at 3am. Built for triple feeding, and just as handy if you only nurse or only bottle feed: turn off what you don't use in Settings and it's hidden everywhere.</p>
 
 > [!IMPORTANT]
 > **Cradle is not medical advice.** It is a notebook, not a clinical tool. Feeding and diaper goals in the app are placeholders: always follow your pediatrician, lactation consultant, or care team. **Cradle was built with AI assistance (Claude, by Anthropic).** The code was written and reviewed with an AI model, has not been independently audited, and comes with no warranty. See [DISCLAIMER.md](DISCLAIMER.md).
@@ -28,13 +28,14 @@ Nurse, bottle, pump, diapers, Vitamin D, baths, and tummy time, shared live betw
 |---|---|
 | **Log** | One row per feed: left/right breast (with which side you started), nursing minutes with a ▶ timer, a slider that splits the minutes between sides, bottle mL, pump mL, wet, stool, Vitamin D, notes. 🧷 diaper-only and 🛁 bath rows (sponge or tub) that don't count as feeds. |
 | **Night shift** | The bottle button at the top right opens a dim, low-glare screen with huge buttons for one-handed night feeds, plus quick Diaper only and Bath buttons. Warm, Moonlight, or Red colors. |
-| **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, baths, tummy time, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
+| **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, baths, tummy time, sleep, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
 | **Tummy time** | 🤸 starts a timer and logs the minutes (or type them), with a daily goal in Settings, progress on the Log, and a Dashboard chart. |
+| **Sleep** | Optional (turn it on in Settings). 😴 Asleep and ☀️ Woke up, on the Log and in Night shift, shared live with the family. Naps and night sleep, the wake window, a daily goal, and a Dashboard chart. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |
 | **Notifications** | Optional: a notification on each phone that asks, even with Cradle closed, when a feed is due or 15 or 30 minutes before. Sent by a small Supabase Edge Function in your own project. |
 | **Calm** | The 🌙 button at the top right: a slow screensaver with the time, time since the last feed, and spa music, ocean, rain, or white noise. |
-| **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, baths, and tummy time. Every tab also prints. |
+| **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, baths, tummy time, and sleep. Every tab also prints. |
 | **Weighted feeds** | Before and after weights on a feed, in grams or lb and oz, with the estimated transfer (1 g ≈ 1 mL). |
 | **Weights** | A list of every weight to review, edit, or delete, and a chart against birth weight. |
 | **Milk storage** | Pumped milk in the fridge and freezer, oldest first, with CDC age limits flagged. Thaw, freeze, or use a container (it can log the bottle feed). Optional labels: type them, scan barcodes, or print Cradle's own. |
