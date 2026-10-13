@@ -8,9 +8,13 @@ const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));
 const b=await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{channel:'chromium'});const errs=[];
 const LIVE='a1b2c3d4e5f60718293a4b5c6d7e8f9012345678',OLD='0f9e8d7c6b5a49382716051f2e3d4c5b6a798000';
 const iso=m=>new Date(Date.now()-m*60e3).toISOString();
-const COMMITS=[{sha:LIVE,html_url:'https://github.com/skboyce28/Cradle/commit/'+LIVE,commit:{message:'v1.28: status page\n\nmore',author:{date:iso(30)}}},
+// 25 commits on main, newest first: the live one, a failed one, then 23 older ones
+const OLDER=Array.from({length:23},(_,i)=>{const sha=String(i).padStart(2,'0').repeat(20);return {sha,html_url:'https://github.com/skboyce28/Cradle/commit/'+sha,commit:{message:'Older change '+(i+1),author:{date:new Date(Date.now()-(300+i*60)*60e3).toISOString()}}}});
+const COMMITS0=[{sha:LIVE,html_url:'https://github.com/skboyce28/Cradle/commit/'+LIVE,commit:{message:'v1.28: status page\n\nmore',author:{date:iso(30)}}},
   {sha:OLD,html_url:'https://github.com/skboyce28/Cradle/commit/'+OLD,commit:{message:'v1.27: labels',author:{date:iso(240)}}}];
-const RUNS={workflow_runs:[{head_sha:LIVE,status:'completed',conclusion:'success',run_started_at:iso(29),updated_at:iso(23)},{head_sha:OLD,status:'completed',conclusion:'failure',run_started_at:iso(239),updated_at:iso(233)}]};
+const RUNS={total_count:25,workflow_runs:[{head_sha:LIVE,status:'completed',conclusion:'success',run_started_at:iso(29),updated_at:iso(23),created_at:iso(29)},{head_sha:OLD,status:'completed',conclusion:'failure',run_started_at:iso(239),updated_at:iso(233),created_at:iso(239)}]
+  .concat(OLDER.map(c=>({head_sha:c.sha,status:'completed',conclusion:'success',run_started_at:c.commit.author.date,updated_at:c.commit.author.date,created_at:c.commit.author.date})))};
+const ghAnswer=u=>{if(u.includes('/actions/runs'))return RUNS;const all=COMMITS0.concat(OLDER),q=new URL(u).searchParams,n=+(q.get('per_page')||30),pg=+(q.get('page')||1);return all.slice((pg-1)*n,pg*n)};
 
 // --- database: uptime checks through the pg_net stand-in
 sql(`delete from public.cradle_probes; delete from net._http_response; delete from cron.job_run_details; delete from cron.job`);
@@ -43,7 +47,7 @@ sql(`insert into cron.job_run_details(jobid,status,return_message,start_time) se
 const ctx=await b.newContext({viewport:{width:1100,height:900}});
 await ctx.addInitScript(()=>{window.__v=[];document.addEventListener('securitypolicyviolation',e=>window.__v.push(e.violatedDirective+' '+e.blockedURI))});
 let gh=0;await ctx.route('https://api.github.com/**',r=>{gh++;const u=r.request().url(),H={'access-control-allow-origin':'*','content-type':'application/json'};
-  r.fulfill({status:200,headers:H,body:JSON.stringify(u.includes('/actions/runs')?RUNS:COMMITS)})});
+  r.fulfill({status:200,headers:H,body:JSON.stringify(ghAnswer(u))})});
 const p=await ctx.newPage();p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error'&&!/favicon|icon-192|Failed to load resource/.test(m.text()))errs.push(m.text())});
 const resp=await p.goto(SITE+'/status/');await p.waitForTimeout(1500);
 const csp=resp.headers()['content-security-policy']||'';
@@ -53,11 +57,17 @@ ok('version.json says what’s deployed',ver.commit===LIVE&&/^\d+\.\d+$/.test(ve
 const txt=async s=>(await p.innerText(s)).replace(/\s+/g,' ').trim();
 ok('banner: all operational',/All systems operational/.test(await txt('#banner'))&&(await p.getAttribute('#banner','class')).includes('ok'),await txt('#banner'));
 const comp=await txt('#components');
-ok('components: website, database, notifications, tests',/Website.*Operational/.test(comp)&&/Database.*ms from your browser.*Operational/.test(comp)&&/Notifications.*60 of 60 runs OK.*Operational/.test(comp)&&/Tests on main.*a1b2c3d.*Passing/.test(comp),comp);
+ok('components: website, database, notifications, tests',/Website.*Operational/.test(comp)&&/Database.*ms from your browser.*Operational/.test(comp)&&/Notifications.*60 of 60 runs OK.*Operational/.test(comp)&&/Automated tests.*GitHub Actions, on every push to main.*a1b2c3d.*Passing/.test(comp),comp);
 ok('uptime numbers and a 90-day strip',/99\.\d\d%/.test(await txt('#upStats'))&&/~\d+ ms/.test(await txt('#upStats'))&&(await p.$$('#strip i')).length===90&&(await p.$$('#strip i.ok')).length>=1&&(await p.$$('#strip i.warn, #strip i.bad')).length>=1);
 ok('live version with its commit',new RegExp('Live now v'+ver.version.replace('.','\\.')+'.*a1b2c3d').test(await txt('#live')));
 const dep=await txt('#deploys');
 ok('deployment history: commits with test results, the live one marked',/v1\.28: status page Live now/.test(dep)&&/Passed/.test(dep)&&/failure/.test(dep)&&(await p.$$('#deploys tr.islive')).length===1,dep);
+ok('ten deployments at first, with Show 10 older',(await p.$$('#deploys tr.dep')).length===10&&/Showing the 10 most recent deployments/.test(dep)&&await p.isVisible('#depMore'));
+await p.click('#depMore');await p.waitForTimeout(600);ok('Show 10 older: 20',(await p.$$('#deploys tr.dep')).length===20&&/Older change 18/.test(await txt('#deploys')));
+await p.click('#depMore');await p.waitForTimeout(600);ok('then the last 5, and the button goes away',(await p.$$('#deploys tr.dep')).length===25&&/\(all of them\)/.test(await txt('#deploys'))&&!(await p.isVisible('#depMore'))&&/Older change 23/.test(await txt('#deploys')));
+ok('older ones have their test results too',(await p.$$eval('#deploys tr.dep',rs=>rs.filter(r=>/Passed|failure/.test(r.textContent)).length))===25);
+await p.click('#depLess');await p.waitForTimeout(300);ok('Show fewer goes back to 10',(await p.$$('#deploys tr.dep')).length===10);
+
 ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/2-family\.sql v1\.25/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.28/.test(await txt('#dbSchema')));
 ok('no policy violations',(await p.evaluate(()=>window.__v)).length===0,(await p.evaluate(()=>window.__v)).join(' | '));
 await p.screenshot({path:OUT+'status.png',fullPage:true});
@@ -65,7 +75,7 @@ await p.screenshot({path:OUT+'status.png',fullPage:true});
 sql(`insert into public.cradle_probes(at,done_at,code,ok) values (now(),now(),502,false)`);
 RUNS.workflow_runs[0].conclusion='failure';
 await p.click('#refresh');await p.waitForTimeout(1200);
-ok('a failed check and failing tests: needs attention',/Some things need attention: Website, Tests on main/.test(await txt('#banner'))&&(await p.getAttribute('#banner','class')).includes('warn'),await txt('#banner'));
+ok('a failed check and failing tests: needs attention',/Some things need attention: Website, Automated tests/.test(await txt('#banner'))&&(await p.getAttribute('#banner','class')).includes('warn'),await txt('#banner'));
 // the database part not set up: friendly notes
 sql(`revoke execute on function public.cradle_status() from anon`);
 await p.click('#refresh');await p.waitForTimeout(1200);
@@ -75,6 +85,12 @@ sql(`grant execute on function public.cradle_status() to anon`);
 await p.setViewportSize({width:390,height:844});await p.click('#refresh');await p.waitForTimeout(1200);
 ok('fits a phone (no sideways scroll)',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
 await p.screenshot({path:OUT+'status-phone.png',fullPage:true});
+// on a real phone it shows the computer layout, zoomed to fit
+const mctx=await b.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:3});
+await mctx.route('https://api.github.com/**',r=>r.fulfill({status:200,headers:{'access-control-allow-origin':'*','content-type':'application/json'},body:JSON.stringify(ghAnswer(r.request().url()))}));
+const mp=await mctx.newPage();await mp.goto(SITE+'/status/');await mp.waitForTimeout(1500);
+ok('phone shows the computer layout (1000 px wide, zoomed to fit, no sideways scroll)',await mp.evaluate(()=>innerWidth>=1000&&document.documentElement.scrollWidth<=innerWidth+1&&getComputedStyle(document.querySelector('.stats')).gridTemplateColumns.split(' ').filter(x=>x!=='0px').length===5&&getComputedStyle(document.querySelector('.stat span')).fontSize==='12.5px'&&getComputedStyle(document.querySelector('#incidents .sub')).fontSize==='13px'),await mp.evaluate(()=>innerWidth+' '+getComputedStyle(document.querySelector('.stats')).gridTemplateColumns));
+await mp.screenshot({path:OUT+'status-mobile.png'});await mctx.close();
 // the app still works and its service worker leaves /status/ alone
 const sw=fs.readFileSync(new URL('./out/sites/status/sw.js',import.meta.url),'utf8');
 ok('the app’s service worker skips /status/ and version.json',/\/status\//.test(sw)&&/version\.json/.test(sw));

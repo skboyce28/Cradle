@@ -1,5 +1,15 @@
 # Changelog
 
+## Status page and overview updates
+
+No change to the app.
+- **Deployments are paged:** the 10 most recent show first. **Show 10 older** goes back through the whole history (test results for older ones load as needed), and **Show fewer** returns to 10
+- **Automated tests** replaces "Tests on main": it says it's the GitHub Actions run on every push to main, and the deployments column reads *GitHub Actions tests*
+- **Phones get the computer layout**, zoomed to fit (pinch to zoom in), instead of a stacked phone layout. Phone browsers no longer enlarge some paragraphs
+- GitHub is asked every 5 minutes instead of every minute, so a page left open stays within GitHub's 60 requests an hour for visitors who aren't signed in. **Refresh** still updates everything
+- **The product overview** (`/overview/`) also shows its computer layout on phones, zoomed to fit
+- status.test.mjs: 29 checks
+
 ## v1.29
 
 - **Weight chart:** a weighted feed now shows both weights: the before weight as an open circle (as before), and the after weight as a filled dot above it, joined by a dashed line. Tapping the dot shows the after weight and how much was taken (1 g ≈ 1 mL). The legend reads *Weighted feed: before* and *after (with the milk)*. The after weight includes the milk just taken, so only before weights count toward Latest, Lowest, and Back to birth weight

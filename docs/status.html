@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Phones show the same layout as a computer, zoomed to fit; pinch to zoom in -->
+<meta name="viewport" content="width=1000, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Cradle Status</title>
 <link rel="icon" type="image/png" href="../icons/icon-192.png">
@@ -19,6 +20,8 @@
   --bg:#171311;--panel:#221c19;--panel2:#2b2420;--ink:#efe6dc;--muted:#a3958a;--line:#3a312b;
   --accent:#d4703c;--good:#5fae78;--good-soft:#1f3326;--warn:#d6a33a;--warn-soft:#3a2f17;--bad:#ec7a5e;--bad-soft:#40211a;--none:#3d342e;color-scheme:dark}}
 *{box-sizing:border-box}
+/* phones show the computer layout: keep their browsers from enlarging some paragraphs */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 16px 48px}
 .wrap{max-width:960px;margin:0 auto}
 a{color:var(--accent)}
@@ -69,6 +72,7 @@ tr.islive td{background:var(--good-soft)}
 .msg{max-width:52ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bar{height:10px;border-radius:999px;background:var(--panel2);overflow:hidden;margin:6px 0 2px}
 .bar i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.depnav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
 .grid2 .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
 .note{font-size:13px;color:var(--muted);background:var(--panel2);border-radius:10px;padding:10px 12px}
@@ -141,15 +145,39 @@ async function timed(fn){const t=performance.now();try{const r=await fn();return
 async function getJSON(u,opt){const res=await fetch(u,opt);if(!res.ok){const e=new Error('HTTP '+res.status);e.code=res.status;try{e.body=await res.json()}catch(x){}throw e}return res.json()}
 
 let state={};
-async function load(){
+const PAGE=10;
+const GH={at:0,runs:{err:new Error('loading')},commits:{err:new Error('loading')},older:[],page:1,more:true,runPage:1,shown:PAGE,busy:false};
+async function ghLoad(){
+  const repo=CFG.repo||'';if(!repo){GH.runs=GH.commits={err:new Error('no repo')};return}
+  const [runs,commits]=await Promise.all([
+    timed(()=>getJSON('https://api.github.com/repos/'+repo+'/actions/runs?branch=main&per_page=100')),
+    timed(()=>getJSON('https://api.github.com/repos/'+repo+'/commits?sha=main&per_page='+PAGE))]);
+  if(!runs.err||!GH.runs.r)GH.runs=runs;if(!commits.err||!GH.commits.r)GH.commits=commits;
+  if(!runs.err)GH.runPage=1;
+  if(!commits.err&&commits.r.length<PAGE)GH.more=false;GH.at=Date.now();
+}
+// Older deployments, 10 at a time; more test runs are fetched when the shown commits go past them
+async function ghOlder(){
+  if(GH.busy||!GH.more)return;GH.busy=true;$('#depMore').disabled=true;
+  try{const repo=CFG.repo;const next=await getJSON('https://api.github.com/repos/'+repo+'/commits?sha=main&per_page='+PAGE+'&page='+(GH.page+1));
+    GH.page++;GH.older=GH.older.concat(next);if(next.length<PAGE)GH.more=false;GH.shown+=next.length;
+    const R=GH.runs.r&&GH.runs.r.workflow_runs||[],oldest=next.length?new Date(next[next.length-1].commit.author.date):null;
+    if(oldest&&R.length&&GH.runs.r.total_count>R.length&&new Date(R[R.length-1].created_at)>oldest){
+      const more=await getJSON('https://api.github.com/repos/'+repo+'/actions/runs?branch=main&per_page=100&page='+(GH.runPage+1));
+      GH.runPage++;GH.runs.r.workflow_runs=R.concat(more.workflow_runs||[])}}
+  catch(e){GH.err=e.code===403?'GitHub’s hourly limit for this connection was reached. Try again later.':'Couldn’t load older deployments.'}
+  GH.busy=false;render()}
+async function load(force){
   $('#refresh').disabled=true;
   const repo=CFG.repo||'';
-  const [ver,db,runs,commits]=await Promise.all([
+  // GitHub allows 60 requests an hour per visitor without signing in, so its data refreshes every
+  // 5 minutes (or on Refresh); the site and database refresh every minute.
+  const ghDue=force||!GH.at||Date.now()-GH.at>5*60e3;
+  const [ver,db]=await Promise.all([
     timed(()=>getJSON('../version.json?t='+Date.now(),{cache:'no-store'})),
     CFG.url&&CFG.key?timed(()=>getJSON(CFG.url+'/rest/v1/rpc/cradle_status',{method:'POST',headers:{apikey:CFG.key,'Content-Type':'application/json'},body:'{}'})):Promise.resolve({err:new Error('not configured')}),
-    repo?timed(()=>getJSON('https://api.github.com/repos/'+repo+'/actions/runs?branch=main&per_page=15')):Promise.resolve({err:new Error('no repo')}),
-    repo?timed(()=>getJSON('https://api.github.com/repos/'+repo+'/commits?sha=main&per_page=15')):Promise.resolve({err:new Error('no repo')})]);
-  state={ver,db,runs,commits};render();
+    ghDue?ghLoad():null]);
+  state={ver,db,runs:GH.runs,commits:GH.commits};render();
   $('#updated').textContent='Updated '+new Date().toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'});
   $('#refresh').disabled=false;
 }
@@ -172,10 +200,10 @@ function render(){
     else{const r=n&&n.runs?n.ok/n.runs:null,fnOk=S.notify_fn&&S.notify_fn.calls?S.notify_fn.ok/S.notify_fn.calls:null;
       const k=r==null?{k:'warn',t:'No runs in 24 h'}:(r>=.95&&(fnOk==null||fnOk>=.95))?{k:'ok',t:'Operational'}:{k:'warn',t:'Degraded'};
       comps.push({name:'Notifications',pill:k,detail:`Every-minute job: ${n&&n.runs?n.ok+' of '+n.runs+' runs OK in 24 h, last '+ago(n.last):'no runs in 24 h'}${S.notify_fn&&S.notify_fn.calls?` · function answered OK ${S.notify_fn.ok} of ${S.notify_fn.calls} times in 6 h`:''}${n&&n.last_error?` · last error ${ago(n.last_error.at)}`:''}`})}}
-  // Tests on main
+  // Automated tests: the GitHub Actions run on every push to main
   const R=runs.r&&runs.r.workflow_runs||[],lastRun=R.find(r=>r.status==='completed');
-  if(runs.err)comps.push({name:'Tests on main',pill:{k:'',t:'Unavailable'},detail:runs.err.code===403?'GitHub’s hourly limit for this connection was reached. Try again later.':'Couldn’t reach GitHub'});
-  else if(lastRun)comps.push({name:'Tests on main',pill:lastRun.conclusion==='success'?{k:'ok',t:'Passing'}:{k:'warn',t:'Failing'},detail:`Last run ${ago(lastRun.updated_at)} on ${esc((lastRun.head_sha||'').slice(0,7))}, took ${dur(lastRun.run_started_at,lastRun.updated_at)}`+(R[0]&&R[0].status!=='completed'?' · a run is in progress':'')});
+  if(runs.err)comps.push({name:'Automated tests',pill:{k:'',t:'Unavailable'},detail:runs.err.code===403?'GitHub’s hourly limit for this connection was reached. Try again later.':'Couldn’t reach GitHub'});
+  else if(lastRun)comps.push({name:'Automated tests',pill:lastRun.conclusion==='success'?{k:'ok',t:'Passing'}:{k:'warn',t:'Failing'},detail:`GitHub Actions, on every push to main. Last run ${ago(lastRun.updated_at)} on ${esc((lastRun.head_sha||'').slice(0,7))}, took ${dur(lastRun.run_started_at,lastRun.updated_at)}`+(R[0]&&R[0].status!=='completed'?' · a run is in progress':'')});
   $('#components').innerHTML=comps.map(c=>`<div class="row"><span class="name">${c.name}</span><span class="detail">${c.detail}</span><span class="pill ${c.pill.k}">${c.pill.t}</span></div>`).join('');
   // banner
   const ks=comps.map(c=>c.pill.k),bad=comps.filter(c=>c.pill.k==='bad').map(c=>c.name),warn=comps.filter(c=>c.pill.k==='warn').map(c=>c.name);
@@ -202,12 +230,17 @@ function render(){
   const sha=live.commit||'';
   $('#live').innerHTML=live.version?`<div><div class="sub">Live now</div><b>v${esc(live.version)}</b></div><div><div class="sub">Commit</div>${sha?(repo()?`<a class="mono" href="https://github.com/${esc(repo())}/commit/${esc(sha)}" target="_blank" rel="noopener">${esc(sha.slice(0,7))}</a>`:'<span class="mono">'+esc(sha.slice(0,7))+'</span>'):'<span class="sub">local build</span>'}</div><div><div class="sub">Deployed</div>${esc(when(live.built_at))} <span class="sub">(${ago(live.built_at)})</span></div>${live.context?`<div><div class="sub">Context</div>${esc(live.context)}${live.branch?' · '+esc(live.branch):''}</div>`:''}`
     :'<span class="sub">Couldn’t read version.json from this site.</span>';
-  const C=commits.r||[],runBy={};R.forEach(r=>{if(!runBy[r.head_sha])runBy[r.head_sha]=r});
+  const seen=new Set(),all=(commits.r||[]).concat(GH.older).filter(c=>!seen.has(c.sha)&&seen.add(c.sha)),C=all.slice(0,Math.max(PAGE,GH.shown)),runBy={};R.forEach(r=>{if(!runBy[r.head_sha])runBy[r.head_sha]=r});
   if(C.length){
-    $('#deploys').innerHTML=`<table><thead><tr><th>When</th><th>Change</th><th>Commit</th><th>Tests</th></tr></thead><tbody>${C.map(c=>{const r=runBy[c.sha],isLive=sha&&c.sha.startsWith(sha.slice(0,7));
+    $('#deploys').innerHTML=`<table><thead><tr><th>When</th><th>Change</th><th>Commit</th><th>GitHub Actions tests</th></tr></thead><tbody>${C.map(c=>{const r=runBy[c.sha],isLive=sha&&c.sha.startsWith(sha.slice(0,7));
       const t=!r?'<span class="sub">--</span>':r.status!=='completed'?'<span class="pill warn">Running</span>':r.conclusion==='success'?`<span class="pill ok">Passed</span> <span class="sub">${dur(r.run_started_at,r.updated_at)}</span>`:`<span class="pill bad">${esc(r.conclusion||'failed')}</span>`;
       const msg=(c.commit&&c.commit.message||'').split('\n')[0];
-      return `<tr class="${isLive?'islive':''}"><td class="num" style="white-space:nowrap">${esc(when(c.commit&&c.commit.author&&c.commit.author.date))}</td><td><div class="msg" title="${esc(msg)}">${esc(msg)}</div>${isLive?'<span class="pill ok" style="margin-top:4px">Live now</span>':''}</td><td><a class="mono" href="${esc(c.html_url)}" target="_blank" rel="noopener">${esc(c.sha.slice(0,7))}</a></td><td>${t}</td></tr>`}).join('')}</tbody></table>`;
+      return `<tr class="dep${isLive?' islive':''}"><td class="num" style="white-space:nowrap">${esc(when(c.commit&&c.commit.author&&c.commit.author.date))}</td><td><div class="msg" title="${esc(msg)}">${esc(msg)}</div>${isLive?'<span class="pill ok" style="margin-top:4px">Live now</span>':''}</td><td><a class="mono" href="${esc(c.html_url)}" target="_blank" rel="noopener">${esc(c.sha.slice(0,7))}</a></td><td>${t}</td></tr>`}).join('')}</tbody></table>
+      <div class="depnav"><span class="sub">Showing the ${C.length===1?'latest deployment':C.length+' most recent deployments'}${!GH.more&&C.length===all.length?' (all of them)':''}</span>
+        ${GH.more||C.length<all.length?`<button type="button" id="depMore">Show ${PAGE} older</button>`:''}${C.length>PAGE?'<button type="button" id="depLess">Show fewer</button>':''}
+        ${GH.err?`<span class="sub">${esc(GH.err)}</span>`:''}</div>`;
+    const mb=$('#depMore');if(mb)mb.onclick=()=>{GH.err='';if(C.length<all.length){GH.shown+=PAGE;render()}else ghOlder()};
+    const lb=$('#depLess');if(lb)lb.onclick=()=>{GH.shown=PAGE;render();$('#h-dep').scrollIntoView({block:'start'})};
   }else $('#deploys').innerHTML=`<div class="note">${commits.err&&commits.err.code===403?'GitHub’s hourly limit for this connection was reached, so the history is hidden for now.':'Deployment history comes from GitHub and isn’t available right now.'}</div>`;
 
   // database
@@ -221,7 +254,7 @@ function render(){
   }else{$('#dbSize').innerHTML='<h2 style="font-size:16px">Storage and activity</h2><div class="note">Not available.</div>';$('#dbSchema').innerHTML='<h2 style="font-size:16px">Schema</h2><div class="note">Run <span class="mono">supabase/5-status.sql</span> in Supabase to show schema history here.</div>'}
 }
 const repo=()=>CFG.repo||'';
-$('#refresh').onclick=load;
+$('#refresh').onclick=()=>load(true);
 load();
 setInterval(()=>{if(document.visibilityState==='visible')load()},60000);
 })();

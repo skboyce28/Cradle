@@ -156,11 +156,11 @@ where email = 'their@email.com' and email_confirmed_at is null;
 | Part | Comes from | Needs |
 |---|---|---|
 | Live version | `/version.json`, written by the build (version, commit, deploy time, branch, context) | Nothing |
-| Deployments | The public GitHub API: the last 15 commits on `main` and their GitHub Actions runs. The repository comes from Netlify's `REPOSITORY_URL` (or `REPOSITORY_URL` in `.env`) | Nothing. GitHub allows 60 requests an hour per visitor without signing in; the page makes 2 per refresh |
+| Deployments | The public GitHub API: commits on `main`, 10 at a time (**Show 10 older** goes back through the whole history, **Show fewer** returns to 10), each with its GitHub Actions test run. The repository comes from Netlify's `REPOSITORY_URL` (or `REPOSITORY_URL` in `.env`) | Nothing. GitHub allows 60 requests an hour per visitor without signing in; the page makes 2 every 5 minutes, plus 1 or 2 for each Show 10 older |
 | Database, notifications, schema history | `cradle_status()`, called without signing in (as Supabase's anon role) | `5-status.sql` |
 | Uptime | A pg_cron job asks the site for `/version.json` every 5 minutes through pg_net; the next run records the answer. Response times are approximate | `6-status-schedule.sql`, with your site's address |
 
-The page refreshes every minute while it's open. Its security policy allows connections only to the site, your Supabase project, and `api.github.com`.
+The page refreshes the site and database every minute while it's open, and GitHub every 5 minutes (or when you tap **Refresh**). On a phone it shows the same layout as on a computer, zoomed to fit; pinch to zoom in. Its security policy allows connections only to the site, your Supabase project, and `api.github.com`.
 
 **What it can't see:** checks run from one place (your Supabase project's region). If Supabase itself is down, no checks are recorded and those days show as no data. To check that it's working: `select at, ok, code, ms, err from public.cradle_probes order by at desc limit 5;`
 
