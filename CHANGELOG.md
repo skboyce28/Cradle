@@ -1,5 +1,12 @@
 # Changelog
 
+## Deploys wait for tests, and an outside check
+
+No change to the app.
+- **Only tested commits deploy.** `netlify.toml` now has an ignore step (`tools/netlify_ignore.py`) that skips Netlify's build for a push until GitHub Actions' `test` job has passed for that commit. A new **deploy** job in `tests.yml` starts the build through a Netlify build hook once the tests pass (and leaves a commit alone if a newer one was pushed meanwhile). A failed test run now keeps the last good version live. Needs the repository secret `NETLIFY_BUILD_HOOK`
+- **Outside check every 30 minutes** (`.github/workflows/monitor.yml`, `tools/monitor.py`), from GitHub's servers: the site, `/version.json`, the database (through `cradle_status()`, using the status page's own settings), the uptime checks inside Supabase, the notification job, and whether a tested commit is stuck waiting to deploy. A failure fails the run, and GitHub emails you. Needs the repository variable `CRADLE_SITE_URL`
+- New test: `tests/deploy-gate.test.mjs` (14 checks), with a stand-in GitHub API
+
 ## Status page and overview updates
 
 No change to the app.

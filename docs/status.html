@@ -203,7 +203,7 @@ function render(){
   // Automated tests: the GitHub Actions run on every push to main
   const R=runs.r&&runs.r.workflow_runs||[],lastRun=R.find(r=>r.status==='completed');
   if(runs.err)comps.push({name:'Automated tests',pill:{k:'',t:'Unavailable'},detail:runs.err.code===403?'GitHub’s hourly limit for this connection was reached. Try again later.':'Couldn’t reach GitHub'});
-  else if(lastRun)comps.push({name:'Automated tests',pill:lastRun.conclusion==='success'?{k:'ok',t:'Passing'}:{k:'warn',t:'Failing'},detail:`GitHub Actions, on every push to main. Last run ${ago(lastRun.updated_at)} on ${esc((lastRun.head_sha||'').slice(0,7))}, took ${dur(lastRun.run_started_at,lastRun.updated_at)}`+(R[0]&&R[0].status!=='completed'?' · a run is in progress':'')});
+  else if(lastRun)comps.push({name:'Automated tests',pill:lastRun.conclusion==='success'?{k:'ok',t:'Passing'}:{k:'warn',t:'Failing'},detail:`GitHub Actions, on every push to main; only commits that pass are deployed. Last run ${ago(lastRun.updated_at)} on ${esc((lastRun.head_sha||'').slice(0,7))}, took ${dur(lastRun.run_started_at,lastRun.updated_at)}`+(R[0]&&R[0].status!=='completed'?' · a run is in progress':'')});
   $('#components').innerHTML=comps.map(c=>`<div class="row"><span class="name">${c.name}</span><span class="detail">${c.detail}</span><span class="pill ${c.pill.k}">${c.pill.t}</span></div>`).join('');
   // banner
   const ks=comps.map(c=>c.pill.k),bad=comps.filter(c=>c.pill.k==='bad').map(c=>c.name),warn=comps.filter(c=>c.pill.k==='warn').map(c=>c.name);

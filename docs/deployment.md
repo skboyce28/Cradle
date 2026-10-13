@@ -164,6 +164,33 @@ The page refreshes the site and database every minute while it's open, and GitHu
 
 **What it can't see:** checks run from one place (your Supabase project's region). If Supabase itself is down, no checks are recorded and those days show as no data. To check that it's working: `select at, ok, code, ms, err from public.cradle_probes order by at desc limit 5;`
 
+### Deploys wait for tests
+
+A push to `main` starts two things: GitHub Actions' tests and a Netlify build. Netlify's **ignore** step ([`tools/netlify_ignore.py`](../tools/netlify_ignore.py), set in `netlify.toml`) asks GitHub whether that commit's `test` job passed. While the tests are still running, or if they failed, it skips the build, so the live site doesn't change. When the tests pass, the workflow's **deploy** job calls a Netlify **build hook**, and Netlify builds and publishes. If someone pushed again in the meantime, the job leaves it to the newer commit's own run.
+
+**Set up once:**
+1. In Netlify: **Site configuration**, then **Build & deploy**, then **Continuous deployment**, then **Build hooks**, then **Add build hook**. Name it `GitHub tests passed`, branch `main`, and copy the address it gives you.
+2. In GitHub: the repository's **Settings**, then **Secrets and variables**, then **Actions**, then **New repository secret**. Name it `NETLIFY_BUILD_HOOK` and paste the address. Treat it like a password: anyone with it can start builds.
+
+Without the secret, the deploy job warns and deploys nothing, and pushes skip their Netlify builds. A manual **Trigger deploy** in Netlify still works for a commit whose tests passed.
+
+### Outside check
+
+[`.github/workflows/monitor.yml`](../.github/workflows/monitor.yml) runs [`tools/monitor.py`](../tools/monitor.py) every 30 minutes from GitHub's servers, outside Netlify and Supabase:
+
+| Check | Fails when |
+|---|---|
+| Site loads | The app page doesn't answer 200 with Cradle in it |
+| Deployed version | `/version.json` is missing |
+| Database answers | `cradle_status()` doesn't answer (Supabase down or paused). It reads the address and publishable key from the status page, so it needs no secrets |
+| Uptime checks running | The 5-minute checks inside Supabase haven't run for 20 minutes (only if set up) |
+| Notification job | Under 90% of the every-minute job's runs succeeded in 24 hours (only if set up) |
+| Deploy up to date | `main`'s newest commit passed its tests more than 45 minutes ago but isn't live |
+
+A failed check fails the run, and GitHub emails you about failed scheduled runs (check **Settings**, then **Notifications**, then **Actions** on your GitHub account). Each run's summary shows a table of results. Run it any time from the **Actions** tab (**Monitor**, then **Run workflow**).
+
+**Set up once:** add the repository variable `CRADLE_SITE_URL` (your Cradle address, like `https://your-cradle.netlify.app`) under **Settings**, then **Secrets and variables**, then **Actions**, then **Variables**. GitHub pauses scheduled workflows after 60 days without any commits; it emails a warning first, and one click turns it back on.
+
 **Rolling back:** in Netlify, open **Deploys**, pick an earlier deploy, then **Publish deploy**. Phones pick it up the next time Cradle opens.
 
 **Deploy previews:** if you turn them on for pull requests, give the two environment variables the **All deploy contexts** scope, or preview builds will stop on the missing-variable check.
@@ -183,7 +210,7 @@ The page refreshes the site and database every minute while it's open, and GitHu
 1. Edit `cradle.html`. Bump `VERSION` and add to the About changelog inside it.
 2. Update the in-app guide, the README, the guides in `docs/`, `CHANGELOG.md`, and the [overview page](overview.html) and screenshots when the change is visible.
 3. Add or update a test in [`tests/`](../tests/) and run the suite (`cd tests && node run.mjs`; see [tests/README.md](../tests/README.md)). Also check in a browser at phone size.
-4. Commit and push to `main`. Netlify builds and deploys automatically. GitHub runs the tests on every push and shows ✅ or ❌ next to the commit; a ❌ means look before relying on that deploy.
+4. Commit and push to `main`. GitHub Actions runs the tests; if they pass, it starts the Netlify deploy (see [Deploys wait for tests](#deploys-wait-for-tests)). A ❌ next to the commit means it wasn't deployed, and the last good version stays live.
 5. If `supabase/2-family.sql` (or `3-notifications.sql`) changed, run it again in the SQL Editor. It's safe to rerun. If the notification function changed, deploy it again in Supabase.
 
 ## Architecture decisions
@@ -200,7 +227,7 @@ The main choices so far, why they were made, and what they cost.
 | 6 | **Email confirmation off; usernames allowed** (stored as `name@cradle.cfg`) | Supabase's built-in email can't deliver to outside addresses. | Emails aren't verified. No password-reset email; the admin helps instead. Share keys, not emails, decide family access. |
 | 7 | **Invites by email only for accounts that already existed when invited** | With unverified emails, a stranger could otherwise register someone's address and take their invite. | Invites are rarely needed; share keys are the main path. |
 | 8 | **Keys in environment variables, never in the repo** | Keeps project details out of the code history. | The publishable key is still visible in the hosted page; that's by design and safe. |
-| 9 | **Netlify builds from GitHub and fails without the keys** | Every push deploys. A broken config never goes live. | Netlify's environment variables are one more place to keep right. |
+| 9 | **Netlify builds from GitHub and fails without the keys** | Every push that passes its tests deploys (decision 23). A broken config never goes live. | Netlify's environment variables are one more place to keep right. |
 | 10 | **A web app (PWA) instead of a native Android app** | One codebase for every phone, instant updates, no app store. | No Clock alarms. Notifications while closed need the optional Web Push setup (decision 17). |
 | 11 | **Diaper-only rows and baths share the feed list; `isFeed()` decides what counts** | Simple data model; everything syncs, exports, and imports the same way. | Every feed calculation must use `isFeed()`. |
 | 12 | **Personal starter log stripped at build** | The author's copy can preload real data without it reaching the public site. | The public copy keeps the block empty (`{}`). |
@@ -214,3 +241,4 @@ The main choices so far, why they were made, and what they cost.
 | 20 | **The product overview is published at `/overview/`, with its own security policy** | One link to share that introduces Cradle, kept in step with the repo on every deploy. The app's strict policy stays on the app's files; the overview gets its own, which also allows Google Fonts and nothing else (no connections, no other scripts). The service worker leaves `/overview/` alone, so visiting it never replaces the offline copy of the app. | Anyone who has your site's address can read the overview (it has no personal data, just example screenshots). |
 | 21 | **Two-step sign-in with Supabase's authenticator apps (TOTP), enforced by a restrictive row rule; the family owner can require it** | Supabase includes it free and keeps the secrets; the app only adds screens. The database checks the sign-in's `aal2` level, so a stolen password alone can't read the log, even with a modified app. An owner-wide rule fits how families share one log. | No backup codes or SMS: a lost authenticator app needs the operator to reset it (admin query 27). Each phone asks for a code once per sign-in, not on every open. |
 | 22 | **A public status page fed by the build, the GitHub API, and one anon database function; uptime checks from pg_cron** | Shows deploys, uptime, and backend health with no new service, account, or secret. The data the page can read is limited to counts in one security-definer function. | Checks come from one region inside Supabase, so a Supabase outage shows as missing data rather than as down. Response times are approximate. GitHub limits anonymous visitors to 60 requests an hour. |
+| 23 | **Deploys wait for tests: Netlify's ignore step skips untested commits; a build hook from GitHub Actions deploys after they pass. An outside check every 30 minutes** | A failing test can't reach families, and problems inside Supabase or Netlify still get noticed, with an email. Both use free features already in use. | One secret (the build hook) and one variable to set in GitHub. A deploy now takes about as long as the tests (about 12 minutes). GitHub's scheduled runs can start a few minutes late and pause after 60 days without commits. |

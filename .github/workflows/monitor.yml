@@ -1,0 +1,26 @@
+# Outside check of the live site every 30 minutes: the app page, what's deployed, the database,
+# the uptime checks inside Supabase, the notification job, and whether a tested commit is stuck
+# waiting to deploy. A failed check fails the run, and GitHub emails you about failed scheduled runs.
+# Set the repository variable CRADLE_SITE_URL (Settings > Secrets and variables > Actions > Variables).
+name: Monitor
+
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools
+      - name: Check the live site
+        env:
+          CRADLE_SITE_URL: ${{ vars.CRADLE_SITE_URL }}
+        run: python3 tools/monitor.py
