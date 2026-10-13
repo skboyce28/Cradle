@@ -41,9 +41,10 @@ ok('only counts: no emails, names, or entries in the answer',!/@|cradle\.cfg|"na
 ok('old checks are deleted after 100 days',(sql(`insert into public.cradle_probes(at,done_at,ok) values (now()-interval '101 days',now(),true)`),sql(`select cradle_probe()`),sql(`select count(*) from cradle_probes where at<now()-interval '100 days'`))==='0');
 // families in use: an account that joined another family isn't counted in its old solo one
 const fam=()=>JSON.parse(asAnon(`select cradle_status()`).split('\n').pop()).db;const f0=fam();
-sql(`insert into auth.users(id,email) values ('aaaaaaaa-0000-0000-0000-000000000001','famt1@x.y'),('aaaaaaaa-0000-0000-0000-000000000002','famt2@x.y') on conflict do nothing`);
-sql(`insert into cradle_households(id,created_by) values ('bbbbbbbb-0000-0000-0000-000000000001','aaaaaaaa-0000-0000-0000-000000000001'),('bbbbbbbb-0000-0000-0000-000000000002','aaaaaaaa-0000-0000-0000-000000000002') on conflict do nothing`);
-sql(`insert into cradle_members(household_id,user_id,role,joined_at) values ('bbbbbbbb-0000-0000-0000-000000000001','aaaaaaaa-0000-0000-0000-000000000001','owner',now()-interval '2 days'),('bbbbbbbb-0000-0000-0000-000000000002','aaaaaaaa-0000-0000-0000-000000000002','owner',now()-interval '1 day'),('bbbbbbbb-0000-0000-0000-000000000002','aaaaaaaa-0000-0000-0000-000000000001','member',now()) on conflict do nothing`);
+const rx=()=>Math.floor(Math.random()*16**12).toString(16).padStart(12,'0'),U1='aaaaaaaa-0000-0000-0000-'+rx(),U2='aaaaaaaa-0000-0000-0000-'+rx(),H1='bbbbbbbb-0000-0000-0000-'+rx(),H2='bbbbbbbb-0000-0000-0000-'+rx();
+sql(`insert into auth.users(id,email) values ('${U1}','famt1'||'${rx()}'||'@x.y'),('${U2}','famt2'||'${rx()}'||'@x.y') on conflict do nothing`);
+sql(`insert into cradle_households(id,created_by) values ('${H1}','${U1}'),('${H2}','${U2}') on conflict do nothing`);
+sql(`insert into cradle_members(household_id,user_id,role,joined_at) values ('${H1}','${U1}','owner',now()-interval '2 days'),('${H2}','${U2}','owner',now()-interval '1 day'),('${H2}','${U1}','member',now()) on conflict do nothing`);
 const f1=fam();ok('two accounts sharing one family count as 1 family (1 shared), not 2',f1.families-f0.families===1&&f1.shared_families-f0.shared_families===1&&f1.accounts-f0.accounts===2,JSON.stringify([f0,f1].map(x=>[x.families,x.shared_families,x.accounts])));
 // notification job health
 sql(`insert into cron.job(jobname) values ('cradle-notify'),('cradle-status-probe')`);

@@ -50,12 +50,12 @@ await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.class
 // Doctor report
 await p.click('[data-report]');await p.clock.runFor(1000);const rep=(await p.evaluate(()=>{const c=document.getElementById('print').cloneNode(true);c.querySelectorAll('th,td').forEach(e=>e.append(' '));return c.textContent})).replace(/\s+/g,' ');await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
 ok('doctor report: baths line',/Baths: ?3, last Fri, Oct 9 \(tub bath\)/i.test(rep),rep.match(/Baths:.{0,50}/i)?.[0]);
-ok('doctor report: Bath column',/Vit D Bath Longest gap/i.test(rep)&&/Tub/i.test(rep));
+ok('doctor report: Bath column',/Vit D Bath Tummy min Longest gap/i.test(rep)&&/Tub/i.test(rep));
 // History
 await p.click('#tabs [data-tab=hist]');await p.clock.runFor(300);
 const hc=await txt(p,'#histBody');ok('History card tag',/🛁 Tub 7:00pm/i.test(hc)&&/🛁 Sponge 10:15am/i.test(hc));
 await p.screenshot({path:OUT+'b-hist.png'});
-await p.click('#histSeg [data-v=table]');await p.clock.runFor(200);const ht=await txt(p,'#histBody');ok('History table Bath column',/Vit D Bath Longest gap/i.test(ht)&&/Tub 7:00pm/i.test(ht));
+await p.click('#histSeg [data-v=table]');await p.clock.runFor(200);const ht=await txt(p,'#histBody');ok('History table Bath column',/Vit D Bath Tummy Longest gap/i.test(ht)&&/Tub 7:00pm/i.test(ht));
 await p.click('#histSeg [data-v=cards]');
 // Log print sheet for Oct 7
 await p.click('#histBody [data-k="2026-10-07"]');await p.clock.runFor(300);

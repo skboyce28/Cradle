@@ -22,7 +22,7 @@ const vis=p=>p.$$eval('#tab-dash .card',cs=>cs.filter(c=>c.offsetParent!==null).
 let p=await phone({theme:'light'});
 await p.click('#tabs [data-tab=dash]');await p.waitForTimeout(400);
 const chips=await p.$$eval('#dashFilter button',bs=>bs.map(b=>b.textContent.trim()));
-ok('chips across the top',chips.join('|')==='All|🤱 Feeds|🍼 Bottle & pump|💧 Diapers|☀️ Vitamin D|⚖️ Weight|🛁 Baths',chips.join('|'));
+ok('chips across the top',chips.join('|')==='All|🤱 Feeds|🍼 Bottle & pump|💧 Diapers|☀️ Vitamin D|🤸 Tummy time|⚖️ Weight|🛁 Baths',chips.join('|'));
 ok('All is selected and shows everything',await p.isVisible('#dashFilter [data-f=all].on')&&(await vis(p)).length>=17,String((await vis(p)).length));
 await snap(p,'all');
 const want={feeds:['Feeds per day','Between feeds','Side starts','Insights','by feed','Longest stretch between feeds','Breast side balance','Feeding rhythm'],

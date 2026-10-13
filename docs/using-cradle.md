@@ -61,6 +61,18 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 
 Baths **never count as feeds**, so they don't change feed totals, the time between feeds, or when the next feed is due. The **Bath** tile under the day's totals shows today's bath, or when the last one was.
 
+### Tummy time
+
+**🤸 Tummy time** adds a tummy time row with the current time and starts its timer:
+
+| Part | How to use it |
+|---|---|
+| **Time** | When it started; tap to change it. |
+| **Minutes** | Tap **■** when tummy time is over and the minutes are saved (to the nearest minute, at least 1). Or type them. **▶** times another stretch on the same row and adds it. |
+| **Note** | On a play mat, on a chest, anything else. |
+
+Only one tummy time timer runs at a time. On an earlier day there's no timer, so enter the time and minutes. Tummy time **never counts as a feed**. The **Tummy time** tile under the day's totals fills toward your daily goal (Settings, 15 minutes to start; 0 turns it off) and turns green when you reach it. Start with a few minutes a few times a day and build up; ask your pediatrician what fits your baby.
+
 **Day notes** sit at the bottom of the day.
 
 **Pump timer:** start it when you start pumping. The green arc shows your target window (15 to 20 minutes to start; change it in Settings).
@@ -107,9 +119,10 @@ The 7 or 14 days ending on the selected day:
 - Feeds per day, nursing minutes, bottle and pump volume
 - Diapers against goals, Vitamin D streak, side balance (which side you started on, and nursing time on each side from the split slider), longest stretch between feeds
 - Baths: how many, sponge or tub, and when the last one was
+- Tummy time: minutes per day, how many completed days met your goal, today so far, and a daily chart with the goal line
 - Weight against birth weight: weigh-ins are filled dots joined by a line. A weighted feed shows its before weight as an open circle and its after weight (which includes the milk just taken) as a small dot above it, joined by a dashed line. Only before weights count toward Latest, Lowest, and the other weight numbers
 
-**Filter chips** under the Print button narrow the Dashboard to one topic: **Feeds**, **Bottle & pump**, **Diapers**, **Vitamin D**, **Weight**, or **Baths**. Only that topic's cards and insights show; **All** brings everything back. Cradle remembers your choice on this phone, and **Print** prints what's showing.
+**Filter chips** under the Print button narrow the Dashboard to one topic: **Feeds**, **Bottle & pump**, **Diapers**, **Vitamin D**, **Tummy time**, **Weight**, or **Baths**. Only that topic's cards and insights show; **All** brings everything back. Cradle remembers your choice on this phone, and **Print** prints what's showing.
 
 **Tap any chart to enlarge it**, then tap a day or a feed for details. **Today counts as "in progress"** until midnight, so a goal that isn't met *yet* isn't shown as missed.
 
@@ -123,13 +136,13 @@ The 7 or 14 days ending on the selected day:
 **🩺 Doctor report** prints one page for appointments:
 - weight against birth weight
 - daily feeds, nursing minutes with the left and right split, and bottle and pump volumes
-- diapers against goals, Vitamin D, and baths
+- diapers against goals, Vitamin D, baths, and tummy time
 - weighted feeds and your day notes
 - lines for questions
 
 ## History
 
-Every day at a glance, as cards or a table. A 🛁 tag or the Bath column shows each day's baths.
+Every day at a glance, as cards or a table. A 🛁 tag or the Bath column shows each day's baths, and a 🤸 tag or the Tummy column its tummy time (green when the goal was met).
 
 ## Calm
 
@@ -281,7 +294,7 @@ The round button at the top right:
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch, Daily Word, Stork Flight, and their high scores. See [Fun center](#fun-center). |
 | **Achievements** | Fifty-three badges with progress, in eight groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, and Fun center. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
-| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, and wet and stool diapers per day |
+| **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, wet and stool diapers per day, and tummy time minutes per day |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About** (one row) | In-app help, version, and changelog |
 | **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |
@@ -313,7 +326,7 @@ Tap **Your picture** at the top of the profile menu.
 |---|---|
 | **Export data** | **Everything** or **Last 2 days**, then: **Text message** (opens Messages with a short code starting `CRADLE1:`), **Share file**, **Copy code**, or **Download file** (a full backup, `cradle-YYYY-MM-DD.json`). |
 | **Import data** | **Choose a file**, or paste a `CRADLE1:` code. **Merge** adds to your log without removing anything; **Replace** clears your log first. |
-| **Print this tab** | Prints the current tab (or saves it as a PDF). The Log prints a paper sheet for the selected day, baths included. |
+| **Print this tab** | Prints the current tab (or saves it as a PDF). The Log prints a paper sheet for the selected day, baths and tummy time included. |
 | **Erase all data** | Removes every entry from your family's log **on every phone**. Only the **family owner** can use it; for others it says *Only the family owner can do this*. Everyone can still delete single entries with ×. Export first if you want a copy. |
 | **Sign out and remove from this phone** | Signs you out and clears the log, settings, and game scores from this phone, for a shared or lost phone. It syncs first and warns you if any changes haven't reached your account. Everything comes back when you sign in again. |
 

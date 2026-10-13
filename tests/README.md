@@ -19,6 +19,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 | `security-headers.test.mjs` | The built site under its real security headers: no policy violations, sync still works |
 | `deploy-gate.test.mjs` | Deploys wait for tests: the Netlify ignore step against a stand-in GitHub API (running, failed, passed, rerun, GitHub down, previews); the outside check against the built site and the Supabase stand-in (healthy, a tested commit stuck, a failed commit kept back, uptime checks stopped, notification job failing, site down) |
 | `doctor-report.test.mjs` | The doctor report, with every daily row recomputed from the log by separate code |
+| `tummy.test.mjs` | Tummy time: the timer and typed minutes, not counting as feeds, one timer at a time, earlier days, the goal in Settings, the Log tile, the Dashboard tile, chart, filter, and insight, History, the day sheet, the doctor report, export and import |
 | `tracking.test.mjs` | What you track: Breast, Bottle, and Pump switches hide the right parts everywhere, and desktop columns stay lined up |
 | `dashboard-filter.test.mjs`, `menu.test.mjs`, `achievements.test.mjs`, `split.test.mjs`, `bath.test.mjs`, `learning-center.test.mjs`, `halloween.test.mjs`, `holiday-themes.test.mjs`, `donate.test.mjs` | One feature each |
 | `notify/crypto.test.mjs` | Notification encryption against the RFC 8291 example, byte for byte, and the VAPID signature |

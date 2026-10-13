@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.30
+
+**Tummy time**
+- **🤸 Tummy time** under Since last feed adds a tummy time row with the current time and starts its timer. **■** stops it and saves the minutes (to the nearest minute, at least 1). You can also type the minutes, add a note, or tap ▶ to time another stretch on the same row. Only one tummy time timer runs at a time; starting another stops the first. On an earlier day, the row has no timer, so enter the time and minutes. The running timer is kept on the phone, like the nursing timer
+- Tummy time rows **never count as feeds**: feed counts, gaps, and the next feed are unchanged
+- **Daily goal** in Settings: *Tummy time goal (minutes a day)*, 15 to start, 0 turns it off. It's shared with the family like the other goals
+- **Log:** a *Tummy time* tile next to Bath, with a ring that fills toward the goal and turns green when it's met, the number of sessions, and whether the timer is running
+- **Dashboard:** a *Tummy time per day* tile (average over completed days, how many met the goal, today so far), a *Daily tummy time* chart with the goal line (tap to enlarge; the table adds a Tummy min column), an insight, and a **🤸 Tummy time** filter chip
+- **History** (🤸 tag and a Tummy column), the **day sheet**, and the **doctor report** (a column and the daily average) include it. Export and import keep tummy time rows and the goal
+- New test: `tests/tummy.test.mjs` (26 checks)
+
 ## Deploys wait for tests, and an outside check
 
 No change to the app.
