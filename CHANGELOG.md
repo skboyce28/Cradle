@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.29
+
+- **Weight chart:** a weighted feed now shows both weights: the before weight as an open circle (as before), and the after weight as a filled dot above it, joined by a dashed line. Tapping the dot shows the after weight and how much was taken (1 g ≈ 1 mL). The legend reads *Weighted feed: before* and *after (with the milk)*. The after weight includes the milk just taken, so only before weights count toward Latest, Lowest, and Back to birth weight
+- The chart's last day label no longer runs off the right edge
+- weights.test.mjs: 2 more checks
+
 ## v1.28 fixes
 
 - **Uptime checks:** the address saved for the checks keeps only `https://` and the host, so pasting a page address like `…/status/` no longer makes every check a 404. The status page now names the address it checks and, when a check gets a 404 while the site answers, says the address is probably wrong

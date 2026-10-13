@@ -42,6 +42,12 @@ await p.screenshot({path:OUT+'wt-g.png'});
 await p.click(`${R} .wtu [data-wu=lb]`);await p.waitForTimeout(200);
 ok('lb oz switch converts back',(await p.inputValue(`${R} .wt[data-k=wPre] [data-w=lb]`))==='7'&&(await p.inputValue(`${R} .wt[data-k=wPre] [data-w=oz]`))==='2');
 
+// the Weight chart shows both: before (open circle) and after (filled dot, with the milk), joined by a dashed line
+await p.click('#tabs [data-tab=dash]');await p.clock.runFor(400);await p.waitForTimeout(300);
+const wc=await p.$eval('#wChart',e=>e.innerHTML);
+ok('chart: the after weight of a weighted feed is a filled dot, with the amount taken',/r="4" fill="var\(--bottle\)"/.test(wc)&&/after the feed \(\+[\d.]+ oz, about \d+ mL taken\)/.test(wc)&&/weighted feed, before/.test(wc),wc.match(/after the feed[^"]*/)?.[0]||'');
+ok('legend names before and after',/Weighted feed: before.*after \(with the milk\)/.test(await p.$eval('#tab-dash',e=>e.textContent.replace(/\s+/g,' '))));
+await p.screenshot({path:OUT+'wt-chart.png'});await p.click('#tabs [data-tab=today]');await p.clock.runFor(300);
 // Weights screen
 await p.click('#menuBtn');await p.click('#dd [data-addweight]');await p.waitForTimeout(300);
 ok('Weights form has lb and oz boxes and the switch',await p.isVisible('#wVal [data-w=lb]')&&await p.isVisible('#wUnitSw .wtu'));

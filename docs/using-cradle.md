@@ -107,7 +107,7 @@ The 7 or 14 days ending on the selected day:
 - Feeds per day, nursing minutes, bottle and pump volume
 - Diapers against goals, Vitamin D streak, side balance (which side you started on, and nursing time on each side from the split slider), longest stretch between feeds
 - Baths: how many, sponge or tub, and when the last one was
-- Weight against birth weight
+- Weight against birth weight: weigh-ins are filled dots joined by a line. A weighted feed shows its before weight as an open circle and its after weight (which includes the milk just taken) as a small dot above it, joined by a dashed line. Only before weights count toward Latest, Lowest, and the other weight numbers
 
 **Filter chips** under the Print button narrow the Dashboard to one topic: **Feeds**, **Bottle & pump**, **Diapers**, **Vitamin D**, **Weight**, or **Baths**. Only that topic's cards and insights show; **All** brings everything back. Cradle remembers your choice on this phone, and **Print** prints what's showing.
 
