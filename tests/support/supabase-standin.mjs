@@ -39,6 +39,13 @@ http.createServer((req,res)=>{let body='';req.on('data',c=>body+=c);req.on('end'
     if(u.searchParams.get('grant_type')==='refresh_token'){const x=refresh[j.refresh_token];if(!x)return send(res,400,{error:'invalid_grant'});delete refresh[j.refresh_token];return send(res,200,session(x.u,x.aal))}
   }
   const a=access[(req.headers.authorization||'').replace('Bearer ','')];
+  // no sign-in: like Supabase, run as the anon role (only functions granted to anon work)
+  const am=u.pathname.match(/^\/rest\/v1\/rpc\/(\w+)$/);
+  if(am&&!req.headers.authorization){const fn=am[1],keys=Object.keys(j);const c=await pool.connect();
+    try{await c.query('begin');await c.query('set local role anon');await c.query(`select set_config('request.jwt.claims','{"role":"anon"}',true)`);
+      const r=await c.query(`select public.${fn}(${keys.map((k,i)=>`${k}=>$${i+1}`).join(',')}) as r`,keys.map(k=>j[k]));await c.query('commit');return send(res,200,r.rows[0].r)}
+    catch(e){await c.query('rollback').catch(()=>{});if(e.code==='42883')return send(res,404,{code:'PGRST202',message:`Could not find the function public.${fn}`});return send(res,e.code==='42501'?401:400,{code:e.code,message:e.message})}
+    finally{c.release()}}
   if(u.pathname==='/auth/v1/logout')return send(res,204);
   if(!a)return send(res,401,{message:'JWT expired'});
   // two-step sign-in: authenticator apps (TOTP factors), like Supabase's /auth/v1/factors

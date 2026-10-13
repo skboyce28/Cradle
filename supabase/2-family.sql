@@ -565,3 +565,8 @@ revoke execute on function public.cradle_pic(uuid) from anon, authenticated, pub
 revoke execute on function public.cradle_mfa_on(uuid), public.cradle_mfa_check(uuid) from anon, authenticated, public;
 revoke execute on function public.cradle_mfa_ok(uuid) from anon, public;
 grant execute on function public.cradle_mfa_ok(uuid) to authenticated;
+
+-- Record this run for the status page (/status/; see 5-status.sql)
+create table if not exists public.cradle_schema_log (script text not null, version text not null, applied_at timestamptz not null default now());
+alter table public.cradle_schema_log enable row level security;
+insert into public.cradle_schema_log (script, version) values ('2-family.sql', '1.25');

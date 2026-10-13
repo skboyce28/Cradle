@@ -232,3 +232,14 @@ order by f.created_at desc;
 select h.name, h.require_mfa, count(m.*) as people
 from public.cradle_households h left join public.cradle_members m on m.household_id = h.id
 group by h.id order by h.require_mfa desc, h.name;
+
+
+-- ============================================================
+-- Status page (v1.28; after 5-status.sql and 6-status-schedule.sql)
+-- ============================================================
+
+-- 29. The latest uptime checks (ok, HTTP code, approximate ms)
+select at, ok, code, ms, err from public.cradle_probes order by at desc limit 20;
+
+-- 30. CHANGES DATA. Turn the uptime checks off (the history stays)
+select cron.unschedule('cradle-status-probe');

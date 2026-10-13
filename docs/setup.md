@@ -90,6 +90,7 @@ This creates a `pwa/` folder. In Netlify, choose **Add new site**, then **Deploy
 - Bakes in your project URL and publishable key from the environment variables or `.env`
 - Writes the site's security headers (`pwa/_headers`): a strict Content-Security-Policy and related headers, which Netlify applies automatically
 - Adds the app manifest, icons, and an offline helper (service worker) so Cradle can be installed and works without a connection
+- Publishes the product overview at `/overview/` and a status page at `/status/`, and writes `/version.json` (what's deployed)
 
 Any static host works (GitHub Pages, Cloudflare Pages, your own server), as long as it serves over **https**. Installing and offline mode need https.
 
@@ -108,11 +109,21 @@ Installed, Cradle opens full screen, works offline, and keeps the screen awake d
 
 Rebuild and redeploy (or push to GitHub with Option A). Phones get the new version the next time Cradle is opened with a connection. The app checks the network first, then falls back to its saved copy offline. If a phone seems stuck on an old version, close Cradle completely and open it again.
 
-When an update includes changes to `supabase/2-family.sql` (or `3-notifications.sql`, if you use notifications), run it again in the SQL Editor. If `supabase/functions/cradle-notify/index.ts` changed, paste it into the function again and choose **Deploy updates**. Check the [changelog](../CHANGELOG.md).
+When an update includes changes to `supabase/2-family.sql` (or `3-notifications.sql` or `5-status.sql`, if you use them), run it again in the SQL Editor. If `supabase/functions/cradle-notify/index.ts` changed, paste it into the function again and choose **Deploy updates**. Check the [changelog](../CHANGELOG.md).
 
 ## Optional: notifications
 
 So phones can get a notification when a feed is due, even with Cradle closed: run [`supabase/3-notifications.sql`](../supabase/3-notifications.sql), create the `cradle-notify` Edge Function, and schedule it with [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql), using the function's web address exactly (it's case-sensitive). Then check the schedule gets a 200 answer, not 404. About 10 minutes, all in the Supabase dashboard. Step by step: [Notifications](notifications.md#setting-them-up-once-for-your-cradle).
+
+## Optional: status page
+
+Every deploy includes a status page at your address plus `/status/`, with the live version and recent deployments from GitHub. To add database health and uptime:
+
+1. Run [`supabase/5-status.sql`](../supabase/5-status.sql) in the SQL Editor.
+2. Open [`supabase/6-status-schedule.sql`](../supabase/6-status-schedule.sql), replace `https://YOUR-SITE.netlify.app` with your Cradle address, and run it. It checks the site every 5 minutes.
+3. Rerun `1-setup.sql`, `2-family.sql`, and `3-notifications.sql` (if you use it) so they show in the schema history.
+
+Details: [Deployment and architecture](deployment.md#status-page).
 
 ## Optional: real emails
 

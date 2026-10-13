@@ -44,11 +44,14 @@ How Cradle is deployed today, what each piece does, how to run it day to day, an
 
 ### Schema
 
-Built by two scripts, both safe to rerun in any order:
+Built by these scripts, all safe to rerun in any order:
 
 1. [`supabase/1-setup.sql`](../supabase/1-setup.sql): the log table.
 2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, share keys, Fun center high scores, and the security rules.
 3. Optional, for [notifications](notifications.md): [`supabase/3-notifications.sql`](../supabase/3-notifications.sql) (tables and functions) and [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql) (the every-minute job), plus the [`cradle-notify`](../supabase/functions/cradle-notify/index.ts) Edge Function.
+4. Optional, for the [status page](#status-page): [`supabase/5-status.sql`](../supabase/5-status.sql) (`cradle_status()` and the uptime and schema-history tables) and [`supabase/6-status-schedule.sql`](../supabase/6-status-schedule.sql) (checks the site every 5 minutes).
+
+Each script except 4 adds a row to `cradle_schema_log` (script, version, time) when it runs, which the status page shows. When you change a script, update the version in its last line.
 
 **Tables:**
 
@@ -107,6 +110,7 @@ Built by two scripts, both safe to rerun in any order:
 | 21 to 24 | Notifications: phones that get them, check the every-minute job (22) and what the function answered (22b), stop one account's phones, new notification keys |
 | 25, 26 | Profile pictures: who has one and who can see it; remove someone's photo |
 | 27, 28 | Two-step sign-in: reset someone's (lost phone); who uses it and which families require it |
+| 29, 30 | Status page: the latest uptime checks; turn the checks off |
 
 Queries that change data are marked **CHANGES DATA**.
 
@@ -144,6 +148,21 @@ where email = 'their@email.com' and email_confirmed_at is null;
 - **A secret key stops the build.** The build refuses `sb_secret_…` and `service_role` keys.
 - **No personal data ships.** The build strips any built-in starter log from `cradle.html`.
 - **Security headers are generated, not hand-written.** The script's hash is recomputed on every build, so the policy always matches the code being deployed.
+
+### Status page
+
+`/status/` is built from [`docs/status.html`](status.html) with every deploy. Anyone with the link can open it; it shows counts and health, never names, emails, or log entries.
+
+| Part | Comes from | Needs |
+|---|---|---|
+| Live version | `/version.json`, written by the build (version, commit, deploy time, branch, context) | Nothing |
+| Deployments | The public GitHub API: the last 15 commits on `main` and their GitHub Actions runs. The repository comes from Netlify's `REPOSITORY_URL` (or `REPOSITORY_URL` in `.env`) | Nothing. GitHub allows 60 requests an hour per visitor without signing in; the page makes 2 per refresh |
+| Database, notifications, schema history | `cradle_status()`, called without signing in (as Supabase's anon role) | `5-status.sql` |
+| Uptime | A pg_cron job asks the site for `/version.json` every 5 minutes through pg_net; the next run records the answer. Response times are approximate | `6-status-schedule.sql`, with your site's address |
+
+The page refreshes every minute while it's open. Its security policy allows connections only to the site, your Supabase project, and `api.github.com`.
+
+**What it can't see:** checks run from one place (your Supabase project's region). If Supabase itself is down, no checks are recorded and those days show as no data. To check that it's working: `select at, ok, code, ms, err from public.cradle_probes order by at desc limit 5;`
 
 **Rolling back:** in Netlify, open **Deploys**, pick an earlier deploy, then **Publish deploy**. Phones pick it up the next time Cradle opens.
 
@@ -194,3 +213,4 @@ The main choices so far, why they were made, and what they cost.
 | 19 | **Profile photos stored in the database, not Supabase Storage** | The phone shrinks a photo to a 112-pixel square (about 5 KB), so it fits in a table row. That needs no storage bucket or storage rules to set up, and the same database functions that check families decide who sees it. | Photos are small and square. Each board load carries the visible photos along, which is fine at this size. |
 | 20 | **The product overview is published at `/overview/`, with its own security policy** | One link to share that introduces Cradle, kept in step with the repo on every deploy. The app's strict policy stays on the app's files; the overview gets its own, which also allows Google Fonts and nothing else (no connections, no other scripts). The service worker leaves `/overview/` alone, so visiting it never replaces the offline copy of the app. | Anyone who has your site's address can read the overview (it has no personal data, just example screenshots). |
 | 21 | **Two-step sign-in with Supabase's authenticator apps (TOTP), enforced by a restrictive row rule; the family owner can require it** | Supabase includes it free and keeps the secrets; the app only adds screens. The database checks the sign-in's `aal2` level, so a stolen password alone can't read the log, even with a modified app. An owner-wide rule fits how families share one log. | No backup codes or SMS: a lost authenticator app needs the operator to reset it (admin query 27). Each phone asks for a code once per sign-in, not on every open. |
+| 22 | **A public status page fed by the build, the GitHub API, and one anon database function; uptime checks from pg_cron** | Shows deploys, uptime, and backend health with no new service, account, or secret. The data the page can read is limited to counts in one security-definer function. | Checks come from one region inside Supabase, so a Supabase outage shows as missing data rather than as down. Response times are approximate. GitHub limits anonymous visitors to 60 requests an hour. |

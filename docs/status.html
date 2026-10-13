@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Cradle Status</title>
+<link rel="icon" type="image/png" href="../icons/icon-192.png">
+<style>
+/* Cradle status page. Same colors as the app. Layout: a summary banner, component rows, then
+   uptime, deployments, and database panels. Everything comes from version.json, the public
+   GitHub API, and cradle_status() in Supabase; nothing personal is shown. */
+:root{
+  --bg:#f6f1ea;--panel:#fffaf4;--panel2:#f1e9df;--ink:#2b2420;--muted:#7d7066;--line:#e6dbcf;
+  --accent:#d0683a;--good:#3f8a57;--good-soft:#dcefe2;--warn:#b07c0c;--warn-soft:#f6e9c8;--bad:#c4402a;--bad-soft:#f7dcd5;--none:#d9cfc4;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#171311;--panel:#221c19;--panel2:#2b2420;--ink:#efe6dc;--muted:#a3958a;--line:#3a312b;
+  --accent:#d4703c;--good:#5fae78;--good-soft:#1f3326;--warn:#d6a33a;--warn-soft:#3a2f17;--bad:#ec7a5e;--bad-soft:#40211a;--none:#3d342e;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 16px 48px}
+.wrap{max-width:960px;margin:0 auto}
+a{color:var(--accent)}
+h1,h2{margin:0;line-height:1.2;text-wrap:balance}
+h2{font-size:19px}
+.mono{font-family:var(--mono);font-size:.9em}
+.sub{color:var(--muted);font-size:13px}
+.num{font-variant-numeric:tabular-nums}
+header{display:flex;align-items:center;gap:12px;padding:22px 0 14px;flex-wrap:wrap}
+.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#e07a48,#c65a2e);display:grid;place-items:center;flex:none}
+.logo svg{width:26px;height:26px}
+header h1{font-size:22px}
+header .right{margin-left:auto;text-align:right}
+.banner{border-radius:14px;padding:16px 18px;display:flex;gap:12px;align-items:center;font-weight:700;font-size:17px;background:var(--panel2)}
+.banner .dot{width:14px;height:14px;border-radius:50%;flex:none;background:var(--none)}
+.banner.ok{background:var(--good-soft)}.banner.ok .dot{background:var(--good)}
+.banner.warn{background:var(--warn-soft)}.banner.warn .dot{background:var(--warn)}
+.banner.bad{background:var(--bad-soft)}.banner.bad .dot{background:var(--bad)}
+.banner .sub{font-weight:400;margin-left:auto}
+section{margin-top:22px;display:grid;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0}
+.rows{display:grid}
+.row{display:flex;gap:12px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row:last-child{border-bottom:0}
+.row .name{font-weight:650;min-width:150px}
+.row .detail{color:var(--muted);font-size:13.5px;flex:1;min-width:180px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--panel2);color:var(--muted);white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.ok{background:var(--good-soft);color:var(--good)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat{background:var(--panel2);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:22px;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:12.5px;color:var(--muted)}
+.strip{display:grid;grid-template-columns:repeat(90,minmax(0,1fr));gap:2px;height:36px;margin:12px 0 4px}
+.strip i{border-radius:2px;background:var(--none)}
+.strip i.ok{background:var(--good)}.strip i.warn{background:var(--warn)}.strip i.bad{background:var(--bad)}
+.strip i:hover{outline:2px solid var(--ink);outline-offset:1px}
+.striplab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.live{background:var(--panel2);border-radius:10px;padding:12px 14px;display:flex;gap:10px 24px;flex-wrap:wrap;align-items:baseline}
+.live b{font-size:20px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:0}
+tr.islive td{background:var(--good-soft)}
+.tbl{overflow-x:auto}
+.tbl table{min-width:560px}
+.msg{max-width:52ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{height:10px;border-radius:999px;background:var(--panel2);overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.grid2 .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.note{font-size:13px;color:var(--muted);background:var(--panel2);border-radius:10px;padding:10px 12px}
+footer{margin-top:28px;font-size:12.5px;color:var(--muted);display:grid;gap:4px}
+button{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.spin{animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 15h18a9 9 0 0 1-18 0z" fill="#fff5ea"/><circle cx="16" cy="9.5" r="3.5" fill="#fff5ea"/><path d="M5 15h22" stroke="#fff5ea" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+  <div><h1>Cradle status</h1><div class="sub">Site, database, and deployments</div></div>
+  <div class="right"><div class="sub" id="updated">Loading…</div><button id="refresh" type="button">Refresh</button></div>
+</header>
+
+<div class="banner" id="banner" role="status"><span class="dot"></span><span id="bannerText">Checking…</span><span class="sub" id="bannerSub"></span></div>
+
+<section aria-labelledby="h-comp">
+  <h2 id="h-comp">Components</h2>
+  <div class="card rows" id="components"></div>
+</section>
+
+<section aria-labelledby="h-up">
+  <h2 id="h-up">Uptime</h2>
+  <div class="card">
+    <div class="stats" id="upStats"></div>
+    <div class="strip" id="strip" aria-label="Uptime for each of the last 90 days"></div>
+    <div class="striplab"><span>90 days ago</span><span id="stripMid"></span><span>Today (UTC)</span></div>
+    <div id="incidents"></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-dep">
+  <h2 id="h-dep">Deployments</h2>
+  <div class="card" style="display:grid;gap:12px">
+    <div class="live" id="live"></div>
+    <div class="tbl" id="deploys"></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-db">
+  <h2 id="h-db">Database</h2>
+  <div class="grid2">
+    <div class="card" id="dbSize"></div>
+    <div class="card" id="dbSchema"></div>
+  </div>
+</section>
+
+<footer>
+  <div>Uptime checks run every 5 minutes from Supabase's scheduler; response times from those checks are approximate. "Right now" times are measured from your browser.</div>
+  <div>Deployments come from the public GitHub repository: every push to main is tested by GitHub Actions and published by Netlify. Times are in your time zone; the 90-day strip uses UTC days.</div>
+  <div>Only counts and health are shown here. No names, emails, or log entries.</div>
+</footer>
+</div>
+
+<script type="application/json" id="statusConfig">{}</script>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const CFG=(()=>{try{return JSON.parse($('#statusConfig').textContent)||{}}catch(e){return {}}})();
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct=v=>v==null?'--':(+v).toFixed(+v===100?0:2)+'%';
+const ago=t=>{if(!t)return 'never';const s=(Date.now()-new Date(t).getTime())/1000;if(s<45)return 'just now';if(s<3600)return Math.round(s/60)+' min ago';if(s<86400)return Math.round(s/3600)+' h ago';return Math.round(s/86400)+' d ago'};
+const when=t=>t?new Date(t).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'--';
+const dur=(a,b)=>{if(!a||!b)return '--';const s=Math.max(0,(new Date(b)-new Date(a))/1000);return s<90?Math.round(s)+' s':Math.round(s/60)+' min'};
+const mb=b=>(b/1048576).toFixed(b<10485760?1:0)+' MB';
+async function timed(fn){const t=performance.now();try{const r=await fn();return {r,ms:Math.round(performance.now()-t)}}catch(e){return {err:e,ms:Math.round(performance.now()-t)}}}
+async function getJSON(u,opt){const res=await fetch(u,opt);if(!res.ok){const e=new Error('HTTP '+res.status);e.code=res.status;try{e.body=await res.json()}catch(x){}throw e}return res.json()}
+
+let state={};
+async function load(){
+  $('#refresh').disabled=true;
+  const repo=CFG.repo||'';
+  const [ver,db,runs,commits]=await Promise.all([
+    timed(()=>getJSON('../version.json?t='+Date.now(),{cache:'no-store'})),
+    CFG.url&&CFG.key?timed(()=>getJSON(CFG.url+'/rest/v1/rpc/cradle_status',{method:'POST',headers:{apikey:CFG.key,'Content-Type':'application/json'},body:'{}'})):Promise.resolve({err:new Error('not configured')}),
+    repo?timed(()=>getJSON('https://api.github.com/repos/'+repo+'/actions/runs?branch=main&per_page=15')):Promise.resolve({err:new Error('no repo')}),
+    repo?timed(()=>getJSON('https://api.github.com/repos/'+repo+'/commits?sha=main&per_page=15')):Promise.resolve({err:new Error('no repo')})]);
+  state={ver,db,runs,commits};render();
+  $('#updated').textContent='Updated '+new Date().toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'});
+  $('#refresh').disabled=false;
+}
+
+function render(){
+  const {ver,db,runs,commits}=state,S=db.r||null,U=S&&S.uptime,live=ver.r||{};
+  const comps=[];
+  // Website: the browser's own check now, plus the last scheduled check
+  const last=U&&U.last,lastFresh=last&&(Date.now()-new Date(last.at))<20*60e3;
+  let site={k:'ok',t:'Operational'};
+  if(ver.err)site={k:'bad',t:'Not reachable'};else if(last&&lastFresh&&!last.ok)site={k:'warn',t:'Last check failed'};
+  comps.push({name:'Website',pill:site,detail:`Right now: ${ver.err?'no answer':ver.ms+' ms from your browser'}${last?` · last scheduled check ${ago(last.at)}: ${last.ok?'up':'down'}${last.ms!=null&&last.ok?', ~'+last.ms+' ms':''}`:' · scheduled checks not set up'}`});
+  // Database (Supabase)
+  let dbk={k:'ok',t:'Operational'},dbd=`Right now: ${db.ms} ms from your browser`;
+  if(db.err){if(db.err.code===404){dbk={k:'',t:'Not set up'};dbd='Run supabase/5-status.sql to show database health here'}else if(db.err.message==='not configured'){dbk={k:'',t:'Not configured'};dbd='This site was built without database settings'}else{dbk={k:'bad',t:'Not reachable'};dbd='No answer: '+esc(db.err.message)}}
+  comps.push({name:'Database',pill:dbk,detail:dbd});
+  // Feed-due notifications (the every-minute job)
+  if(S){const jobs=S.jobs||[],n=S.notify;
+    if(!jobs.includes('cradle-notify'))comps.push({name:'Notifications',pill:{k:'',t:'Not set up'},detail:'Optional; see docs/notifications.md'});
+    else{const r=n&&n.runs?n.ok/n.runs:null,fnOk=S.notify_fn&&S.notify_fn.calls?S.notify_fn.ok/S.notify_fn.calls:null;
+      const k=r==null?{k:'warn',t:'No runs in 24 h'}:(r>=.95&&(fnOk==null||fnOk>=.95))?{k:'ok',t:'Operational'}:{k:'warn',t:'Degraded'};
+      comps.push({name:'Notifications',pill:k,detail:`Every-minute job: ${n&&n.runs?n.ok+' of '+n.runs+' runs OK in 24 h, last '+ago(n.last):'no runs in 24 h'}${S.notify_fn&&S.notify_fn.calls?` · function answered OK ${S.notify_fn.ok} of ${S.notify_fn.calls} times in 6 h`:''}${n&&n.last_error?` · last error ${ago(n.last_error.at)}`:''}`})}}
+  // Tests on main
+  const R=runs.r&&runs.r.workflow_runs||[],lastRun=R.find(r=>r.status==='completed');
+  if(runs.err)comps.push({name:'Tests on main',pill:{k:'',t:'Unavailable'},detail:runs.err.code===403?'GitHub’s hourly limit for this connection was reached. Try again later.':'Couldn’t reach GitHub'});
+  else if(lastRun)comps.push({name:'Tests on main',pill:lastRun.conclusion==='success'?{k:'ok',t:'Passing'}:{k:'warn',t:'Failing'},detail:`Last run ${ago(lastRun.updated_at)} on ${esc((lastRun.head_sha||'').slice(0,7))}, took ${dur(lastRun.run_started_at,lastRun.updated_at)}`+(R[0]&&R[0].status!=='completed'?' · a run is in progress':'')});
+  $('#components').innerHTML=comps.map(c=>`<div class="row"><span class="name">${c.name}</span><span class="detail">${c.detail}</span><span class="pill ${c.pill.k}">${c.pill.t}</span></div>`).join('');
+  // banner
+  const ks=comps.map(c=>c.pill.k),bad=comps.filter(c=>c.pill.k==='bad').map(c=>c.name),warn=comps.filter(c=>c.pill.k==='warn').map(c=>c.name);
+  const b=$('#banner');b.className='banner '+(bad.length?'bad':warn.length?'warn':'ok');
+  $('#bannerText').textContent=bad.length?(bad.includes('Website')?'Cradle’s site isn’t reachable':bad.join(' and ')+' not reachable'):warn.length?'Some things need attention: '+warn.join(', '):'All systems operational';
+  $('#bannerSub').textContent=live.version?'Live: v'+live.version:'';
+
+  // uptime
+  if(U&&U.checks_30d){
+    const st=(v,l)=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`;
+    $('#upStats').innerHTML=st(pct(U.pct_24h),'Last 24 hours')+st(pct(U.pct_7d),'Last 7 days')+st(pct(U.pct_30d),'Last 30 days')+st(U.ms_avg_24h!=null?'~'+U.ms_avg_24h+' ms':'--','Average response, 24 h')+st(U.ms_p95_24h!=null?'~'+U.ms_p95_24h+' ms':'--','95th percentile, 24 h');
+    const byDay={};(U.days||[]).forEach(d=>byDay[d.d]=d);const now=new Date(S.now||Date.now());let html='';
+    for(let i=89;i>=0;i--){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()-i)).toISOString().slice(0,10),x=byDay[d];
+      const p=x?x.up/x.n:null,cls=p==null?'':p>=.999?'ok':p>=.95?'warn':'bad';
+      html+=`<i class="${cls}" title="${d}: ${x?(100*p).toFixed(1)+'% of '+x.n+' checks':'no data'}"></i>`}
+    $('#strip').innerHTML=html;$('#stripMid').textContent=U.checks_30d+' checks in 30 days';
+    const inc=U.incidents||[];
+    $('#incidents').innerHTML=inc.length?`<div class="sub" style="margin-top:10px">Recent failed checks: ${inc.slice(0,5).map(i=>esc(when(i.at))+' ('+(i.code?'HTTP '+i.code:esc(i.err||'no answer'))+')').join(', ')}</div>`:'<div class="sub" style="margin-top:10px">No failed checks on record.</div>';
+  }else{
+    $('#upStats').innerHTML='';$('#strip').innerHTML=Array.from({length:90},()=>'<i></i>').join('');$('#stripMid').textContent='';
+    $('#incidents').innerHTML=`<div class="note">${S?'Uptime checks aren’t running yet. Run <span class="mono">supabase/6-status-schedule.sql</span> with this site’s address'+(CFG.site?' (<span class="mono">'+esc(CFG.site)+'</span>)':'')+'. The first results show up about 10 minutes later.':'Uptime appears here once the database part is set up.'}</div>`}
+
+  // deployments
+  const sha=live.commit||'';
+  $('#live').innerHTML=live.version?`<div><div class="sub">Live now</div><b>v${esc(live.version)}</b></div><div><div class="sub">Commit</div>${sha?(repo()?`<a class="mono" href="https://github.com/${esc(repo())}/commit/${esc(sha)}" target="_blank" rel="noopener">${esc(sha.slice(0,7))}</a>`:'<span class="mono">'+esc(sha.slice(0,7))+'</span>'):'<span class="sub">local build</span>'}</div><div><div class="sub">Deployed</div>${esc(when(live.built_at))} <span class="sub">(${ago(live.built_at)})</span></div>${live.context?`<div><div class="sub">Context</div>${esc(live.context)}${live.branch?' · '+esc(live.branch):''}</div>`:''}`
+    :'<span class="sub">Couldn’t read version.json from this site.</span>';
+  const C=commits.r||[],runBy={};R.forEach(r=>{if(!runBy[r.head_sha])runBy[r.head_sha]=r});
+  if(C.length){
+    $('#deploys').innerHTML=`<table><thead><tr><th>When</th><th>Change</th><th>Commit</th><th>Tests</th></tr></thead><tbody>${C.map(c=>{const r=runBy[c.sha],isLive=sha&&c.sha.startsWith(sha.slice(0,7));
+      const t=!r?'<span class="sub">--</span>':r.status!=='completed'?'<span class="pill warn">Running</span>':r.conclusion==='success'?`<span class="pill ok">Passed</span> <span class="sub">${dur(r.run_started_at,r.updated_at)}</span>`:`<span class="pill bad">${esc(r.conclusion||'failed')}</span>`;
+      const msg=(c.commit&&c.commit.message||'').split('\n')[0];
+      return `<tr class="${isLive?'islive':''}"><td class="num" style="white-space:nowrap">${esc(when(c.commit&&c.commit.author&&c.commit.author.date))}</td><td><div class="msg" title="${esc(msg)}">${esc(msg)}</div>${isLive?'<span class="pill ok" style="margin-top:4px">Live now</span>':''}</td><td><a class="mono" href="${esc(c.html_url)}" target="_blank" rel="noopener">${esc(c.sha.slice(0,7))}</a></td><td>${t}</td></tr>`}).join('')}</tbody></table>`;
+  }else $('#deploys').innerHTML=`<div class="note">${commits.err&&commits.err.code===403?'GitHub’s hourly limit for this connection was reached, so the history is hidden for now.':'Deployment history comes from GitHub and isn’t available right now.'}</div>`;
+
+  // database
+  if(S){const d=S.db,p=Math.min(100,100*d.bytes/d.limit_bytes);
+    $('#dbSize').innerHTML=`<h2 style="font-size:16px">Storage and activity</h2><div class="bar" aria-label="Database size"><i style="width:${p.toFixed(1)}%"></i></div><div class="sub">${mb(d.bytes)} of the free plan’s ${mb(d.limit_bytes)} (${p.toFixed(1)}%)</div>
+      <div class="stats" style="margin-top:10px"><div class="stat"><b>${d.families}</b><span>Families</span></div><div class="stat"><b>${d.accounts}</b><span>Accounts</span></div><div class="stat"><b>${(d.entries||0).toLocaleString()}</b><span>Log entries</span></div><div class="stat"><b>${(d.changes_24h||0).toLocaleString()}</b><span>Changes, 24 h</span></div></div>
+      <div class="sub" style="margin-top:8px">Last change synced ${ago(d.last_change)}.</div>`;
+    const cur=S.schema&&S.schema.current||[],hist=S.schema&&S.schema.history||[];
+    $('#dbSchema').innerHTML=`<h2 style="font-size:16px">Schema</h2><table><thead><tr><th>Script</th><th>Version</th><th>Last applied</th></tr></thead><tbody>${cur.map(x=>`<tr><td class="mono">${esc(x.script)}</td><td>v${esc(x.version)}</td><td>${esc(when(x.applied_at))}</td></tr>`).join('')||'<tr><td colspan="3" class="sub">No scripts recorded yet</td></tr>'}</tbody></table>
+      ${hist.length?`<div class="sub" style="margin-top:8px">Recent runs: ${hist.slice(0,6).map(h=>esc(h.script.replace('.sql',''))+' '+esc(when(h.applied_at))).join(' · ')}</div>`:''}`;
+  }else{$('#dbSize').innerHTML='<h2 style="font-size:16px">Storage and activity</h2><div class="note">Not available.</div>';$('#dbSchema').innerHTML='<h2 style="font-size:16px">Schema</h2><div class="note">Run <span class="mono">supabase/5-status.sql</span> in Supabase to show schema history here.</div>'}
+}
+const repo=()=>CFG.repo||'';
+$('#refresh').onclick=load;
+load();
+setInterval(()=>{if(document.visibilityState==='visible')load()},60000);
+})();
+</script>
+</body>
+</html>

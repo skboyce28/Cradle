@@ -42,3 +42,8 @@ end $$;
 drop trigger if exists cradle_touch on public.cradle_items;
 create trigger cradle_touch before insert or update on public.cradle_items
   for each row execute function public.cradle_touch();
+
+-- Record this run for the status page (/status/; see 5-status.sql)
+create table if not exists public.cradle_schema_log (script text not null, version text not null, applied_at timestamptz not null default now());
+alter table public.cradle_schema_log enable row level security;
+insert into public.cradle_schema_log (script, version) values ('1-setup.sql', '1.5');

@@ -12,6 +12,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 | `avatar.test.mjs` | Profile pictures: built-in and uploaded, who can see them (only me, family, everyone) on the Family screen and the boards, deleting a photo, database checks; and the Night shift button |
 | `milk.test.mjs` | Milk storage: adding to the freezer and fridge, oz to mL, CDC age flags, rules, freeze, thaw, use as a bottle feed, undo, labels (find, unknown label, scanning with a pretend camera, printing Code 128), syncing to another phone, export |
 | `mfa.test.mjs` | Two-step sign-in: setting it up, wrong and right codes, the code step on a new phone, the owner's require-it rule, setting it up when required, turning it off, and the database refusing password-only sign-ins |
+| `status.test.mjs` | The status page: uptime checks through a pg_net stand-in (answered, unanswered, kept 100 days), what the anon role can and can't reach, version.json, the page under its own security policy with a stand-in GitHub API, banner states, and phone width |
 | `weights.test.mjs` | Weight entry in grams or lb and oz: weighted feeds, switching units, the Weights screen, birth weight |
 | `word.test.mjs` | Daily Word: the word lists, the day's word worked out separately, colors, too-short and unknown words, hard mode, points and posting, one result per day, a second phone, the family and Everyone boards, practice, offline posting, switching boards |
 | `erase-and-wipe.test.mjs` | Owner-only Erase all data, and Sign out and remove from this phone |
@@ -29,11 +30,11 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 `run.mjs` does everything:
 1. Sets up a test database:
    - a small stand-in for Supabase's auth (`support/auth-shim.sql`), with its users and authenticator-app tables
-   - Cradle's real scripts from `supabase/` (1 to 3; the every-minute schedule in 4 needs Supabase's pg_cron, so it's left out)
-2. Builds the site three times with fake settings.
+   - Cradle's real scripts from `supabase/` (1, 2, 3, and 5; the schedules in 4 and 6 need Supabase's pg_cron, so they're left out; small stand-ins for pg_net and pg_cron let the status functions run)
+2. Builds the site four times with fake settings.
 3. Starts local servers:
    - `support/supabase-standin.mjs`, a stand-in for Supabase's API, including the authenticator-app (two-step sign-in) endpoints; `support/totp.mjs` makes and checks the 6-digit codes
-   - `support/site-server.mjs` twice (ports 8099 and 8098), stand-ins for Netlify that apply `_headers`
+   - `support/site-server.mjs` three times (ports 8099, 8098, and 8097 for the status page), stand-ins for Netlify that apply `_headers`
 4. Runs each `*.test.mjs`. Most drive Chromium; `notify/crypto`, `notify/round`, and `notify/entry` run in plain Node.
 
 A test file passes when it prints no `FAIL` lines and no page errors. Logs and screenshots go to `tests/out/` (not committed).

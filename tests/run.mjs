@@ -23,7 +23,7 @@ const log = (...a) => console.log(...a);
 // 1) database: Supabase-like roles and auth, then Cradle's real scripts (all safe to rerun)
 async function setupDb() {
   const c = new pg.Client({ connectionString: DATABASE_URL }); await c.connect();
-  for (const f of ['tests/support/auth-shim.sql', 'supabase/1-setup.sql', 'supabase/2-family.sql', 'supabase/3-notifications.sql'])
+  for (const f of ['tests/support/auth-shim.sql', 'supabase/1-setup.sql', 'supabase/2-family.sql', 'supabase/3-notifications.sql', 'supabase/5-status.sql'])
     await c.query(fs.readFileSync(path.join(repo, f), 'utf8'));
   await c.query('grant all on all tables in schema public to service_role');
   await c.end(); log('✓ database ready');
@@ -67,10 +67,12 @@ try {
   build('push', { CRADLE_SUPABASE_URL: 'https://demo.supabase.co', CRADLE_SUPABASE_KEY: 'sb_publishable_testkey_1234567890' });
   const donate = build('donate', { CRADLE_SUPABASE_URL: 'https://demo.supabase.co', CRADLE_SUPABASE_KEY: 'sb_publishable_demo_key_000000000000', CRADLE_DONATE_URL: 'https://buymeacoffee.com/example' });
   env.CRADLE_DONATE_SITE = pathToFileURL(path.join(donate, 'index.html')).href;
+  build('status', { CRADLE_SUPABASE_URL: 'http://localhost:54321', CRADLE_SUPABASE_KEY: 'sb_publishable_testkey_1234567890', COMMIT_REF: 'a1b2c3d4e5f60718293a4b5c6d7e8f9012345678', BRANCH: 'main', CONTEXT: 'production', URL: 'https://cradle-test.netlify.app', REPOSITORY_URL: 'https://github.com/skboyce28/Cradle' });
   log('✓ sites built');
   start(['support/supabase-standin.mjs'], 'supabase'); start(['support/site-server.mjs', path.join(out, 'sites/csp'), '8099'], 'site');
   start(['support/site-server.mjs', path.join(out, 'sites/push'), '8098'], 'push-site');
-  await Promise.all([waitPort(54321), waitPort(8099), waitPort(8098)]); log('✓ servers up\n');
+  start(['support/site-server.mjs', path.join(out, 'sites/status'), '8097'], 'status-site');
+  await Promise.all([waitPort(54321), waitPort(8099), waitPort(8098), waitPort(8097)]); log('✓ servers up\n');
 
   const files = [...fs.readdirSync(here).filter(f => f.endsWith('.test.mjs')), ...fs.readdirSync(path.join(here, 'notify')).filter(f => f.endsWith('.test.mjs')).map(f => 'notify/' + f)]
     .sort().filter(f => !filters.length || filters.some(x => f.includes(x)));

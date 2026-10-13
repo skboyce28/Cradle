@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.28
+
+**Status page at `/status/`**
+- A public status page, built and deployed with the site, that anyone with the link can open. It shows counts and health only: no names, emails, or log entries
+- **Components:** Website, Database, Notifications, and Tests on main, each with a state (operational, needs attention, not reachable, not set up), and a summary banner. Website and Database are also measured live from the viewer's browser
+- **Uptime:** percentages for 24 hours, 7 days, and 30 days, average and 95th-percentile response times, a 90-day strip (one bar per UTC day), and recent failed checks
+- **Deployments:** the live version from a new `/version.json` (version, commit, deploy time, and context, written by the build from Netlify's `COMMIT_REF`, `BRANCH`, and `CONTEXT`), and the last 15 commits on `main` from the public GitHub API with each one's test run, the live one marked
+- **Database:** size against the free plan's 500 MB, families, accounts, entries, changes in 24 hours, and schema history
+- **New `supabase/5-status.sql`** (optional): `cradle_status()`, the one function the page calls without signing in, plus tables for uptime checks and schema history. **New `supabase/6-status-schedule.sql`** (optional): checks the site's `/version.json` every 5 minutes with pg_cron and pg_net. Edit your site's address into it before running
+- **Schema history:** scripts 1, 2, 3, 5, and 6 now record their version and when they ran in `cradle_schema_log`. Rerunning `1-setup.sql`, `2-family.sql`, and `3-notifications.sql` fills it in
+- The status page has its own security policy: it can connect only to the site itself, your Supabase project, and `api.github.com`. The app's service worker leaves `/status/` and `/version.json` alone
+- About links to the status page
+- New test: `tests/status.test.mjs` (23 checks), with stand-ins for pg_net and pg_cron and a stand-in GitHub API. The Supabase stand-in now also answers calls made without signing in, as Supabase's anon role
+
 ## v1.27
 
 **Milk storage: units and label printers**

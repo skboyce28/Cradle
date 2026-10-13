@@ -166,3 +166,8 @@ revoke execute on function public.cradle_push_get_keys(), public.cradle_push_set
   public.cradle_push_due(), public.cradle_push_result(text,int) from anon, authenticated, public;
 grant execute on function public.cradle_push_get_keys(), public.cradle_push_set_keys(text,jsonb),
   public.cradle_push_due(), public.cradle_push_result(text,int) to service_role;
+
+-- Record this run for the status page (/status/; see 5-status.sql)
+create table if not exists public.cradle_schema_log (script text not null, version text not null, applied_at timestamptz not null default now());
+alter table public.cradle_schema_log enable row level security;
+insert into public.cradle_schema_log (script, version) values ('3-notifications.sql', '1.16');
