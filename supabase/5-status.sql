@@ -102,7 +102,10 @@ begin
     'db', jsonb_build_object(
       'bytes', pg_database_size(current_database()),
       'limit_bytes', 500 * 1024 * 1024,
-      'families', (select count(*) from cradle_households),
+      -- families in use: the family each account currently opens (its most recently joined), so an
+      -- account's old solo family left behind after joining someone else's isn't counted
+      'families', (select count(distinct household_id) from (select distinct on (user_id) household_id from cradle_members order by user_id, joined_at desc) cur),
+      'shared_families', (select count(*) from (select household_id from (select distinct on (user_id) household_id from cradle_members order by user_id, joined_at desc) cur group by household_id having count(*) > 1) sh),
       'accounts', (select count(*) from auth.users),
       'entries', (select count(*) from cradle_items where not deleted),
       'changes_24h', (select count(*) from cradle_items where updated_at > now() - interval '24 hours'),
@@ -134,4 +137,4 @@ grant execute on function public.cradle_status() to anon, authenticated;
 revoke execute on function public.cradle_status() from public;
 revoke execute on function public.cradle_probe(), public.cradle_status_set_site(text) from anon, authenticated, public;
 
-insert into public.cradle_schema_log (script, version) values ('5-status.sql', '1.28');
+insert into public.cradle_schema_log (script, version) values ('5-status.sql', '1.29');

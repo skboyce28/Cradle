@@ -246,8 +246,8 @@ function render(){
   // database
   if(S){const d=S.db,p=Math.min(100,100*d.bytes/d.limit_bytes);
     $('#dbSize').innerHTML=`<h2 style="font-size:16px">Storage and activity</h2><div class="bar" aria-label="Database size"><i style="width:${p.toFixed(1)}%"></i></div><div class="sub">${mb(d.bytes)} of the free plan’s ${mb(d.limit_bytes)} (${p.toFixed(1)}%)</div>
-      <div class="stats" style="margin-top:10px"><div class="stat"><b>${d.families}</b><span>Families</span></div><div class="stat"><b>${d.accounts}</b><span>Accounts</span></div><div class="stat"><b>${(d.entries||0).toLocaleString()}</b><span>Log entries</span></div><div class="stat"><b>${(d.changes_24h||0).toLocaleString()}</b><span>Changes, 24 h</span></div></div>
-      <div class="sub" style="margin-top:8px">Last change synced ${ago(d.last_change)}.</div>`;
+      <div class="stats" style="margin-top:10px"><div class="stat"><b>${d.families}</b><span>Families in use${d.shared_families!=null?` · ${d.shared_families} shared by 2+ people`:''}</span></div><div class="stat"><b>${d.accounts}</b><span>Accounts</span></div><div class="stat"><b>${(d.entries||0).toLocaleString()}</b><span>Log entries</span></div><div class="stat"><b>${(d.changes_24h||0).toLocaleString()}</b><span>Entries added or edited, 24 h</span></div></div>
+      <div class="sub" style="margin-top:8px">Last log entry added or edited by anyone: ${ago(d.last_change)}. This is when someone last logged something, not a sync check.</div>`;
     const cur=S.schema&&S.schema.current||[],hist=S.schema&&S.schema.history||[];
     $('#dbSchema').innerHTML=`<h2 style="font-size:16px">Schema</h2><table><thead><tr><th>Script</th><th>Version</th><th>Last applied</th></tr></thead><tbody>${cur.map(x=>`<tr><td class="mono">${esc(x.script)}</td><td>v${esc(x.version)}</td><td>${esc(when(x.applied_at))}</td></tr>`).join('')||'<tr><td colspan="3" class="sub">No scripts recorded yet</td></tr>'}</tbody></table>
       ${hist.length?`<div class="sub" style="margin-top:8px">Recent runs: ${hist.slice(0,6).map(h=>esc(h.script.replace('.sql',''))+' '+esc(when(h.applied_at))).join(' · ')}</div>`:''}`;

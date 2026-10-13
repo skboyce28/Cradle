@@ -39,6 +39,12 @@ ok('uptime percentages and 90-day days',st.uptime.pct_30d>99&&st.uptime.pct_30d<
 ok('schema history lists each script',['1-setup.sql','2-family.sql','3-notifications.sql','5-status.sql'].every(s=>st.schema.current.some(x=>x.script===s)));
 ok('only counts: no emails, names, or entries in the answer',!/@|cradle\.cfg|"name"|feed:/.test(JSON.stringify(st))&&typeof st.db.accounts==='number');
 ok('old checks are deleted after 100 days',(sql(`insert into public.cradle_probes(at,done_at,ok) values (now()-interval '101 days',now(),true)`),sql(`select cradle_probe()`),sql(`select count(*) from cradle_probes where at<now()-interval '100 days'`))==='0');
+// families in use: an account that joined another family isn't counted in its old solo one
+const fam=()=>JSON.parse(asAnon(`select cradle_status()`).split('\n').pop()).db;const f0=fam();
+sql(`insert into auth.users(id,email) values ('aaaaaaaa-0000-0000-0000-000000000001','famt1@x.y'),('aaaaaaaa-0000-0000-0000-000000000002','famt2@x.y') on conflict do nothing`);
+sql(`insert into cradle_households(id,created_by) values ('bbbbbbbb-0000-0000-0000-000000000001','aaaaaaaa-0000-0000-0000-000000000001'),('bbbbbbbb-0000-0000-0000-000000000002','aaaaaaaa-0000-0000-0000-000000000002') on conflict do nothing`);
+sql(`insert into cradle_members(household_id,user_id,role,joined_at) values ('bbbbbbbb-0000-0000-0000-000000000001','aaaaaaaa-0000-0000-0000-000000000001','owner',now()-interval '2 days'),('bbbbbbbb-0000-0000-0000-000000000002','aaaaaaaa-0000-0000-0000-000000000002','owner',now()-interval '1 day'),('bbbbbbbb-0000-0000-0000-000000000002','aaaaaaaa-0000-0000-0000-000000000001','member',now()) on conflict do nothing`);
+const f1=fam();ok('two accounts sharing one family count as 1 family (1 shared), not 2',f1.families-f0.families===1&&f1.shared_families-f0.shared_families===1&&f1.accounts-f0.accounts===2,JSON.stringify([f0,f1].map(x=>[x.families,x.shared_families,x.accounts])));
 // notification job health
 sql(`insert into cron.job(jobname) values ('cradle-notify'),('cradle-status-probe')`);
 sql(`insert into cron.job_run_details(jobid,status,return_message,start_time) select (select jobid from cron.job where jobname='cradle-notify'),'succeeded','1',now()-g*interval '1 min' from generate_series(1,60) g`);
@@ -68,7 +74,7 @@ await p.click('#depMore');await p.waitForTimeout(600);ok('then the last 5, and t
 ok('older ones have their test results too',(await p.$$eval('#deploys tr.dep',rs=>rs.filter(r=>/Passed|failure/.test(r.textContent)).length))===25);
 await p.click('#depLess');await p.waitForTimeout(300);ok('Show fewer goes back to 10',(await p.$$('#deploys tr.dep')).length===10);
 
-ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/2-family\.sql v1\.25/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.28/.test(await txt('#dbSchema')));
+ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.25/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.29/.test(await txt('#dbSchema')));
 ok('no policy violations',(await p.evaluate(()=>window.__v)).length===0,(await p.evaluate(()=>window.__v)).join(' | '));
 await p.screenshot({path:OUT+'status.png',fullPage:true});
 // a failed latest check and a failing test run show up in the banner

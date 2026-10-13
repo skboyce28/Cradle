@@ -7,6 +7,8 @@ No change to the app.
 - **Automated tests** replaces "Tests on main": it says it's the GitHub Actions run on every push to main, and the deployments column reads *GitHub Actions tests*
 - **Phones get the computer layout**, zoomed to fit (pinch to zoom in), instead of a stacked phone layout. Phone browsers no longer enlarge some paragraphs
 - GitHub is asked every 5 minutes instead of every minute, so a page left open stays within GitHub's 60 requests an hour for visitors who aren't signed in. **Refresh** still updates everything
+- **Families in use:** the Families count was every family ever created, including the solo family each account starts with and keeps after joining someone else's. It now counts the family each account currently uses, and also shows how many are shared by 2 or more people. Rerun `5-status.sql` (or the snippet in the docs)
+- **Clearer wording:** "Last change synced 50 min ago" read like syncing had stopped. It now says when someone last added or edited a log entry, and "Changes, 24 h" reads "Entries added or edited, 24 h"
 - **The product overview** (`/overview/`) also shows its computer layout on phones, zoomed to fit
 - status.test.mjs: 29 checks
 
