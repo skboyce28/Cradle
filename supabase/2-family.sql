@@ -566,7 +566,137 @@ revoke execute on function public.cradle_mfa_on(uuid), public.cradle_mfa_check(u
 revoke execute on function public.cradle_mfa_ok(uuid) from anon, public;
 grant execute on function public.cradle_mfa_ok(uuid) to authenticated;
 
+-- 5b) Support: feedback from the app (v1.31)
+--    Anyone signed in can send a bug, an idea, or a question, with an optional screenshot. Accounts
+--    listed in cradle_admins (added by the Cradle operator in the SQL Editor) see every submission
+--    in the app's Feedback inbox, set its status, and reply; people see the status and reply on
+--    their own submissions. Reviewed submissions earn the Quality Assurance and Compliance Officer
+--    achievements. No direct access to these tables from the app; only the functions below.
+create table if not exists public.cradle_admins (
+  user_id  uuid primary key references auth.users(id) on delete cascade,
+  added_at timestamptz not null default now()
+);
+create table if not exists public.cradle_feedback (
+  id           uuid primary key default gen_random_uuid(),
+  user_id      uuid references auth.users(id) on delete set null,
+  household_id uuid references public.cradle_households(id) on delete set null,
+  kind         text not null,
+  body         text not null,
+  screenshot   text,
+  app_version  text,
+  device       text,
+  status       text not null default 'new',
+  reply        text,
+  created_at   timestamptz not null default now(),
+  updated_at   timestamptz not null default now(),
+  reviewed_at  timestamptz,
+  reviewed_by  uuid references auth.users(id) on delete set null
+);
+alter table public.cradle_feedback drop constraint if exists cradle_feedback_check;
+alter table public.cradle_feedback add constraint cradle_feedback_check check (
+  kind in ('bug', 'idea', 'question')
+  and status in ('new', 'reviewed', 'planned', 'used', 'wontdo')
+  and length(body) between 3 and 4000
+  and (reply is null or length(reply) <= 2000)
+  and (screenshot is null or (length(screenshot) <= 400000 and screenshot ~ '^data:image/(jpeg|webp|png);base64,[A-Za-z0-9+/]+=*$')));
+create index if not exists cradle_feedback_user on public.cradle_feedback (user_id, created_at);
+create index if not exists cradle_feedback_status on public.cradle_feedback (status, created_at);
+alter table public.cradle_admins enable row level security;
+alter table public.cradle_feedback enable row level security;
+
+create or replace function public.cradle_is_admin() returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from cradle_admins where user_id = auth.uid())
+$$;
+-- Admins who use two-step sign-in must have finished the code step
+create or replace function public.cradle_admin_check() returns void
+language plpgsql stable security definer set search_path = public as $$
+begin
+  if not cradle_is_admin() then raise exception 'Only Cradle admins can do this.'; end if;
+  if cradle_mfa_on(auth.uid()) and coalesce(auth.jwt()->>'aal', 'aal1') <> 'aal2' then
+    raise exception 'Finish two-step sign-in first.';
+  end if;
+end $$;
+
+-- Your own submissions, newest first, with status and reply, and whether you're an admin
+create or replace function public.cradle_my_feedback() returns json
+language sql stable security definer set search_path = public as $$
+  select json_build_object(
+    'admin', cradle_is_admin(),
+    'new_count', case when cradle_is_admin() then (select count(*) from cradle_feedback where status = 'new') end,
+    'items', coalesce((select json_agg(json_build_object('id', f.id, 'kind', f.kind, 'body', f.body, 'status', f.status, 'reply', f.reply,
+                         'shot', f.screenshot is not null, 'at', f.created_at, 'reviewed_at', f.reviewed_at) order by f.created_at desc)
+                       from (select * from cradle_feedback where user_id = auth.uid() order by created_at desc limit 50) f), '[]'::json))
+$$;
+
+-- Send feedback (10 a day at most)
+create or replace function public.cradle_submit_feedback(p_kind text, p_body text, p_screenshot text default null,
+                                                         p_version text default null, p_device text default null) returns json
+language plpgsql security definer set search_path = public as $$
+declare uid uuid := auth.uid(); h uuid;
+begin
+  if uid is null then raise exception 'not signed in'; end if;
+  if p_kind not in ('bug', 'idea', 'question') then raise exception 'Pick bug, idea, or question.'; end if;
+  if length(trim(coalesce(p_body, ''))) < 3 then raise exception 'Tell us a little more.'; end if;
+  if length(p_body) > 4000 then raise exception 'That''s too long. Keep it under 4,000 characters.'; end if;
+  if p_screenshot is not null and (length(p_screenshot) > 400000 or p_screenshot !~ '^data:image/(jpeg|webp|png);base64,[A-Za-z0-9+/]+=*$') then
+    raise exception 'That screenshot is too large or isn''t an image.';
+  end if;
+  if (select count(*) from cradle_feedback where user_id = uid and created_at > now() - interval '1 day') >= 10 then
+    raise exception 'That''s 10 today. Thanks! Please send more tomorrow.';
+  end if;
+  select household_id into h from cradle_members where user_id = uid order by joined_at desc limit 1;
+  insert into cradle_feedback (user_id, household_id, kind, body, screenshot, app_version, device)
+  values (uid, h, p_kind, trim(p_body), p_screenshot, left(p_version, 20), left(p_device, 200));
+  return cradle_my_feedback();
+end $$;
+
+-- Admins: every submission (screenshots are fetched one at a time), with counts by status
+create or replace function public.cradle_feedback_inbox(p_status text default null) returns json
+language plpgsql stable security definer set search_path = public as $$
+begin
+  perform cradle_admin_check();
+  return json_build_object(
+    'counts', coalesce((select json_object_agg(status, n) from (select status, count(*) n from cradle_feedback group by status) c), '{}'::json),
+    'items', coalesce((select json_agg(json_build_object('id', f.id, 'kind', f.kind, 'body', f.body, 'status', f.status, 'reply', f.reply,
+                          'shot', f.screenshot is not null, 'version', f.app_version, 'device', f.device, 'at', f.created_at,
+                          'reviewed_at', f.reviewed_at, 'email', u.email, 'family', h.name,
+                          'from_reviewed', (select count(*) from cradle_feedback x where x.user_id = f.user_id and x.status <> 'new'))
+                        order by (f.status = 'new') desc, f.created_at desc)
+                        from (select * from cradle_feedback where p_status is null or status = p_status order by created_at desc limit 200) f
+                        left join auth.users u on u.id = f.user_id
+                        left join cradle_households h on h.id = f.household_id), '[]'::json));
+end $$;
+create or replace function public.cradle_feedback_shot(p_id uuid) returns text
+language plpgsql stable security definer set search_path = public as $$
+declare s text;
+begin
+  select screenshot into s from cradle_feedback where id = p_id and (user_id = auth.uid() or cradle_is_admin());
+  if s is not null and cradle_is_admin() then perform cradle_admin_check(); end if;
+  return s;
+end $$;
+
+-- Admins: set the status (reviewed, planned, used, won't do, or back to new) and reply
+create or replace function public.cradle_feedback_review(p_id uuid, p_status text, p_reply text default null) returns json
+language plpgsql security definer set search_path = public as $$
+begin
+  perform cradle_admin_check();
+  if p_status not in ('new', 'reviewed', 'planned', 'used', 'wontdo') then raise exception 'Pick a status.'; end if;
+  update cradle_feedback set status = p_status, reply = nullif(left(trim(coalesce(p_reply, '')), 2000), ''), updated_at = now(),
+         reviewed_at = case when p_status = 'new' then null else coalesce(reviewed_at, now()) end,
+         reviewed_by = case when p_status = 'new' then null else auth.uid() end
+  where id = p_id;
+  if not found then raise exception 'That feedback wasn''t found.'; end if;
+  return cradle_feedback_inbox(null);
+end $$;
+
+grant execute on function public.cradle_my_feedback(), public.cradle_submit_feedback(text,text,text,text,text), public.cradle_feedback_inbox(text),
+  public.cradle_feedback_shot(uuid), public.cradle_feedback_review(uuid,text,text) to authenticated;
+revoke execute on function public.cradle_my_feedback(), public.cradle_submit_feedback(text,text,text,text,text), public.cradle_feedback_inbox(text),
+  public.cradle_feedback_shot(uuid), public.cradle_feedback_review(uuid,text,text) from anon, public;
+revoke execute on function public.cradle_is_admin(), public.cradle_admin_check() from anon, authenticated, public;
+
 -- Record this run for the status page (/status/; see 5-status.sql)
 create table if not exists public.cradle_schema_log (script text not null, version text not null, applied_at timestamptz not null default now());
 alter table public.cradle_schema_log enable row level security;
-insert into public.cradle_schema_log (script, version) values ('2-family.sql', '1.25');
+insert into public.cradle_schema_log (script, version) values ('2-family.sql', '1.31');

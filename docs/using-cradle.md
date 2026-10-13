@@ -293,14 +293,36 @@ The round button at the top right:
 | **🧊 Milk storage** | Pumped milk in the fridge and freezer, oldest first. Shows how much is stored. See [Milk storage](#milk-storage). |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
 | **Fun center** | Bottle Catch, Daily Word, Stork Flight, and their high scores. See [Fun center](#fun-center). |
-| **Achievements** | Fifty-three badges with progress, in eight groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, and Fun center. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
+| **Achievements** | Fifty-five badges with progress, in nine groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, Fun center, and Support. Support badges (*Quality Assurance* and *Compliance Officer*) count your feedback that has been reviewed. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, wet and stool diapers per day, and tummy time minutes per day |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
-| **Guide / About** (one row) | In-app help, version, and changelog |
+| **Guide / About / Support** (one row) | In-app help; version and changelog; and [Support](#support) for sending feedback. A number on Support means there's an update on your feedback (or, for admins, new feedback). |
 | **☕ Buy me a coffee** | Shown only if whoever runs your Cradle set a donation link. It's also in About. |
 | **Install app** | Shown when your browser can install Cradle |
 | **Sign-in and security** | **Change password**, and two-step sign-in: a 6-digit code from an authenticator app after your password. Shows **On** when it's on. See [Two-step sign-in](accounts-and-families.md#two-step-sign-in). |
 | **Sign out** | Signs you out. The log stays on this phone for next time. |
+
+### Support
+
+Tap **💬 Support** in the profile menu to tell whoever runs your Cradle about a problem, an idea, or a question. You need to be signed in.
+
+- **Kind:** **Bug or problem**, **Idea or request**, or **Question**. The box's hint changes to match (for a bug: what happened, and what you expected).
+- **Screenshot (optional):** **Add a screenshot** shrinks it on your phone (to at most 1280 pixels, as a JPEG) before it's sent. **Remove** takes it off.
+- **Sent with it:** your Cradle version, phone type and browser, whether it's installed, the screen size, and your account and family, so the problem can be reproduced. The form shows exactly what's included.
+- **Your feedback** lists what you've sent with its status and any reply:
+
+  | Status | Meaning |
+  |---|---|
+  | **New** | Not looked at yet |
+  | **Reviewed** | Read and considered |
+  | **Planned** | Going to be done |
+  | **Used** | Done, or the answer was given |
+  | **Won't do** | Read, but not planned |
+
+- **Achievements:** feedback marked anything other than New counts as reviewed (Won't do counts too). The first earns **Quality Assurance**; five earn **Compliance Officer**.
+- Up to 10 a day per account.
+
+**Admins** (see [Making someone an admin](deployment.md#support-admins)) also see a **Feedback inbox** button with the number of new ones. The inbox shows each item with who sent it, their family, version, and device; filter by status, load the screenshot, type a reply, and tap a status to save both. Two-step sign-in is required for admins who have it on.
 
 ### Your picture
 

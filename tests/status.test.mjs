@@ -75,7 +75,7 @@ await p.click('#depMore');await p.waitForTimeout(600);ok('then the last 5, and t
 ok('older ones have their test results too',(await p.$$eval('#deploys tr.dep',rs=>rs.filter(r=>/Passed|failure/.test(r.textContent)).length))===25);
 await p.click('#depLess');await p.waitForTimeout(300);ok('Show fewer goes back to 10',(await p.$$('#deploys tr.dep')).length===10);
 
-ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.25/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.29/.test(await txt('#dbSchema')));
+ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.31/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.29/.test(await txt('#dbSchema')));
 ok('no policy violations',(await p.evaluate(()=>window.__v)).length===0,(await p.evaluate(()=>window.__v)).join(' | '));
 await p.screenshot({path:OUT+'status.png',fullPage:true});
 // a failed latest check and a failing test run show up in the banner

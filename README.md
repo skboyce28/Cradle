@@ -38,10 +38,11 @@ Nurse, bottle, pump, diapers, Vitamin D, baths, and tummy time, shared live betw
 | **Weighted feeds** | Before and after weights on a feed, in grams or lb and oz, with the estimated transfer (1 g ≈ 1 mL). |
 | **Weights** | A list of every weight to review, edit, or delete, and a chart against birth weight. |
 | **Milk storage** | Pumped milk in the fridge and freezer, oldest first, with CDC age limits flagged. Thaw, freeze, or use a container (it can log the bottle feed). Optional labels: type them, scan barcodes, or print Cradle's own. |
-| **Achievements** | Fifty-three badges in eight groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
+| **Achievements** | Fifty-five badges in nine groups, with starred higher tiers, like a 7-, 14-, and 30-day Vitamin D streak. |
 | **Learning center** | High-contrast black-and-white cards to show your baby during calm, awake moments, full screen, with invert and auto-advance. |
 | **Profile pictures** | A photo or a built-in picture (silhouettes and animals) for each person, shown on the profile button and the Family screen. Each person chooses who sees it: only them, their family, or everyone on the Cradle (also on the high-score boards). |
 | **Fun center** | **Bottle Catch**: a two-minute, one-thumb arcade game. **Daily Word**: a new word every day to guess in 6 tries, at 4, 5, or 6 letters (each person picks), with hard mode, streaks, and practice. **Stork Flight**: tap to flap a stork through the clouds and chimneys over a sleeping town, with stars and deliveries. All three have high scores (3 initials) for everyone, your family, and you. |
+| **Support** | 💬 in the profile menu: send a bug, idea, or question with an optional screenshot, and see its status and reply. Admins get a Feedback inbox in the app. Reviewed feedback earns two achievements. |
 | **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs within about 15 seconds. Join with a share key like `K7QM-4XPD`. |
 | **Two-step sign-in** | Optional 6-digit codes from an authenticator app after the password. The family owner can require it for everyone, and the database enforces it. |
 | **Works offline** | Every phone keeps its own copy and catches up when it reconnects. Installs to the home screen like an app. |

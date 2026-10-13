@@ -47,7 +47,7 @@ How Cradle is deployed today, what each piece does, how to run it day to day, an
 Built by these scripts, all safe to rerun in any order:
 
 1. [`supabase/1-setup.sql`](../supabase/1-setup.sql): the log table.
-2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, share keys, Fun center high scores, and the security rules.
+2. [`supabase/2-family.sql`](../supabase/2-family.sql): families, share keys, Fun center high scores, Support feedback, and the security rules.
 3. Optional, for [notifications](notifications.md): [`supabase/3-notifications.sql`](../supabase/3-notifications.sql) (tables and functions) and [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql) (the every-minute job), plus the [`cradle-notify`](../supabase/functions/cradle-notify/index.ts) Edge Function.
 4. Optional, for the [status page](#status-page): [`supabase/5-status.sql`](../supabase/5-status.sql) (`cradle_status()` and the uptime and schema-history tables) and [`supabase/6-status-schedule.sql`](../supabase/6-status-schedule.sql) (checks the site every 5 minutes).
 
@@ -65,6 +65,8 @@ Each script except 4 adds a row to `cradle_schema_log` (script, version, time) w
 | `cradle_players` | `user_id` · `initials` · `updated_at` | Each account's 3 initials for the high-score boards |
 | `cradle_profiles` | `user_id` · `kind` · `preset` · `photo` · `visibility` · `updated_at` | Profile pictures. `photo` is a small JPEG data URL (at most 16,000 characters). Only readable through `cradle_my_profile`, `cradle_family_pics`, and the boards, which apply `visibility`. |
 | `cradle_scores` | `id` · `user_id` · `household_id` · `game` · `initials` · `score` · `seconds` · `created_at` · `day` · `detail` | Fun center scores. `seconds` is the round or flight length (up to an hour). `game` is `bottles` (Bottle Catch), `stork` (Stork Flight), or `word` (Daily Word, with its `day` and the grid as colors in `detail`; one per account per day). Only readable through `cradle_scores_board` and `cradle_word_board`, which show initials, scores, and colors only. |
+| `cradle_feedback` | `id` · `user_id` · `household_id` · `kind` · `body` · `screenshot` · `app_version` · `device` · `status` · `reply` · `created_at` · `updated_at` · `reviewed_at` · `reviewed_by` | Support feedback. `kind` is `bug`, `idea`, or `question`; `status` is `new`, `reviewed`, `planned`, `used`, or `wontdo`. `body` is 3 to 4,000 characters, `reply` at most 2,000, `screenshot` an image data URL under 400,000 characters. Only reachable through the Support functions. |
+| `cradle_admins` | `user_id` · `added_at` | Accounts that see the Feedback inbox. Added only in the SQL Editor (see [Support admins](#support-admins)). |
 | `cradle_push_subs` | `endpoint` · `user_id` · `household_id` · `p256dh` · `auth` · `tz` · `lead_min` · `last_sent_due` · `fails` | Optional. One row per phone with notifications on. No app access; changed only through `cradle_push_subscribe` and `cradle_push_unsubscribe`. |
 | `cradle_push_keys` | `public_key` · `private_jwk` | Optional. The notification (VAPID) key pair, made by the function on its first run. Only the service role can read it. |
 
@@ -111,6 +113,7 @@ Each script except 4 adds a row to `cradle_schema_log` (script, version, time) w
 | 25, 26 | Profile pictures: who has one and who can see it; remove someone's photo |
 | 27, 28 | Two-step sign-in: reset someone's (lost phone); who uses it and which families require it |
 | 29, 30 | Status page: the latest uptime checks; turn the checks off |
+| 31 to 34 | Support: make someone an admin, list admins, remove an admin, read the feedback (with sender and family) |
 
 Queries that change data are marked **CHANGES DATA**.
 
@@ -120,6 +123,20 @@ The one used most so far, confirming an account created while email confirmation
 update auth.users set email_confirmed_at = now()
 where email = 'their@email.com' and email_confirmed_at is null;
 ```
+
+### Support admins
+
+Feedback sent from **💬 Support** goes to the accounts in `cradle_admins`. They see a **Feedback inbox** in the app (Support, then Feedback inbox) with each item's sender, family, version, and device; they set a status and an optional reply, which the sender sees. If an admin uses two-step sign-in, the inbox needs the code step too.
+
+Make yourself an admin (admin query 31) in the SQL Editor after running `2-family.sql`:
+
+```sql
+insert into public.cradle_admins (user_id)
+select id from auth.users where email = 'you@example.com'
+on conflict do nothing;
+```
+
+Accounts made with a username have the email `username@cradle.cfg`. Nobody can add an admin from the app.
 
 ### Backups and limits
 

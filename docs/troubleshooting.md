@@ -164,6 +164,18 @@ An admin can remove that day's result with query 20c in [`supabase/admin-queries
 **Everyone in the family got a different word**
 The word depends on the length you picked (4, 5, or 6) and the phone's date. Pick the same length to get the same word. Around midnight, phones in different time zones can be a day apart.
 
+## Support
+
+**Support says to sign in first.** Feedback is saved in your Cradle's database, so it needs an account.
+
+**"That's 10 today."** Each account can send 10 a day. Try again tomorrow, or add to one you sent.
+
+**The screenshot won't add.** Choose an image (PNG, JPEG, or similar). Very large screenshots are shrunk on the phone; if it still says it's too big, crop it first.
+
+**I don't see a Feedback inbox.** Only admins do. Whoever runs the Supabase project adds them with admin query 31 (see [Support admins](deployment.md#support-admins)). If you just became an admin, close Support and open it again. If you use two-step sign-in, finish the code step first.
+
+**No achievement yet.** Quality Assurance comes when an admin marks your feedback anything but New. Support refreshes about every 10 minutes and whenever you open it.
+
 ## Updates
 
 **A phone is stuck on an old version**

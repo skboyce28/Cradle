@@ -243,3 +243,29 @@ select at, ok, code, ms, err from public.cradle_probes order by at desc limit 20
 
 -- 30. CHANGES DATA. Turn the uptime checks off (the history stays)
 select cron.unschedule('cradle-status-probe');
+
+
+-- ============================================================
+-- Support feedback (v1.31; after 2-family.sql)
+-- ============================================================
+
+-- 31. CHANGES DATA. Make someone an admin: they see the Feedback inbox under Support.
+--     Accounts made with a username have the email username@cradle.cfg.
+insert into public.cradle_admins (user_id)
+select id from auth.users where email = 'you@example.com'
+on conflict do nothing;
+
+-- 32. Who is an admin
+select u.email, a.added_at from public.cradle_admins a join auth.users u on u.id = a.user_id;
+
+-- 33. CHANGES DATA. Remove an admin
+delete from public.cradle_admins
+where user_id = (select id from auth.users where email = 'their@email.com');
+
+-- 34. Read the feedback, newest first, with the sender and their family
+select f.created_at, f.kind, f.status, u.email, h.name as family, f.app_version, f.device,
+       f.screenshot is not null as has_screenshot, f.body, f.reply
+from public.cradle_feedback f
+left join auth.users u on u.id = f.user_id
+left join public.cradle_households h on h.id = f.household_id
+order by f.created_at desc limit 50;

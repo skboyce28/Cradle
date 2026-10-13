@@ -79,6 +79,8 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | `cradle_players` | Each account's 3 initials for the high-score boards |
 | `cradle_profiles` | Each account's picture: `default` (the letter), a built-in `preset`, or a `photo` (a small JPEG as a data URL, at most 16,000 characters), and who may see it (`me`, `family`, or `everyone`) |
 | `cradle_scores` | Fun center scores: account, family at the time, game (`bottles`, `word`, or `stork`), initials, score, round length in seconds, and for Daily Word the day and the grid as colors only (like `5h:01200/22222`: 5 letters, hard mode, 0 gray, 1 yellow, 2 green). One Daily Word result per account per day. |
+| `cradle_feedback` | Support feedback: who sent it and their family at the time, kind (`bug`, `idea`, `question`), the text, an optional screenshot (a JPEG data URL), app version and device, and the review: `status` (`new`, `reviewed`, `planned`, `used`, `wontdo`), `reply`, and when and by whom it was reviewed |
+| `cradle_admins` | Accounts that may read and review feedback. Only added in the SQL Editor. |
 | `cradle_schema_log`, `cradle_probes`, `cradle_status_config` | Optional, from `5-status.sql`: which scripts ran and when, uptime checks, and the site address to check. No direct access from the app. See [the status page](deployment.md#status-page). |
 | `cradle_push_subs`, `cradle_push_keys` | Optional, from `3-notifications.sql`: phones that get feed-due notifications, and the notification keys. See [Notifications](notifications.md#how-it-works). |
 
@@ -91,7 +93,7 @@ Every table has row-level security on.
 - **`cradle_items`:** you can read and write a row only if its `household_id` is one of your families, via `cradle_my_households()`. You also can't write a row into a family you're not in.
 - **Two-step sign-in on `cradle_items`:** a second, *restrictive* rule (both must pass) calls `cradle_mfa_ok(household_id)`. It passes when the sign-in finished the code step (`aal2` in the token), or when the account doesn't use two-step sign-in and its family doesn't require it. So a password-only sign-in of someone who uses it, or of anyone in a family that requires it, sees no rows and can't write any.
 - **Families, members, invites:** you can only *read* rows for your own families. You can't write them directly at all.
-- **`cradle_join_tries`, `cradle_players`, `cradle_scores`, `cradle_profiles`:** no direct access from the app; only through the functions below.
+- **`cradle_join_tries`, `cradle_players`, `cradle_scores`, `cradle_profiles`, `cradle_feedback`, `cradle_admins`:** no direct access from the app; only through the functions below.
 
 All changes to families go through these functions, which check permissions themselves and are callable only by signed-in users:
 
@@ -115,6 +117,10 @@ All changes to families go through these functions, which check permissions them
 | `cradle_submit_score(score, seconds, initials, game)` | anyone signed in | Posts a Bottle Catch (`bottles`) or Stork Flight (`stork`) score. Refuses Bottle Catch rounds over 130 seconds or more than 100 points per second played, Stork Flight flights over an hour or more than 40 points per second, posting within 10 seconds of your last score, more than 200 scores a day, and initials on a short blocklist. |
 | `cradle_word_board(day)` | anyone signed in | Daily Word boards: Everyone (total points, top 10, with current streak), Our family (totals and each person's grid for that day), My days (your last 10), plus your totals and rank. Only initials, points, and colors. |
 | `cradle_submit_word(day, len, rows, hard, initials)` | anyone signed in | Posts a Daily Word result. Works out the points itself (70 for 1 guess down to 20 for 6, +10 hard, 0 if not solved), checks the grid is possible (1 to 6 rows of the right length, solved only on the last row, 6 rows if not solved) and that the day is within a day of today, and takes one result per account per day. |
+| `cradle_submit_feedback(kind, body, screenshot, version, device)` | anyone signed in | Sends Support feedback, recording the family you're in. Refuses other kinds, text under 3 or over 4,000 characters, a screenshot that isn't an image data URL or is over 400,000 characters, and more than 10 a day. |
+| `cradle_my_feedback()` | anyone signed in | Your last 50 with status and reply (the screenshot only as yes/no), whether you're an admin, and for admins the number of new ones |
+| `cradle_feedback_inbox(status)`, `cradle_feedback_shot(id)`, `cradle_feedback_review(id, status, reply)` | admins (with the code step if they use two-step sign-in) | The inbox (everyone's feedback with email, family, and counts by status, filtered by status); one screenshot; set the status and reply. Setting it back to New clears the review. |
+| `cradle_is_admin()`, `cradle_admin_check()` | used inside the functions above only | Whether the caller is in `cradle_admins`; the check that refuses everyone else |
 | `cradle_status()` | anyone, without signing in | Counts and health for the status page: schema history, database size, families in use (the one each account currently opens) and how many are shared, accounts, entries, the notification job's last 24 hours, and uptime. No names, emails, or entries. |
 | `cradle_probe()`, `cradle_status_set_site(url)` | the schedule only | Records and starts uptime checks; sets the site address |
 | `cradle_push_info(endpoint)` | anyone signed in | Optional notifications: the public notification key, and this phone's setting |

@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.31
+
+**Support**
+- **💬 Support** in the profile menu (next to Guide and About): send a **Bug or problem**, an **Idea or request**, or a **Question**, with an optional screenshot (shrunk on the phone to at most 1280 pixels, as a JPEG). The Cradle version, phone type, browser, installed or not, screen size, account, and family go with it, and the form shows exactly what's included
+- **Your feedback** lists what you've sent with its status (New, Reviewed, Planned, Used, or Won't do) and any reply. A number on Support means there's an update
+- **Feedback inbox for admins:** accounts in the new `cradle_admins` table see the number of new ones on Support and an inbox to filter by status, read the sender, family, version, and device, load the screenshot, and set a status with a short reply. Admins who use two-step sign-in need the code step
+- **Two achievements** in a new Support group (55 in all): **Quality Assurance** (feedback that gets reviewed; Won't do counts) and **Compliance Officer** (five reviewed)
+- **Database** (`2-family.sql`, rerun it): tables `cradle_feedback` and `cradle_admins`, and the functions `cradle_submit_feedback`, `cradle_my_feedback`, `cradle_feedback_inbox`, `cradle_feedback_shot`, and `cradle_feedback_review`. No direct access to either table; 10 a day per account; text, reply, and screenshot sizes are limited. Admins are added in the SQL Editor (admin query 31)
+- New test: `tests/support.test.mjs` (26 checks)
+
 ## v1.30
 
 **Tummy time**
