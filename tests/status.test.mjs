@@ -74,6 +74,17 @@ await p.click('#depMore');await p.waitForTimeout(600);ok('Show 10 older: 20',(aw
 await p.click('#depMore');await p.waitForTimeout(600);ok('then the last 5, and the button goes away',(await p.$$('#deploys tr.dep')).length===25&&/\(all of them\)/.test(await txt('#deploys'))&&!(await p.isVisible('#depMore'))&&/Older change 23/.test(await txt('#deploys')));
 ok('older ones have their test results too',(await p.$$eval('#deploys tr.dep',rs=>rs.filter(r=>/Passed|failure/.test(r.textContent)).length))===25);
 await p.click('#depLess');await p.waitForTimeout(300);ok('Show fewer goes back to 10',(await p.$$('#deploys tr.dep')).length===10);
+// a link to one deployment
+await ctx.grantPermissions(['clipboard-read','clipboard-write'],{origin:SITE});
+await p.click('#d-0f9e8d7 .deplink');await p.waitForTimeout(300);
+ok('🔗 on a row: the address points at it, it’s highlighted, and the link is copied',p.url().endsWith('/status/#d-0f9e8d7')&&(await p.$$('#deploys tr.target')).length===1&&await p.$eval('#deploys tr.target',r=>r.id)==='d-0f9e8d7'&&(await p.evaluate(()=>navigator.clipboard.readText())).endsWith('/status/#d-0f9e8d7'));
+const lp=await ctx.newPage();lp.on('pageerror',e=>errs.push(e.message));await lp.goto(SITE+'/status/#d-2020202');await lp.waitForTimeout(2500);
+const tr=await lp.$('#deploys tr.target');
+ok('opening a link to an older deployment loads older pages until it’s there, then scrolls to it',tr&&await tr.getAttribute('id')==='d-2020202'&&/Older change 21/.test(await tr.innerText())&&(await lp.$$('#deploys tr.dep')).length===30-5&&await tr.isVisible()&&await lp.evaluate(()=>{const r=document.querySelector('#deploys tr.target').getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight}));
+await lp.screenshot({path:OUT+'status-link.png'});
+await lp.goto(SITE+'/status/#d-1234567');await lp.reload();await lp.waitForTimeout(2500);
+ok('a link to a commit that isn’t there says so',/Deployment 1234567 isn’t in main’s history/.test((await lp.innerText('#deploys')))&&(await lp.$$('#deploys tr.target')).length===0);
+await lp.close();
 
 ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.31/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.29/.test(await txt('#dbSchema')));
 ok('no policy violations',(await p.evaluate(()=>window.__v)).length===0,(await p.evaluate(()=>window.__v)).join(' | '));

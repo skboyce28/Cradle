@@ -46,7 +46,7 @@ Nurse, bottle, pump, diapers, Vitamin D, baths, and tummy time, shared live betw
 | **Family sharing** | Everyone signs in with their own account; a family shares one log that syncs within about 15 seconds. Join with a share key like `K7QM-4XPD`. |
 | **Two-step sign-in** | Optional 6-digit codes from an authenticator app after the password. The family owner can require it for everyone, and the database enforces it. |
 | **Works offline** | Every phone keeps its own copy and catches up when it reconnects. Installs to the home screen like an app. |
-| **Status page** | `/status/` shows whether the site and database are up, 90 days of uptime, what's deployed, and recent deployments with their test results. Counts only, nothing personal. |
+| **Status page** | `/status/` shows whether the site and database are up, 90 days of uptime, what's deployed, and recent deployments with their test results, each with its own link. Counts only, nothing personal. |
 | **Your data, your database** | Sync runs through **your own** free Supabase project. No analytics, no ads, no third-party scripts. Export to a file or a text message at any time. |
 
 Diaper goals follow the baby's day of life: 1 wet and 1 stool on the birth day (Day 0), then the day number on days 1 to 5, then at least 4 of each per day. All goals can be changed in Settings.

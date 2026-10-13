@@ -1,5 +1,12 @@
 # Changelog
 
+## Status page: a link to each deployment
+
+No change to the app.
+- **🔗** next to each deployment's commit links straight to it (`/status/#d-` plus the first 7 characters of the commit, like `/status/#d-b74d1d0`) and copies the link
+- Opening a link loads older deployments as needed (up to 20 pages), then outlines that row and scrolls to it. A commit that isn't in `main`'s history says so
+- `tests/status.test.mjs`: 3 new checks (33)
+
 ## v1.31
 
 **Support**

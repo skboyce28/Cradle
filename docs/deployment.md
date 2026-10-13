@@ -173,7 +173,7 @@ Accounts made with a username have the email `username@cradle.cfg`. Nobody can a
 | Part | Comes from | Needs |
 |---|---|---|
 | Live version | `/version.json`, written by the build (version, commit, deploy time, branch, context) | Nothing |
-| Deployments | The public GitHub API: commits on `main`, 10 at a time (**Show 10 older** goes back through the whole history, **Show fewer** returns to 10), each with its GitHub Actions test run. The repository comes from Netlify's `REPOSITORY_URL` (or `REPOSITORY_URL` in `.env`) | Nothing. GitHub allows 60 requests an hour per visitor without signing in; the page makes 2 every 5 minutes, plus 1 or 2 for each Show 10 older |
+| Deployments | The public GitHub API: commits on `main`, 10 at a time (**Show 10 older** goes back through the whole history, **Show fewer** returns to 10), each with its GitHub Actions test run. **🔗** next to a commit links to that deployment (`/status/#d-` plus the first 7 characters of the commit, like `/status/#d-b74d1d0`) and copies the link; opening it loads older pages until that deployment shows, then outlines it and scrolls to it. A commit that isn't on `main` says so. The repository comes from Netlify's `REPOSITORY_URL` (or `REPOSITORY_URL` in `.env`) | Nothing. GitHub allows 60 requests an hour per visitor without signing in; the page makes 2 every 5 minutes, plus 1 or 2 for each Show 10 older |
 | Database, notifications, schema history | `cradle_status()`, called without signing in (as Supabase's anon role) | `5-status.sql` |
 | Uptime | A pg_cron job asks the site for `/version.json` every 5 minutes through pg_net; the next run records the answer. Response times are approximate | `6-status-schedule.sql`, with your site's address |
 

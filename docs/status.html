@@ -69,6 +69,8 @@ tr:last-child td{border-bottom:0}
 tr.islive td{background:var(--good-soft)}
 .tbl{overflow-x:auto}
 .tbl table{min-width:560px}
+.deplink{margin-left:6px;text-decoration:none;opacity:.55;font-size:13px}.deplink:hover,.deplink:focus{opacity:1}
+tr.target td{box-shadow:inset 0 2px 0 var(--accent),inset 0 -2px 0 var(--accent)}tr.target td:first-child{box-shadow:inset 2px 2px 0 var(--accent),inset 0 -2px 0 var(--accent)}tr.target td:last-child{box-shadow:inset -2px 2px 0 var(--accent),inset 0 -2px 0 var(--accent)}
 .msg{max-width:52ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bar{height:10px;border-radius:999px;background:var(--panel2);overflow:hidden;margin:6px 0 2px}
 .bar i{display:block;height:100%;background:var(--accent);border-radius:999px}
@@ -156,6 +158,17 @@ async function ghLoad(){
   if(!runs.err)GH.runPage=1;
   if(!commits.err&&commits.r.length<PAGE)GH.more=false;GH.at=Date.now();
 }
+// A link to one deployment: /status/#d-<commit>. Older pages load until it's found (up to 20 pages).
+const TARGET={sha:'',done:false,missing:false,tries:0};
+function setTarget(){const m=location.hash.match(/^#d-([0-9a-f]{7,40})$/i);TARGET.sha=m?m[1].toLowerCase():'';TARGET.done=false;TARGET.missing=false;TARGET.tries=0}
+setTarget();addEventListener('hashchange',()=>{setTarget();render()});
+function goTarget(C,all){
+  if(!TARGET.sha||TARGET.done)return;
+  const i=all.findIndex(c=>c.sha.startsWith(TARGET.sha));
+  if(i>=C.length){GH.shown=Math.ceil((i+1)/PAGE)*PAGE;return setTimeout(render)}
+  if(i>=0){TARGET.done=true;const row=document.getElementById('d-'+all[i].sha.slice(0,7));if(row)setTimeout(()=>row.scrollIntoView({block:'center'}));return}
+  if(GH.more&&!GH.busy&&TARGET.tries<20){TARGET.tries++;return ghOlder()}
+  if(!GH.more||TARGET.tries>=20){TARGET.done=true;TARGET.missing=true;setTimeout(render)}}
 // Older deployments, 10 at a time; more test runs are fetched when the shown commits go past them
 async function ghOlder(){
   if(GH.busy||!GH.more)return;GH.busy=true;$('#depMore').disabled=true;
@@ -235,10 +248,14 @@ function render(){
     $('#deploys').innerHTML=`<table><thead><tr><th>When</th><th>Change</th><th>Commit</th><th>GitHub Actions tests</th></tr></thead><tbody>${C.map(c=>{const r=runBy[c.sha],isLive=sha&&c.sha.startsWith(sha.slice(0,7));
       const t=!r?'<span class="sub">--</span>':r.status!=='completed'?'<span class="pill warn">Running</span>':r.conclusion==='success'?`<span class="pill ok">Passed</span> <span class="sub">${dur(r.run_started_at,r.updated_at)}</span>`:`<span class="pill bad">${esc(r.conclusion||'failed')}</span>`;
       const msg=(c.commit&&c.commit.message||'').split('\n')[0];
-      return `<tr class="dep${isLive?' islive':''}"><td class="num" style="white-space:nowrap">${esc(when(c.commit&&c.commit.author&&c.commit.author.date))}</td><td><div class="msg" title="${esc(msg)}">${esc(msg)}</div>${isLive?'<span class="pill ok" style="margin-top:4px">Live now</span>':''}</td><td><a class="mono" href="${esc(c.html_url)}" target="_blank" rel="noopener">${esc(c.sha.slice(0,7))}</a></td><td>${t}</td></tr>`}).join('')}</tbody></table>
+      const id='d-'+c.sha.slice(0,7),tgt=TARGET.sha&&c.sha.startsWith(TARGET.sha);
+      return `<tr class="dep${isLive?' islive':''}${tgt?' target':''}" id="${id}"><td class="num" style="white-space:nowrap">${esc(when(c.commit&&c.commit.author&&c.commit.author.date))}</td><td><div class="msg" title="${esc(msg)}">${esc(msg)}</div>${isLive?'<span class="pill ok" style="margin-top:4px">Live now</span>':''}</td><td><a class="mono" href="${esc(c.html_url)}" target="_blank" rel="noopener">${esc(c.sha.slice(0,7))}</a><a class="deplink" href="#${id}" title="Link to this deployment" aria-label="Link to deployment ${esc(c.sha.slice(0,7))}">🔗</a></td><td>${t}</td></tr>`}).join('')}</tbody></table>
       <div class="depnav"><span class="sub">Showing the ${C.length===1?'latest deployment':C.length+' most recent deployments'}${!GH.more&&C.length===all.length?' (all of them)':''}</span>
         ${GH.more||C.length<all.length?`<button type="button" id="depMore">Show ${PAGE} older</button>`:''}${C.length>PAGE?'<button type="button" id="depLess">Show fewer</button>':''}
-        ${GH.err?`<span class="sub">${esc(GH.err)}</span>`:''}</div>`;
+        ${GH.err?`<span class="sub">${esc(GH.err)}</span>`:''}${TARGET.missing?`<span class="sub" id="depMissing">Deployment ${esc(TARGET.sha.slice(0,7))} isn’t in main’s history.</span>`:''}</div>`;
+    $('#deploys').querySelectorAll('.deplink').forEach(a=>a.onclick=e=>{e.preventDefault();const u=location.href.split('#')[0]+a.getAttribute('href');history.replaceState(null,'',a.getAttribute('href'));setTarget();render();
+      if(navigator.clipboard)navigator.clipboard.writeText(u).then(()=>{a.textContent='✓ Copied';setTimeout(()=>{a.textContent='🔗'},1500)},()=>{})});
+    goTarget(C,all);
     const mb=$('#depMore');if(mb)mb.onclick=()=>{GH.err='';if(C.length<all.length){GH.shown+=PAGE;render()}else ghOlder()};
     const lb=$('#depLess');if(lb)lb.onclick=()=>{GH.shown=PAGE;render();$('#h-dep').scrollIntoView({block:'start'})};
   }else $('#deploys').innerHTML=`<div class="note">${commits.err&&commits.err.code===403?'GitHub’s hourly limit for this connection was reached, so the history is hidden for now.':'Deployment history comes from GitHub and isn’t available right now.'}</div>`;
