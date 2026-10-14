@@ -157,6 +157,7 @@ Accounts made with a username have the email `username@cradle.cfg`. Nobody can a
 | Publish directory | `pwa` |
 | Environment variables | `CRADLE_SUPABASE_URL` and `CRADLE_SUPABASE_KEY` (the **publishable** key); optional `CRADLE_DONATE_URL` for the Buy me a coffee button |
 | Headers | Written by the build to `pwa/_headers`, which Netlify applies (below) |
+| Secret scanning | On. `netlify.toml` allows only the Owlet app identifiers in `supabase/functions/cradle-owlet/index.ts`, which smart detection mistakes for secrets (see [Owlet troubleshooting](owlet.md#troubleshooting)) |
 
 **Headers on the hosted site:**
 - **Security headers on every response:**

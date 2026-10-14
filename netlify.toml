@@ -8,4 +8,13 @@
   # "test" job succeeds, then the workflow's deploy job starts the build through a build hook.
   ignore = "python3 ./tools/netlify_ignore.py"
 
+# Netlify's secret scanning flags the Owlet app identifiers in the cradle-owlet Edge Function
+# (Google-style API keys and Ayla app IDs). They aren't secrets: they're built into Owlet's app and
+# published in the open-source pyowletapi library. The function runs on Supabase, not Netlify, and
+# isn't in the published site. Only these exact values and that one file are allowed; scanning stays
+# on for everything else, including your environment variables. See docs/owlet.md.
+[build.environment]
+  SECRETS_SCAN_OMIT_PATHS = "supabase/functions/cradle-owlet/index.ts"
+  SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES = "AIzaSyCsDZ8kWxQuLJAMVnmEhEkayH1TSxKXfGA,AIzaSyDm6EhV70wudwN3iOSq3vTjtsdGjdFLuuM,sso-prod-UEjtnPCtFfjdwIwxqnC0OipxRFU,OwletCare-Android-EU-JKupMPBoj_Npce_9a95Pc8Qo0Mw"
+
 # Security and cache headers are written to pwa/_headers by build_pwa.py.

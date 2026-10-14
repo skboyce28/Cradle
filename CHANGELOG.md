@@ -1,5 +1,9 @@
 # Changelog
 
+## Netlify build fix (no app change)
+
+- v1.33's Netlify builds failed with **Exposed secrets detected**: Netlify's smart secret scanning flagged the Owlet app identifiers (Google-style API keys and Ayla app IDs) in the `cradle-owlet` Edge Function, so v1.33 and v1.34 never went live. They're public values built into Owlet's app, and the function runs on Supabase, not in the published site. `netlify.toml` now allows exactly those four values and that one file (`SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES`, `SECRETS_SCAN_OMIT_PATHS`); scanning stays on for everything else
+
 ## v1.34
 
 **Sleep and Dream Sock setup**

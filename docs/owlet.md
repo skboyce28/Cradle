@@ -125,6 +125,8 @@ To stop it for everyone: `select cron.unschedule('cradle-owlet');`. To remove it
 
 **"That Owlet email or password isn't right."** Use the email and password for Owlet's app. If you sign in to Owlet with Google or Apple, set a password in Owlet's app first. Check the region: European accounts need **Europe**.
 
+**Netlify's build fails with "Exposed secrets detected".** Netlify's smart secret scanning flags the Owlet app identifiers in `supabase/functions/cradle-owlet/index.ts`. They're public (built into Owlet's app), and `netlify.toml` allows exactly those values and that file, with scanning left on for everything else. If Owlet's identifiers ever change, update both the function and `netlify.toml`.
+
 **"This Cradle isn't set up for Owlet yet."** Steps 1 to 3 above haven't been done, or the function has a different name than `cradle-owlet`.
 
 **"Owlet signed Cradle out. Connect the sock again."** Owlet no longer accepts the saved sign-in, usually after a password change. Enter the email and password again in Settings.
