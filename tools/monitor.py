@@ -98,8 +98,9 @@ def main():
                     problems.append(f"{o['stale']} not read in 10+ min")
                 if o.get('reconnect'):
                     problems.append(f"{o['reconnect']} need connecting again")
+                paused = f"; {o['paused']} paused (family stopped requiring two-step sign-in)" if o.get('paused') else ''
                 check('Owlet checks', not problems,
-                      '; '.join(problems) if problems else f"{o['connected']} connected, last reading {age:.0f} min ago" if age is not None else 'connected')
+                      ('; '.join(problems) if problems else f"{o['connected']} connected, last reading {age:.0f} min ago" if age is not None else 'connected') + paused)
         except urllib.error.HTTPError as e:
             check('Database answers', e.code == 404, f'HTTP {e.code}' + (' (5-status.sql not run; skipped)' if e.code == 404 else ''))
         except Exception as e:

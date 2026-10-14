@@ -220,6 +220,7 @@ function render(){
       let k={k:'ok',t:'Operational'};
       if(!sched)k=n?{k:'warn',t:'Not scheduled'}:{k:'',t:'Not scheduled'};
       else if(!n)k={k:'',t:'No socks connected'};
+      else if(o.paused&&o.paused>=n)k={k:'warn',t:'Paused'};
       else if(o.stale)k={k:'warn',t:'Checks behind'};
       else if(o.reconnect||o.errors)k={k:'warn',t:'Degraded'};
       const parts=[n?`${n} sock${n>1?'s':''} connected`:'No socks connected yet'];
@@ -227,6 +228,7 @@ function render(){
       if(sched&&rr.runs)parts.push(`every-minute job: ${rr.ok} of ${rr.runs} runs OK in 24 h`);
       if(!sched)parts.push('the schedule is missing: run supabase/8-owlet-schedule.sql');
       if(o.stale)parts.push(`${o.stale} not read in 10+ min`);
+      if(o.paused)parts.push(`${o.paused} paused (the family stopped requiring two-step sign-in)`);
       if(o.reconnect)parts.push(`${o.reconnect} need${o.reconnect>1?'':'s'} connecting again`);
       if(o.errors)parts.push(`${o.errors} with an Owlet error`);
       comps.push({name:'Owlet sleep',pill:k,detail:parts.join(' · ')})}}

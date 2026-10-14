@@ -9,6 +9,8 @@
 --   - The app can't read this table at all. It sees only the sock's name, whether the baby is
 --     asleep or awake, and when it was last checked, through cradle_owlet_status().
 --   - Heart rate and oxygen are never read into, or stored in, Cradle.
+--   - Only families that require two-step sign-in can connect a sock (v1.36). If the owner turns
+--     that off later, checks pause (the token stays) until it's back on.
 --   - Owlet has no public API; this uses the same calls as Owlet's app (as the open-source
 --     pyowletapi library does), so it can stop working if Owlet changes them.
 
@@ -48,12 +50,15 @@ alter table public.cradle_owlet_tries enable row level security;
 -- What the app may see (members of the family)
 create or replace function public.cradle_owlet_status(p_h uuid) returns json
 language plpgsql stable security definer set search_path = public as $$
-declare r cradle_owlet;
+declare r cradle_owlet; req boolean;
 begin
   if not exists (select 1 from cradle_members where household_id = p_h and user_id = auth.uid()) then raise exception 'not a member'; end if;
+  req := coalesce((select require_mfa from cradle_households where id = p_h), false);
   select * into r from cradle_owlet where household_id = p_h;
-  if not found then return json_build_object('connected', false); end if;
-  return json_build_object('connected', true, 'sock', r.sock_name, 'account', r.account_hint, 'region', r.region,
+  if not found then return json_build_object('connected', false, 'family_mfa', req); end if;
+  -- the sock's state is the baby's, like the log: only for sign-ins that pass the family's rule
+  if not cradle_mfa_ok(p_h) then return json_build_object('connected', true, 'locked', true, 'family_mfa', req, 'paused', not req); end if;
+  return json_build_object('connected', true, 'family_mfa', req, 'paused', not req, 'sock', r.sock_name, 'account', r.account_hint, 'region', r.region,
     'state', r.state, 'since', r.state_since, 'battery', r.battery, 'checked', r.ok_at, 'polled', r.polled_at,
     'problem', r.error, 'reconnect', r.needs_reconnect,   -- not "error": the app treats that as a failed call
     'by', (select email from cradle_members where household_id = p_h and user_id = r.connected_by limit 1));
@@ -66,6 +71,9 @@ language plpgsql security definer set search_path = public as $$
 begin
   if auth.uid() is null then raise exception 'not signed in'; end if;
   if not exists (select 1 from cradle_members where household_id = p_h and user_id = auth.uid()) then raise exception 'not a member'; end if;
+  if not coalesce((select require_mfa from cradle_households where id = p_h), false) then
+    raise exception 'Your family must require two-step sign-in to connect a Dream Sock. The family owner can turn it on in Family.';
+  end if;
   perform cradle_mfa_check(p_h);
   if (select count(*) from cradle_owlet_tries where user_id = auth.uid() and at > now() - interval '1 hour') >= 10 then
     raise exception 'Too many tries. Wait an hour and try again.';
@@ -105,8 +113,9 @@ end $$;
 create or replace function public.cradle_owlet_due() returns json
 language sql security definer set search_path = public as $$
   with d as (
-    update cradle_owlet set polled_at = now()
+    update cradle_owlet o set polled_at = now()
     where not needs_reconnect and (polled_at is null or polled_at < now() - interval '50 seconds')
+      and coalesce((select h.require_mfa from cradle_households h where h.id = o.household_id), false)   -- paused otherwise
     returning household_id, region, dsn, enc_refresh, enc_access, access_exp)
   select coalesce(json_agg(d), '[]'::json) from d
 $$;
@@ -210,4 +219,4 @@ grant execute on function public.cradle_owlet_save(uuid,uuid,text,text,text,text
 -- Record this run for the status page (/status/; see 5-status.sql)
 create table if not exists public.cradle_schema_log (script text not null, version text not null, applied_at timestamptz not null default now());
 alter table public.cradle_schema_log enable row level security;
-insert into public.cradle_schema_log (script, version) values ('7-owlet.sql', '1.33');
+insert into public.cradle_schema_log (script, version) values ('7-owlet.sql', '1.36');

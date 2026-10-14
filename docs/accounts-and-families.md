@@ -80,7 +80,7 @@ Everything saves as you type; there's no Save button.
 - **Profile pictures follow each person's choice.** A photo or built-in picture is shown only to the people its owner picked: only them, their family, or everyone on this Cradle site (who see it next to their initials on the high-score boards). The database enforces this, and anyone else sees the letter. Photos are stored shrunk to about 5 KB in your Supabase project, and choosing the letter or a built-in picture deletes the photo.
 - **Fun center high scores are shared across this Cradle site.** The Everyone boards show each player's **3 initials** with their best Bottle Catch or Stork Flight score, or their Daily Word points to everyone who uses the same Cradle site. Names, emails, and families are never shown. The Our family boards only show people in your family, including today's Daily Word grids (colors only, never letters).
 - **Support feedback goes to whoever runs this Cradle.** What you send from 💬 Support, with any screenshot, your account, family name, Cradle version, and phone type, is readable by the admins of this Cradle (in the app) and the person who runs the Supabase project. Other families never see it. Leave baby details out of screenshots you'd rather not share.
-- **An Owlet Dream Sock, if connected, belongs to the family.** One person connects it; everyone in the family sees its status and the sleep it logs. The Owlet password isn't stored, and the saved sign-in is encrypted. See [Owlet Dream Sock](owlet.md#privacy-and-security).
+- **An Owlet Dream Sock, if connected, belongs to the family.** One person connects it, and only in a family that requires two-step sign-in; everyone in the family sees its status and the sleep it logs. The Owlet password isn't stored, and the saved sign-in is encrypted. See [Owlet Dream Sock](owlet.md#privacy-and-security).
 - **The person who runs the Supabase project can see every family's data** in the Supabase dashboard. If you open your Cradle to friends, tell them.
 
 ## Changing your password
@@ -100,6 +100,8 @@ From then on, signing in on a phone asks for the code after your password, once 
 **Requiring it for your family (owner only):** open **Family** and tick **Require it for everyone in this family**. You need to use it yourself first. Everyone who hasn't set it up is shown the setup screen the next time they open Cradle, and can't see the log until they finish. The Family screen shows **🔐 Two-step on** or **Two-step not set up yet** next to each person. Untick it to make it optional again; people who set it up keep using it unless they turn it off.
 
 If you're the only one in your family, it's simply your own choice.
+
+**Needed for an Owlet Dream Sock:** connecting a sock requires this family setting, because Cradle then keeps a sign-in to your Owlet account. If the owner turns it off later, the sock's checks pause until it's back on. See [Owlet Dream Sock](owlet.md#privacy-and-security).
 
 **Lost your phone?** There are no backup codes. Ask whoever runs your Cradle to reset it ([admin query 27](deployment.md#admin-queries)); you then sign in with just your password, and set it up again if your family requires it.
 

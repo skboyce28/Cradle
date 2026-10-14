@@ -14,6 +14,8 @@ This is optional, and it needs [sleep tracking](using-cradle.md#sleep) turned on
 
 ## Using it
 
+**First, your family must require two-step sign-in.** Cradle keeps a sign-in to your Owlet account, so it only does that for families where everyone signs in with a code. The family owner turns it on in **Family**, under Two-step sign-in, after setting it up for themselves (see [Two-step sign-in](accounts-and-families.md#two-step-sign-in)). Without it, the Dream Sock section explains this and, for the owner, has a **Require it in Family** button.
+
 1. In **Settings**, under **What you track**, turn on **😴 Sleep**. Cradle asks **Do you have an Owlet Dream Sock?** Tap **Yes, set it up**.
 2. The **🦉 Owlet Dream Sock** form appears right away. Enter the email and password you use in Owlet's app, and pick the region your Owlet account is in (**Europe**, or **United States and most countries**).
 3. Tap **Connect**. If the account has more than one sock, choose the one for this baby. Connecting saves Sleep as on for the family; there's no need to tap Save.
@@ -119,7 +121,9 @@ To stop it for everyone: `select cron.unschedule('cradle-owlet');`. To remove it
 - **Heart rate and oxygen are never stored or shown.** Owlet's answer includes them, and the function discards them right away. Only the sleep state, charging, and battery are kept.
 - **Who could use the token:** someone with both your database and the Edge Function's secrets, which in practice means whoever runs this Supabase project. If you run a Cradle for friends, tell them.
 - **To cut Cradle off from Owlet's side**, change your Owlet password. That should sign out every app using the old sign-in, including Cradle, which then asks to connect again.
-- **Limits:** 10 connection tries an hour per account, and only family members (past [two-step sign-in](accounts-and-families.md#two-step-sign-in) if they use it) can connect or disconnect.
+- **Two-step sign-in is required.** A sock can only be connected in a family that requires [two-step sign-in](accounts-and-families.md#two-step-sign-in), by someone who has entered their code. The database enforces it, not just the app. A sign-in that hasn't finished the code step can't see the sock's state either, just as it can't see the log.
+- **If the owner stops requiring it,** checks pause: nothing more is read from Owlet and the Log says *Owlet paused*. The encrypted Owlet sign-in is kept, so turning the requirement back on resumes without the Owlet password. To remove it instead, tap **Disconnect**.
+- **Limits:** 10 connection tries an hour per account, and only family members can connect or disconnect.
 
 ---
 
@@ -128,6 +132,10 @@ To stop it for everyone: `select cron.unschedule('cradle-owlet');`. To remove it
 **"That Owlet email or password isn't right."** Use the email and password for Owlet's app. If you sign in to Owlet with Google or Apple, set a password in Owlet's app first. Check the region: European accounts need **Europe**.
 
 **Netlify's build fails with "Exposed secrets detected".** Netlify's smart secret scanning flags the Owlet app identifiers in `supabase/functions/cradle-owlet/index.ts`. They're public (built into Owlet's app), and `netlify.toml` allows exactly those values and that file, with scanning left on for everything else. If Owlet's identifiers ever change, update both the function and `netlify.toml`.
+
+**"A Dream Sock needs two-step sign-in for everyone in your family."** The family owner needs to set up two-step sign-in for themselves (profile menu, **Sign-in and security**), then tick **Require it for everyone in this family** in **Family**. The **Require it in Family** button goes straight there.
+
+**"Owlet paused".** The family stopped requiring two-step sign-in. Turn it back on in Family, and checks resume within a minute.
 
 **"This Cradle isn't set up for Owlet yet."** Steps 1 to 3 above haven't been done, or the function has a different name than `cradle-owlet`.
 

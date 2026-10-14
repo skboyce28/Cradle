@@ -103,9 +103,10 @@ begin
         'connected', count(*),
         'reconnect', count(*) filter (where needs_reconnect),
         'errors', count(*) filter (where error is not null and not needs_reconnect),
-        'stale', count(*) filter (where not needs_reconnect and (ok_at is null or ok_at < now() - interval '10 minutes')),
+        'paused', count(*) filter (where not coalesce(h.require_mfa, false)),
+        'stale', count(*) filter (where not needs_reconnect and coalesce(h.require_mfa, false) and (ok_at is null or ok_at < now() - interval '10 minutes')),
         'last_ok', max(ok_at))
-      from public.cradle_owlet $q$ into owl;
+      from public.cradle_owlet o left join public.cradle_households h on h.id = o.household_id $q$ into owl;
     owl := owl || jsonb_build_object('runs', owl_runs);
   end if;
 
@@ -155,4 +156,4 @@ grant execute on function public.cradle_status() to anon, authenticated;
 revoke execute on function public.cradle_status() from public;
 revoke execute on function public.cradle_probe(), public.cradle_status_set_site(text) from anon, authenticated, public;
 
-insert into public.cradle_schema_log (script, version) values ('5-status.sql', '1.35');
+insert into public.cradle_schema_log (script, version) values ('5-status.sql', '1.36');

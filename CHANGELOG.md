@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.36
+
+**Owlet Dream Sock requires two-step sign-in for the family**
+- A sock can only be connected in a family that **requires two-step sign-in**, by someone who has entered their code. Until then, the Dream Sock section explains why (Cradle keeps a sign-in to your Owlet account) and gives the owner a **Require it in Family** button; others are told to ask the owner. The database enforces it (`cradle_owlet_check`), not just the app
+- A sign-in that hasn't finished the code step can't see the sock's state (`cradle_owlet_status` returns only *locked*), matching the log
+- **If the owner stops requiring it, the sock pauses:** checks stop (`cradle_owlet_due` skips the family), Settings and the Log say *paused* and why, and the encrypted Owlet sign-in is kept, so requiring it again resumes within a minute without the Owlet password. **Disconnect** still removes it
+- Status page and outside check count paused socks (shown, but not a failure). Rerun `7-owlet.sql` (v1.36) and `5-status.sql` (v1.36)
+- Tests: owlet (53), status (40), deploy-gate (17)
+
 ## v1.35
 
 **Owlet: status page, outside check, and where sleep came from**

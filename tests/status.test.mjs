@@ -70,7 +70,7 @@ ok('components: website, database, notifications, tests',/Website.*Operational/.
 {const rf=async()=>{await p.click('#refresh');await p.waitForTimeout(900);return (await txt('#components')).match(/Owlet sleep.*?(?=(Automated tests|$))/)?.[0]||''};
   sql(`delete from public.cradle_owlet; delete from cron.job where jobname='cradle-owlet'`);
   let ow=await rf();ok('Owlet: set up but nothing connected or scheduled',/Owlet sleep.*No socks connected yet.*Not scheduled/.test(ow),ow);
-  const hh=sql(`select id from cradle_households limit 1`);
+  const hh=sql(`select id from cradle_households limit 1`),req0=sql(`select require_mfa from cradle_households where id='${hh}'`);sql(`update cradle_households set require_mfa=true where id='${hh}'`);
   sql(`insert into public.cradle_owlet(household_id,dsn,enc_refresh,ok_at,state) values ('${hh}','AC0','v1:x',now()-interval '30 minutes','asleep')`);
   ow=await rf();ok('Owlet: a sock connected but no schedule says to run 8-owlet-schedule.sql',/1 sock connected.*run supabase\/8-owlet-schedule\.sql.*Not scheduled/.test(ow),ow);
   ok('…and the banner flags it',/warn/.test(await p.getAttribute('#banner','class')));
@@ -80,6 +80,9 @@ ok('components: website, database, notifications, tests',/Website.*Operational/.
   sql(`insert into cron.job_run_details(jobid,status,start_time) select (select jobid from cron.job where jobname='cradle-owlet'),'succeeded',now()-g*interval '1 min' from generate_series(1,30) g`);
   ow=await rf();ok('Owlet: healthy',/1 sock connected · last reading just now · every-minute job: 30 of 30 runs OK in 24 h.*Operational/.test(ow),ow);
   ok('no family names, emails, or serial numbers on the page',!/AC0|@/.test(ow));
+  sql(`update cradle_households set require_mfa=false where id='${hh}'`);ow=await rf();
+  ok('Owlet: a family that stopped requiring two-step sign-in shows as paused',/1 paused \(the family stopped requiring two-step sign-in\).*Paused/.test(ow),ow);
+  sql(`update cradle_households set require_mfa=${req0==='t'} where id='${hh}'`);
   sql(`delete from public.cradle_owlet; delete from cron.job_run_details where jobid=(select jobid from cron.job where jobname='cradle-owlet'); delete from cron.job where jobname='cradle-owlet'`);
   await rf()}
 ok('uptime numbers and a 90-day strip',/99\.\d\d%/.test(await txt('#upStats'))&&/~\d+ ms/.test(await txt('#upStats'))&&(await p.$$('#strip i')).length===90&&(await p.$$('#strip i.ok')).length>=1&&(await p.$$('#strip i.warn, #strip i.bad')).length>=1);
@@ -103,7 +106,7 @@ await lp.goto(SITE+'/status/#d-1234567');await lp.reload();await lp.waitForTimeo
 ok('a link to a commit that isn’t there says so',/Deployment 1234567 isn’t in main’s history/.test((await lp.innerText('#deploys')))&&(await lp.$$('#deploys tr.target')).length===0);
 await lp.close();
 
-ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.31/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.35/.test(await txt('#dbSchema')));
+ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.31/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.36/.test(await txt('#dbSchema')));
 ok('no policy violations',(await p.evaluate(()=>window.__v)).length===0,(await p.evaluate(()=>window.__v)).join(' | '));
 await p.screenshot({path:OUT+'status.png',fullPage:true});
 // a failed latest check and a failing test run show up in the banner

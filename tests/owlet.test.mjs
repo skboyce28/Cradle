@@ -2,7 +2,7 @@
 // stand-in for Owlet's Google sign-in and Ayla API), what is and isn't stored, checks that log sleep
 // (with the 3- and 5-minute holds), token renewal, being signed out by Owlet, two socks, the limits,
 // and the Log showing the sleep from Owlet.
-import { chromium } from 'playwright';import http from 'http';import { execSync } from 'child_process';
+import { chromium } from 'playwright';import { totp } from './support/totp.mjs';import http from 'http';import { execSync } from 'child_process';
 import { makeHandler, owlet, readState, keyFrom, seal, open } from '../supabase/functions/cradle-owlet/index.ts';
 const KEY='sb_publishable_testkey_1234567890',DB='http://localhost:54321',OUT=(process.env.CRADLE_OUT||'out')+'/';
 const sql=q=>execSync(`psql "${process.env.DATABASE_URL}" -A -t -c "${q.replace(/"/g,'\\"')}"`).toString().trim();
@@ -64,9 +64,23 @@ await P.check('#sTrSleep');await P.waitForSelector('#askModal.open');
 ok('turning on Sleep asks about a Dream Sock right away, with the sleep goal already showing',/Do you have an Owlet Dream Sock/.test(await txt(P,'#askMsg'))&&(await txt(P,'#askOk'))==='Yes, set it up'&&(await txt(P,'#askCancel'))==='No'&&await P.isVisible('#sSleep'));
 await P.screenshot({path:OUT+'owlet-ask.png'});
 await P.click('#askOk');await P.waitForTimeout(400);
-ok('Yes: the box is ticked and the connect form shows, no save and reopen',await P.isChecked('#sOwl')&&await P.isVisible('#owlEmail')&&await P.isVisible('#owlPass'));
-ok('Settings: the Owlet section explains the password isn’t saved',await P.isVisible('#owlBox')&&/password is used once to connect and is never saved/.test(await txt(P,'#owlBox')),await txt(P,'#owlBox'));
+ok('Yes, but the family doesn’t require two-step sign-in: no form, and the owner is offered Family',await P.isChecked('#sOwl')&&!(await P.isVisible('#owlEmail'))&&/needs two-step sign-in for everyone in your family/.test(await txt(P,'#owlBox'))&&await P.isVisible('#owlFam'),await txt(P,'#owlBox'));
+await P.screenshot({path:OUT+'owlet-needs-mfa.png'});
+await P.click('#sSave');await P.clock.runFor(300);
 const H=sql(`select household_id from cradle_members m join auth.users u on u.id=m.user_id where u.email='${U}@cradle.cfg' order by joined_at desc limit 1`);
+// the database refuses too, even for a modified app
+{const id=sql(`select id from auth.users where email='${U}@cradle.cfg'`);let e='';try{sql(`set role authenticated; select set_config('request.jwt.claims','{"sub":"${id}","aal":"aal2"}',false); select cradle_owlet_check('${H}')`)}catch(x){e=String(x.stderr)}
+  ok('the database refuses to connect a sock for a family that doesn’t require it',/must require two-step sign-in to connect a Dream Sock/.test(e),e)}
+// set up two-step sign-in, then require it for the family from the Owlet section's button
+await closeModals(P);await P.click('#menuBtn');await P.click('[data-act=mfa]');await P.waitForTimeout(600);await P.click('#mfaStart');await P.waitForSelector('#mfaBody #mfaKey');
+const sec=(await P.innerText('#mfaBody #mfaKey')).replace(/\s/g,'');await P.fill('#mfaCode',totp(sec));await P.click('[data-mfaon]');await P.waitForTimeout(900);
+await openSettings(P);await P.click('#owlFam');await P.waitForTimeout(900);
+ok('“Require it in Family” opens the Family screen',await P.isVisible('#familyModal.open #famMfa'));
+await P.click('#famMfa');await P.waitForSelector('#askModal.open');await P.click('#askOk');await P.waitForTimeout(1200);
+ok('the family now requires it',sql(`select require_mfa from cradle_households where id='${H}'`)==='t');
+await openSettings(P);await P.waitForTimeout(600);
+ok('then the connect form shows',await P.isVisible('#owlEmail')&&await P.isVisible('#owlPass'));
+ok('Settings: the Owlet section explains the password isn’t saved',await P.isVisible('#owlBox')&&/password is used once to connect and is never saved/.test(await txt(P,'#owlBox')),await txt(P,'#owlBox'));
 // wrong password
 await P.fill('#owlEmail','jules@example.com');await P.fill('#owlPass','wrong');await P.click('#owlGo');await P.waitForTimeout(900);
 ok('wrong password: Owlet’s answer, and nothing saved',/That Owlet email or password isn’t right/.test(await txt(P,'#owlBox'))&&sql(`select count(*) from cradle_owlet where household_id='${H}'`)==='0'&&(await P.inputValue('#owlPass'))==='');
@@ -145,13 +159,23 @@ ok('with Sleep turned off in Settings, nothing is logged',sql(`select count(*) f
 sql(`update cradle_items set data=jsonb_set(data,'{track,sleep}','true') where household_id='${H}' and id='settings'`);
 // limits in the database
 const uid=sql(`select id from auth.users where email='${U}@cradle.cfg'`);
-const as=(id,q)=>{try{return sql(`set role authenticated; select set_config('request.jwt.claims','{"sub":"${id}"}',false); ${q}`)}catch(e){return String(e.stderr||e.message)}};
+const as=(id,q,aal='aal2')=>{try{return sql(`set role authenticated; select set_config('request.jwt.claims','{"sub":"${id}","aal":"${aal}"}',false); ${q}`)}catch(e){return String(e.stderr||e.message)}};
 const other=sql(`insert into auth.users(email) values ('owlother${Date.now()%100000}@t.co') returning id`).split('\n')[0];
 ok('someone outside the family can’t see or change the connection',/not a member/.test(as(other,`select cradle_owlet_status('${H}')`))&&/not a member/.test(as(other,`select cradle_owlet_disconnect('${H}')`))&&/not a member/.test(as(other,`select cradle_owlet_check('${H}')`)));
 ok('the app can’t read the table or call the Edge Function’s own functions',/permission denied/.test(as(uid,`select enc_refresh from cradle_owlet`))&&/permission denied/.test(as(uid,`select cradle_owlet_due()`))&&/permission denied/.test(as(uid,`select cradle_owlet_record('${H}','asleep')`)));
 for(let i=0;i<10;i++)as(uid,`select cradle_owlet_check('${H}')`);
+ok('a password-only sign-in can’t connect or read the sock’s state',/Finish two-step sign-in first/.test(as(uid,`select cradle_owlet_check('${H}')`,'aal1'))&&/"locked" *: *true/.test(as(uid,`select cradle_owlet_status('${H}')`,'aal1').replace(/\s/g,'')));
 ok('at most 10 connection tries an hour',/Too many tries/.test(as(uid,`select cradle_owlet_check('${H}')`)));
 sql(`delete from cradle_owlet_tries where user_id='${uid}'`);
+// the owner stops requiring two-step sign-in: checks pause, the token stays; turning it back on resumes
+sql(`update cradle_households set require_mfa=false where id='${H}'`);sql(`update cradle_owlet set polled_at=null where household_id='${H}'`);
+r=await poll();ok('paused: not checked while the family doesn’t require it, and the token is kept',r.checked===0&&sql(`select count(*) from cradle_owlet where household_id='${H}' and enc_refresh like 'v1:%'`)==='1',JSON.stringify(r));
+await openSettings(P);await P.waitForTimeout(700);
+ok('Settings says it’s paused and why, with Require it in Family',/Paused: your family no longer requires two-step sign-in/.test(await txt(P,'#owlBox'))&&await P.isVisible('#owlFam'),await txt(P,'#owlBox'));
+await P.screenshot({path:OUT+'owlet-paused.png'});
+await closeModals(P);ok('the Log line says paused',/Owlet paused/.test(await txt(P,'#sleepLine')),await txt(P,'#sleepLine'));
+sql(`update cradle_households set require_mfa=true where id='${H}'`);r=await poll();
+ok('required again: checks resume without the Owlet password',r.checked===1&&r.ok===1,JSON.stringify(r));
 // unticking the box while connected asks first
 await openSettings(P);await P.uncheck('#sOwl');await P.waitForSelector('#askModal.open');await P.click('#askCancel');await P.waitForTimeout(300);
 ok('unticking the Dream Sock box while connected asks to disconnect; No keeps it',await P.isChecked('#sOwl')&&sql(`select count(*) from cradle_owlet where household_id='${H}'`)==='1');
@@ -168,5 +192,5 @@ ok('the answer is saved for the family',await Q.evaluate(()=>{const S=JSON.parse
 await openSettings(Q);await Q.uncheck('#sTrSleep');await Q.check('#sTrSleep');await Q.waitForTimeout(400);
 ok('turning Sleep off and on again doesn’t ask again',!(await Q.isVisible('#askModal.open')));
 await Q.check('#sOwl');await Q.waitForTimeout(300);
-ok('ticking it later shows the connect form',await Q.isVisible('#owlEmail')&&!(await Q.$eval('#sOwl',e=>e.closest('.owlchk').classList.contains('off'))));
+ok('ticking it later shows the two-step sign-in requirement first (this family doesn’t require it)',await Q.isVisible('#owlFam')&&!(await Q.isVisible('#owlEmail'))&&!(await Q.$eval('#sOwl',e=>e.closest('.owlchk').classList.contains('off'))));
 console.log('errors',errs);await b.close();srv.close();

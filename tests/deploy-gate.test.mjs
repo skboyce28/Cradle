@@ -57,10 +57,13 @@ sql(`insert into cron.job_run_details(jobid,status,start_time) select (select jo
 r=await mon();ok('notification job failing: fails',r.code===1&&/FAIL  Notification job \| 50 of 70/.test(r.out));
 sql(`delete from cron.job_run_details where status='failed'`);
 // an Owlet sock that stopped being read, then fine again
-{const hh=sql(`select id from cradle_households limit 1`);sql(`insert into public.cradle_owlet(household_id,dsn,enc_refresh,ok_at) values ('${hh}','AC0','v1:x',now()-interval '30 minutes')`);
+{const hh=sql(`select id from cradle_households limit 1`),req0=sql(`select require_mfa from cradle_households where id='${hh}'`);sql(`update cradle_households set require_mfa=true where id='${hh}'`);sql(`insert into public.cradle_owlet(household_id,dsn,enc_refresh,ok_at) values ('${hh}','AC0','v1:x',now()-interval '30 minutes')`);
   r=await mon();ok('Owlet sock not read for 30 min and no schedule: fails',r.code===1&&/FAIL  Owlet checks \| schedule missing .*1 not read in 10\+ min/.test(r.out),r.out.split('\n').filter(l=>/Owlet/.test(l)).join(' '));
   sql(`insert into cron.job(jobname) values ('cradle-owlet'); update public.cradle_owlet set ok_at=now()`);
   r=await mon();ok('…and passes once it’s scheduled and reading',r.code===0&&/PASS  Owlet checks \| 1 connected, last reading 0 min ago/.test(r.out),r.out.split('\n').filter(l=>/Owlet/.test(l)).join(' '));
+  sql(`update cradle_households set require_mfa=false where id='${hh}'`);r=await mon();
+  ok('a paused sock (family stopped requiring two-step sign-in) is noted, not a failure',r.code===0&&/PASS  Owlet checks .*1 paused/.test(r.out),r.out.split('\n').filter(l=>/Owlet/.test(l)).join(' '));
+  sql(`update cradle_households set require_mfa=${req0==='t'} where id='${hh}'`);
   sql(`delete from public.cradle_owlet; delete from cron.job where jobname='cradle-owlet'`)}
 // the site is down
 r=await mon({CRADLE_SITE_URL:'http://localhost:8095'});ok('site down: fails',r.code===1&&/FAIL  Site loads/.test(r.out));

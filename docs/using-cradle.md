@@ -86,7 +86,7 @@ Turn on **😴 Sleep** in Settings, under What you track. It's off to start.
 - **Across midnight:** a sleep from 9pm to 2am counts 3 hours on the first day and 2 on the next.
 - **Overlaps count once:** if two sleeps overlap (one tapped by hand and one from the Owlet sock, say), the totals merge them, so the time isn't counted twice.
 - **Never a feed:** sleep doesn't change feed counts, gaps, or the next feed.
-- **Owlet Dream Sock:** with Sleep on, connect the sock in Settings (**🦉 Owlet Dream Sock**) and sleep is logged automatically, marked **from Owlet**. The line under Since last feed adds the sock's status, like **🦉 Asleep, checked just now**. See [Owlet Dream Sock](owlet.md).
+- **Owlet Dream Sock:** with Sleep on, connect the sock in Settings (**🦉 Owlet Dream Sock**; your family must require [two-step sign-in](accounts-and-families.md#two-step-sign-in)) and sleep is logged automatically, marked **from Owlet**. The line under Since last feed adds the sock's status, like **🦉 Asleep, checked just now**. See [Owlet Dream Sock](owlet.md).
 - **The Sleep tile** fills toward your daily goal (Settings, 15 hours to start; 0 turns it off) and shows naps and night separately. Newborns often sleep 14 to 17 hours a day in short stretches; ask your pediatrician what fits your baby.
 
 **Day notes** sit at the bottom of the day.
