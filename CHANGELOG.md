@@ -1,5 +1,11 @@
 # Changelog
 
+## Docs: how sign-in and integrations authenticate (no app change)
+
+- **[How it works](docs/how-it-works.md#how-each-connection-is-authenticated):** a table of every connection (phone to Supabase Auth, the database, the Owlet function; the schedules to the functions; the functions to Owlet and the push services; the status page; GitHub and Netlify) with how it authenticates and what it's allowed to do. Corrected: the Edge Functions do use the service key, which Supabase gives them automatically; the app never does
+- **[Deployment](docs/deployment.md#keys-and-secrets):** the diagram now shows the test gate, the outside check, the Owlet function and Owlet's cloud, and the uptime checks; a new **Keys and secrets** list says where each credential lives, who uses it, and what a leak would expose; decision 25 records why the Owlet connection needs two-step sign-in
+- **README:** the privacy paragraph covers the Owlet connection
+
 ## v1.36
 
 **Owlet Dream Sock requires two-step sign-in for the family**

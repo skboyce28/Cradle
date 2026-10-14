@@ -7,29 +7,53 @@ How Cradle is deployed today, what each piece does, how to run it day to day, an
 ```
  GitHub: skboyce28/Cradle (main)
         │  every push
+        ├──▶ GitHub Actions: tests.yml (the full suite) ──passed──▶ Netlify build hook (secret NETLIFY_BUILD_HOOK)
+        │                     monitor.yml every 30 min: outside check of the site, database, and jobs
         ▼
- Netlify build ── python3 build_pwa.py
+ Netlify build ── python3 build_pwa.py   (skipped by tools/netlify_ignore.py until the tests pass)
         │          reads CRADLE_SUPABASE_URL + CRADLE_SUPABASE_KEY (Netlify environment variables)
         ▼
- Netlify static site (HTTPS) ── index.html · sw.js · manifest.webmanifest · icons/
+ Netlify static site (HTTPS) ── index.html · sw.js · manifest.webmanifest · icons/ · /status/ · /overview/
         │
         ▼
  Phones and browsers ── Cradle installed as an app, or opened in the browser
         │   log kept on each device (localStorage), works offline
-        ▼   sync every ~15 s while open, over HTTPS
- Supabase project ── Auth (accounts, sign-in)  +  Postgres (the shared log)
+        ▼   sync every ~15 s while open, over HTTPS, with the person's own sign-in (JWT)
+ Supabase project ── Auth (passwords, two-step sign-in)  +  Postgres (the shared log, row-level security)
                      reached directly through Supabase's REST API
         │
-        └─ optional: pg_cron every minute ──▶ cradle-notify Edge Function ──▶ Web Push
-                     (feed-due notifications; see notifications.md)
+        ├─ optional: pg_cron every minute ──▶ cradle-notify Edge Function ──▶ Web Push services
+        │            (feed-due notifications; see notifications.md)
+        ├─ optional: pg_cron every minute ──▶ cradle-owlet Edge Function ──▶ Owlet's cloud (Google sign-in, Ayla)
+        │            (Owlet Dream Sock sleep; see owlet.md)
+        └─ optional: pg_cron every 5 minutes ──▶ the site's /version.json (uptime for the status page)
 ```
 
 | Piece | Service | What it holds | Configured in |
 |---|---|---|---|
 | Source | GitHub, `skboyce28/Cradle` | Code, database scripts, docs. **No keys, no personal data.** | This repo |
+| Tests and deploy gate | GitHub Actions | The test run for every push; the deploy hook call; the outside check | `.github/workflows/`, the secret `NETLIFY_BUILD_HOOK`, the variable `CRADLE_SITE_URL` |
 | Build and hosting | Netlify, connected to `main` | The built web app, served over HTTPS | [`netlify.toml`](../netlify.toml) and Netlify's environment variables |
-| Accounts and data | Supabase (free plan) | Sign-ins, families, and every log entry | [`supabase/`](../supabase/) scripts and Supabase's Authentication settings |
+| Accounts and data | Supabase (free plan) | Sign-ins, two-step sign-in factors, families, and every log entry | [`supabase/`](../supabase/) scripts and Supabase's Authentication settings |
+| Scheduled functions | Supabase Edge Functions | `cradle-notify` (notifications) and `cradle-owlet` (Owlet sleep) | Edge Functions, their secrets, and `4-notify-schedule.sql` / `8-owlet-schedule.sql` |
 | The app | Each phone | A full copy of the family's log, plus sign-in tokens | Nothing to configure |
+
+### Keys and secrets
+
+Every credential Cradle involves, where it lives, and who can use it. None of them is in this repo.
+
+| Credential | Lives in | Used by | If it leaked |
+|---|---|---|---|
+| Supabase **publishable key** (`sb_publishable_…`) | Netlify environment variable; built into the hosted page | Phones, the status page, the outside check | Nothing beyond what the site already allows: it only identifies the project. Row-level security decides access |
+| A person's **Cradle sign-in** (access and refresh tokens) | That phone's browser storage | That phone | Their family's log, until they sign out or change their password. Two-step sign-in limits a stolen password, not a stolen phone |
+| **Two-step sign-in secrets** (TOTP) | Supabase Auth (`auth.mfa_factors`) | Supabase, to check codes | Codes could be generated for that person; the operator resets them with admin query 27 |
+| Supabase **secret / service-role key** | Supabase only; given to Edge Functions automatically (`SUPABASE_SECRET_KEYS` or `SUPABASE_SERVICE_ROLE_KEY`) | `cradle-notify` and `cradle-owlet` | Every row in the project. Never copy it anywhere; the build refuses it |
+| Notification **VAPID key pair** | `cradle_push_keys` (service role only) | `cradle-notify` | Someone could send notifications to subscribed phones |
+| **`CRADLE_OWLET_KEY`** (AES-256) | Supabase Edge Function secrets | `cradle-owlet` | Useless without the database rows it decrypts; together they open the connected Owlet accounts |
+| **Owlet sign-in tokens** (refresh and access) | `cradle_owlet`, encrypted with `CRADLE_OWLET_KEY` and tied to the family | `cradle-owlet` | Encrypted; useless without the key. Disconnect, or the person's Owlet password change, revokes them |
+| A person's **Owlet password** | Nowhere: passed once from the phone, through `cradle-owlet`, to Owlet's sign-in | Owlet | Not stored, not logged |
+| **`NETLIFY_BUILD_HOOK`** | GitHub repository secret | The deploy job | Someone could trigger builds; the ignore step still only builds tested commits |
+| Owlet app identifiers (Google API key, Ayla app ID and secret) | `supabase/functions/cradle-owlet/index.ts` | `cradle-owlet` | Public: built into Owlet's app and published in pyowletapi. Allowed past Netlify's secret scanning in `netlify.toml` |
 
 ## Supabase
 
@@ -267,3 +291,4 @@ The main choices so far, why they were made, and what they cost.
 | 22 | **A public status page fed by the build, the GitHub API, and one anon database function; uptime checks from pg_cron** | Shows deploys, uptime, and backend health with no new service, account, or secret. The data the page can read is limited to counts in one security-definer function. | Checks come from one region inside Supabase, so a Supabase outage shows as missing data rather than as down. Response times are approximate. GitHub limits anonymous visitors to 60 requests an hour. |
 | 23 | **Deploys wait for tests: Netlify's ignore step skips untested commits; a build hook from GitHub Actions deploys after they pass. An outside check every 30 minutes** | A failing test can't reach families, and problems inside Supabase or Netlify still get noticed, with an email. Both use free features already in use. | One secret (the build hook) and one variable to set in GitHub. A deploy now takes about as long as the tests (about 12 minutes). GitHub's scheduled runs can start a few minutes late and pause after 60 days without commits. |
 | 24 | **Owlet sleep through the Owlet app's own (unofficial) API, polled every minute by an Edge Function; tokens encrypted with a key only the function has** | Owlet has no public API and reports only the sock's current state, so sessions are built from readings with holds (3 minutes asleep, 5 awake). Polling from Supabase works with phones closed and logs for the whole family through the normal sync. The password is exchanged once for a refresh token, which is useless without the function's secret. | It can break whenever Owlet changes its app. Readings lag by up to a minute, and holds make each sleep's start and end accurate to the first reading. Whoever runs the Supabase project holds both the tokens and the key. Heart rate and oxygen are deliberately discarded. |
+| 25 | **A third-party sign-in kept by Cradle (Owlet) requires the family to require two-step sign-in; turning that off pauses it rather than deleting it** | The Owlet token is the most sensitive thing Cradle stores, and anyone in the family sees what it reads. Requiring codes for the whole family means a stolen Cradle password can't reach it. Pausing keeps a reversible mistake reversible. | Families must set up authenticator apps before connecting. A paused sock stores a token that isn't being used; Disconnect removes it. |

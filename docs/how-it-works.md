@@ -148,7 +148,22 @@ An invite can only be claimed by an account that **existed when the invite was m
 
   Even if someone found a way to inject a script into the page, the browser wouldn't run it, and couldn't send data anywhere else.
 - **Two-step sign-in** (optional per person, or required by the family owner) uses Supabase's authenticator-app sign-in (TOTP). Supabase stores the secrets and checks the codes; the app calls `/auth/v1/factors` to set one up, challenge, and verify, and reads the `aal` level from the token. The database rule above, not the app, is what keeps a password-only sign-in out.
-- **The secret key** (`sb_secret_…` or `service_role`) bypasses every rule. It must never be in this repo, the app, or a chat, and Cradle never needs it.
+- **The secret key** (`sb_secret_…` or `service_role`) bypasses every rule. It must never be in this repo, the app, or a chat. The app never uses it. The two optional Edge Functions (`cradle-notify`, `cradle-owlet`) do, and Supabase gives it to them automatically, so it's never copied anywhere. The build refuses a secret key.
+- **Integrations never see a person's Cradle sign-in, and the app never sees an integration's.** Owlet's tokens stay in the database, encrypted with a key only the `cradle-owlet` function has; the notification keys stay in a table only the service role can read. See [How each connection is authenticated](#how-each-connection-is-authenticated) and the [keys and secrets list](deployment.md#keys-and-secrets).
+
+### How each connection is authenticated
+
+| From → to | How it authenticates | What it's allowed to do |
+|---|---|---|
+| Phone → Supabase Auth | Email or username and password (`/auth/v1/token?grant_type=password`; new accounts through `/auth/v1/signup`). With two-step sign-in, a 6-digit code next (`/auth/v1/factors/{id}/challenge`, then `verify`), which raises the session from `aal1` to `aal2`. The access token (a JWT, about an hour) and the refresh token are kept on the phone and renewed with `grant_type=refresh_token`. Sign out calls `/auth/v1/logout` | Get a session for one person |
+| Phone → database (REST and RPC) | The publishable key plus the person's access token | Only the rows of their own families (row-level security), only past the code step where it's required (the restrictive rule), and only the checked functions granted to `authenticated` |
+| Phone → `cradle-owlet` (Connect) | The same publishable key and access token, sent to the function, which passes them on to `cradle_owlet_check` so that check runs **as the person**, not as the service role | Connect a sock only if they're in the family, the family requires two-step sign-in, this sign-in finished the code step, and it's under 10 tries an hour |
+| pg_cron → `cradle-notify`, `cradle-owlet` | None: JWT verification is off so the schedule can call them. Inside, each function uses the service key for its own database calls | Start a run. Runs are safe to repeat (notifications are sent once; each sock is checked at most every 50 seconds), and the answers are counts only |
+| `cradle-owlet` → Owlet | Once, at Connect: the Owlet email and password to Google's sign-in (Owlet's login provider), which returns a refresh token. Each check: refresh token → Google ID token → Ayla mini token → Ayla access token (about a day, cached encrypted). Requests carry Owlet's own app identifiers, as Owlet's app does | Read the one connected sock: sleep state, charging, battery |
+| `cradle-notify` → push services | A VAPID JWT (ES256) for each push, with the message encrypted for the phone (RFC 8291) | Deliver to phones that subscribed |
+| Status page and outside check → database | The publishable key, without signing in (the `anon` role) | Call `cradle_status()`, which returns counts and health only |
+| GitHub Actions → Netlify | The build hook address, a repository secret | Start a build (which still only builds commits that passed their tests) |
+| Netlify's build → GitHub | None (the public API) | Read whether a commit's tests passed |
 
 **What to know:**
 - **Email isn't verified** when confirmation is off, so an email address on an account proves nothing. Share keys, not emails, decide who joins a family.
@@ -167,6 +182,7 @@ That testing covered:
 - families staying separate
 - the owner-only actions
 - two-step sign-in (real 6-digit codes, the family rule, and password-only sign-ins being refused)
+- the Owlet connection against a stand-in for Owlet's sign-in and API: only encrypted tokens stored, the two-step requirement, pausing, and counts-only answers
 - share-key lockout
 - invite claiming
 - reruns of the scripts in any order
