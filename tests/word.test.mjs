@@ -91,15 +91,19 @@ ok('hard mode switch turns on',await M.$eval('#wPanel [data-w=hard]',e=>e.classL
 await M.click('#wPanel [data-w=daily]');const T6=await todayAnswer(M,6);
 ok('6 letters, hard, in the title',/6 letters · hard/.test(await txt(M,'#wTitle')),await txt(M,'#wTitle'));
 // first guess with a green or yellow letter, then a second guess that ignores it
-const pool=guesses(6).filter(w=>w!==T6.ans);const h1=pool.find(w=>/[12]/.test(evalW(w,T6.ans)));const r1=evalW(h1,T6.ans);
+const pool=guesses(6).filter(w=>w!==T6.ans);
+const okHard=(w,prev)=>prev.every(p=>{const r=evalW(p,T6.ans);for(let i=0;i<6;i++)if(r[i]==='2'&&w[i]!==p[i])return false;const need={};for(let i=0;i<6;i++)if(r[i]!=='0')need[p[i]]=(need[p[i]]||0)+1;return Object.keys(need).every(c=>[...w].filter(x=>x===c).length>=need[c])});
+// six wrong guesses that all keep to the hard-mode rule, the first with a hint (searched, since some days' words allow few)
+const lossPath=(()=>{let tries=0;const dfs=used=>{if(used.length===6)return used;if(++tries>20000)return null;for(const c of pool.filter(x=>!used.includes(x)&&okHard(x,used)).slice(0,40)){const r=dfs([...used,c]);if(r)return r}return null};
+  for(const f of pool.filter(w=>/[12]/.test(evalW(w,T6.ans))).slice(0,200)){const r=dfs([f]);if(r)return r}return null})();
+const h1=(lossPath||[pool.find(w=>/[12]/.test(evalW(w,T6.ans)))])[0];const r1=evalW(h1,T6.ans);
 await guess(M,h1);
 const ignore=pool.find(w=>{for(let i=0;i<6;i++){if(r1[i]==='2'&&w[i]!==h1[i])return true}return false})||pool.find(w=>{const need=[...h1].filter((c,i)=>r1[i]!=='0');return need.some(c=>!w.includes(c))});
 await M.keyboard.type(ignore);await M.keyboard.press('Enter');await M.clock.runFor(100);
 ok('hard mode: a guess that ignores a found letter is refused',/letter must be|must contain/.test(await txt(M,'#wMsg'))&&(await rowColors(M,1))==='------',`${h1} ${r1} then ${ignore}: ${await txt(M,'#wMsg')}`);
 for(let i=0;i<6;i++)await M.keyboard.press('Backspace');
 // lose: guesses that keep to the hard-mode rule (any word passes the app's own check)
-const okHard=(w,prev)=>prev.every(p=>{const r=evalW(p,T6.ans);for(let i=0;i<6;i++)if(r[i]==='2'&&w[i]!==p[i])return false;const need={};for(let i=0;i<6;i++)if(r[i]!=='0')need[p[i]]=(need[p[i]]||0)+1;return Object.keys(need).every(c=>[...w].filter(x=>x===c).length>=need[c])});
-const used=[h1];for(let k=0;k<5&&used.length<6;k++){const w=pool.find(x=>!used.includes(x)&&okHard(x,used));if(!w)break;await guess(M,w);used.push(w)}
+const used=[h1];for(const w of (lossPath||[]).slice(1)){await guess(M,w);used.push(w)}
 await M.clock.runFor(2000);await M.waitForTimeout(400);const mo=await txt(M,'#wPanel');
 const lost=used.length===6&&/Out of guesses/.test(mo)&&/X\/6 · 0 points/.test(mo);
 ok('out of guesses: shows the word, 0 points',lost||/Genius|Brilliant|Impressive|Splendid|Great|Phew/.test(mo),`${used.length} guesses; ${mo.slice(0,140)}`);

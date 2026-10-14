@@ -147,6 +147,10 @@ Check **Who can see it** under **Your picture**: **Only me** shows the letter to
 **A photo won't upload**
 Use a regular photo (JPEG, PNG, WebP, or an iPhone photo, which the phone converts). Very unusual formats may not open in the browser.
 
+## Owlet Dream Sock
+
+See [Owlet troubleshooting](owlet.md#troubleshooting): wrong password or region, *This Cradle isn't set up for Owlet yet*, *Owlet signed Cradle out*, and sleep that isn't logged.
+
 ## Fun center
 
 **"High scores aren't set up on this Cradle yet"**

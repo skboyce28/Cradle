@@ -269,3 +269,19 @@ from public.cradle_feedback f
 left join auth.users u on u.id = f.user_id
 left join public.cradle_households h on h.id = f.household_id
 order by f.created_at desc limit 50;
+
+
+-- ============================================================
+-- Owlet Dream Sock (v1.33; after 7-owlet.sql and 8-owlet-schedule.sql)
+-- ============================================================
+
+-- 35. Which families have a sock, its state, and when it was last checked (never the tokens)
+select h.name as family, o.sock_name, o.account_hint, o.state, o.battery, o.ok_at as checked,
+       o.error, o.needs_reconnect, o.tz
+from public.cradle_owlet o join public.cradle_households h on h.id = o.household_id
+order by o.ok_at desc nulls last;
+
+-- 36. CHANGES DATA. Disconnect one family's sock (deletes its stored Owlet sign-in; logged sleep stays)
+delete from public.cradle_owlet
+where household_id = (select household_id from public.cradle_members m join auth.users u on u.id = m.user_id
+                      where u.email = 'their@email.com' order by m.joined_at desc limit 1);

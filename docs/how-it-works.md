@@ -65,7 +65,7 @@ Pulling before pushing means a phone always merges in other people's edits befor
 
 ## Database
 
-Two scripts in `supabase/` build the schema. Both are idempotent and safe to rerun in any order. Two more are optional, for [notifications](notifications.md): `3-notifications.sql` and `4-notify-schedule.sql`.
+Two scripts in `supabase/` build the schema. Both are idempotent and safe to rerun in any order. Others are optional: `3-notifications.sql` and `4-notify-schedule.sql` for [notifications](notifications.md), `5-status.sql` and `6-status-schedule.sql` for the [status page](deployment.md#status-page), and `7-owlet.sql` and `8-owlet-schedule.sql` for the [Owlet Dream Sock](owlet.md).
 
 ### Tables
 
@@ -82,6 +82,7 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | `cradle_feedback` | Support feedback: who sent it and their family at the time, kind (`bug`, `idea`, `question`), the text, an optional screenshot (a JPEG data URL), app version and device, and the review: `status` (`new`, `reviewed`, `planned`, `used`, `wontdo`), `reply`, and when and by whom it was reviewed |
 | `cradle_admins` | Accounts that may read and review feedback. Only added in the SQL Editor. |
 | `cradle_schema_log`, `cradle_probes`, `cradle_status_config` | Optional, from `5-status.sql`: which scripts ran and when, uptime checks, and the site address to check. No direct access from the app. See [the status page](deployment.md#status-page). |
+| `cradle_owlet`, `cradle_owlet_tries` | Optional, from `7-owlet.sql`: each family's Owlet sock (serial number, time zone, the latest state, and Owlet's sign-in tokens encrypted with a key that only the Edge Function has), and connection attempts. No direct access from the app. See [Owlet Dream Sock](owlet.md). |
 | `cradle_push_subs`, `cradle_push_keys` | Optional, from `3-notifications.sql`: phones that get feed-due notifications, and the notification keys. See [Notifications](notifications.md#how-it-works). |
 
 A trigger (`cradle_touch`) stamps `updated_at` with the server's clock and records `owner` on every write, so phones with wrong clocks can't confuse sync. Deleting an account clears `owner` on its entries but **never deletes entries**.
@@ -125,6 +126,9 @@ All changes to families go through these functions, which check permissions them
 | `cradle_probe()`, `cradle_status_set_site(url)` | the schedule only | Records and starts uptime checks; sets the site address |
 | `cradle_push_info(endpoint)` | anyone signed in | Optional notifications: the public notification key, and this phone's setting |
 | `cradle_push_subscribe(…)` / `cradle_push_unsubscribe(endpoint)` | anyone signed in | Turns notifications on or off for one phone, in the caller's current family |
+| `cradle_owlet_status(h)` | members | Optional Owlet: the sock's name, the masked account, who connected it, its state (asleep, awake, charging, off), battery, when it was checked, and any problem. Never the tokens. |
+| `cradle_owlet_check(h)`, `cradle_owlet_disconnect(h)` | members (past the code step if they use two-step sign-in) | Called by the Edge Function with the person's own sign-in before it connects (10 tries an hour); disconnecting deletes the stored tokens |
+| `cradle_owlet_save(…)`, `cradle_owlet_due()`, `cradle_owlet_tokens(…)`, `cradle_owlet_fail(…)`, `cradle_owlet_record(h, state, battery)` | the cradle-owlet function only (service role) | Saves a connection, claims the families to check (each at most every 50 seconds), stores renewed tokens, records problems, and turns readings into sleep entries in `cradle_items` (when the family tracks sleep) |
 | `cradle_push_due()`, `cradle_push_result()`, `cradle_push_get_keys()`, `cradle_push_set_keys()` | the cradle-notify function only (service role) | Finds phones to tell, records results, and manages the notification keys |
 
 Share keys are 8 characters from an alphabet without look-alikes (no 0/O, 1/I/L), shown as `XXXX-XXXX`: about 850 billion combinations.

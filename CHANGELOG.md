@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.33
+
+**Owlet Dream Sock (optional)**
+- With **😴 Sleep** on, **Settings** has a **🦉 Owlet Dream Sock** section: enter the Owlet email and password, pick the region, and **Connect** (choose the sock if the account has more than one). One person connects it for the whole family
+- A new **cradle-owlet** Edge Function checks each connected sock about once a minute (`8-owlet-schedule.sql`). After 3 minutes asleep it adds a sleep row marked **from Owlet**; after 5 minutes awake, off, or charging it fills in the wake time and length. A sleep someone already started with 😴 Asleep is used instead of adding another
+- The Log's asleep or awake line shows the sock's status (asleep, awake, charging, off) and when it was checked. Settings shows the sock, the masked account, who connected it, battery, any problem, **Refresh**, and **Disconnect**
+- **Security:** the password is used once and never stored. Owlet's sign-in token is encrypted (AES-GCM, tied to the family) with `CRADLE_OWLET_KEY`, a secret only the Edge Function has. The app can't read the connection table, only `cradle_owlet_status()`. Heart rate and oxygen are discarded, never stored or shown. 10 connection tries an hour
+- **Setup** (once, by whoever runs the Supabase project): `7-owlet.sql`, the `CRADLE_OWLET_KEY` secret, the `cradle-owlet` function (JWT verification off), and `8-owlet-schedule.sql`. See [docs/owlet.md](docs/owlet.md)
+- **Unofficial:** Owlet has no public API. This uses the calls Owlet's app makes (as documented by the open-source pyowletapi library), so it can stop working if Owlet changes them
+- New test: `tests/owlet.test.mjs` (34 checks), with a stand-in Owlet service. The test database's auth stand-in now handles requests with no one signed in, as Supabase does
+- `tests/word.test.mjs`: the hard-mode "out of guesses" check now searches for six valid wrong guesses up front, since some days' 6-letter words left too few when picked one at a time
+
 ## v1.32
 
 **Sleep (optional)**

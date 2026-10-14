@@ -23,7 +23,7 @@ const log = (...a) => console.log(...a);
 // 1) database: Supabase-like roles and auth, then Cradle's real scripts (all safe to rerun)
 async function setupDb() {
   const c = new pg.Client({ connectionString: DATABASE_URL }); await c.connect();
-  for (const f of ['tests/support/auth-shim.sql', 'supabase/1-setup.sql', 'supabase/2-family.sql', 'supabase/3-notifications.sql', 'supabase/5-status.sql'])
+  for (const f of ['tests/support/auth-shim.sql', 'supabase/1-setup.sql', 'supabase/2-family.sql', 'supabase/3-notifications.sql', 'supabase/5-status.sql', 'supabase/7-owlet.sql'])
     await c.query(fs.readFileSync(path.join(repo, f), 'utf8'));
   await c.query('grant all on all tables in schema public to service_role');
   await c.end(); log('✓ database ready');
