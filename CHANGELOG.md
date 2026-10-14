@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.37
+
+**Terms and privacy, accepted and recorded**
+- **[docs/terms.md](docs/terms.md):** a plain-language Terms and Privacy notice (version 2026-10-15) covering: not medical advice, what's stored and where, who can see it (including whoever runs the Cradle), notifications and the Owlet connection, and how to export or erase. Edit it to fit how you run your Cradle
+- **New `supabase/9-terms.sql`** (recommended once others use your Cradle): the terms versions with the SHA-256 of their exact text, an append-only record of acceptances (version, fingerprint, server time, app version), and a restrictive row rule so the log only syncs after the current version is accepted. **Deploy the app first, then run it**
+- **In the app:** after signing in or creating an account, the terms screen shows until **Agree and continue**; **Sign out** is offered too. When the terms change, it says when you accepted the last version and asks again. An app with an older copy of the terms says to reload. **About** links the terms and shows when you accepted them
+- **About shows the right version number.** It had stayed at v1.30 since then; it now comes from the app's version
+- Admin queries 37 and 38: who accepted which version, and who hasn't yet
+- New test: `tests/terms.test.mjs` (23 checks), which also checks the doc, the app, and the SQL carry the same text and fingerprint. The test runner keeps the requirement off for the other tests
+
 ## Docs: how sign-in and integrations authenticate (no app change)
 
 - **[How it works](docs/how-it-works.md#how-each-connection-is-authenticated):** a table of every connection (phone to Supabase Auth, the database, the Owlet function; the schedules to the functions; the functions to Owlet and the push services; the status page; GitHub and Netlify) with how it authenticates and what it's allowed to do. Corrected: the Edge Functions do use the service key, which Supabase gives them automatically; the app never does

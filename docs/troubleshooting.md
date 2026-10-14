@@ -147,6 +147,12 @@ Check **Who can see it** under **Your picture**: **Only me** shows the letter to
 **A photo won't upload**
 Use a regular photo (JPEG, PNG, WebP, or an iPhone photo, which the phone converts). Very unusual formats may not open in the browser.
 
+## Terms and privacy
+
+**"This copy of Cradle has different terms."** The terms changed on the server, and this phone has an older copy of Cradle. Close Cradle completely and open it again (or refresh the browser) to get the latest version.
+
+**The terms screen keeps coming back.** Tap **Agree and continue** and wait for it to close. If it says it couldn't save, check the connection. Until the terms are accepted, the log doesn't sync on that phone.
+
 ## Owlet Dream Sock
 
 See [Owlet troubleshooting](owlet.md#troubleshooting): wrong password or region, *This Cradle isn't set up for Owlet yet*, *Owlet signed Cradle out*, and sleep that isn't logged.

@@ -21,11 +21,14 @@ const env = { ...process.env, DATABASE_URL, CRADLE_APP: pathToFileURL(path.join(
 const log = (...a) => console.log(...a);
 
 // 1) database: Supabase-like roles and auth, then Cradle's real scripts (all safe to rerun)
+// Turns the terms requirement off (no current version), so only terms.test.mjs sees the agreement screen
+const TERMS_OFF = 'delete from public.cradle_terms_acceptances; delete from public.cradle_terms';
 async function setupDb() {
   const c = new pg.Client({ connectionString: DATABASE_URL }); await c.connect();
-  for (const f of ['tests/support/auth-shim.sql', 'supabase/1-setup.sql', 'supabase/2-family.sql', 'supabase/3-notifications.sql', 'supabase/5-status.sql', 'supabase/7-owlet.sql'])
+  for (const f of ['tests/support/auth-shim.sql', 'supabase/1-setup.sql', 'supabase/2-family.sql', 'supabase/3-notifications.sql', 'supabase/5-status.sql', 'supabase/7-owlet.sql', 'supabase/9-terms.sql'])
     await c.query(fs.readFileSync(path.join(repo, f), 'utf8'));
   await c.query('grant all on all tables in schema public to service_role');
+  await c.query(TERMS_OFF);   // the terms requirement is off except in terms.test.mjs
   await c.end(); log('✓ database ready');
 }
 
@@ -78,6 +81,7 @@ try {
     .sort().filter(f => !filters.length || filters.some(x => f.includes(x)));
   for (const f of files) {
     const r = await runTest(f); results.push(r);
+    { const c = new pg.Client({ connectionString: DATABASE_URL }); await c.connect(); await c.query(TERMS_OFF).catch(() => {}); await c.end(); }   // even if a test stopped early
     log(`${r.ok ? '✅' : '❌'} ${f.padEnd(34)} ${String(r.pass).padStart(3)} passed${r.fail ? `, ${r.fail} failed` : ''}  (${r.secs}s)`);
     if (!r.ok) log(r.text.split('\n').filter(l => /^FAIL |^errors |Error|TIMEOUT/.test(l)).slice(0, 12).map(l => '     ' + l.slice(0, 220)).join('\n'));
     // On GitHub, also post failures as annotations, so they show on the commit and in the API

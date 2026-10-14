@@ -107,6 +107,15 @@ If you're the only one in your family, it's simply your own choice.
 
 The database enforces this, not just the app: a sign-in that skipped the code step gets none of the log, can't add to it, doesn't see the share key, and can't change the family.
 
+## Terms and privacy
+
+If whoever runs your Cradle has turned it on (`supabase/9-terms.sql`), you're asked to read and accept this Cradle's [Terms and Privacy](terms.md) after signing in or creating an account. Tap **Agree and continue**.
+
+- **What's recorded:** which version you accepted, a fingerprint of its exact text, the date and time (from the server's clock), and the Cradle version that showed it. Records are only ever added.
+- **Until you accept,** your log doesn't sync on that phone. The database enforces this, like two-step sign-in. **Sign out** is there if you'd rather not.
+- **When the terms change,** you're asked again, with the date you accepted the last version.
+- **To read them again,** open **About**: it links the terms and shows when you accepted them.
+
 ## Signing out
 
 Profile menu, then **Sign out**. Your log stays saved in your account, and also stays on the phone so it's there next time.

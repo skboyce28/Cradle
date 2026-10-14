@@ -115,6 +115,15 @@ When an update includes changes to `supabase/2-family.sql` (or `3-notifications.
 
 So phones can get a notification when a feed is due, even with Cradle closed: run [`supabase/3-notifications.sql`](../supabase/3-notifications.sql), create the `cradle-notify` Edge Function, and schedule it with [`supabase/4-notify-schedule.sql`](../supabase/4-notify-schedule.sql), using the function's web address exactly (it's case-sensitive). Then check the schedule gets a 200 answer, not 404. About 10 minutes, all in the Supabase dashboard. Step by step: [Notifications](notifications.md#setting-them-up-once-for-your-cradle).
 
+## Recommended when others use your Cradle: terms and privacy
+
+[`docs/terms.md`](terms.md) is a plain-language Terms and Privacy notice: not medical advice, what's stored and who can see it (including you, as the person running it), the optional features, and how to export or erase. To ask everyone to accept it:
+
+1. Read it, and edit it to fit how you run your Cradle. If you edit it, copy the same text into `cradle.html` (the `id="termsText"` block), and put its SHA-256 in [`supabase/9-terms.sql`](../supabase/9-terms.sql) (`shasum -a 256` of the text without its trailing newline; `tests/terms.test.mjs` checks all three match). Deploy that version of Cradle first.
+2. Then run `9-terms.sql` in the SQL Editor.
+
+From then on, each person sees the terms after signing in (or creating an account) and taps **Agree and continue**. The database records which version they accepted and when, and doesn't sync their log until they have. To change the terms later, give them a new version and do both steps again; everyone is asked to accept the new version. Details: [Accounts and families](accounts-and-families.md#terms-and-privacy).
+
 ## Optional: status page
 
 Every deploy includes a status page at your address plus `/status/`, with the live version and recent deployments from GitHub. To add database health and uptime:

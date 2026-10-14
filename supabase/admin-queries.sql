@@ -285,3 +285,20 @@ order by o.ok_at desc nulls last;
 delete from public.cradle_owlet
 where household_id = (select household_id from public.cradle_members m join auth.users u on u.id = m.user_id
                       where u.email = 'their@email.com' order by m.joined_at desc limit 1);
+
+
+-- ============================================================
+-- Terms and privacy (v1.37; after 9-terms.sql)
+-- ============================================================
+
+-- 37. Who accepted which version of the terms, and when
+select u.email, a.version, a.accepted_at, a.app_version
+from public.cradle_terms_acceptances a join auth.users u on u.id = a.user_id
+order by a.accepted_at desc;
+
+-- 38. Who hasn't accepted the current version yet
+select u.email, u.created_at
+from auth.users u
+where not exists (select 1 from public.cradle_terms_acceptances a
+                  where a.user_id = u.id and a.version = public.cradle_terms_current_version())
+order by u.created_at;

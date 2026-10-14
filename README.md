@@ -77,6 +77,7 @@ Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 | [Deployment and architecture](docs/deployment.md) | How it's deployed (GitHub, Netlify, Supabase), the schema, admin queries, and the design decisions behind it |
 | [Notifications](docs/notifications.md) | Optional feed-due notifications: using them, the 10-minute setup in Supabase, how they work, privacy |
 | [Owlet Dream Sock](docs/owlet.md) | Optional automatic sleep from the sock: connecting, how sleep is detected, the setup in Supabase, privacy |
+| [Terms and Privacy](docs/terms.md) | The plain-language terms each person accepts (when turned on with `9-terms.sql`); edit them to fit how you run your Cradle |
 | [Troubleshooting](docs/troubleshooting.md) | Sign-in problems, missing data, sync, alarms, printing |
 | [Product overview](docs/overview.html) | A one-page visual tour with screenshots. Your Netlify site publishes it at `/overview/` (for example `https://your-cradle.netlify.app/overview/`), which is the easiest link to share. |
 | [Changelog](CHANGELOG.md) | What changed in each version |

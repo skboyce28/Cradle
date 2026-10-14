@@ -82,6 +82,7 @@ Two scripts in `supabase/` build the schema. Both are idempotent and safe to rer
 | `cradle_feedback` | Support feedback: who sent it and their family at the time, kind (`bug`, `idea`, `question`), the text, an optional screenshot (a JPEG data URL), app version and device, and the review: `status` (`new`, `reviewed`, `planned`, `used`, `wontdo`), `reply`, and when and by whom it was reviewed |
 | `cradle_admins` | Accounts that may read and review feedback. Only added in the SQL Editor. |
 | `cradle_schema_log`, `cradle_probes`, `cradle_status_config` | Optional, from `5-status.sql`: which scripts ran and when, uptime checks, and the site address to check. No direct access from the app. See [the status page](deployment.md#status-page). |
+| `cradle_terms`, `cradle_terms_acceptances` | Recommended, from `9-terms.sql`: each version of the terms with the SHA-256 of its text, and each person's acceptances (version, fingerprint, server time, app version). Only ever added to. No direct access from the app. See [Terms and privacy](accounts-and-families.md#terms-and-privacy). |
 | `cradle_owlet`, `cradle_owlet_tries` | Optional, from `7-owlet.sql`: each family's Owlet sock (serial number, time zone, the latest state, and Owlet's sign-in tokens encrypted with a key that only the Edge Function has), and connection attempts. No direct access from the app. See [Owlet Dream Sock](owlet.md). |
 | `cradle_push_subs`, `cradle_push_keys` | Optional, from `3-notifications.sql`: phones that get feed-due notifications, and the notification keys. See [Notifications](notifications.md#how-it-works). |
 
@@ -92,6 +93,7 @@ A trigger (`cradle_touch`) stamps `updated_at` with the server's clock and recor
 Every table has row-level security on.
 
 - **`cradle_items`:** you can read and write a row only if its `household_id` is one of your families, via `cradle_my_households()`. You also can't write a row into a family you're not in.
+- **Terms on `cradle_items`** (with `9-terms.sql`): a third restrictive rule calls `cradle_terms_ok()`, which passes once this person has accepted the current terms version (or when none is set up). Until then they see no rows and can't write any; the app shows the terms instead.
 - **Two-step sign-in on `cradle_items`:** a second, *restrictive* rule (both must pass) calls `cradle_mfa_ok(household_id)`. It passes when the sign-in finished the code step (`aal2` in the token), or when the account doesn't use two-step sign-in and its family doesn't require it. So a password-only sign-in of someone who uses it, or of anyone in a family that requires it, sees no rows and can't write any.
 - **Families, members, invites:** you can only *read* rows for your own families. You can't write them directly at all.
 - **`cradle_join_tries`, `cradle_players`, `cradle_scores`, `cradle_profiles`, `cradle_feedback`, `cradle_admins`:** no direct access from the app; only through the functions below.
@@ -122,6 +124,7 @@ All changes to families go through these functions, which check permissions them
 | `cradle_my_feedback()` | anyone signed in | Your last 50 with status and reply (the screenshot only as yes/no), whether you're an admin, and for admins the number of new ones |
 | `cradle_feedback_inbox(status)`, `cradle_feedback_shot(id)`, `cradle_feedback_review(id, status, reply)` | admins (with the code step if they use two-step sign-in) | The inbox (everyone's feedback with email, family, and counts by status, filtered by status); one screenshot; set the status and reply. Setting it back to New clears the review. |
 | `cradle_is_admin()`, `cradle_admin_check()` | used inside the functions above only | Whether the caller is in `cradle_admins`; the check that refuses everyone else |
+| `cradle_terms_status()` / `cradle_terms_accept(version, sha256, app_version)` | anyone signed in | The current version and fingerprint, whether you've accepted it and when, and your history. Accepting only works for the current version with its exact fingerprint, and records it once |
 | `cradle_status()` | anyone, without signing in | Counts and health for the status page: schema history, database size, families in use (the one each account currently opens) and how many are shared, accounts, entries, the notification job's last 24 hours, and uptime. No names, emails, or entries. |
 | `cradle_probe()`, `cradle_status_set_site(url)` | the schedule only | Records and starts uptime checks; sets the site address |
 | `cradle_push_info(endpoint)` | anyone signed in | Optional notifications: the public notification key, and this phone's setting |
