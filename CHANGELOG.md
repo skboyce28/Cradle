@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.35
+
+**Owlet: status page, outside check, and where sleep came from**
+- **Dashboard and Log:** sleep is split by source. The Log's Sleep tile says how much came from Owlet; the Dashboard's Sleep tile gives the share (*🦉 80% from Owlet, 20% by hand*); the Daily sleep chart has a thin teal line beside each bar for the Owlet part, and tapping a bar shows both. The enlarged chart's table adds the Owlet minutes. Overlaps are still counted once
+- **Status page:** an **Owlet sleep** row: socks connected, the last reading, and the every-minute job's runs in 24 hours. It warns when the schedule is missing (the first setup missed it, silently), a sock hasn't been read in 10 minutes, or one needs connecting again. Counts only. Rerun `5-status.sql` (v1.35)
+- **Outside check** (`tools/monitor.py`): an **Owlet checks** line with the same rules, when a sock is connected
+- **Privacy fix in the Edge Function:** the scheduled check's answer listed each sock's state (asleep or awake). The function's address has to be open for the schedule, so the answer is now counts only (`{"checked":1,"ok":1,"errors":0}`). Redeploy `cradle-owlet` with the new `index.ts`
+- **Product overview:** a new *Sleep that logs itself* section for the Owlet Dream Sock, with two new screenshots (the Log with a sleep from Owlet, and the Daily sleep chart split by source), plus mentions in the opening and the fine print. `tools/screenshots/take.mjs` takes them (`SHOTS=owlet` for just these)
+- Tests: owlet (44), sleep (37), status (39), deploy-gate (16). The status and deploy-gate tests clear other tests' Owlet rows first
+
 ## Netlify build fix (no app change)
 
 - v1.33's Netlify builds failed with **Exposed secrets detected**: Netlify's smart secret scanning flagged the Owlet app identifiers (Google-style API keys and Ayla app IDs) in the `cradle-owlet` Edge Function, so v1.33 and v1.34 never went live. They're public values built into Owlet's app, and the function runs on Supabase, not in the published site. `netlify.toml` now allows exactly those four values and that one file (`SECRETS_SCAN_SMART_DETECTION_OMIT_VALUES`, `SECRETS_SCAN_OMIT_PATHS`); scanning stays on for everything else

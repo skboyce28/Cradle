@@ -207,7 +207,7 @@ footer code{font-family:var(--mono); font-size:13px}
     <div>
       <p class="eyebrow">Family baby log</p>
       <h1 style="margin-top:14px">The baby log <em>the whole family</em> shares.</h1>
-      <p class="lede">Feeds, diapers, pumping, Vitamin D, baths, tummy time, sleep, and weights, logged in a few taps and on every family phone within seconds. Big buttons for 3am, clear trends for the pediatrician, and a few games for the waiting moments.</p>
+      <p class="lede">Feeds, diapers, pumping, Vitamin D, baths, tummy time, sleep, and weights, logged in a few taps and on every family phone within seconds. With an Owlet Dream Sock, sleep logs itself. Big buttons for 3am, clear trends for the pediatrician, and a few games for the waiting moments.</p>
       <div class="chips">
         <span class="chip"><i style="background:var(--accent)"></i>Works offline</span>
         <span class="chip"><i style="background:var(--bottle)"></i>Syncs between family phones</span>
@@ -233,7 +233,7 @@ footer code{font-family:var(--mono); font-size:13px}
   </div>
   <div class="feats">
     <div class="feat"><span class="fi">🍼</span><h3>Feeds, your way</h3><p>Breast with a timer and which side to start on, bottles in mL, and pumping, alone or together. Triple feeding fits on one row.</p></div>
-    <div class="feat"><span class="fi">🧷</span><h3>Diapers, Vitamin D, baths, tummy time, sleep</h3><p>Wet and stool goals that follow your baby's day of life, a Vitamin D check with streaks, baths, timed tummy time with a daily goal, and optional sleep tracking with naps, night sleep, and the wake window, logged automatically from an Owlet Dream Sock if you have one.</p></div>
+    <div class="feat"><span class="fi">🧷</span><h3>Diapers, Vitamin D, baths, tummy time, sleep</h3><p>Wet and stool goals that follow your baby's day of life, a Vitamin D check with streaks, baths, timed tummy time with a daily goal, and optional sleep tracking with naps, night sleep, and the wake window. Have an Owlet Dream Sock? <a href="#owlet">Sleep logs itself</a>.</p></div>
     <div class="feat"><span class="fi">🧊</span><h3>Milk storage</h3><p>Pumped milk in the fridge and freezer, oldest first, with CDC limits flagged. Thaw, use as a bottle feed, and print or scan barcode labels.</p></div>
     <div class="feat"><span class="fi">⚖️</span><h3>Weight and growth</h3><p>Visit weights and weighted feeds in grams or lb and oz, charted against birth weight.</p></div>
     <div class="feat"><span class="fi">🌙</span><h3>Night shift</h3><p>A dim screen with huge buttons for one-handed feeds in the dark, in warm, moonlight, or red colors.</p></div>
@@ -341,6 +341,27 @@ footer code{font-family:var(--mono); font-size:13px}
   </div>
 </section>
 
+<section class="wrap" id="owlet" style="padding-top:0">
+  <div class="family-grid">
+    <div class="family-shots">
+      <div class="phone"><img src="screenshots/owlet-log.webp" alt="The Log: asleep 35 minutes since 2:06pm, from Owlet, with the sock's status checked a minute ago"></div>
+      <div class="phone"><img src="screenshots/owlet-chart.webp" alt="The Dashboard's Daily sleep chart, night and naps, with a thin teal line for the part from Owlet, and 89% from Owlet, 11% by hand"></div>
+    </div>
+    <div>
+      <div class="sec-head" style="margin-bottom:0">
+        <p class="eyebrow">Owlet Dream Sock (optional)</p>
+        <h2>Sleep that logs itself.</h2>
+        <p class="lede">Connect an Owlet Dream Sock once and Cradle logs every sleep it sees, on every family phone. Three minutes asleep starts a sleep; five minutes awake, or the sock on its charger, ends it. Sleep you tap in by hand is merged in and never counted twice, and the Dashboard shows how much came from each.</p>
+      </div>
+      <div class="flow">
+        <div><span class="n">1</span><p><b>Turn on Sleep.</b> Cradle asks if you have a Dream Sock, or tick <b>🦉 Dream Sock</b> beside Sleep any time later.</p></div>
+        <div><span class="n">2</span><p><b>Sign in to Owlet once.</b> The password is used to connect and never saved. Cradle keeps Owlet's sign-in, encrypted, in your own Supabase project.</p></div>
+        <div><span class="n">3</span><p><b>Watch it fill in.</b> Sleeps appear marked “from Owlet”, checked about once a minute. Heart rate and oxygen are never read into Cradle.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="wrap" id="themes" style="padding-top:0">
   <div class="sec-head" style="margin-inline:auto;text-align:center;justify-items:center">
     <p class="eyebrow">Appearance</p>
@@ -422,6 +443,7 @@ footer code{font-family:var(--mono); font-size:13px}
         <li>No password-reset email without your own email sender, and no backup codes for two-step sign-in (whoever runs your Cradle can reset it).</li>
         <li>Free Supabase projects pause after about a week unused.</li>
         <li>One baby per family.</li>
+        <li>The Owlet Dream Sock connection is unofficial: Owlet has no public API, so it uses the same calls as Owlet's app and can stop working if Owlet changes them. It only logs sleep; keep using Owlet's app for alerts.</li>
       </ul>
     </article>
   </div>

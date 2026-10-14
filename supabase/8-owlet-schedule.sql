@@ -22,7 +22,7 @@ select cron.schedule(
      ) $$
 );
 
--- Check the function answered (wait two minutes). 200 with {"checked":1,...} means working:
+-- Check the function answered (wait two minutes). 200 with {"checked":1,"ok":1,"errors":0} means working:
 --   select status_code, content, created from net._http_response order by created desc limit 5;
 -- Turn it off (the connection stays; reconnecting isn't needed to turn it back on):
 --   select cron.unschedule('cradle-owlet');

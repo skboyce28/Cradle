@@ -116,5 +116,11 @@ ok('off again: hidden everywhere, nothing deleted',!(await p.isVisible('#addSlee
   const q=await phone(JSON.stringify(D));
   // 2h from last night past midnight, plus 12:00 to 1:30pm merged = 3h 30m (not 4h)
   ok('overlapping hand and Owlet sleeps are merged in the totals',/3h 30m of 15h goal/.test(await txt(q,'#sleepCard')),await txt(q,'#sleepCard'));
+  ok('the Log tile says how much came from Owlet',/🦉 1h from Owlet/.test(await txt(q,'#sleepCard')),await txt(q,'#sleepCard'));
+  await q.click('#tabs [data-tab=dash]');await q.clock.runFor(500);
+  ok('Dashboard: the Sleep tile gives the Owlet and by-hand split',/🦉 \d+% from Owlet, \d+% by hand/.test(await txt(q,'#kpis')),await txt(q,'#kpis'));
+  ok('…and the chart has a thin Owlet line on that day, with the split in its tip',(await q.$$('#chart7 .owlbar')).length===1&&/🦉 Owlet 1h, by hand 2h 30m/.test(await q.$eval(`#chart7 .hit[data-k="${K}"]`,e=>e.dataset.tip)),await q.$eval(`#chart7 .hit[data-k="${K}"]`,e=>e.dataset.tip));
+  ok('days with only hand-logged sleep say so',/All logged by hand/.test(await q.$eval(`#chart7 .hit[data-k="2026-10-08"]`,e=>e.dataset.tip)));
+  await q.screenshot({path:OUT+'sleep-owlet-dash.png',fullPage:true});
   await q.close()}
 console.log('errors',errs);await b.close();

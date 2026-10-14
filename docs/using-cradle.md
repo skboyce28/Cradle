@@ -136,7 +136,7 @@ The 7 or 14 days ending on the selected day:
 - Diapers against goals, Vitamin D streak, side balance (which side you started on, and nursing time on each side from the split slider), longest stretch between feeds
 - Baths: how many, sponge or tub, and when the last one was
 - Tummy time: minutes per day, how many completed days met your goal, today so far, and a daily chart with the goal line
-- Sleep (when turned on): hours per day over the days with sleep logged, how many met your goal, the longest stretch, today so far, and a daily chart of night sleep and naps with the goal line
+- Sleep (when turned on): hours per day over the days with sleep logged, how many met your goal, the longest stretch, today so far, and a daily chart of night sleep and naps with the goal line. With an [Owlet Dream Sock](owlet.md), the tile also gives how much came from Owlet and how much was logged by hand, and a thin teal line beside each bar shows the Owlet part
 - Weight against birth weight: weigh-ins are filled dots joined by a line. A weighted feed shows its before weight as an open circle and its after weight (which includes the milk just taken) as a small dot above it, joined by a dashed line. Only before weights count toward Latest, Lowest, and the other weight numbers
 
 **Filter chips** under the Print button narrow the Dashboard to one topic: **Feeds**, **Bottle & pump**, **Diapers**, **Vitamin D**, **Tummy time**, **Sleep** (when turned on), **Weight**, or **Baths**. Only that topic's cards and insights show; **All** brings everything back. Cradle remembers your choice on this phone, and **Print** prints what's showing.

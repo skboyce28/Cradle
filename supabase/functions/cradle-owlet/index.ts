@@ -164,7 +164,9 @@ export async function pollAll({ key, rpc, api }) {
   const due = (await rpc('cradle_owlet_due', {})) || [];
   const out = [];
   for (const row of due) out.push(await pollOne(row, { key, rpc, api }));
-  return { checked: out.length, results: out.map((r) => ({ state: r.state, action: r.action, error: r.error })) };
+  // Counts only: the scheduled call can't sign in, so its answer must not say which socks are asleep
+  // (the states are in the database, readable only by each family through cradle_owlet_status).
+  return { checked: out.length, ok: out.filter((r) => !r.error).length, errors: out.filter((r) => r.error).length };
 }
 
 // ---- connect: from the app, with the person's own sign-in

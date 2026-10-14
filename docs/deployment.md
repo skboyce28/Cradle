@@ -180,6 +180,7 @@ Accounts made with a username have the email `username@cradle.cfg`. Nobody can a
 | Live version | `/version.json`, written by the build (version, commit, deploy time, branch, context) | Nothing |
 | Deployments | The public GitHub API: commits on `main`, 10 at a time (**Show 10 older** goes back through the whole history, **Show fewer** returns to 10), each with its GitHub Actions test run. **🔗** next to a commit links to that deployment (`/status/#d-` plus the first 7 characters of the commit, like `/status/#d-b74d1d0`) and copies the link; opening it loads older pages until that deployment shows, then outlines it and scrolls to it. A commit that isn't on `main` says so. The repository comes from Netlify's `REPOSITORY_URL` (or `REPOSITORY_URL` in `.env`) | Nothing. GitHub allows 60 requests an hour per visitor without signing in; the page makes 2 every 5 minutes, plus 1 or 2 for each Show 10 older |
 | Database, notifications, schema history | `cradle_status()`, called without signing in (as Supabase's anon role) | `5-status.sql` |
+| Owlet sleep | `cradle_status()` again: how many socks are connected, how many need connecting again or haven't been read in 10 minutes, the last reading, and the `cradle-owlet` job's runs in 24 hours. Counts only | `7-owlet.sql`, then rerun `5-status.sql` |
 | Uptime | A pg_cron job asks the site for `/version.json` every 5 minutes through pg_net; the next run records the answer. Response times are approximate | `6-status-schedule.sql`, with your site's address |
 
 The page refreshes the site and database every minute while it's open, and GitHub every 5 minutes (or when you tap **Refresh**). On a phone it shows the same layout as on a computer, zoomed to fit; pinch to zoom in. Its security policy allows connections only to the site, your Supabase project, and `api.github.com`.
@@ -207,6 +208,7 @@ Without the secret, the deploy job warns and deploys nothing, and pushes skip th
 | Database answers | `cradle_status()` doesn't answer (Supabase down or paused). It reads the address and publishable key from the status page, so it needs no secrets |
 | Uptime checks running | The 5-minute checks inside Supabase haven't run for 20 minutes (only if set up) |
 | Notification job | Under 90% of the every-minute job's runs succeeded in 24 hours (only if set up) |
+| Owlet checks | With a sock connected: the `cradle-owlet` schedule is missing, a sock hasn't been read in 10 minutes, or one needs connecting again |
 | Deploy up to date | `main`'s newest commit passed its tests more than 45 minutes ago but isn't live |
 
 A failed check fails the run, and GitHub emails you about failed scheduled runs (check **Settings**, then **Notifications**, then **Actions** on your GitHub account). Each run's summary shows a table of results. Run it any time from the **Actions** tab (**Monitor**, then **Run workflow**).

@@ -86,8 +86,9 @@ ok('vitals aren’t stored anywhere',!/131|"hr"|"ox"/.test(row)&&sql(`select cou
 // asleep: held 3 minutes before it starts
 OW.ss=15;sql(`update cradle_owlet set polled_at=null where household_id='${H}'`);
 let r=await poll();
+ok('the scheduled answer is counts only: no states, families, or serial numbers',Object.keys(r).sort().join()==='checked,errors,ok'&&!/asleep|awake|AC0|[0-9a-f]{8}-/.test(JSON.stringify(r)),JSON.stringify(r));
 ok('the every-minute check: asleep seen, not logged yet',r.checked>=1&&sql(`select state||'|'||pend_state from cradle_owlet where household_id='${H}'`)==='awake|asleep'&&sql(`select count(*) from cradle_items where household_id='${H}' and data->>'src'='owlet'`)==='0',JSON.stringify(r));
-r=await poll();ok('a second check within 50 seconds is skipped',!r.results.length||!r.results.some(x=>x.state));
+r=await poll();ok('a second check within 50 seconds is skipped',r.checked===0,JSON.stringify(r));
 sql(`update cradle_owlet set pend_since=now()-interval '12 minutes', polled_at=null where household_id='${H}'`);
 r=await poll();
 const it=sql(`select data::text from cradle_items where household_id='${H}' and data->>'src'='owlet'`);
@@ -122,11 +123,11 @@ const encA=sql(`select enc_access from cradle_owlet where household_id='${H}'`);
 sql(`update cradle_owlet set access_exp=now()-interval '1 minute', polled_at=null where household_id='${H}'`);await poll();
 ok('an expired Owlet token is renewed with the stored sign-in token, no password',sql(`select enc_access from cradle_owlet where household_id='${H}'`)!==encA&&sql(`select error is null from cradle_owlet where household_id='${H}'`)==='t');
 OW.expireNext=true;sql(`update cradle_owlet set polled_at=null where household_id='${H}'`);r=await poll();
-ok('a token Owlet rejects early is renewed and the check still works',r.results[0]&&r.results[0].state&&!r.results[0].error&&sql(`select error is null from cradle_owlet where household_id='${H}'`)==='t',JSON.stringify(r));
+ok('a token Owlet rejects early is renewed and the check still works',r.checked===1&&r.ok===1&&r.errors===0&&sql(`select error is null from cradle_owlet where household_id='${H}'`)==='t',JSON.stringify(r));
 // Owlet signs Cradle out
 OW.refresh.clear();OW.access.clear();sql(`update cradle_owlet set access_exp=now()-interval '1 minute', polled_at=null where household_id='${H}'`);await poll();
 ok('signed out by Owlet: checks stop and it asks to connect again',sql(`select needs_reconnect from cradle_owlet where household_id='${H}'`)==='t'&&sql(`select count(*) from cradle_owlet where household_id='${H}' and polled_at > now() - interval '1 second'`)==='0'||sql(`select needs_reconnect from cradle_owlet where household_id='${H}'`)==='t');
-r=await poll();ok('…and isn’t checked again until reconnected',!r.results.some(x=>x&&x.state));
+r=await poll();ok('…and isn’t checked again until reconnected',r.checked===0);
 await openSettings(P);await P.waitForTimeout(500);
 ok('Settings says to connect again, with the form',/Owlet signed Cradle out/.test(await txt(P,'#owlBox'))&&await P.isVisible('#owlPass'));
 ok('the Log line says so too',(await closeModals(P),/Owlet needs connecting again/.test(await txt(P,'#sleepLine'))),await txt(P,'#sleepLine'));

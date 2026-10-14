@@ -212,7 +212,24 @@ function render(){
     if(!jobs.includes('cradle-notify'))comps.push({name:'Notifications',pill:{k:'',t:'Not set up'},detail:'Optional; see docs/notifications.md'});
     else{const r=n&&n.runs?n.ok/n.runs:null,fnOk=S.notify_fn&&S.notify_fn.calls?S.notify_fn.ok/S.notify_fn.calls:null;
       const k=r==null?{k:'warn',t:'No runs in 24 h'}:(r>=.95&&(fnOk==null||fnOk>=.95))?{k:'ok',t:'Operational'}:{k:'warn',t:'Degraded'};
-      comps.push({name:'Notifications',pill:k,detail:`Every-minute job: ${n&&n.runs?n.ok+' of '+n.runs+' runs OK in 24 h, last '+ago(n.last):'no runs in 24 h'}${S.notify_fn&&S.notify_fn.calls?` · function answered OK ${S.notify_fn.ok} of ${S.notify_fn.calls} times in 6 h`:''}${n&&n.last_error?` · last error ${ago(n.last_error.at)}`:''}`})}}
+      comps.push({name:'Notifications',pill:k,detail:`Every-minute job: ${n&&n.runs?n.ok+' of '+n.runs+' runs OK in 24 h, last '+ago(n.last):'no runs in 24 h'}${S.notify_fn&&S.notify_fn.calls?` · scheduled functions answered OK ${S.notify_fn.ok} of ${S.notify_fn.calls} times in 6 h`:''}${n&&n.last_error?` · last error ${ago(n.last_error.at)}`:''}`})}}
+  // Owlet Dream Sock checks (the every-minute cradle-owlet job): counts only
+  if(S){const o=S.owlet,jobs=S.jobs||[];
+    if(!o)comps.push({name:'Owlet sleep',pill:{k:'',t:'Not set up'},detail:'Optional; see docs/owlet.md'});
+    else{const rr=o.runs||{},sched=jobs.includes('cradle-owlet'),n=o.connected||0;
+      let k={k:'ok',t:'Operational'};
+      if(!sched)k=n?{k:'warn',t:'Not scheduled'}:{k:'',t:'Not scheduled'};
+      else if(!n)k={k:'',t:'No socks connected'};
+      else if(o.stale)k={k:'warn',t:'Checks behind'};
+      else if(o.reconnect||o.errors)k={k:'warn',t:'Degraded'};
+      const parts=[n?`${n} sock${n>1?'s':''} connected`:'No socks connected yet'];
+      if(o.last_ok)parts.push('last reading '+ago(o.last_ok));
+      if(sched&&rr.runs)parts.push(`every-minute job: ${rr.ok} of ${rr.runs} runs OK in 24 h`);
+      if(!sched)parts.push('the schedule is missing: run supabase/8-owlet-schedule.sql');
+      if(o.stale)parts.push(`${o.stale} not read in 10+ min`);
+      if(o.reconnect)parts.push(`${o.reconnect} need${o.reconnect>1?'':'s'} connecting again`);
+      if(o.errors)parts.push(`${o.errors} with an Owlet error`);
+      comps.push({name:'Owlet sleep',pill:k,detail:parts.join(' · ')})}}
   // Automated tests: the GitHub Actions run on every push to main
   const R=runs.r&&runs.r.workflow_runs||[],lastRun=R.find(r=>r.status==='completed');
   if(runs.err)comps.push({name:'Automated tests',pill:{k:'',t:'Unavailable'},detail:runs.err.code===403?'GitHub’s hourly limit for this connection was reached. Try again later.':'Couldn’t reach GitHub'});

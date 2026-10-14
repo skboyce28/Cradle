@@ -34,7 +34,7 @@ r=await ign({COMMIT_REF:''});ok('nothing to check: builds as usual',r.code===1);
 
 // --- the outside check against the built status site
 const SITE='http://localhost:8097';
-sql(`delete from cron.job_run_details; delete from cron.job; delete from public.cradle_probes`);
+sql(`delete from cron.job_run_details; delete from cron.job; delete from public.cradle_probes; delete from public.cradle_owlet`);
 sql(`select cradle_status_set_site('https://cradle-test.netlify.app')`);
 sql(`insert into public.cradle_probes(at,done_at,code,ok,ms) values (now()-interval '4 minutes',now(),200,true,150)`);
 sql(`insert into cron.job(jobname) values ('cradle-notify')`);
@@ -56,6 +56,12 @@ sql(`insert into public.cradle_probes(at,done_at,code,ok,ms) values (now(),now()
 sql(`insert into cron.job_run_details(jobid,status,start_time) select (select jobid from cron.job where jobname='cradle-notify'),'failed',now()-g*interval '1 min' from generate_series(1,20) g`);
 r=await mon();ok('notification job failing: fails',r.code===1&&/FAIL  Notification job \| 50 of 70/.test(r.out));
 sql(`delete from cron.job_run_details where status='failed'`);
+// an Owlet sock that stopped being read, then fine again
+{const hh=sql(`select id from cradle_households limit 1`);sql(`insert into public.cradle_owlet(household_id,dsn,enc_refresh,ok_at) values ('${hh}','AC0','v1:x',now()-interval '30 minutes')`);
+  r=await mon();ok('Owlet sock not read for 30 min and no schedule: fails',r.code===1&&/FAIL  Owlet checks \| schedule missing .*1 not read in 10\+ min/.test(r.out),r.out.split('\n').filter(l=>/Owlet/.test(l)).join(' '));
+  sql(`insert into cron.job(jobname) values ('cradle-owlet'); update public.cradle_owlet set ok_at=now()`);
+  r=await mon();ok('…and passes once it’s scheduled and reading',r.code===0&&/PASS  Owlet checks \| 1 connected, last reading 0 min ago/.test(r.out),r.out.split('\n').filter(l=>/Owlet/.test(l)).join(' '));
+  sql(`delete from public.cradle_owlet; delete from cron.job where jobname='cradle-owlet'`)}
 // the site is down
 r=await mon({CRADLE_SITE_URL:'http://localhost:8095'});ok('site down: fails',r.code===1&&/FAIL  Site loads/.test(r.out));
 r=await mon({CRADLE_SITE_URL:''});ok('no address set: says how to set it',r.code===2&&/Set CRADLE_SITE_URL/.test(r.out));

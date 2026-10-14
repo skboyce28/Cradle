@@ -87,6 +87,19 @@ def main():
                 n = st.get('notify') or {}
                 runs, good = n.get('runs') or 0, n.get('ok') or 0
                 check('Notification job', runs > 0 and good / runs >= 0.9, f'{good} of {runs} runs OK in 24 h')
+            o = st.get('owlet')
+            if o and (o.get('connected') or 0) > 0:
+                last = o.get('last_ok')
+                age = (now - parse_time(last)).total_seconds() / 60 if last else None
+                problems = []
+                if 'cradle-owlet' not in (st.get('jobs') or []):
+                    problems.append('schedule missing (run 8-owlet-schedule.sql)')
+                if o.get('stale'):
+                    problems.append(f"{o['stale']} not read in 10+ min")
+                if o.get('reconnect'):
+                    problems.append(f"{o['reconnect']} need connecting again")
+                check('Owlet checks', not problems,
+                      '; '.join(problems) if problems else f"{o['connected']} connected, last reading {age:.0f} min ago" if age is not None else 'connected')
         except urllib.error.HTTPError as e:
             check('Database answers', e.code == 404, f'HTTP {e.code}' + (' (5-status.sql not run; skipped)' if e.code == 404 else ''))
         except Exception as e:

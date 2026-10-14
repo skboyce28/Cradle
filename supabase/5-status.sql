@@ -64,7 +64,7 @@ end $$;
 -- Everything the status page shows, as JSON
 create or replace function public.cradle_status() returns json
 language plpgsql stable security definer set search_path = public as $$
-declare j jsonb; notify jsonb := null; fn jsonb := null; jobs jsonb := '[]'::jsonb;
+declare j jsonb; notify jsonb := null; fn jsonb := null; jobs jsonb := '[]'::jsonb; owl jsonb := null; owl_runs jsonb := null;
 begin
   -- the scheduled jobs and the notification job's last 24 hours (pg_cron), if it's installed
   if to_regclass('cron.job') is not null then
@@ -80,6 +80,10 @@ begin
                          order by d2.start_time desc limit 1))
         from cron.job_run_details d join cron.job j on j.jobid = d.jobid
         where j.jobname = 'cradle-notify' and d.start_time > now() - interval '24 hours' $q$ into notify;
+      execute $q$
+        select jsonb_build_object('runs', count(*), 'ok', count(*) filter (where d.status = 'succeeded'), 'last', max(d.start_time))
+        from cron.job_run_details d join cron.job j on j.jobid = d.jobid
+        where j.jobname = 'cradle-owlet' and d.start_time > now() - interval '24 hours' $q$ into owl_runs;
     end if;
   end if;
   -- what the notification function answered (pg_net keeps about 6 hours); uptime checks left out
@@ -90,6 +94,19 @@ begin
       from net._http_response r
       where r.created > now() - interval '6 hours'
         and not exists (select 1 from public.cradle_probes p where p.req_id = r.id) $q$ into fn;
+  end if;
+
+  -- Owlet Dream Sock checks (7-owlet.sql), if set up: counts only, never which families or socks
+  if to_regclass('public.cradle_owlet') is not null then
+    execute $q$
+      select jsonb_build_object(
+        'connected', count(*),
+        'reconnect', count(*) filter (where needs_reconnect),
+        'errors', count(*) filter (where error is not null and not needs_reconnect),
+        'stale', count(*) filter (where not needs_reconnect and (ok_at is null or ok_at < now() - interval '10 minutes')),
+        'last_ok', max(ok_at))
+      from public.cradle_owlet $q$ into owl;
+    owl := owl || jsonb_build_object('runs', owl_runs);
   end if;
 
   select jsonb_build_object(
@@ -113,6 +130,7 @@ begin
     'jobs', jobs,
     'notify', notify,
     'notify_fn', fn,
+    'owlet', owl,
     'uptime', jsonb_build_object(
       'site', (select site_url from cradle_status_config where id = 1),
       'last', (select jsonb_build_object('at', at, 'ok', ok, 'code', code, 'ms', ms, 'err', err)
@@ -137,4 +155,4 @@ grant execute on function public.cradle_status() to anon, authenticated;
 revoke execute on function public.cradle_status() from public;
 revoke execute on function public.cradle_probe(), public.cradle_status_set_site(text) from anon, authenticated, public;
 
-insert into public.cradle_schema_log (script, version) values ('5-status.sql', '1.29');
+insert into public.cradle_schema_log (script, version) values ('5-status.sql', '1.35');

@@ -26,6 +26,7 @@ The Log's asleep or awake line also shows the sock's status, like **🦉 Asleep,
 
 - **Disconnect** (in Settings) stops the checks and deletes Cradle's Owlet sign-in. Sleep already logged stays.
 - **Turning Sleep off** in Settings stops Owlet from adding sleep, but the connection stays.
+- **Owlet or by hand?** Rows from the sock say **from Owlet**. The Log's Sleep tile says how much of the day came from Owlet; on the Dashboard, the Sleep tile gives the split (like *🦉 80% from Owlet, 20% by hand*), the Daily sleep chart has a thin teal line beside each day's bar for the Owlet part, and tapping a bar shows both.
 - **Rows from Owlet are ordinary sleep rows.** Anyone can fix a time, add a note, or delete one.
 - **Hand-logged and Owlet sleep are merged** in every total (the Log's Sleep tile, the Dashboard, History, and the doctor report). Where a sleep you tapped overlaps one from the sock, the time is counted once.
 
@@ -96,7 +97,8 @@ Wait two minutes, then run:
 select status_code, content, created from net._http_response order by created desc limit 5;
 ```
 
-- **200** with `{"checked":0,"results":[]}`: working, with no sock connected yet. After someone connects one, `checked` is 1 or more.
+- **200** with `{"checked":0,"ok":0,"errors":0}`: working, with no sock connected yet. After someone connects one, `checked` is 1 or more. The answer is only counts, never which socks are asleep, since anyone can call the function's address.
+- The [status page](deployment.md#status-page) shows an **Owlet sleep** row: how many socks are connected, the last reading, and the every-minute job's runs. It warns if the schedule is missing or a sock hasn't been read in 10 minutes, and so does the outside check every 30 minutes.
 - **500** with `CRADLE_OWLET_KEY must be 32 random bytes in base64`: the secret from step 2 is missing or wrong.
 - **404**: the schedule's address doesn't match the function's. Compare them letter by letter.
 - **401**: JWT verification is still on (step 3.4).
