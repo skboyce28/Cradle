@@ -15,7 +15,7 @@ Each session has three parts: **nurse** at the breast, offer a **bottle** top-up
 
 ### What you track
 
-In **Settings**, **What you track** has switches for **🤱 Breast**, **🍼 Bottle**, and **⚡ Pump** (on to start), and **😴 Sleep** (off to start). Turn off what your family doesn't use and Cradle hides it everywhere:
+In **Settings**, **What you track** has switches for **🤱 Breast**, **🍼 Bottle**, and **⚡ Pump** (on to start), and **😴 Sleep** (off to start). With Sleep on, a **🦉 Dream Sock** box appears beside it for an [Owlet Dream Sock](owlet.md); turning Sleep on asks once whether you have one. Turn off what your family doesn't use and Cradle hides it everywhere:
 
 | Off | What disappears |
 |---|---|
@@ -84,6 +84,7 @@ Turn on **😴 Sleep** in Settings, under What you track. It's off to start.
 - **Typing times:** each row has a start and a wake time; change either and the length updates. On an earlier day, enter both.
 - **Naps and night:** a sleep that starts between 7pm and 7am is night sleep (🌙); others are naps (😴).
 - **Across midnight:** a sleep from 9pm to 2am counts 3 hours on the first day and 2 on the next.
+- **Overlaps count once:** if two sleeps overlap (one tapped by hand and one from the Owlet sock, say), the totals merge them, so the time isn't counted twice.
 - **Never a feed:** sleep doesn't change feed counts, gaps, or the next feed.
 - **Owlet Dream Sock:** with Sleep on, connect the sock in Settings (**🦉 Owlet Dream Sock**) and sleep is logged automatically, marked **from Owlet**. The line under Since last feed adds the sock's status, like **🦉 Asleep, checked just now**. See [Owlet Dream Sock](owlet.md).
 - **The Sleep tile** fills toward your daily goal (Settings, 15 hours to start; 0 turns it off) and shows naps and night separately. Newborns often sleep 14 to 17 hours a day in short stretches; ask your pediatrician what fits your baby.

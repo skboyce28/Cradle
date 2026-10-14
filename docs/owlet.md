@@ -14,9 +14,11 @@ This is optional, and it needs [sleep tracking](using-cradle.md#sleep) turned on
 
 ## Using it
 
-1. In **Settings**, under **What you track**, turn on **😴 Sleep** and tap **Save**.
-2. Open **Settings** again. Under **🦉 Owlet Dream Sock**, enter the email and password you use in Owlet's app, and pick the region your Owlet account is in (**Europe**, or **United States and most countries**).
-3. Tap **Connect**. If the account has more than one sock, choose the one for this baby.
+1. In **Settings**, under **What you track**, turn on **😴 Sleep**. Cradle asks **Do you have an Owlet Dream Sock?** Tap **Yes, set it up**.
+2. The **🦉 Owlet Dream Sock** form appears right away. Enter the email and password you use in Owlet's app, and pick the region your Owlet account is in (**Europe**, or **United States and most countries**).
+3. Tap **Connect**. If the account has more than one sock, choose the one for this baby. Connecting saves Sleep as on for the family; there's no need to tap Save.
+
+**Said No, or set it up later?** With Sleep on, **What you track** has a **🦉 Dream Sock** box next to 😴 Sleep, greyed out until you tick it. Tick it any time to show the form. Cradle asks only once per family; the box is how you change your mind. Unticking it while a sock is connected asks whether to disconnect.
 
 One person connects it, and it works for the whole family. Settings then shows the sock, the account (masked, like `j•••@example.com`), who connected it, whether the baby is asleep or awake, the sock's battery, and when it was last checked.
 
@@ -25,6 +27,7 @@ The Log's asleep or awake line also shows the sock's status, like **🦉 Asleep,
 - **Disconnect** (in Settings) stops the checks and deletes Cradle's Owlet sign-in. Sleep already logged stays.
 - **Turning Sleep off** in Settings stops Owlet from adding sleep, but the connection stays.
 - **Rows from Owlet are ordinary sleep rows.** Anyone can fix a time, add a note, or delete one.
+- **Hand-logged and Owlet sleep are merged** in every total (the Log's Sleep tile, the Dashboard, History, and the doctor report). Where a sleep you tapped overlaps one from the sock, the time is counted once.
 
 ## How sleep is detected
 

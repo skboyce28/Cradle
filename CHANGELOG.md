@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.34
+
+**Sleep and Dream Sock setup**
+- **Turning on 😴 Sleep** in Settings asks *Do you have an Owlet Dream Sock?* (once per family). **Yes, set it up** shows the connect form right away; **No** doesn't
+- **Sleep settings appear as soon as Sleep is ticked** (the goal and the Owlet form), with no save and reopen
+- **🦉 Dream Sock** box beside 😴 Sleep in What you track, greyed out until ticked. Tick it later to set up a sock; untick it while connected and Cradle asks whether to disconnect. The choice is shared with the family
+- **Connecting a sock saves Sleep as on** right away, so sleep is logged even if Settings is closed without Save
+- **Overlapping sleeps count once:** the Log's Sleep tile, Dashboard, History, and doctor report merge sleeps that overlap (one tapped by hand and one from the sock, say) before adding up
+- Tests: `owlet.test.mjs` (43 checks) covers Yes, No, ticking later, and unticking; `sleep.test.mjs` (33) checks the merge
+
 ## v1.33
 
 **Owlet Dream Sock (optional)**

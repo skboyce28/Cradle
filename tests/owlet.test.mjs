@@ -59,9 +59,12 @@ async function up(p,u){await p.clock.runFor(1500);await p.waitForSelector('#gLog
 const openSettings=async p=>{await closeModals(p);await p.click('#menuBtn');await p.click('[data-act=settings]');await p.waitForTimeout(900)};
 const U='owl'+(Date.now()%100000);
 const P=await phone('parent');await up(P,U);
-await openSettings(P);ok('no Owlet section until Sleep is turned on',!(await P.isVisible('#owlBox')));
-await P.check('#sTrSleep');await P.click('#sSave');await P.clock.runFor(300);await settle(P);
-await openSettings(P);
+await openSettings(P);ok('no sleep or Owlet settings until Sleep is turned on',!(await P.isVisible('#sSleep'))&&!(await P.isVisible('#owlBox'))&&!(await P.isVisible('#sOwl')));
+await P.check('#sTrSleep');await P.waitForSelector('#askModal.open');
+ok('turning on Sleep asks about a Dream Sock right away, with the sleep goal already showing',/Do you have an Owlet Dream Sock/.test(await txt(P,'#askMsg'))&&(await txt(P,'#askOk'))==='Yes, set it up'&&(await txt(P,'#askCancel'))==='No'&&await P.isVisible('#sSleep'));
+await P.screenshot({path:OUT+'owlet-ask.png'});
+await P.click('#askOk');await P.waitForTimeout(400);
+ok('Yes: the box is ticked and the connect form shows, no save and reopen',await P.isChecked('#sOwl')&&await P.isVisible('#owlEmail')&&await P.isVisible('#owlPass'));
 ok('Settings: the Owlet section explains the password isn’t saved',await P.isVisible('#owlBox')&&/password is used once to connect and is never saved/.test(await txt(P,'#owlBox')),await txt(P,'#owlBox'));
 const H=sql(`select household_id from cradle_members m join auth.users u on u.id=m.user_id where u.email='${U}@cradle.cfg' order by joined_at desc limit 1`);
 // wrong password
@@ -72,6 +75,9 @@ OW.ss=1;
 await P.fill('#owlEmail','jules@example.com');await P.fill('#owlPass',OW.password);await P.click('#owlGo');await P.waitForTimeout(1500);
 ok('connected: the sock, the masked account, awake, battery, just checked',/Owlet Sock · j•••@example\.com/.test(await txt(P,'#owlBox'))&&/Awake since .* battery 87% · checked just now/i.test(await txt(P,'#owlBox')),await txt(P,'#owlBox'));
 await P.screenshot({path:OUT+'owlet-settings.png'});
+ok('connecting turns Sleep on for the family without tapping Save',await P.evaluate(()=>{const S=JSON.parse(localStorage.getItem('cradle-feeding-v1'));return S.settings.track.sleep===true&&S.settings.owlet===true}));
+await closeModals(P);for(let i=0;i<3;i++)await settle(P);
+ok('…and it syncs, so the server logs sleep for this family',sql(`select data->'track'->>'sleep'||'|'||(data->>'owlet') from cradle_items where household_id='${H}' and id='settings'`)==='true|true');
 const row=sql(`select row_to_json(o)::text from cradle_owlet o where household_id='${H}'`);
 ok('stored: encrypted tokens only; no password, email, or raw token',/"enc_refresh":"v1:/.test(row)&&!row.includes(OW.password)&&!row.includes('jules@example.com')&&![...OW.refresh,...OW.access].some(t=>new RegExp('"'+t+'"').test(row))&&/"account_hint":"j•••@example.com"/.test(row)&&/"tz":"America\/New_York"/.test(row),row.slice(0,200));
 ok('the password went only to Owlet’s sign-in',OW.log.filter(l=>l.body.includes(OW.password)).every(l=>l.path==='/google/signin'));
@@ -145,7 +151,21 @@ ok('the app can’t read the table or call the Edge Function’s own functions',
 for(let i=0;i<10;i++)as(uid,`select cradle_owlet_check('${H}')`);
 ok('at most 10 connection tries an hour',/Too many tries/.test(as(uid,`select cradle_owlet_check('${H}')`)));
 sql(`delete from cradle_owlet_tries where user_id='${uid}'`);
+// unticking the box while connected asks first
+await openSettings(P);await P.uncheck('#sOwl');await P.waitForSelector('#askModal.open');await P.click('#askCancel');await P.waitForTimeout(300);
+ok('unticking the Dream Sock box while connected asks to disconnect; No keeps it',await P.isChecked('#sOwl')&&sql(`select count(*) from cradle_owlet where household_id='${H}'`)==='1');
 // disconnect
-await openSettings(P);await P.click('#owlOff');await P.click('#askOk');await P.waitForTimeout(800);
+await P.click('#owlOff');await P.click('#askOk');await P.waitForTimeout(800);
 ok('Disconnect deletes the stored token; logged sleep stays',sql(`select count(*) from cradle_owlet where household_id='${H}'`)==='0'&&+sql(`select count(*) from cradle_items where household_id='${H}' and data->>'src'='owlet'`)>=1&&await P.isVisible('#owlPass'));
+// another family says No: the box stays unticked and greyed, and can be ticked later
+const Q=await phone('other');await up(Q,'owlno'+(Date.now()%100000));
+await openSettings(Q);await Q.check('#sTrSleep');await Q.waitForSelector('#askModal.open');await Q.click('#askCancel');await Q.waitForTimeout(300);
+ok('No: the Dream Sock box is unticked and greyed, with no form',!(await Q.isChecked('#sOwl'))&&await Q.$eval('#sOwl',e=>e.closest('.owlchk').classList.contains('off'))&&!(await Q.isVisible('#owlBox')));
+await Q.screenshot({path:OUT+'owlet-no.png'});
+await Q.click('#sSave');await Q.clock.runFor(300);
+ok('the answer is saved for the family',await Q.evaluate(()=>{const S=JSON.parse(localStorage.getItem('cradle-feeding-v1'));return S.settings.track.sleep===true&&S.settings.owlet===false}));
+await openSettings(Q);await Q.uncheck('#sTrSleep');await Q.check('#sTrSleep');await Q.waitForTimeout(400);
+ok('turning Sleep off and on again doesn’t ask again',!(await Q.isVisible('#askModal.open')));
+await Q.check('#sOwl');await Q.waitForTimeout(300);
+ok('ticking it later shows the connect form',await Q.isVisible('#owlEmail')&&!(await Q.$eval('#sOwl',e=>e.closest('.owlchk').classList.contains('off'))));
 console.log('errors',errs);await b.close();srv.close();

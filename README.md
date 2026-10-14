@@ -33,7 +33,7 @@ Nurse, bottle, pump, diapers, Vitamin D, baths, tummy time, and sleep, shared li
 | **Sleep** | Optional (turn it on in Settings). 😴 Asleep and ☀️ Woke up, on the Log and in Night shift, shared live with the family. Naps and night sleep, the wake window, a daily goal, and a Dashboard chart. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |
-| **Owlet Dream Sock** | Optional: connect the sock in Settings and sleep is logged automatically for the whole family. The password is used once; the sign-in token is kept encrypted with a key only your Edge Function has. Unofficial, since Owlet has no public API. |
+| **Owlet Dream Sock** | Optional: tick 🦉 Dream Sock beside Sleep in Settings, connect, and sleep is logged automatically for the whole family, merged with any sleep logged by hand. The password is used once; the sign-in token is kept encrypted with a key only your Edge Function has. Unofficial, since Owlet has no public API. |
 | **Notifications** | Optional: a notification on each phone that asks, even with Cradle closed, when a feed is due or 15 or 30 minutes before. Sent by a small Supabase Edge Function in your own project. |
 | **Calm** | The 🌙 button at the top right: a slow screensaver with the time, time since the last feed, and spa music, ocean, rain, or white noise. |
 | **Doctor report** | One printable page for appointments, from the Dashboard: weight, feeds, nursing time by side, volumes, diapers, Vitamin D, baths, tummy time, and sleep. Every tab also prints. |

@@ -24,7 +24,9 @@ const p=await phone();
 ok('off to start: no Asleep button, card, or Dashboard chip',!(await p.isVisible('#addSleep'))&&!(await p.$('#sleepCard'))&&!(await p.isVisible('#sleepLine')));
 await p.click('#menuBtn');await p.click('[data-act=settings]');await p.waitForTimeout(200);
 ok('Settings: Sleep under What you track, off; the goal is hidden until it’s on',!(await p.isChecked('#sTrSleep'))&&!(await p.isVisible('#sSleep')));
-await p.check('#sTrSleep');await p.click('#sSave');await p.clock.runFor(300);
+await p.check('#sTrSleep');await p.waitForSelector('#askModal.open',{timeout:3000}).catch(()=>{});
+ok('turning it on asks about a Dream Sock (answered No here; owlet.test.mjs covers Yes)',/Owlet Dream Sock/.test(await txt(p,'#askMsg')));await p.click('#askCancel');
+await p.click('#sSave');await p.clock.runFor(300);
 ok('turned on: it’s saved in the shared settings',(await S(p)).settings.track.sleep===true);
 await p.click('#menuBtn');await p.click('[data-act=settings]');await p.waitForTimeout(200);
 ok('…and the goal shows, 15 hours to start',await p.isVisible('#sSleep')&&(await p.inputValue('#sSleep'))==='15');
@@ -108,4 +110,11 @@ const qs=await S(q);ok('import brings sleep back, not as feeds',qs.days[K].feeds
 // turning it off hides it but keeps what was logged
 await settings(p,async()=>{await p.uncheck('#sTrSleep')});
 ok('off again: hidden everywhere, nothing deleted',!(await p.isVisible('#addSleep'))&&!(await p.$('#sleepCard'))&&!(await p.isVisible('.feed.sleeprow'))&&(await sl(p)).length===2);
+// a sleep tapped by hand and an overlapping one from the Owlet sock count once (merged), not twice
+{const D=JSON.parse(JSON.stringify(DEMO));D.settings.track=Object.assign({breast:true,bottle:true,pump:true},D.settings.track||{},{sleep:true});
+  D.days[K].feeds.push({id:'sl-hand',time:'12:00',end:'13:00',sleep:true,mins:60,note:''},{id:'owlAB12CD34',time:'12:30',end:'13:30',sleep:true,mins:60,note:'',src:'owlet'});
+  const q=await phone(JSON.stringify(D));
+  // 2h from last night past midnight, plus 12:00 to 1:30pm merged = 3h 30m (not 4h)
+  ok('overlapping hand and Owlet sleeps are merged in the totals',/3h 30m of 15h goal/.test(await txt(q,'#sleepCard')),await txt(q,'#sleepCard'));
+  await q.close()}
 console.log('errors',errs);await b.close();
