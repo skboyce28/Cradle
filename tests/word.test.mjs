@@ -45,6 +45,7 @@ await A.screenshot({path:OUT+'w-start.png'});
 await A.click('#wPanel [data-wl="4"]');await A.click('#wPanel [data-w=daily]');await A.waitForTimeout(200);
 const T4=await todayAnswer(A,4);
 ok('4 letters: grid is 6 rows of 4',(await A.$$('#wGrid .w-row')).length===6&&(await A.$$('#wGrid .w-row[data-r="0"] .w-tile')).length===4&&new RegExp(`#${T4.num} · 4 letters`).test(await txt(A,'#wTitle')),await txt(A,'#wTitle'));
+ok('keyboard bottom row: ⌫ on the left, Enter on the right',(await A.$$eval('#wKb .w-kr:last-child button',b=>[b[0].dataset.k,b[b.length-1].dataset.k])).join()==='back,enter');
 await A.keyboard.type('ab');await A.keyboard.press('Enter');await A.clock.runFor(100);
 ok('too short: says so',/Not enough letters/.test(await txt(A,'#wMsg')));
 await A.keyboard.press('Backspace');await A.keyboard.press('Backspace');await A.keyboard.type('qzxj');await A.keyboard.press('Enter');await A.clock.runFor(100);

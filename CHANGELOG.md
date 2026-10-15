@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.38
+
+- **Daily Word:** the keyboard's bottom row now has **⌫** on the left and **Enter** on the right (they were the other way round)
+- `tests/word.test.mjs` checks the order
+
 ## v1.37
 
 **Terms and privacy, accepted and recorded**
