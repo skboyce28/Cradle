@@ -18,6 +18,8 @@ const html=fs.readFileSync(new URL(process.env.CRADLE_APP));
 const WD=JSON.parse(/<script type="application\/json" id="wordData">(.*?)<\/script>/s.exec(html)[1]);
 const chunks=(s,n)=>s.match(new RegExp(`.{${n}}`,'g'));
 const answers=n=>chunks(WD.a[n],n),guesses=n=>chunks(WD.g[n],n);
+const WM=JSON.parse(/<script type="application\/json" id="wordMeans">(.*?)<\/script>/s.exec(html)[1]);
+const meanText=a=>(WM[a]||'').split('|').map(x=>x.slice(1)).filter(Boolean);
 async function todayAnswer(p,n){const [y,m,d]=await p.evaluate(()=>{const t=new Date();return [t.getFullYear(),t.getMonth(),t.getDate()]});
   const i=Math.round((new Date(y,m,d)-new Date(2026,9,12))/864e5),a=answers(n);return {ans:a[((i%a.length)+a.length)%a.length],num:i+1,day:`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}}
 function evalW(g,a){const r=Array(a.length).fill(0),c={};for(let i=0;i<a.length;i++){if(g[i]===a[i])r[i]=2;else c[a[i]]=(c[a[i]]||0)+1}for(let i=0;i<a.length;i++)if(r[i]!==2&&c[g[i]]>0){r[i]=1;c[g[i]]--}return r.join('')}
@@ -32,6 +34,8 @@ sql("delete from cradle_scores where game='word'");
 
 // word lists
 ok('word lists: 4, 5 and 6 letters, answers are allowed guesses',[4,5,6].every(n=>answers(n).length>1000&&answers(n).every(w=>w.length===n&&/^[a-z]+$/.test(w))),[4,5,6].map(n=>answers(n).length+'/'+(answers(n).length+guesses(n).length)).join(' '));
+{const all=[4,5,6].flatMap(answers),miss=all.filter(w=>!WM[w]),parts=Object.values(WM).flatMap(v=>v.split('|'));
+ok('meanings: built in for nearly every answer, one or two short ones each',miss.length<=20&&parts.every(x=>/^[nvar]./.test(x)&&x.length<=130)&&Object.values(WM).every(v=>v.split('|').length<=2)&&Object.keys(WM).every(w=>all.includes(w)),`${all.length-miss.length}/${all.length}; missing ${miss.join(' ')}`);}
 ok('no plurals or rude words among answers',!answers(5).some(w=>['bitch','shits','fucks','dogs'].includes(w))&&!answers(4).includes('dogs')&&!answers(4).includes('damn'));
 
 // dad: plays a 4-letter word, solving it in 2
@@ -58,6 +62,8 @@ await A.screenshot({path:OUT+'w-play.png'});
 await guess(A,T4.ans);await A.clock.runFor(2000);await A.waitForTimeout(300);
 let over=await txt(A,'#wPanel');
 ok('solved in 2: result, the word, and 60 points',/Brilliant!/.test(over)&&new RegExp(T4.ans.split('').join(' '),'i').test(over)&&/2\/6 · 60 points/.test(over),over.slice(0,120));
+{const mt=await txt(A,'#wMean'),exp=meanText(T4.ans),href=await A.getAttribute('#wMean a','href');
+ok('after the game: what the word means, and a dictionary link',exp.length>0&&exp.every(x=>mt.toLowerCase().includes(x.toLowerCase().replace(/\s+/g,' ')))&&href===`https://en.wiktionary.org/wiki/${T4.ans}`,`${T4.ans}: ${mt.slice(0,160)}`);}
 ok('first result asks for initials',await A.isVisible('#wIni'));
 await A.fill('#wIni','dad');await A.click('#wIniForm button');await A.clock.runFor(500);await A.waitForTimeout(1200);
 over=await txt(A,'#wPanel');ok('posted with your rank',/Posted! \+60 points\. You're #1 of \d+ on Everyone/.test(over),over.match(/Posted[^.]*\.[^.]*\./)?.[0]||over.slice(0,200));
@@ -108,6 +114,7 @@ const used=[h1];for(const w of (lossPath||[]).slice(1)){await guess(M,w);used.pu
 await M.clock.runFor(2000);await M.waitForTimeout(400);const mo=await txt(M,'#wPanel');
 const lost=used.length===6&&/Out of guesses/.test(mo)&&/X\/6 · 0 points/.test(mo);
 ok('out of guesses: shows the word, 0 points',lost||/Genius|Brilliant|Impressive|Splendid|Great|Phew/.test(mo),`${used.length} guesses; ${mo.slice(0,140)}`);
+ok('…and what it means, win or lose',await M.isVisible('#wMean')&&meanText(T6.ans).every(x=>(mo.toLowerCase()).includes(x.toLowerCase().replace(/\s+/g,' '))),mo.slice(0,200));
 await M.screenshot({path:OUT+'w-lost.png'});
 if(await M.isVisible('#wIni')){await M.fill('#wIni','mom');await M.click('#wIniForm button');await M.clock.runFor(500);await M.waitForTimeout(1200)}
 ok('mom’s result posted',+sql(`select count(*) from cradle_scores s join auth.users u on u.id=s.user_id where s.game='word' and u.email='wmom${sfx}@cradle.cfg'`)===1);

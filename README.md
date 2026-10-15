@@ -87,7 +87,7 @@ Step by step, with where to click: **[docs/setup.md](docs/setup.md)**.
 ```
 cradle.html            The whole app: one file, no dependencies
 LICENSE.md             PolyForm Noncommercial 1.0.0
-THIRD-PARTY-NOTICES.md Credits and license for Daily Word's word lists (SCOWL)
+THIRD-PARTY-NOTICES.md Credits and licenses for Daily Word's word lists (SCOWL) and meanings (WordNet)
 build_pwa.py           Builds the installable web app into pwa/ (python3 build_pwa.py)
 .env.example           Template for your Supabase address + publishable key (copy to .env, which git ignores)
 icons/                 App icons used by the build
@@ -132,6 +132,6 @@ Cradle is licensed under the **[PolyForm Noncommercial License 1.0.0](LICENSE.md
 - **You can't** use it commercially, for example selling it, charging for a hosted version, or building it into a paid product, without separate permission. Open an issue to ask.
 - Anyone you share it with must get the license terms and this notice: `Required Notice: Copyright (c) 2026 skboyce28 (https://github.com/skboyce28/Cradle)`.
 
-Daily Word's word lists come from [SCOWL](http://wordlist.aspell.net/), Copyright 2000-2016 Kevin Atkinson, used under its permissive license: see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Daily Word's word lists come from [SCOWL](http://wordlist.aspell.net/), Copyright 2000-2016 Kevin Atkinson, used under its permissive license. The meanings shown after a game come from [WordNet](https://wordnet.princeton.edu/) 3.1, Copyright Princeton University, also under a permissive license. See [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 PolyForm Noncommercial is source-available, not "open source" by the Open Source Initiative's definition, because it limits commercial use.

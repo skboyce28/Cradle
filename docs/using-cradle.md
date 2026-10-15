@@ -257,6 +257,7 @@ A new word every day at midnight. Guess it in 6 tries.
 
   A letter you typed twice only turns yellow as many times as it's in the word. The keyboard shows what you've found. **⌫** (delete) is at the left of the bottom row and **Enter** at the right.
 - **Guesses must be real words.** You can type about 3,100 four-letter, 6,400 five-letter, and 10,700 six-letter words. The answers come from a smaller list of common words (about 1,400, 1,900, and 2,400), with no plurals, past tenses, or anything rude or grim.
+- **What it means:** after each game, win or lose, the finish screen shows what the word means (its most common one or two meanings, from WordNet), with **Look it up in a dictionary** to open Wiktionary for more. The meanings are built in, so they work offline; a handful of rare words have only the link.
 - **Hard mode:** green letters must stay in their spot and yellow letters must be used in every later guess. Worth 10 extra points. Choose it before today's first guess.
 - **Points:** 70 for solving in 1 guess, 60 in 2, down to 20 in 6, and 0 if you don't get it. +10 in hard mode.
 - **Your stats:** played, win %, current streak, best streak, and how many guesses your wins took. A streak is days in a row solved; a lost or skipped day starts it over.

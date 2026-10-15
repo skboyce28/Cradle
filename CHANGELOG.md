@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.39
+
+- **Daily Word shows what the word means.** After each game, win or lose, the finish screen gives the word's most common one or two meanings (like *verb* Treat or speak of with contempt), with **Look it up in a dictionary** to open Wiktionary. Built in, so it works offline: 5,638 of the 5,648 answer words have a meaning, and the rest have just the link
+- The meanings come from **WordNet 3.1** (Princeton University), shortened by the new `tools/words/build_meanings.py`, with a few short words WordNet leaves out (like *their* and *would*) written for Cradle. License in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and in the page. They add about 370 KB to the page (about 130 KB as sent)
+- `tests/word.test.mjs`: three new checks (meanings built in for nearly every answer; shown after a win with the dictionary link; shown after a loss)
+
 ## v1.38
 
 - **Daily Word:** the keyboard's bottom row now has **⌫** on the left and **Enter** on the right (they were the other way round)

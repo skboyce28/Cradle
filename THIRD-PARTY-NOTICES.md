@@ -1,6 +1,6 @@
 # Third-party notices
 
-Cradle's own code is under the [PolyForm Noncommercial License](LICENSE.md). It includes one piece of other people's work.
+Cradle's own code is under the [PolyForm Noncommercial License](LICENSE.md). It includes two pieces of other people's work.
 
 ## Daily Word word lists: SCOWL
 
@@ -258,3 +258,45 @@ and Australian word list.  It is under the following copyright:
   OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
   SUCH DAMAGE.
 ```
+
+## Daily Word meanings: WordNet
+
+The short meanings Daily Word shows after a game (the `wordMeans` block inside `cradle.html`) were made from **WordNet 3.1**, Princeton University, <https://wordnet.princeton.edu/>, as packaged by the npm module [wordnet-db](https://www.npmjs.com/package/wordnet-db) 3.1.14. Cradle shortened them (see [`tools/words/build_meanings.py`](tools/words/build_meanings.py)): the most common one or two meanings of each answer word, cut to about 90 characters, and a few short words WordNet leaves out (like *their* and *would*) have meanings written for Cradle.
+
+WordNet's license, as required, follows verbatim (it also appears in `cradle.html`):
+
+```
+WordNet Release 3.0
+
+This software and database is being provided to you, the LICENSEE, by
+Princeton University under the following license.  By obtaining, using
+and/or copying this software and database, you agree that you have
+read, understood, and will comply with these terms and conditions.:
+
+Permission to use, copy, modify and distribute this software and
+database and its documentation for any purpose and without fee or
+royalty is hereby granted, provided that you agree to comply with
+the following copyright notice and statements, including the disclaimer,
+and that the same appear on ALL copies of the software, database and
+documentation, including modifications that you make for internal
+use or for distribution.
+
+WordNet 3.0 Copyright 2006 by Princeton University.  All rights reserved.
+
+THIS SOFTWARE AND DATABASE IS PROVIDED "AS IS" AND PRINCETON
+UNIVERSITY MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR
+IMPLIED.  BY WAY OF EXAMPLE, BUT NOT LIMITATION, PRINCETON
+UNIVERSITY MAKES NO REPRESENTATIONS OR WARRANTIES OF MERCHANT-
+ABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE
+OF THE LICENSED SOFTWARE, DATABASE OR DOCUMENTATION WILL NOT
+INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR
+OTHER RIGHTS.
+
+The name of Princeton University or Princeton may not be used in
+advertising or publicity pertaining to distribution of the software
+and/or database.  Title to copyright in this software, database and
+any associated documentation shall at all times remain with
+Princeton University and LICENSEE agrees to preserve same.
+```
+
+Citation: Princeton University "About WordNet." WordNet. Princeton University. 2010.
