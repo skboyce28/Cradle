@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.43
+
+- **Baby mirror** in the Learning center: **🪞 Open the mirror** shows your baby's face, full screen from the front camera, mirrored like a real mirror. Prop the phone up at eye level for tummy time
+- **Frame** (Stars, Rainbow, or None) and **Zoom in**, both remembered. The buttons fade after a few seconds; a tap brings them back
+- **Press and hold** to close, so a baby's taps can't close it. Esc works on a computer
+- Nothing is recorded, saved, or sent: the camera turns off when the mirror closes or Cradle goes to the background. If camera access was refused, it says how to allow it, with **Try again**
+- New test: `tests/mirror.test.mjs` (18 checks, with a pretend camera)
+
 ## v1.42
 
 **Laundry Day, a new Fun center game**

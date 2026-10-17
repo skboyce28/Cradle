@@ -225,6 +225,13 @@ In the profile menu. **High-contrast cards** are five original black-and-white d
 - Hold the phone about 8 to 12 inches (20 to 30 cm) from your baby's face. A few minutes is plenty; stop when your baby looks away, yawns, or fusses.
 - The screen stays on while a card is showing. ✕ or the back gesture returns to the Learning center.
 
+**Baby mirror** (🪞 **Open the mirror**) shows your baby's own face, full screen from the front camera, mirrored like a real mirror. Babies love faces, and prop the phone up at eye level during tummy time for something to lift their head toward.
+
+- **Frame** switches between Stars, Rainbow, and None; **Zoom in** fills the screen more. Cradle remembers both.
+- The buttons fade after a few seconds so the picture is clear; tap anywhere to bring them back.
+- To leave, **press and hold Hold to close** for a moment (a quick tap won't close it, so little hands can't). Esc works on a computer.
+- **Privacy:** nothing is recorded, saved, or sent anywhere. The picture stays on your phone, and the camera turns off when you close the mirror or switch to another app. The first time, your phone asks to allow the camera.
+
 ## Fun center
 
 In the profile menu: three games for the in-between moments, with shared high scores.
