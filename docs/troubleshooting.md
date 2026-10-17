@@ -160,7 +160,7 @@ See [Owlet troubleshooting](owlet.md#troubleshooting): wrong password or region,
 ## Fun center
 
 **"High scores aren't set up on this Cradle yet"**
-Whoever runs your Cradle needs to run [`supabase/2-family.sql`](../supabase/2-family.sql) again in the Supabase SQL Editor. Daily Word (v1.18) and Stork Flight (v1.19) added to it. Until then, Stork Flight scores wait on the phone and post once it's done. It's safe to rerun and keeps everything already there.
+Whoever runs your Cradle needs to run [`supabase/2-family.sql`](../supabase/2-family.sql) again in the Supabase SQL Editor. Daily Word (v1.18), Stork Flight (v1.19), and Laundry Day (v1.42) added to it. Until then, Stork Flight and Laundry Day scores wait on the phone and post once it's done. It's safe to rerun and keeps everything already there.
 
 **Daily Word says "Already posted for this day from another phone"**
 Each account gets one Daily Word result per day, from whichever phone finishes first. The other phone shows that result.

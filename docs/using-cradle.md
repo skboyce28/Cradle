@@ -286,12 +286,29 @@ Tap to flap. Fly a stork carrying a bundle through the gaps between the clouds a
 - **Ending:** one bump into a cloud, a house, or the rooftops ends the flight. **❚❚** pauses; **End flight** finishes early and keeps your score.
 - **Pausing, sound, and buzz** work like Bottle Catch: it pauses itself when you switch apps or the feed alarm rings, and sound starts off.
 
+### Laundry Day
+
+Clean baby clothes pop out of the washer one at a time. Swipe each into its basket before it drops.
+
+| Item | Swipe |
+|---|---|
+| Onesie | ⬅️ left, into **Onesies** |
+| Sock | ➡️ right, into **Socks** |
+| Bib | ⬇️ down, into **Bibs** |
+| Anything with a stain | ⬆️ up, back into the washer (**Wash again**) |
+
+- **Controls:** swipe anywhere on the screen, or tap a basket. On a computer, the arrow keys sort and P pauses. The next item waits in the washer door.
+- **Scoring:** 10 points each. A streak multiplies it: ×2 at 5 in a row, ×3 at 10, ×4 at 15.
+- **Mistakes:** the wrong basket costs your streak and 2 seconds. Each item has a small timer bar; wait too long and it drops on the floor (the streak resets).
+- **Pace:** a round is 60 seconds. Items start with about 3 seconds each and end with about 1. Stained items start after the first few seconds and get more common.
+- **Pausing, sound, and buzz** work like the other games.
+
 ### High scores
 
 Each game has its own boards; the buttons at the top of the High scores screen switch between them.
 
-- **Initials:** your first posted score asks for **3 initials**. All three games use the same ones. They're remembered for your account, and **Change** on the board updates them, past scores included.
-- **Bottle Catch and Stork Flight boards:**
+- **Initials:** your first posted score asks for **3 initials**. All the games use the same ones. They're remembered for your account, and **Change** on the board updates them, past scores included.
+- **Bottle Catch, Stork Flight, and Laundry Day boards:**
   - **Everyone:** each player's best score across this Cradle site, top 10.
   - **Our family:** your family's top 10.
   - **My best:** your own top 10, with your rank.
@@ -300,7 +317,7 @@ Each game has its own boards; the buttons at the top of the High scores screen s
   - **Our family:** your family's totals, plus each person's grid for today. Grids show colors only, and stay hidden until you've finished today's word, so nothing is spoiled.
   - **My days:** your last 10 days, with your grids.
 - **What's shown:** only initials, scores, and colored grids, never names, emails, or letters.
-- **Offline:** a Bottle Catch round or Stork Flight played offline is saved on the phone and posts when you're back online (if several are waiting, your best one posts). A Daily Word result posts when you're back online too, as long as that's within about a day.
+- **Offline:** a Bottle Catch round, Stork Flight, or Laundry Day round played offline is saved on the phone and posts when you're back online (if several are waiting, your best one posts). A Daily Word result posts when you're back online too, as long as that's within about a day.
 
 ## Profile menu
 
@@ -314,8 +331,8 @@ The round button at the top right:
 | **Weights** | Every weight, to review, edit, or delete, plus the form to add one |
 | **🧊 Milk storage** | Pumped milk in the fridge and freezer, oldest first. Shows how much is stored. See [Milk storage](#milk-storage). |
 | **Learning center** | High-contrast cards to show your baby. See [Learning center](#learning-center). |
-| **Fun center** | Bottle Catch, Daily Word, Stork Flight, and their high scores. See [Fun center](#fun-center). |
-| **Achievements** | Fifty-five badges with progress, in nine groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, Fun center, and Support. Support badges (*Quality Assurance* and *Compliance Officer*) count your feedback that has been reviewed. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
+| **Fun center** | Bottle Catch, Daily Word, Stork Flight, Laundry Day, and their high scores. See [Fun center](#fun-center). |
+| **Achievements** | Fifty-eight badges with progress, in nine groups: Feeds, Nursing, Bottle and pump, Diapers, Vitamin D, Baths, Weight and milestones, Fun center, and Support. Support badges (*Quality Assurance* and *Compliance Officer*) count your feedback that has been reviewed. Fun center badges (like *First Word*, *Week of Words*, *Catch Pro*, and *Special Delivery*) count the games played on this phone by whoever is signed in; the rest come from the family's log. Stars (★★, ★★★) mark higher tiers, like *Sunshine Streak* (7 days of Vitamin D), *Vitamin D Devotee* (14), and *Sunshine Superstar* (30). Others are one of a kind: *Night Owl* (10 feeds between midnight and 5am), *Perfect Day* (8+ feeds, both diaper goals, and Vitamin D), *Liquid Gold* (5 liters pumped), *Back to Birth Weight*, *Two Weeks Old*, and *One Month Old*. A day that isn't over yet never breaks a streak. |
 | **Settings** | Baby's name, birth date, birth weight and units, Vitamin D start date, [what you track](#what-you-track) (breast, bottle, pump, sleep), feed interval, the in-app alarm, 📣 [notifications on this phone](notifications.md), and goals: the bottle target per feed, the pump time window, wet and stool diapers per day, and tummy time minutes per day |
 | **💾 Data management** | Everything that backs up, restores, or clears data, in one place (see below) |
 | **Guide / About / Support** (one row) | In-app help; version and changelog; and [Support](#support) for sending feedback. A number on Support means there's an update on your feedback (or, for admins, new feedback). |

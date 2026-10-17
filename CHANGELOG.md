@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.42
+
+**Laundry Day, a new Fun center game**
+- Clean baby clothes pop out of the washer one at a time. Swipe each into its basket (onesies ⬅️, socks ➡️, bibs ⬇️) and anything stained ⬆️ back into the washer, before it drops. Swipe anywhere, tap a basket, or use the arrow keys
+- 60-second rounds: 10 points each, ×2 at a 5 streak up to ×4. A wrong basket costs the streak and 2 seconds. It gets faster, and stained clothes get more common
+- High scores for Everyone, Our family, and My best, with the same initials as the other games; rounds played offline post later. The High scores switch now has all four games
+- Three new badges (58 in all): **Fresh Folds** (300 in a round), **Laundry Legend** (1,500), and **Perfect Pairs** (25 in a row)
+- **Run `supabase/2-family.sql` again** (safe to rerun) so the server accepts Laundry Day scores: 60-second rounds, at most 150 points a second. Until then, scores wait on the phone
+- New test: `tests/laundry.test.mjs` (24 checks)
+
 ## v1.41
 
 - **Milk storage: undo a Thaw tapped by mistake.** Thawing used to be one-way, leaving only Use or Throw it away. Now the message after **Thaw** has **Undo**, which puts the milk straight back in the freezer, and thawed milk has an **Undo thaw** button on its row. After the first 10 minutes, Undo thaw asks first ("Only do this if Thaw was tapped by mistake and the milk is still frozen"), since the CDC says thawed milk shouldn't be refrozen

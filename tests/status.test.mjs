@@ -106,7 +106,7 @@ await lp.goto(SITE+'/status/#d-1234567');await lp.reload();await lp.waitForTimeo
 ok('a link to a commit that isn’t there says so',/Deployment 1234567 isn’t in main’s history/.test((await lp.innerText('#deploys')))&&(await lp.$$('#deploys tr.target')).length===0);
 await lp.close();
 
-ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.31/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.36/.test(await txt('#dbSchema')));
+ok('database: size against the free plan, counts, schema',/of the free plan’s 500 MB/.test(await txt('#dbSize'))&&/Families in use · \d+ shared by 2\+ people/.test(await txt('#dbSize'))&&/Last log entry added or edited by anyone/.test(await txt('#dbSize'))&&/2-family\.sql v1\.42/.test(await txt('#dbSchema'))&&/5-status\.sql v1\.36/.test(await txt('#dbSchema')));
 ok('no policy violations',(await p.evaluate(()=>window.__v)).length===0,(await p.evaluate(()=>window.__v)).join(' | '));
 await p.screenshot({path:OUT+'status.png',fullPage:true});
 // a failed latest check and a failing test run show up in the banner

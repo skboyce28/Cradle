@@ -8,6 +8,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 |---|---|
 | `sync-merge.test.mjs` | Two phones editing the same log: field-by-field merge, typing while changes arrive, deletes, who-changed-what notes, editing weights |
 | `game.test.mjs` | Bottle Catch: pause, scoring, initials, the three high-score boards, server-side limits |
+| `laundry.test.mjs` | Laundry Day: start screen, countdown, swiping and tapping baskets, wrong baskets and drops, streak multipliers, pausing, a full round, posting, boards and the game switch, server limits, and the badges |
 | `stork.test.mjs` | Stork Flight: hovering until the first tap, flapping, pausing, crashing, posting, the three-way game switch, server-side limits, offline posting, the Night Flyer badge |
 | `avatar.test.mjs` | Profile pictures: built-in and uploaded, who can see them (only me, family, everyone) on the Family screen and the boards, deleting a photo, database checks; and the Night shift button |
 | `milk.test.mjs` | Milk storage: adding to the freezer and fridge, oz to mL, CDC age flags, rules, freeze, thaw, undoing a freeze or thaw (Undo thaw asks after 10 minutes), use as a bottle feed, undo, labels (find, unknown label, scanning with a pretend camera, printing Code 128), syncing to another phone, export |
