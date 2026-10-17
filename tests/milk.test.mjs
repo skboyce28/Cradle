@@ -74,6 +74,22 @@ await P.click(`[data-mkid="${f5.id}"] [data-mk=freeze]`);ok('milk over 4 days in
 // fridge → freezer, then thaw, then use as a bottle feed
 await P.click(`[data-mkid="${fresh.id}"] [data-mk=freeze]`);await P.waitForTimeout(150);
 st=await S(P);ok('Freeze moves fresh milk to the freezer',st.milk.find(m=>m.id===fresh.id).place==='freezer'&&!!st.milk.find(m=>m.id===fresh.id).frozenAt);
+ok('…with Undo on the message',/Moved to the freezer\s*Undo/.test(await txt(P,'#toast'))&&await P.isVisible('#toast .tact'));
+await P.click('#toast .tact');await P.waitForTimeout(150);st=await S(P);
+ok('Undo puts it back in the fridge',st.milk.find(m=>m.id===fresh.id).place==='fridge'&&!st.milk.find(m=>m.id===fresh.id).frozenAt&&/Back in the fridge/.test(await txt(P,'#toast')));
+await P.click(`[data-mkid="${fresh.id}"] [data-mk=freeze]`);await P.waitForTimeout(150);
+await P.click(`[data-mkid="${old.id}"] [data-mk=thaw]`);await P.waitForTimeout(150);
+// thawed by mistake: Undo right away, or Undo thaw on the row later (which asks first)
+ok('Thaw shows Undo on the message',/Thawing\..*Undo/.test(await txt(P,'#toast'))&&await P.isVisible('#toast .tact'));
+await P.click('#toast .tact');await P.waitForTimeout(150);st=await S(P);
+ok('Undo puts it straight back in the freezer',st.milk.find(m=>m.id===old.id).place==='freezer'&&!st.milk.find(m=>m.id===old.id).thawedAt&&/Back in the freezer/.test(await txt(P,'#toast')));
+await P.click(`[data-mkid="${old.id}"] [data-mk=thaw]`);await P.waitForTimeout(150);await P.clock.runFor(20*60e3);await P.waitForTimeout(100);
+ok('a thawed row has Undo thaw',await P.isVisible(`[data-mkid="${old.id}"] [data-mk=unthaw]`));
+await P.click(`[data-mkid="${old.id}"] [data-mk=unthaw]`);await P.waitForTimeout(150);
+ok('20 minutes later, Undo thaw asks first (thawed milk shouldn’t be refrozen)',await P.isVisible('#askModal')&&/Thaw was tapped by mistake/.test(await txt(P,'#askMsg'))&&(await txt(P,'#askCancel'))==='Keep it thawed');
+await P.click('#askCancel');await P.waitForTimeout(150);ok('Keep it thawed leaves it thawed',(await S(P)).milk.find(m=>m.id===old.id).place==='thawed'&&await P.isVisible('#milkModal'));
+await P.click(`[data-mkid="${old.id}"] [data-mk=unthaw]`);await P.waitForTimeout(150);await P.click('#askOk');await P.waitForTimeout(150);
+ok('Back to freezer puts it back',(await S(P)).milk.find(m=>m.id===old.id).place==='freezer'&&await P.isVisible('#milkModal'));
 await P.click(`[data-mkid="${old.id}"] [data-mk=thaw]`);await P.waitForTimeout(150);
 r=await rows(P);const th=r.find(x=>x.id===old.id);ok('Thaw: a Thawed section with a 24-hour use-by',th&&/Thawed/.test(th.sec)&&/use by tomorrow/.test(th.t)&&!/Freeze/.test(th.t),th&&th.t);
 await P.click(`[data-mkid="${old.id}"] [data-mk=use]`);await P.waitForTimeout(150);

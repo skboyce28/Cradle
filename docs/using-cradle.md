@@ -196,8 +196,9 @@ In the profile menu, after Weights. It keeps track of pumped milk in the fridge 
 These are guidelines, not medical advice; ask your care team if you're unsure.
 
 **Buttons on each container:**
-- **Freeze** (fridge): moves it to the freezer. Not offered once it's over 4 days old.
-- **Thaw** (freezer): moves it to the fridge and starts the 24 hours. Thawed milk can't go back in the freezer.
+- **Freeze** (fridge): moves it to the freezer. Not offered once it's over 4 days old. The message has **Undo**.
+- **Thaw** (freezer): moves it to the fridge and starts the 24 hours. Thawed milk shouldn't go back in the freezer.
+- **Tapped Thaw by mistake?** Tap **Undo** on the message to put it straight back in the freezer. Later, thawed milk has an **Undo thaw** button; after the first 10 minutes it asks first, since milk that really thawed shouldn't be refrozen.
 - **Use** (fridge or thawed): **Log a bottle feed now** adds a bottle feed with that amount to today and shows it on the Log; or **Used, don't log a feed**; or **Throw it away**.
 - **Edit:** change it, print its label, or **Delete** a mistake.
 

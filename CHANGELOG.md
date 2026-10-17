@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.41
+
+- **Milk storage: undo a Thaw tapped by mistake.** Thawing used to be one-way, leaving only Use or Throw it away. Now the message after **Thaw** has **Undo**, which puts the milk straight back in the freezer, and thawed milk has an **Undo thaw** button on its row. After the first 10 minutes, Undo thaw asks first ("Only do this if Thaw was tapped by mistake and the milk is still frozen"), since the CDC says thawed milk shouldn't be refrozen
+- **Freeze** has **Undo** on its message too
+- Messages can now carry a button (like Undo) and stay up a little longer when they do
+- `tests/milk.test.mjs`: 8 new checks for Undo on Freeze and Thaw, and Undo thaw with its question
+
 ## v1.40
 
 **Pumping on its own isn't a feed**
