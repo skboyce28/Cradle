@@ -48,6 +48,8 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 
 **🧷 Diaper only** adds a row for a change between feeds. Those rows don't count as feeds.
 
+**What counts as a feed:** nursing (a side tapped, minutes, or a weighted feed) or a bottle. A row with only a pump amount is pumping, not a feed: it's marked **⚡**, its milk counts in the day's **Pumped** total, but it isn't counted in **Feeds** and doesn't reset **Since last feed**. Add a bottle or a side to the same row (the triple-feed cycle) and it becomes a feed.
+
 **The day's totals** sit above the list, in pairs on a phone: **Feeds** and **Vitamin D**, **Pumped** and **Bottle**, **Wet** and **Stool**, then **Bath**.
 
 ### Baths

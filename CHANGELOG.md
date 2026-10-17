@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.40
+
+**Pumping on its own isn't a feed**
+- A row with only a pump amount (say, 135 mL pumped) used to count as a feed: it added to **Feeds** and reset **Since last feed**, the next-feed time, and the alarm. Now a feed is nursing (a side, minutes, or a weighted feed) or a bottle. A pump-only row is marked **⚡** ("Pumping only, not counted as a feed"), and its milk still counts in the day's **Pumped** total. Adding a bottle or a side to the same row makes it a feed, as in the triple-feed cycle. This applies everywhere feeds are counted: the Log, Night shift, Dashboard, History, achievements, print, and the doctor report
+- **Feed-due notifications** follow the same rule. They also no longer treat tummy time or sleep rows (which have minutes) as feeds. **Run `supabase/3-notifications.sql` again** if you use notifications (safe to rerun)
+- Row numbers and icons now update as you type an amount or tap a side, instead of after the next refresh
+- New test: `tests/pump-only.test.mjs` (7 checks). The notification test now checks pump-only, tummy time, and sleep rows aren't feeds
+
 ## v1.39
 
 - **Daily Word shows what the word means.** After each game, win or lose, the finish screen gives the word's most common one or two meanings (like *verb* Treat or speak of with contempt), with **Look it up in a dictionary** to open Wiktionary. Built in, so it works offline: 5,638 of the 5,648 answer words have a meaning, and the rest have just the link

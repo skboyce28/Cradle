@@ -29,7 +29,7 @@ const ok=(n,c,x='')=>console.log((c?'PASS':'FAIL')+'  '+n+(x?'  | '+x:''));
 const t=out.text,rows=out.rows.slice(1);
 // recompute every daily row from the log, independently of the app's code
 const D=JSON.parse(DEMO),num=v=>v==null||v===''||isNaN(+v)?null:+v;
-const isFeed=f=>!f.bath&&!!(f.wf||f.left||f.right||num(f.bottle)!=null||num(f.pump)!=null||(num(f.mins)||0)>0);
+const isFeed=f=>!f.bath&&!f.tummy&&!f.sleep&&!!(f.wf||f.left||f.right||num(f.bottle)!=null||(num(f.mins)||0)>0);
 const lab=k=>new Date(k+'T12:00:00').toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
 const bad=[];
 for(const r of rows){const label=r[0].replace(' (so far)','');const k=Object.keys(D.days).find(k=>lab(k)===label);const fs=k?D.days[k].feeds:[];const feeds=fs.filter(isFeed);

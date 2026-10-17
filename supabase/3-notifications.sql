@@ -118,8 +118,10 @@ begin
           and i.data->>'day' ~ '^\d{4}-\d{2}-\d{2}$' and i.data->>'time' ~ '^\d{2}:\d{2}$'
           and i.data->>'day' >= to_char((now() at time zone subs.tz) - interval '2 days', 'YYYY-MM-DD')
           and coalesce(i.data->>'bath', '') = ''
+          and coalesce(i.data->>'tummy', '') in ('', 'false') and coalesce(i.data->>'sleep', '') in ('', 'false')
+          -- a feed is nursing or a bottle; pumping on its own doesn't count (v1.40)
           and (i.data->>'left' = 'true' or i.data->>'right' = 'true' or i.data->>'wf' = 'true'
-               or jsonb_typeof(i.data->'bottle') = 'number' or jsonb_typeof(i.data->'pump') = 'number'
+               or jsonb_typeof(i.data->'bottle') = 'number'
                or (jsonb_typeof(i.data->'mins') = 'number' and (i.data->>'mins')::numeric > 0))
       ) as last_ts
       from subs
@@ -170,4 +172,4 @@ grant execute on function public.cradle_push_get_keys(), public.cradle_push_set_
 -- Record this run for the status page (/status/; see 5-status.sql)
 create table if not exists public.cradle_schema_log (script text not null, version text not null, applied_at timestamptz not null default now());
 alter table public.cradle_schema_log enable row level security;
-insert into public.cradle_schema_log (script, version) values ('3-notifications.sql', '1.16');
+insert into public.cradle_schema_log (script, version) values ('3-notifications.sql', '1.40');

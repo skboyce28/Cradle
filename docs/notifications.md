@@ -18,7 +18,7 @@ On each phone: profile menu, then **Settings**, then **📣 Notify this phone, e
 
 **What you'll see:** "🍼 Feed due in 15 min · Juniper" with "Due at 4:55pm. Last feed was at 1:55pm." A newer notification replaces the older one. Tapping it opens Cradle.
 
-**When it's sent:** the next feed is the family's last feed plus the **Feed every** time in Settings, the same time the Log shows. Logging a feed moves it. Baths and diaper-only rows don't count as feeds. A feed is announced once per phone, and nothing is sent once a feed is more than 2 hours overdue.
+**When it's sent:** the next feed is the family's last feed plus the **Feed every** time in Settings, the same time the Log shows. Logging a feed moves it. Only nursing or a bottle counts as a feed: baths, diaper-only rows, pumping on its own, tummy time, and sleep don't. A feed is announced once per phone, and nothing is sent once a feed is more than 2 hours overdue.
 
 **Needs a connection.** The server only knows about feeds that have synced, and the phone needs a connection to receive the notification.
 

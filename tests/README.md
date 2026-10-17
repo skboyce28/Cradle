@@ -16,6 +16,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 | `weights.test.mjs` | Weight entry in grams or lb and oz: weighted feeds, switching units, the Weights screen, birth weight |
 | `word.test.mjs` | Daily Word: the word lists and meanings, the keyboard (⌫ left, Enter right), the meaning after a win or loss, the day's word worked out separately, colors, too-short and unknown words, hard mode, points and posting, one result per day, a second phone, the family and Everyone boards, practice, offline posting, switching boards |
 | `erase-and-wipe.test.mjs` | Owner-only Erase all data, and Sign out and remove from this phone |
+| `pump-only.test.mjs` | Pumping alone isn't a feed: a pump-only row is marked ⚡, isn't counted, doesn't reset Since last feed, still counts in Pumped; adding a bottle makes it a feed |
 | `security-headers.test.mjs` | The built site under its real security headers: no policy violations, sync still works |
 | `deploy-gate.test.mjs` | Deploys wait for tests: the Netlify ignore step against a stand-in GitHub API (running, failed, passed, rerun, GitHub down, previews); the outside check against the built site and the Supabase stand-in (healthy, a tested commit stuck, a failed commit kept back, uptime checks stopped, notification job failing, site down) |
 | `doctor-report.test.mjs` | The doctor report, with every daily row recomputed from the log by separate code |

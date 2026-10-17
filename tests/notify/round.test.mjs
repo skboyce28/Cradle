@@ -30,6 +30,9 @@ await q("insert into cradle_items(owner,household_id,id,kind,data) values ($1,$2
 await add('a',170,{left:true,right:false,mins:15,bottle:40});
 await add('b',60,{bath:'tub',note:''});                              // a bath: never a feed
 await add('c',30,{left:false,right:false,urine:true,stool:false});    // diaper only: never a feed
+await add('c2',25,{pump:135});                                      // pumping only: not a feed (v1.40)
+await add('c3',20,{tummy:true,mins:10});                            // tummy time has minutes, but isn't a feed
+await add('c4',15,{sleep:true,end:'',mins:30});                     // nor is a sleep
 const A=await phone(),B=await phone();
 await q("insert into cradle_push_subs(endpoint,user_id,household_id,p256dh,auth,tz,lead_min) values ('http://localhost:8765/A',$1,$2,$3,$4,$5,15),('http://localhost:8765/B',$1,$2,$6,$7,$5,0)",[u.id,h.id,A.p256dh,A.auth,TZ,B.p256dh,B.auth]);
 // round 1
@@ -39,7 +42,7 @@ ok('phone set to 15 min before is told; the other is not yet',r.sent===1&&got.le
 const msg=await A.decrypt(got[0].body);
 ok('the phone can decrypt it',/^🍼 Feed due in (9|10|11) min · Juniper$/.test(msg.title),msg.title);
 ok('it says when, in local time',/^Due at \d{1,2}:\d{2}[ap]m\. Last feed was at \d{1,2}:\d{2}[ap]m\.$/.test(msg.body),msg.body);
-const expLast=(await q(`select lower(to_char((now() at time zone $1) - interval '170 minutes','FMHH12:MIam')) t`,[TZ]))[0].t;ok('bath and diaper-only rows are not feeds (last feed is the real one)',msg.body.includes('Last feed was at '+expLast+'.'),expLast);
+const expLast=(await q(`select lower(to_char((now() at time zone $1) - interval '170 minutes','FMHH12:MIam')) t`,[TZ]))[0].t;ok('bath, diaper-only, pump-only, tummy time, and sleep rows are not feeds (last feed is the real one)',msg.body.includes('Last feed was at '+expLast+'.'),expLast);
 const hd=got[0].headers;ok('Web Push headers',hd['content-encoding']==='aes128gcm'&&/^vapid t=.+, k=.+$/.test(hd.authorization)&&hd.ttl==='3600'&&hd.urgency==='high',hd.authorization.slice(0,20));
 // round 2: nothing new
 r=await run({rpc:rpc2});ok('no repeat for the same feed',r.sent===0&&got.length===1);
