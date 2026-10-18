@@ -133,6 +133,12 @@ That's expected, even with Cradle installed: phones don't let web apps create Cl
 **Print or Download does nothing**
 Open Cradle in a real browser (Chrome, Safari) or as the installed app, not inside a file preview, email attachment, or chat app's viewer.
 
+**Milk labels from a label printer: the bars run together, or 📷 Scan won't read them**
+Print them again from **Milk storage** (**Edit**, then **Print label**, or **Print labels**); labels made since v1.46 have wider, cleaner bars. In the printer's app, print the picture at 100% on a 40 × 14 mm label, with no "fit" or scaling, and turn the print darkness (density) down a step if the bars still touch. When scanning, hold the label flat and steady, with the barcode filling most of the box, in good light. You can always type the label instead: for Cradle's, just the 5 letters after `CM-`.
+
+**There's no 📷 Scan button**
+The browser can't use the camera there (inside some apps' built-in viewers, for example). Open Cradle in Safari or Chrome, or as the installed app, and allow the camera when asked.
+
 **Text message export doesn't open Messages**
 Use **📋 Copy code** on the export screen and paste it into any message, or use **Download file** or **Share file**.
 

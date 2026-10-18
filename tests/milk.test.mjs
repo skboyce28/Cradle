@@ -1,7 +1,7 @@
 // Milk storage: adding to the freezer and fridge, CDC age flags, thawing, freezing, using a bag as a
 // bottle feed, undo, labels (typed, found, scanned, and printed as Code 128), syncing to another phone,
 // and export.
-import { chromium } from 'playwright';import { execSync } from 'child_process';import fs from 'fs';
+import { chromium } from 'playwright';import { execSync } from 'child_process';import fs from 'fs';import path from 'path';
 const KEY='sb_publishable_testkey_1234567890',DB='http://localhost:54321',OUT=(process.env.CRADLE_OUT||'out')+'/';
 const sql=q=>execSync(`psql "${process.env.DATABASE_URL}" -A -t -c "${q.replace(/"/g,'\\"')}"`).toString().trim();
 const b=await chromium.launch(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{channel:'chromium'});const errs=[];
@@ -120,9 +120,9 @@ await P.evaluate(()=>{window.print=()=>{dispatchEvent(new Event('beforeprint'))}
 await P.click('#mkPrint');await P.waitForTimeout(150);
 ok('Print labels asks which kind, for the ones without a label, starting on the 40 × 14 label printer',await P.isVisible('#mkLblModal')&&/Labels for the 3 containers without one/.test(await txt(P,'#mkLblWhat'))&&await P.isChecked('#mkLblModal input[value=p21]'),await txt(P,'#mkLblWhat'));
 await P.check('#mkLblModal input[value=sheet]');await P.click('#mkLblGo');await P.waitForTimeout(400);
-const lbl=await P.$$eval('#print .mklbl',ls=>ls.map(l=>({code:l.querySelector('.lc').textContent,bars:l.querySelectorAll('.c128 rect').length,w:+l.querySelector('.c128').getAttribute('viewBox').split(' ')[2]})));
+const lbl=await P.$$eval('#print .mklbl',ls=>ls.map(l=>({code:l.querySelector('.lc').textContent,bars:l.querySelectorAll('.c128 rect').length,aria:l.querySelector('.c128').getAttribute('aria-label'),w:+l.querySelector('.c128').getAttribute('viewBox').split(' ')[2]})));
 st=await S(P);
-ok('labels made: CM-xxxxx codes saved on each container, with barcodes',lbl.length===3&&lbl.every(l=>/^CM-[A-Z2-9]{5}$/.test(l.code)&&st.milk.some(m=>m.code===l.code))&&lbl.every(l=>l.w===20+11*(l.code.length+2)+13&&l.bars===3*(l.code.length+2)+4),JSON.stringify(lbl));
+ok('labels made: CM-xxxxx codes saved on each container, with barcodes that carry just the 5 letters',lbl.length===3&&lbl.every(l=>/^CM-[A-Z2-9]{5}$/.test(l.code)&&st.milk.some(m=>m.code===l.code))&&lbl.every(l=>l.w===20+11*(5+2)+13&&l.bars===3*(5+2)+4&&l.aria==='Barcode '+l.code.slice(3)),JSON.stringify(lbl));
 ok('printing uses the label sheet',await P.evaluate(()=>document.body.classList.contains('print-labels')));
 await P.evaluate(()=>dispatchEvent(new Event('afterprint')));await P.screenshot({path:OUT+'milk-labels.png'});
 // a known label: BAG-1 is start B, 5 characters, a check character, and stop = 7 symbols, 25 bars
@@ -137,6 +137,31 @@ const im=await P.$$eval('#mkImgGrid img',is=>is.map(i=>({w:i.naturalWidth,h:i.na
 ok('label printer: a 960 × 336 picture (40 × 14 mm) with a download link',im.length===1&&im[0].w===960&&im[0].h===336&&im[0].src==='data:image/png;base64,'&&await P.isVisible('#mkImgGrid a[download="cradle-label-BAG-1.png"]'),JSON.stringify(im));
 fs.writeFileSync(OUT+'milk-p21.png',Buffer.from((await P.$eval('#mkImgGrid img',i=>i.src)).split(',')[1],'base64'));
 await P.screenshot({path:OUT+'milk-p21-modal.png'});await P.click('#mkImgModal [data-close]');await P.waitForTimeout(150);ok('Done goes back to Milk storage',await P.isVisible('#milkModal'));await P.click('#mkCancel');
+ok('the label printer tip says to print at 100% and turn the darkness down if bars run together',/Print at 100%, with no “fit” or scaling/.test(await txt(P,'#mkImgModal'))&&/darkness/.test(await txt(P,'#mkImgModal')));
+// cleaner barcodes for thermal label printers, and Cradle's own barcode reader
+const cm=lbl[0].code;
+const geo=await P.evaluate(code=>{const d=cradleScan.label(code).getContext('2d').getImageData(0,160,960,1).data,runs=[];let cur=d[0]<128,len=0;
+  for(let i=0;i<960;i++){const k=d[i*4]<128;if(k===cur)len++;else{runs.push([cur,len]);cur=k;len=1}}runs.push([cur,len]);return runs},cm);
+const gBars=geo.filter(r=>r[0]).map(r=>r[1]),gGaps=geo.slice(1,-1).filter(r=>!r[0]).map(r=>r[1]);
+ok('label printer barcode: CM-XXXXX carries just its 5 letters (25 bars), 3 printer dots a module, each bar a dot thinner, wide light gaps each side',
+  gBars.length===25&&gBars.every(w=>(w+3)%9===0)&&Math.min(...gBars)===6&&gGaps.every(w=>(w-3)%9===0)&&Math.min(...gGaps)===12&&!geo[0][0]&&geo[0][1]>=72&&geo[geo.length-1][1]>=72,JSON.stringify(geo));
+const reads=await P.evaluate(code=>{
+  const shot=(c,{blur=1,flip=false,w=576}={})=>{const d=document.createElement('canvas');d.width=768;d.height=432;const x=d.getContext('2d');x.fillStyle='#aaa';x.fillRect(0,0,768,432);x.filter=`blur(${blur}px)`;x.translate(384,216);if(flip)x.rotate(Math.PI);x.drawImage(c,-w/2,-w*.175,w,w*.35);return cradleScan.read(x.getImageData(0,0,768,432))};
+  const t=document.createElement('canvas');t.width=640;t.height=360;const tx=t.getContext('2d');tx.fillStyle='#fff';tx.fillRect(0,0,640,360);tx.fillStyle='#000';tx.font='bold 44px sans-serif';for(let y=60;y<360;y+=60)tx.fillText('Juniper · 120 mL · 4.1 oz',10,y);
+  return {plain:shot(cradleScan.label(code)),blur:shot(cradleScan.label(code),{blur:2.5}),flip:shot(cradleScan.label(code),{flip:true}),small:shot(cradleScan.label(code),{w:360}),
+    bag:shot(cradleScan.label('BAG-1')),date:shot(cradleScan.label('10/9/26 7:30 PM'),{w:760,blur:.5}),text:cradleScan.read(tx.getImageData(0,0,640,360))}},cm);
+const all=(a,v)=>a.length>=2&&a.every(x=>x===v);
+ok('Cradle’s own reader reads the label picture: sharp, blurry, upside down, and small',all(reads.plain,cm.slice(3))&&all(reads.blur,cm.slice(3))&&all(reads.flip,cm.slice(3))&&all(reads.small,cm.slice(3)),JSON.stringify(reads));
+ok('…and labels with other text (BAG-1, a date), and reads nothing from plain text',all(reads.bag,'BAG-1')&&all(reads.date,'10/9/26 7:30 PM')&&reads.text.length===0,JSON.stringify(reads));
+ok('Find by label says it takes typing or scanning',(await P.getAttribute('#mkFind','placeholder'))==='Type or scan a label, like CM-7KQ2M');
+await P.fill('#mkFind','');await P.type('#mkFind',cm.slice(3).toLowerCase());await P.press('#mkFind','Enter');await P.waitForTimeout(300);
+ok('typing just the 5 letters, in any case, finds CM-XXXXX',new RegExp('Found '+cm).test(await txt(P,'#toast'))&&(await rows(P)).length===1&&(await P.inputValue('#mkFind'))===cm,await txt(P,'#toast'));
+await P.fill('#mkFind','');await P.dispatchEvent('#mkFind','input');
+await P.evaluate(c=>{window.__scan=c},cm.slice(3));await P.click('#mkScan');await P.waitForTimeout(800);await P.clock.runFor(600);
+ok('a scanned new-style label (just the 5 letters) finds CM-XXXXX',new RegExp('Found '+cm).test(await txt(P,'#toast')));
+await P.evaluate(c=>{window.__scan=c},cm);await P.click('#mkScan');await P.waitForTimeout(800);await P.clock.runFor(600);
+ok('…and an older label with the whole CM-XXXXX still does',new RegExp('Found '+cm).test(await txt(P,'#toast'))&&(await rows(P)).length===1);
+await P.fill('#mkFind','');await P.dispatchEvent('#mkFind','input');
 // a label written like the NIIMBOT template gives the date and time
 await P.fill('#mkFind','');await P.type('#mkFind','10/10/2026 - 8 A');await P.press('#mkFind','Enter');await P.waitForTimeout(300);
 ok('a new label like “10/10/2026 - 8 A” fills in Oct 10, 8:00am',(await P.inputValue('#mkCode'))==='10/10/2026 - 8 A'&&(await P.inputValue('#mkDate'))==='2026-10-10'&&(await P.inputValue('#mkTime'))==='08:00'&&/came from the label/.test(await txt(P,'#toast')));
@@ -156,4 +181,24 @@ ok('a change on one phone reaches the other',(await S(P)).milk.find(m=>m.code===
 await closeModals(P);await P.click('#menuBtn');await P.click('[data-act=data]');await P.click('[data-dm=export]');await P.clock.runFor(300);
 const [dl]=await Promise.all([P.waitForEvent('download'),P.click('text=Download file')]);const ex=JSON.parse(fs.readFileSync(await dl.path(),'utf8'));
 ok('export includes milk storage',Array.isArray(ex.milk)&&ex.milk.length===(await S(P)).milk.length&&ex.milk.some(m=>m.code==='BAG-1'));
+// the 📷 Scan button on a phone whose browser has no barcode reader (an iPhone, say): a pretend camera
+// shows the printed label, and Cradle reads the bars itself (signed in to the same account)
+const y4m=path.resolve(OUT+'milk-scan.y4m'),VW=640,VH=480;
+const gray=await P.evaluate(([code,W,H])=>{const d=document.createElement('canvas');d.width=W;d.height=H;const x=d.getContext('2d');x.fillStyle='#8f8f8f';x.fillRect(0,0,W,H);x.filter='blur(1px)';x.drawImage(cradleScan.label(code),50,150,540,189);
+  const px=x.getImageData(0,0,W,H).data,g=[];for(let i=0;i<px.length;i+=4)g.push(px[i]);return g},[cm,VW,VH]);
+const frame=Buffer.concat([Buffer.from('FRAME\n'),Buffer.from(gray),Buffer.alloc(VW*VH/2,128)]);
+fs.writeFileSync(y4m,Buffer.concat([Buffer.from(`YUV4MPEG2 W${VW} H${VH} F10:1 Ip A1:1 C420jpeg\n`),frame,frame,frame]));
+const bCam=await chromium.launch({...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{channel:'chromium'}),args:['--use-fake-ui-for-media-stream','--use-fake-device-for-media-stream','--use-file-for-fake-video-capture='+y4m]});
+const cctx=await bCam.newContext({viewport:{width:390,height:844},userAgent:'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',hasTouch:true});
+await cctx.addInitScript(()=>{delete window.BarcodeDetector});const C=await cctx.newPage();C.on('pageerror',e=>errs.push('C:'+e.message));
+await C.goto(process.env.CRADLE_APP);await C.waitForSelector('#gLogin:not(.hidden)');if(await C.isHidden('#gDb'))await C.click('#gDbOpen');
+await C.fill('#gUrl',DB);await C.fill('#gKey',KEY);await C.fill('#gUser','amilk'+sfx);await C.fill('#gPass','longenough1');await C.click('#gGo');
+for(let i=0;i<30&&!((await S(C))?.milk||[]).some(m=>m.code===cm);i++){await C.evaluate(()=>dispatchEvent(new Event('online')));await C.waitForTimeout(500)}
+await closeModals(C);
+await openMilk(C);
+ok('with no barcode reader in the browser, 📷 Scan still shows',!(await C.evaluate(()=>'BarcodeDetector' in window))&&await C.isVisible('#mkScan')&&await C.isVisible('#mkCodeScan'));
+await C.click('#mkScan');await C.waitForTimeout(300);const cmsg=await txt(C,'#scanMsg');
+let cfound=false;for(let i=0;i<40&&!cfound;i++){await C.waitForTimeout(250);cfound=new RegExp('Found '+cm).test(await txt(C,'#toast'))}
+ok('…and Cradle reads the label from the camera itself and finds the container',cfound&&!(await C.isVisible('#scanner'))&&/hold it steady/.test(cmsg),cmsg+' | '+await txt(C,'#toast'));
+await bCam.close();
 console.log('errors',errs);await b.close();

@@ -147,7 +147,7 @@ An invite can only be claimed by an account that **existed when the invite was m
   - a **Content-Security-Policy** that only runs Cradle's own inline script, allowed by its SHA-256 hash
   - network connections limited to the site itself and your Supabase project
   - no plugins or embedding in other sites (`frame-ancestors 'none'`, `X-Frame-Options: DENY`)
-  - `nosniff`, `Referrer-Policy: no-referrer`, a Permissions-Policy that turns off microphone, location, and payment and allows the camera only for Cradle itself (for scanning milk labels and the baby mirror, which shows the picture on the phone and never records or sends it), and HSTS
+  - `nosniff`, `Referrer-Policy: no-referrer`, a Permissions-Policy that turns off microphone, location, and payment and allows the camera only for Cradle itself (for scanning milk labels, which Cradle reads itself where the browser has no barcode reader, and the baby mirror, which shows the picture on the phone and never records or sends it), and HSTS
 
   Even if someone found a way to inject a script into the page, the browser wouldn't run it, and couldn't send data anywhere else.
 - **Two-step sign-in** (optional per person, or required by the family owner) uses Supabase's authenticator-app sign-in (TOTP). Supabase stores the secrets and checks the codes; the app calls `/auth/v1/factors` to set one up, challenge, and verify, and reads the `aal` level from the token. The database rule above, not the app, is what keeps a password-only sign-in out.

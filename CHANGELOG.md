@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.46
+
+- **📷 Scan works on every phone with a camera.** It had been hidden where the browser has no barcode reader (iPhones, for example). Cradle now reads Code 128 barcodes itself: it looks along lines across the camera picture, matches the bars by their widths and by bar-to-bar distances (which stay the same when a thermal printer's ink spreads), and accepts a label only when its check character is right and it reads the same twice. Where the browser has a barcode reader (Chrome on Android), Cradle still uses it, so QR codes work there
+- **Type just the 5 letters** of a Cradle label to find it: `7kq2m` finds `CM-7KQ2M`. Find by label now says *Type or scan a label, like CM-7KQ2M*
+- **Cleaner labels for 40 × 14 mm label printers** (NIIMBOT P21 and similar). The bars could run together when printed. Now the barcode carries just the 5 letters after `CM-`, so each bar is 3 printer dots wide instead of 2; every bar is drawn one dot thinner, because thermal printing spreads; and there's a light gap of 8 bars' width each side. The code under the barcode still reads `CM-7KQ2M`. The sheet labels use the shorter barcode too. Labels printed before this still scan and still find their container
+- The label printer screen says to print at 100% with no scaling, and to turn the print darkness down a step if the bars still touch. [Troubleshooting](docs/troubleshooting.md) covers labels that won't scan
+- `tests/milk.test.mjs`: 10 new checks, including the label picture's bar widths, the reader on sharp, blurry, upside-down, and small label pictures (and none from plain text), typing the short code, and a real scan through Chrome's pretend camera playing a video of a label, with no barcode reader in the browser
+
 ## v1.45
 
 - **Tummy time can be turned off.** Settings, **What you track**, now has a **🤸 Tummy time** box (on to start), next to Breast, Bottle, Pump, and Sleep. Off hides it everywhere: the 🤸 button, tummy rows, and the Log tile; the goal in Settings (it hides as soon as you untick the box); the Dashboard tile, chart, filter, and insight; the History and table columns; the day sheet and doctor report. A running tummy timer stops. It's shared with your family, and nothing logged is deleted
