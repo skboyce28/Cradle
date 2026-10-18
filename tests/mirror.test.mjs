@@ -28,7 +28,10 @@ ok('it opens full screen with the camera on',await p.isVisible('#mirror')&&!(awa
 ok('the picture is mirrored, like a real mirror',/matrix\(-1, 0, 0, 1/.test(c.transform),c.transform);
 ok('starts with the star frame',await p.$eval('#mrFrame',e=>e.className)==='stars'&&/Frame: Stars/.test(await txt(p,'#mrFrameBtn')));
 await p.screenshot({path:OUT+'mirror.png'});
+const center=async()=>{const buf=await p.screenshot({clip:{x:40,y:150,width:4,height:4}});return buf.toString('base64')};const camPix=await center();
 await p.click('#mrFrameBtn');ok('Frame switches to Rainbow',await p.$eval('#mrFrame',e=>e.className)==='rainbow'&&/Rainbow/.test(await txt(p,'#mrFrameBtn')));
+ok('the rainbow is only a border: the camera still shows in the middle',await p.$eval('#mrFrame',e=>getComputedStyle(e).backgroundImage==='none')&&(await center())===camPix);
+await p.screenshot({path:OUT+'mirror-rainbow.png'});
 await p.click('#mrFrameBtn');ok('…then None',await p.$eval('#mrFrame',e=>e.className)===''&&/None/.test(await txt(p,'#mrFrameBtn')));
 await p.click('#mrFrameBtn');
 await p.click('#mrZoomBtn');ok('Zoom in fills the screen more',await p.$eval('#mirror',e=>e.classList.contains('zoom'))&&/Zoom out/.test(await txt(p,'#mrZoomBtn')));

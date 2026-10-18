@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.44
+
+- **Baby mirror:** the **Rainbow** frame covered the whole screen, so the camera picture was hidden behind it. It's now a rainbow border, with the picture showing in the middle
+- `tests/mirror.test.mjs` checks the middle of the screen still shows the camera with the Rainbow frame on
+
 ## v1.43
 
 - **Baby mirror** in the Learning center: **🪞 Open the mirror** shows your baby's face, full screen from the front camera, mirrored like a real mirror. Prop the phone up at eye level for tummy time
