@@ -15,13 +15,14 @@ Each session has three parts: **nurse** at the breast, offer a **bottle** top-up
 
 ### What you track
 
-In **Settings**, **What you track** has switches for **🤱 Breast**, **🍼 Bottle**, and **⚡ Pump** (on to start), and **😴 Sleep** (off to start). With Sleep on, a **🦉 Dream Sock** box appears beside it for an [Owlet Dream Sock](owlet.md); turning Sleep on asks once whether you have one. Turn off what your family doesn't use and Cradle hides it everywhere:
+In **Settings**, **What you track** has switches for **🤱 Breast**, **🍼 Bottle**, **⚡ Pump**, and **🤸 Tummy time** (on to start), and **😴 Sleep** (off to start). With Sleep on, a **🦉 Dream Sock** box appears beside it for an [Owlet Dream Sock](owlet.md); turning Sleep on asks once whether you have one. Turn off what your family doesn't use and Cradle hides it everywhere:
 
 | Off | What disappears |
 |---|---|
 | **Breast** | L and R, Minutes and the ▶ timer, the left and right split, weighted feeds; in Night shift, the timer and L/R (Start feed no longer starts a nursing timer); the side balance and Side starts on the Dashboard; nursing insights; the Breast and Min columns on the day sheet and Nursing on the doctor report |
 | **Bottle** | The Bottle box on each feed and the Bottle tile; in Night shift, the bottle buttons; Bottle per day; bottle insights; the Bottle columns in print |
 | **Pump** | The Pump box, the pump timer, and the Pumped tile; Pumped per day; pumping insights; the Pump columns in print |
+| **Tummy time** | [Tummy time](#tummy-time): the 🤸 Tummy time button, tummy time rows, and the Tummy time tile on the Log; the tummy time goal in Settings; on the Dashboard, the Tummy time per day tile, the Daily tummy time chart, the filter, and the insight; the Tummy column in History and the tables; tummy time on the day sheet and the doctor report. A running tummy timer stops |
 | **Sleep** | [Sleep](#sleep): the 😴 Asleep button, the asleep or awake line, sleep rows, and the Sleep tile on the Log; the Night shift button; the sleep goal in Settings; the Dashboard tile, chart, filter, and insight; the Sleep column and tag in History, print, and the doctor report |
 
 - **Daily volume chart and Bottle & pump filter:** these hide when both Bottle and Pump are off.
@@ -73,6 +74,8 @@ Baths **never count as feeds**, so they don't change feed totals, the time betwe
 | **Time** | When it started; tap to change it. |
 | **Minutes** | Tap **■** when tummy time is over and the minutes are saved (to the nearest minute, at least 1). Or type them. **▶** times another stretch on the same row and adds it. |
 | **Note** | On a play mat, on a chest, anything else. |
+
+Don't do tummy time, or don't want to track it? Turn off **🤸 Tummy time** in Settings, under [What you track](#what-you-track); it's on to start.
 
 Only one tummy time timer runs at a time. On an earlier day there's no timer, so enter the time and minutes. Tummy time **never counts as a feed**. The **Tummy time** tile under the day's totals fills toward your daily goal (Settings, 15 minutes to start; 0 turns it off) and turns green when you reach it. Start with a few minutes a few times a day and build up; ask your pediatrician what fits your baby.
 

@@ -29,7 +29,7 @@ Nurse, bottle, pump, diapers, Vitamin D, baths, tummy time, and sleep, shared li
 | **Log** | One row per feed: left/right breast (with which side you started), nursing minutes with a ▶ timer, a slider that splits the minutes between sides, bottle mL, pump mL, wet, stool, Vitamin D, notes. 🧷 diaper-only and 🛁 bath rows (sponge or tub) that don't count as feeds. |
 | **Night shift** | The bottle button at the top right opens a dim, low-glare screen with huge buttons for one-handed night feeds, plus quick Diaper only and Bath buttons. Warm, Moonlight, or Red colors. |
 | **Dashboard** | 7 or 14 days of trends, with filter chips to show one topic at a time: feeds, nursing minutes, bottle and pump volume, diapers against goals, Vitamin D, baths, tummy time, sleep, side balance and time on each side, longest stretch, weight against birth weight. Tap any chart to enlarge and explore it. Today shows as "in progress" until midnight. |
-| **Tummy time** | 🤸 starts a timer and logs the minutes (or type them), with a daily goal in Settings, progress on the Log, and a Dashboard chart. |
+| **Tummy time** | 🤸 starts a timer and logs the minutes (or type them), with a daily goal in Settings, progress on the Log, and a Dashboard chart. Can be turned off in Settings. |
 | **Sleep** | Optional (turn it on in Settings). 😴 Asleep and ☀️ Woke up, on the Log and in Night shift, shared live with the family. Naps and night sleep, the wake window, a daily goal, and a Dashboard chart. |
 | **History** | Every day at a glance, as cards or a table. |
 | **Next feed** | When the next feed is due, with an in-app chime, vibration, Snooze, and Dismiss. |

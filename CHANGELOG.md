@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.45
+
+- **Tummy time can be turned off.** Settings, **What you track**, now has a **🤸 Tummy time** box (on to start), next to Breast, Bottle, Pump, and Sleep. Off hides it everywhere: the 🤸 button, tummy rows, and the Log tile; the goal in Settings (it hides as soon as you untick the box); the Dashboard tile, chart, filter, and insight; the History and table columns; the day sheet and doctor report. A running tummy timer stops. It's shared with your family, and nothing logged is deleted
+- `tests/tummy.test.mjs`: 10 new checks for turning it off and on; `tests/tracking.test.mjs` expects the new setting
+
 ## v1.44
 
 - **Baby mirror:** the **Rainbow** frame covered the whole screen, so the camera picture was hidden behind it. It's now a rainbow border, with the picture showing in the middle

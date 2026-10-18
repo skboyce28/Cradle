@@ -84,6 +84,25 @@ ok('day sheet lists tummy time',/🤸 Tummy time · 5 min/i.test(sheet)&&/Tummy 
 // History
 await p.click('#tabs [data-tab=hist]');await p.clock.runFor(300);
 ok('History card tag',/🤸 17 min/i.test(await txt(p,'#histBody')));
+// turning tummy time off (Settings, What you track) hides it everywhere; the data stays
+await p.click('#tabs [data-tab=today]');await p.clock.runFor(300);await p.click('#addTummy');await p.clock.runFor(300);
+await p.click('#menuBtn');await p.click('[data-act=settings]');await p.waitForTimeout(200);
+ok('Settings: a 🤸 Tummy time box under What you track, on to start',await p.isChecked('#sTrTummy')&&await p.isVisible('#sTummyField'));
+await p.uncheck('#sTrTummy');ok('unticking it hides the goal right away',!(await p.isVisible('#sTummyField')));
+await p.click('#settingsModal .primary');await p.clock.runFor(400);
+let st0=await S(p);ok('saved for the family, and the running timer is stopped',st0.settings.track.tummy===false&&!st0.tummyRun);
+ok('the Log: no button, no card, and tummy rows hidden',!(await p.isVisible('#addTummy'))&&!(await p.$('#tummyCard'))&&(await p.$$eval('.feed.tummyrow',els=>els.filter(e=>e.offsetParent).length))===0);
+await p.click('#tabs [data-tab=dash]');await p.clock.runFor(500);
+ok('the Dashboard: no tummy tile, chart, filter, or insight',!/Tummy time per day/i.test(await txt(p,'#kpis'))&&!(await p.isVisible('#chart6'))&&!(await p.isVisible('#dashFilter [data-f=tummy]'))&&!/🤸/.test(await txt(p,'#insights')));
+await p.click('[data-report]');await p.clock.runFor(800);const rep2=await p.evaluate(()=>document.getElementById('print').innerText);await p.evaluate(()=>dispatchEvent(new Event('afterprint')));
+ok('the doctor report leaves it out',!/Tummy/i.test(rep2));
+await p.click('#tabs [data-tab=hist]');await p.clock.runFor(300);ok('History leaves it out',!/🤸/.test(await txt(p,'#histBody')));
+ok('the tummy rows are still saved',(await tum(p)).length===4);
+await p.click('#menuBtn');await p.click('[data-act=settings]');await p.waitForTimeout(200);await p.check('#sTrTummy');
+ok('ticking it again shows the goal',await p.isVisible('#sTummyField'));await p.click('#settingsModal .primary');await p.clock.runFor(400);
+await p.click('#tabs [data-tab=today]');await p.clock.runFor(300);
+ok('back on: the button, the card, and the rows are back',await p.isVisible('#addTummy')&&await p.isVisible('#tummyCard')&&(await p.$$eval('.feed.tummyrow',els=>els.filter(e=>e.offsetParent).length))===4);
+{const r=(await p.$$('.feed.tummyrow')).pop();await (await r.$('.del')).click();await p.click('#askOk');await p.clock.runFor(300)}
 // export and import
 await p.click('#menuBtn');await p.click('[data-act=data]');await p.click('[data-dm=export]');await p.clock.runFor(300);
 const [dl]=await Promise.all([p.waitForEvent('download'),p.click('text=Download file')]);const ex=JSON.parse(fs.readFileSync(await dl.path(),'utf8'));

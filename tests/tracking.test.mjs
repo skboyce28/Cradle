@@ -25,7 +25,7 @@ let p=await phone();
 ok('everything shows by default',await shown(p,'.feed .c-bottle')&&await shown(p,'.feed .c-pump')&&await shown(p,'.feed .c-side')&&await shown(p,'[data-track=pump] h3'));
 // --- breast only ---
 await setTrack(p,{breast:true,bottle:false,pump:false});
-ok('saved for the family (shared setting)',JSON.stringify((await S(p)).settings.track)==='{"breast":true,"bottle":false,"pump":false,"sleep":false}');
+ok('saved for the family (shared setting)',JSON.stringify((await S(p)).settings.track)==='{"breast":true,"bottle":false,"pump":false,"tummy":true,"sleep":false}');
 ok('Log: bottle and pump boxes hidden, breast kept',!(await shown(p,'.feed .c-bottle'))&&!(await shown(p,'.feed .c-pump'))&&await shown(p,'.feed .c-side')&&await shown(p,'.feed .c-min'));
 ok('pump timer and bottle/pumped tiles hidden',!(await shown(p,'.card[data-track=pump] .timer'))&&!(await shown(p,'#stats [data-track=bottle]'))&&!(await shown(p,'#stats [data-track=pump]')));
 await p.screenshot({path:OUT+'track-breast-log.png'});
@@ -60,7 +60,7 @@ await closeModals(p);
 await setTrack(p,{breast:true,bottle:true,pump:false});
 await p.click('#menuBtn');await p.click('[data-act=data]');await p.click('[data-dm=export]');await p.waitForTimeout(300);
 const [dl]=await Promise.all([p.waitForEvent('download'),p.click('text=Download file')]);const ex=JSON.parse(fs.readFileSync(await dl.path(),'utf8'));
-ok('export includes the setting',JSON.stringify(ex.settings.track)==='{"breast":true,"bottle":true,"pump":false,"sleep":false}',JSON.stringify(ex.settings.track));
+ok('export includes the setting',JSON.stringify(ex.settings.track)==='{"breast":true,"bottle":true,"pump":false,"tummy":true,"sleep":false}',JSON.stringify(ex.settings.track));
 await closeModals(p);
 await setTrack(p,{breast:true,bottle:true,pump:true});
 ok('turning everything back on restores it',await shown(p,'.feed .c-pump')&&await shown(p,'.card[data-track=pump] .timer'));
