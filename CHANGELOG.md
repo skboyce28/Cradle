@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.47
+
+- **Left ↔ Right slider: every split works.** It moved in 5% steps, and each step was rounded to whole minutes, so some splits were impossible one way round: a 30-minute feed could be 20 left and 10 right, but on the other side it jumped from 9 left to 11 left. Once a feed has minutes, the slider now moves one minute at a time (on the Log and in Night shift), from 0 to the feed's minutes. Without minutes it still moves 5% at a time. The split is still saved as the share on the left, so the timer, Dashboard, reports, and older feeds work as before
+- `tests/split.test.mjs`: 5 new checks (whole-minute steps; 20/10 and 10/20 on a 30-minute feed; every split of 30 minutes); the Night shift check now moves a minute per step
+- `tests/milk.test.mjs` looks for the bottle feed on the page's own today, so it no longer fails when run just before midnight
+
 ## v1.46
 
 - **📷 Scan works on every phone with a camera.** It had been hidden where the browser has no barcode reader (iPhones, for example). Cradle now reads Code 128 barcodes itself: it looks along lines across the camera picture, matches the bars by their widths and by bar-to-bar distances (which stay the same when a thermal printer's ink spreads), and accepts a label only when its check character is right and it reads the same twice. Where the browser has a barcode reader (Chrome on Android), Cradle still uses it, so QR codes work there

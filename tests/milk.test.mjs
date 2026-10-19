@@ -95,7 +95,7 @@ r=await rows(P);const th=r.find(x=>x.id===old.id);ok('Thaw: a Thawed section wit
 await P.click(`[data-mkid="${old.id}"] [data-mk=use]`);await P.waitForTimeout(150);
 ok('Use asks how',await P.isVisible('#mkUseModal')&&/150 mL/.test(await txt(P,'#mkUseS')));
 await P.click('#mkUseModal [data-mu=fed]');await P.waitForTimeout(400);
-st=await S(P);const used=st.milk.find(m=>m.id===old.id),fd=st.days[dkey(new Date())]?.feeds.find(f=>f.id===used.done?.feed);
+st=await S(P);const used=st.milk.find(m=>m.id===old.id),pday=await P.evaluate(()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}),fd=st.days[pday]?.feeds.find(f=>f.id===used.done?.feed);  // the page's today (its clock runs ahead of the test's near midnight)
 ok('it’s logged as a bottle feed today, and leaves storage',used.done&&used.done.how==='fed'&&fd&&fd.bottle===150&&!(await P.isVisible('#milkModal'))&&await P.isVisible(`.feed[data-id="${fd.id}"]`));
 await openMilk(P);ok('Recently used shows it',/Recently used \(1\)/.test(await txt(P,'#mkList'))&&!(await rows(P)).some(x=>x.id===old.id));
 await P.click('#mkList details summary');await P.click(`.mkdone [data-mkid="${old.id}"] [data-mk=undo]`);await P.waitForTimeout(150);

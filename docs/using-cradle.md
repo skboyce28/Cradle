@@ -39,7 +39,7 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 | **Time** | Set to now; tap to change it. |
 | **L / R** | Which breast. If you nurse on both sides, tap both. The first side you tap gets a dot, so you know where to start next time. |
 | **Minutes** | How long you nursed. Tap ▶ when you start and ■ when you finish to fill it in, or type it. |
-| **Left ↔ Right** | Appears when both sides are on. Slide it toward the side that got more time and it divides the minutes: 20 minutes slid to 75% left is 15 left and 5 right. The middle is an even split. Before minutes are entered it shows percentages. |
+| **Left ↔ Right** | Appears when both sides are on. Slide it toward the side that got more time and it divides the minutes, one minute at a time: 20 minutes can be 15 left and 5 right, and 30 minutes can be 10 left and 20 right. The middle is an even split. Before minutes are entered it shows percentages, in steps of 5%. |
 | **Bottle** | mL of the top-up. The bar fills toward your bottle target **per feed** (Settings). |
 | **Pump** | mL pumped. |
 | **Wet / Stool** | Mark both if a diaper had both. |

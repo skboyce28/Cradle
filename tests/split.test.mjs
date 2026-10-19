@@ -30,6 +30,15 @@ ok('switches to minutes once minutes are entered',(await txt(p,`.feed[data-id="$
 await row.locator('input[data-k=split]').focus();await p.keyboard.press('ArrowLeft');await p.keyboard.press('ArrowLeft');await p.clock.runFor(200);
 ok('dragging toward Left gives Left more time',(await txt(p,`.feed[data-id="${id}"] .c-split`))==='Left 12 min 8 min Right',await txt(p,`.feed[data-id="${id}"] .c-split`));
 ok('saved as 60% left',feedById(await S_(p),id).split===60);
+// with minutes, the slider moves a minute at a time, so a 30-minute feed can be 20/10 or 10/20 (10 left used to be impossible)
+const slide=async v=>{await row.locator('input[data-k=split]').evaluate((i,v)=>{i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}))},v);await p.clock.runFor(200);return txt(p,`.feed[data-id="${id}"] .c-split`)};
+await row.locator('input[data-k=mins]').fill('30');await p.clock.runFor(200);
+ok('slider steps are whole minutes (0 to 30)',await row.locator('input[data-k=split]').evaluate(i=>i.min+'/'+i.max+'/'+i.step+'/'+i.value)==='0/30/1/12');
+const s1=await slide(10),f1=feedById(await S_(p),id);ok('20 left and 10 right',s1==='Left 20 min 10 min Right'&&Math.round(30*f1.split/100)===20,s1+' '+f1.split);
+const s2=await slide(20),f2=feedById(await S_(p),id);ok('10 left and 20 right, the other way round',s2==='Left 10 min 20 min Right'&&Math.round(30*f2.split/100)===10,s2+' '+f2.split);
+let all=true;for(let r=0;r<=30;r++){const t=await slide(r);if(t!==`Left ${30-r} min ${r} min Right`){all=false;break}}ok('every whole-minute split of 30 is possible',all);
+await row.locator('input[data-k=mins]').fill('20');await p.clock.runFor(200);await slide(8);
+ok('back to 20 minutes, 12 left and 8 right',feedById(await S_(p),id).split===60&&(await txt(p,`.feed[data-id="${id}"] .c-split`))==='Left 12 min 8 min Right');
 await p.screenshot({path:(process.env.CRADLE_OUT||'out')+'/s-split-mobile.png'});
 await row.locator('.side[data-side=R]').click();ok('slider hides when back to one side',await row.locator('.c-split').isHidden());
 await row.locator('.side[data-side=R]').click();ok('comes back with the same split',(await txt(p,`.feed[data-id="${id}"] .c-split`))==='Left 12 min 8 min Right');
@@ -57,17 +66,17 @@ const ps=(await p.evaluate(()=>[...document.querySelectorAll('#print td')].map(e
 await p.click('#nightBtn');await p.clock.runFor(800);
 ok('Night shift shows the slider',await p.isVisible('#night .nsplit'),await txt(p,'#night .nsplit').catch(()=>''));
 await p.focus('#night [data-n=split]');await p.keyboard.press('ArrowRight');await p.keyboard.press('ArrowRight');await p.keyboard.press('ArrowRight');await p.clock.runFor(200);
-ok('Night shift slider moves time to the right',/L 11 min.*14 min R/.test(await txt(p,'#night .nsplit'))&&feedById(await S_(p),id).split===45,await txt(p,'#night .nsplit'));
+ok('Night shift slider moves time to the right, a minute at a time',/L 12 min.*13 min R/.test(await txt(p,'#night .nsplit'))&&feedById(await S_(p),id).split===48,await txt(p,'#night .nsplit'));
 await p.screenshot({path:(process.env.CRADLE_OUT||'out')+'/s-split-night.png'});
 await p.click('#night [data-n=R]');await p.clock.runFor(200);ok('Night shift hides it with one side',!(await p.isVisible('#night .nsplit')));
 await p.click('#night [data-n=R]');await p.clock.runFor(200);await p.click('#night [data-n=exit]');
 // export -> import keeps split
 await p.click('#menuBtn');await p.click('[data-act=data]');await p.click('[data-dm=export]');await p.clock.runFor(300);
 const [dl]=await Promise.all([p.waitForEvent('download'),p.click('text=Download file')]);const file=await dl.path();
-const ex=JSON.parse(fs.readFileSync(file,'utf8'));ok('export keeps the split',Object.values(ex.days).flatMap(d=>d.feeds).find(f=>f.id===id).split===45);
+const ex=JSON.parse(fs.readFileSync(file,'utf8'));ok('export keeps the split',Object.values(ex.days).flatMap(d=>d.feeds).find(f=>f.id===id).split===48);
 const q=await phone({data:JSON.stringify({settings:{theme:'light',v2:1},baseVersion:99,days:{}})});
 await q.setInputFiles('#fileIn',file);await q.clock.runFor(500);await q.click('#impReplace');await q.click('#askOk');await q.clock.runFor(400);
-ok('import keeps the split',feedById(await S_(q),id).split===45);
+ok('import keeps the split',feedById(await S_(q),id).split===48);
 const oldOne=Object.values((await S_(q)).days).flatMap(d=>d.feeds).find(f=>f.left&&f.right&&f.id!==id&&f.id!=='demo999');ok('older both-sides feeds count as 50/50 (no split stored)',oldOne&&oldOne.split===undefined);
 const d=await phone({w:1280,h:860});await d.click('#logNow');await d.clock.runFor(200);const r2=d.locator('.feed').last();
 await d.evaluate(()=>{const r=[...document.querySelectorAll('.feed')].pop();r.querySelector('.side[data-side=L]').click();r.querySelector('.side[data-side=R]').click();r.scrollIntoView({block:'center'})});await d.clock.runFor(300);await d.screenshot({path:(process.env.CRADLE_OUT||'out')+'/s-split-desktop.png'});
