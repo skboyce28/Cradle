@@ -28,7 +28,10 @@ const openMilk=async p=>{await p.click('#menuBtn');await p.click('#dd [data-milk
 async function add(p,{date,time='09:00',ml,unit='ml',place='freezer',box='bag',count=1,code='',note=''}){
   await p.click(`#mkUnit [data-mku=${unit}]`);await p.fill('#mkDate',date);await p.fill('#mkTime',time);await p.fill('#mkMl',String(ml));await p.click(`#mkPlace [data-mp=${place}]`);await p.selectOption('#mkBox',box);
   await p.fill('#mkCount',String(count));await p.fill('#mkCode',code);await p.fill('#mkNote',note);await p.click('#mkAdd');await p.waitForTimeout(250)}
-const rows=p=>p.$$eval('#mkList .mkrow',rs=>rs.map(r=>({id:r.dataset.mkid,t:r.innerText.replace(/\s+/g,' '),lvl:(r.className.match(/lvl-(\w+)/)||[])[1],sec:r.closest('.wlist').previousElementSibling.textContent})));
+// each stored container's row, and the section it's under (a row outside a section is a real problem: say where)
+const rows=p=>p.$$eval('#mkList .mkrow',rs=>rs.map(r=>{const w=r.closest('.wlist'),h=w&&w.previousElementSibling;
+  if(!h)throw new Error('milk row outside a section: '+(w?'list':'row')+' parent '+((w||r).parentElement||{}).outerHTML?.slice(0,600));
+  return {id:r.dataset.mkid,t:r.innerText.replace(/\s+/g,' '),lvl:(r.className.match(/lvl-(\w+)/)||[])[1],sec:h.textContent}}));
 const row=async(p,f)=>(await rows(p)).find(f);
 const sfx=Date.now()%100000;
 

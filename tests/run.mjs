@@ -83,10 +83,12 @@ try {
     const r = await runTest(f); results.push(r);
     { const c = new pg.Client({ connectionString: DATABASE_URL }); await c.connect(); await c.query(TERMS_OFF).catch(() => {}); await c.end(); }   // even if a test stopped early
     log(`${r.ok ? '✅' : '❌'} ${f.padEnd(34)} ${String(r.pass).padStart(3)} passed${r.fail ? `, ${r.fail} failed` : ''}  (${r.secs}s)`);
-    if (!r.ok) log(r.text.split('\n').filter(l => /^FAIL |^errors |Error|TIMEOUT/.test(l)).slice(0, 12).map(l => '     ' + l.slice(0, 220)).join('\n'));
+    if (!r.ok) log(r.text.split('\n').filter(l => /^FAIL |^errors |Error|TIMEOUT|\.test\.mjs:\d+/.test(l)).slice(0, 12).map(l => '     ' + l.slice(0, 220)).join('\n'));
     // On GitHub, also post failures as annotations, so they show on the commit and in the API
     if (!r.ok && process.env.GITHUB_ACTIONS) {
-      const lines = r.text.split('\n').filter(l => /^FAIL |^errors \[.+\]|Error|TIMEOUT/.test(l)).slice(0, 8);
+      // the failed checks, the error, and where in the test it stopped (the first .test.mjs line of the stack)
+      const all = r.text.split('\n'), at = all.find(l => /\.test\.mjs:\d+/.test(l) && /^\s+at /.test(l));
+      const lines = all.filter(l => /^FAIL |^errors \[.+\]|Error|TIMEOUT/.test(l)).slice(0, 8).concat(at ? [at.trim()] : []);
       const esc = t => t.replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A');
       console.log(`::error title=${f} failed::${esc((lines.join('\n') || ('exit code ' + r.code)).slice(0, 3000))}`);
     }
