@@ -168,11 +168,40 @@ ok('a new label like “10/10/2026 - 8 A” fills in Oct 10, 8:00am',(await P.in
 await P.fill('#mkCode','10/9/26 7:30 PM');await P.dispatchEvent('#mkCode','change');ok('…and “10/9/26 7:30 PM” too',(await P.inputValue('#mkDate'))==='2026-10-09'&&(await P.inputValue('#mkTime'))==='19:30');
 await P.click('#mkUnit [data-mku=ml]');await P.fill('#mkMl','100');await P.fill('#mkCount','2');await P.click('#mkAdd');await P.waitForTimeout(200);
 ok('several containers pumped together can share that label',(await S(P)).milk.filter(m=>m.code==='10/9/26 7:30 PM').length===2);
+// more than one pumping in a container, same day: one date, several times
+await P.fill('#mkFind','');await P.dispatchEvent('#mkFind','input');
+ok('the form has + Add a time, and no extra times to start',await P.isVisible('#mkAddTime')&&(await P.$$('#mkMore .mkxt')).length===0);
+await P.click('#mkUnit [data-mku=ml]');await P.fill('#mkDate',ago(1));await P.fill('#mkTime','20:00');await P.click('#mkAddTime');await P.fill('#mkMore .mkxt','15:00');
+ok('…which adds a time box (no date: it’s the same day)',(await P.$$('#mkMore .mkxt')).length===1&&(await P.$$('#mkMore input[type=date]')).length===0);
+await P.fill('#mkMl','130');await P.click('#mkPlace [data-mp=fridge]');await P.fill('#mkCode','TWO-TIMES');await P.click('#mkAdd');await P.waitForTimeout(250);
+let two=(await S(P)).milk.find(m=>m.code==='TWO-TIMES');
+ok('saved with the first time as when it was pumped, and the later one kept (typed out of order)',two&&two.at===ago(1)+'T15:00'&&JSON.stringify(two.more)==='["20:00"]',JSON.stringify(two));
+let tr=await row(P,x=>x.id===two.id);ok('the row shows both times',/Pumped .*3:00pm \+ 8:00pm/.test(tr.t),tr.t);
+ok('its CDC limit counts from the first time',/Use or freeze by /.test(tr.t)&&/3:00pm/.test(tr.t.split('Use or freeze by ')[1]),tr.t);
+ok('no + Add on fridge milk from yesterday',!(await P.isVisible(`[data-mkid="${two.id}"] [data-mk=addto]`)));
+await P.click(`[data-mkid="${two.id}"] [data-mk=edit]`);await P.waitForTimeout(250);
+ok('Edit shows the extra time',(await P.$$eval('#mkMore .mkxt',is=>is.map(i=>i.value))).join()==='20:00'&&(await P.inputValue('#mkTime'))==='15:00');
+await P.click('#mkOneLabel');await P.check('#mkLblModal input[value=sheet]');await P.click('#mkLblGo');await P.waitForTimeout(300);
+const d1=new Date(Date.now()-864e5),md=(d1.getMonth()+1)+'/'+d1.getDate();
+const lt=await txt(P,'#print .mklbl .lt');ok('the label shows the times, short: '+md+' 3p + 8p',lt.includes('Pumped '+md+' 3p + 8p'),lt);
+await P.evaluate(()=>dispatchEvent(new Event('afterprint')));
+await P.click(`[data-mkid="${two.id}"] [data-mk=edit]`);await P.waitForTimeout(250);await P.click('#mkMore [data-mkxdel]');await P.click('#mkAdd');await P.waitForTimeout(250);
+two=(await S(P)).milk.find(m=>m.code==='TWO-TIMES');ok('✕ removes a time',two.at===ago(1)+'T15:00'&&!('more' in two),JSON.stringify(two));
+await P.click(`[data-mkid="${two.id}"] [data-mk=edit]`);await P.waitForTimeout(250);await P.click('#mkAddTime');await P.fill('#mkMore .mkxt','20:00');await P.click('#mkAdd');await P.waitForTimeout(250);
+// + Add on today's fridge milk: the time and the amount go on the same container
+await add(P,{...rec(30),ml:60,place:'fridge',code:'ADD-ME'});const am=(await S(P)).milk.find(m=>m.code==='ADD-ME');
+ok('+ Add shows on fridge milk pumped today',await P.isVisible(`[data-mkid="${am.id}"] [data-mk=addto]`));
+await P.click(`[data-mkid="${am.id}"] [data-mk=addto]`);await P.waitForTimeout(200);
+ok('it asks for the time (now) and how much',await P.isVisible('#mkAddToModal')&&/60 mL/.test(await txt(P,'#mkAddToS'))&&/^\d\d:\d\d$/.test(await P.inputValue('#mkAddToTime')));
+await P.click('#mkAddToGo');await P.waitForTimeout(150);ok('…and needs an amount',await P.isVisible('#mkAddToModal')&&/how much you’re adding/.test(await txt(P,'#toast')));
+await P.fill('#mkAddToMl','50');await P.click('#mkAddToGo');await P.waitForTimeout(250);
+const am2=(await S(P)).milk.find(m=>m.id===am.id);
+ok('adding puts the amount and the time on the same container',am2.ml===110&&am2.at===am.at&&Array.isArray(am2.more)&&am2.more.length===1&&am2.more[0]>am.at.slice(11)&&await P.isVisible('#milkModal')&&/Added: now 110 mL/.test(await txt(P,'#toast')),JSON.stringify(am2)+' '+await txt(P,'#toast'));
 // syncs to another phone in the family; the menu shows the stash
 await settle(P);
 const famKey=sql(`select join_code from cradle_households h join cradle_members m on m.household_id=h.id join auth.users u on u.id=m.user_id where u.email='amilk${sfx}@cradle.cfg'`);
 const Q=await phone('B');await up(Q,'bmilk'+sfx,famKey);await settle(Q);
-const sq=await S(Q);ok('the other phone gets the same storage',sq.milk.length===(await S(P)).milk.length&&sq.milk.some(m=>m.code==='BAG-1'&&m.ml===130));
+const sq=await S(Q);ok('the other phone gets the same storage',sq.milk.length===(await S(P)).milk.length&&sq.milk.some(m=>m.code==='BAG-1'&&m.ml===130)&&sq.milk.some(m=>m.code==='TWO-TIMES'&&JSON.stringify(m.more)==='["20:00"]'));
 await Q.click('#menuBtn');ok('menu shows the amount stored',/Milk storage\s*\d+\.\d oz/.test(await txt(Q,'#dd')),await txt(Q,'#dd [data-milk]'));await Q.click('#menuBtn');
 await openMilk(Q);const qr=await rows(Q);const qa=qr.find(x=>/BAG-1/.test(x.t));
 await Q.click(`[data-mkid="${qa.id}"] [data-mk=thaw]`);await Q.waitForTimeout(200);await settle(Q);await settle(P);
@@ -180,7 +209,7 @@ ok('a change on one phone reaches the other',(await S(P)).milk.find(m=>m.code===
 // export carries it
 await closeModals(P);await P.click('#menuBtn');await P.click('[data-act=data]');await P.click('[data-dm=export]');await P.clock.runFor(300);
 const [dl]=await Promise.all([P.waitForEvent('download'),P.click('text=Download file')]);const ex=JSON.parse(fs.readFileSync(await dl.path(),'utf8'));
-ok('export includes milk storage',Array.isArray(ex.milk)&&ex.milk.length===(await S(P)).milk.length&&ex.milk.some(m=>m.code==='BAG-1'));
+ok('export includes milk storage',Array.isArray(ex.milk)&&ex.milk.length===(await S(P)).milk.length&&ex.milk.some(m=>m.code==='BAG-1')&&ex.milk.some(m=>m.code==='TWO-TIMES'&&m.more&&m.more[0]==='20:00'));
 // the 📷 Scan button on a phone whose browser has no barcode reader (an iPhone, say): a pretend camera
 // shows the printed label, and Cradle reads the bars itself (signed in to the same account)
 const y4m=path.resolve(OUT+'milk-scan.y4m'),VW=640,VH=480;

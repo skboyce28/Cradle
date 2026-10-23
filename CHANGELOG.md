@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.48
+
+- **Milk storage: more than one pumping time in a container**, same day only. **+ Add a time** under Pumped adds another time box (time only, no date, so a container can't span two days); **✕** removes one. Cradle sorts them and keeps the first as when it was pumped, so the CDC limits, the order, and Use first all count from it. Rows show "Pumped today 3:00pm + 8:00pm"
+- **+ Add** on fridge milk pumped today: enter the time (now) and how much you're pouring in; the amount goes up and the time is added. It doesn't show on older milk, thawed milk, or the freezer
+- **Labels show the times short** so they fit beside the barcode: `CM-7KQ2M · 10/22 3p + 8:15p` (no year, `3p` on the hour). The sheet labels match. A label that's already a date and time, like `10/10/2026 - 8 A`, prints as it is
+- Extra times sync to family phones and are kept in exports and imports. No database changes
+- `tests/milk.test.mjs`: 13 new checks (adding, ordering, editing, and removing times; the row and label text; + Add only on today's fridge milk; syncing and export)
+
 ## v1.47
 
 - **Left ↔ Right slider: every split works.** It moved in 5% steps, and each step was rounded to whole minutes, so some splits were impossible one way round: a 30-minute feed could be 20 left and 10 right, but on the other side it jumped from 9 left to 11 left. Once a feed has minutes, the slider now moves one minute at a time (on the Log and in Night shift), from 0 to the feed's minutes. Without minutes it still moves 5% at a time. The split is still saved as the share on the left, so the timer, Dashboard, reports, and older feeds work as before

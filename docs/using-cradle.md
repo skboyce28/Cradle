@@ -182,6 +182,8 @@ In the profile menu, after Weights. It keeps track of pumped milk in the fridge 
 
 **Adding milk.** Fill in the form at the bottom as milk goes in:
 - **Pumped:** the date and time it was pumped (now, to start with). For milk already in the freezer, use the date on the bag.
+  - **+ Add a time** marks another pumping in the same container on the same day, like 3:00pm and 8:00pm (up to 7 times). There's no date for the extra times, so a container can't span two days. Cradle sorts them, and the CDC limits count from the first. **✕** removes one.
+  - Only combine milk pumped the same day, and chill fresh milk before adding it to milk that's already cold.
 - **Amount:** type the number, and tap **mL** or **oz** next to the box. Your choice is remembered on that phone (it starts on oz when weights are in lb and oz).
 - **Goes in:** Freezer or Fridge.
 - **Container:** storage bag, bottle, tray or cubes, or other.
@@ -202,6 +204,7 @@ These are guidelines, not medical advice; ask your care team if you're unsure.
 - **Freeze** (fridge): moves it to the freezer. Not offered once it's over 4 days old. The message has **Undo**.
 - **Thaw** (freezer): moves it to the fridge and starts the 24 hours. Thawed milk shouldn't go back in the freezer.
 - **Tapped Thaw by mistake?** Tap **Undo** on the message to put it straight back in the freezer. Later, thawed milk has an **Undo thaw** button; after the first 10 minutes it asks first, since milk that really thawed shouldn't be refrozen.
+- **+ Add** (fridge milk pumped today): pour in milk you just pumped. Enter the time (now, to start with) and how much you're adding; the container's amount goes up and the time is added. It doesn't show on older milk or in the freezer. Reprint the label for the new amount.
 - **Use** (fridge or thawed): **Log a bottle feed now** adds a bottle feed with that amount to today and shows it on the Log; or **Used, don't log a feed**; or **Throw it away**.
 - **Edit:** change it, print its label, or **Delete** a mistake.
 
@@ -211,7 +214,7 @@ These are guidelines, not medical advice; ask your care team if you're unsure.
 - **Your own labels:** type the label or code into **Label**.
 - **Scanning:** tap 📷 to scan a barcode with the camera. It works on any phone with a camera. Where the browser has a built-in barcode reader (Chrome on Android, for example), Cradle uses it, and QR codes work too; elsewhere (Safari and other iPhone browsers, for example), Cradle reads Code 128 barcodes itself, like the ones on its own labels. Hold the label steady in the box, close enough that the barcode fills most of it. A Bluetooth or USB barcode scanner works anywhere, because it types the code for you.
 - **Cradle's labels:** **Print labels** gives each container without a label a code like `CM-7KQ2M`, then asks which kind:
-  - **Label printer, 40 × 14 mm** (the NIIMBOT P21 and similar): Cradle makes a picture of each label (the baby's name and amount, a Code 128 barcode, and the code with the date pumped). Tap **Share or save** to save them to your photos, or **Download** one. In the printer's app, start a 40 × 14 mm label, add a picture, pick the label, and print it at 100%, with no "fit" or scaling. Each bar then lands on whole printer dots. If the bars still run together, turn the print darkness (density) down a step in the printer's app. The barcode on these labels carries just the 5 letters after `CM-`, so its bars can be wider; labels printed before v1.46 still scan.
+  - **Label printer, 40 × 14 mm** (the NIIMBOT P21 and similar): Cradle makes a picture of each label (the baby's name and amount, a Code 128 barcode, and the code with the date and time pumped, kept short to fit: `CM-7KQ2M · 10/22 3p + 8:15p`). Tap **Share or save** to save them to your photos, or **Download** one. In the printer's app, start a 40 × 14 mm label, add a picture, pick the label, and print it at 100%, with no "fit" or scaling. Each bar then lands on whole printer dots. If the bars still run together, turn the print darkness (density) down a step in the printer's app. The barcode on these labels carries just the 5 letters after `CM-`, so its bars can be wider; labels printed before v1.46 still scan.
   - **Sheet of labels** for a regular printer, three across, with the same details. Use sticker paper or tape them on.
 
   **Edit**, then **Print label**, makes one again. Cradle remembers which kind you picked.
