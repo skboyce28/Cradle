@@ -56,6 +56,19 @@ await A.keyboard.press('Tab');await settle(A);await settle(B);
 sv=server(id);ok('after typing, server has the note and B’s bottle',sv.note==='burped well then slept'&&sv.bottle===45,JSON.stringify({n:sv.note,b:sv.bottle}));
 ok('B sees A’s note',(await B.inputValue(row()+' input[data-k=note]'))==='burped well then slept');
 
+// 4b. playing in the Fun center: family changes don't pop up over the game; one message once you're back
+await A.click('#menuBtn');await A.click('[data-act=fun]');await A.waitForTimeout(200);await A.click('#funWordPlay');await A.waitForTimeout(300);
+await A.evaluate(()=>{const t=document.getElementById('toast');t.textContent='';t.classList.remove('show')});
+await B.fill(row()+' input[data-k=bottle]','50');await settle(B);
+await B.fill(row()+' input[data-k=pump]','60');await settle(B);
+for(let i=0;i<3;i++){await A.evaluate(()=>dispatchEvent(new Event('online')));await A.clock.runFor(500);await A.waitForTimeout(600)}
+ok('while playing Daily Word, family changes still arrive',feeds(await S_(A)).find(f=>f.id===id).bottle===50&&feeds(await S_(A)).find(f=>f.id===id).pump===60);
+ok('…without a message over the game',await A.isVisible('#word')&&!/Mmom/.test(await A.innerText('#toast')),await A.innerText('#toast'));
+await A.keyboard.press('Escape');await A.waitForTimeout(200);await A.clock.runFor(1500);await A.waitForTimeout(200);
+ok('back in the Fun center, still nothing',await A.isVisible('#funModal')&&!/Mmom/.test(await A.innerText('#toast')));
+await A.click('#funModal [data-close]');await A.clock.runFor(1500);await A.waitForTimeout(200);
+const t4b=await txt(A,'#toast');ok('leaving the Fun center: one message sums them up',/^Mmom\d+ (made \d+ changes|updated a feed( at [\d:]+[ap]m)?) while you were playing$/.test(t4b),t4b);
+
 // 5. delete on A while B edits: delete wins
 await A.click('#logNow');await A.waitForTimeout(100);await settle(A);await settle(B);
 const id2=feeds(await S_(A)).find(f=>f.id!==id).id;

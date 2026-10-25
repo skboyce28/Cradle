@@ -69,7 +69,7 @@ Everything saves as you type; there's no Save button.
 - **Different boxes on the same feed:** if one person enters the bottle while another types a note, both are kept.
 - **The same box:** whoever's change reaches the database last wins, and every phone ends up showing it.
 - **While you're typing:** other people's changes still appear on the rest of the Log, but the box you're in is never changed under you.
-- **Seeing who changed what:** when someone else's edit arrives, a note at the bottom names them ("Sam updated a feed at 2:40pm") and the row flashes.
+- **Seeing who changed what:** when someone else's edit arrives, a note at the bottom names them ("Sam updated a feed at 2:40pm") and the row flashes. While you're in the Fun center (a game, or its menu) or the baby mirror, the notes don't pop up over it; the changes still arrive, and when you leave one note sums them up ("Sam made 3 changes while you were playing").
 - **Deleting:** a delete wins over an edit someone else is making at the same moment.
 
 ## Who can see what

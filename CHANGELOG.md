@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.49
+
+- **Family notes wait while you play.** "Sam updated a feed" and similar notes no longer pop up over Daily Word, the other games, the Fun center menu, or the baby mirror. The changes still sync right away; the notes are held, and when you leave, one note sums them up: "Sam updated a feed at 2:40pm while you were playing" or "Sam made 3 changes while you were playing". Alarms still ring
+- `tests/sync-merge.test.mjs`: 4 new checks (changes arrive during Daily Word with no note; none back in the Fun center menu; one summary on leaving)
+- `tests/milk.test.mjs` and the test runner (from the previous commit): a crash now reports the test line and the HTML around it
+
 ## v1.48
 
 - **Milk storage: more than one pumping time in a container**, same day only. **+ Add a time** under Pumped adds another time box (time only, no date, so a container can't span two days); **✕** removes one. Cradle sorts them and keeps the first as when it was pumped, so the CDC limits, the order, and Use first all count from it. Rows show "Pumped today 3:00pm + 8:00pm"

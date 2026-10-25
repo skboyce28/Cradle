@@ -6,7 +6,7 @@ Over 300 automated checks that run on every push (see [`.github/workflows/tests.
 
 | File | What it checks |
 |---|---|
-| `sync-merge.test.mjs` | Two phones editing the same log: field-by-field merge, typing while changes arrive, deletes, who-changed-what notes, editing weights |
+| `sync-merge.test.mjs` | Two phones editing the same log: field-by-field merge, typing while changes arrive, deletes, who-changed-what notes (held while playing in the Fun center, then summed up), editing weights |
 | `game.test.mjs` | Bottle Catch: pause, scoring, initials, the three high-score boards, server-side limits |
 | `laundry.test.mjs` | Laundry Day: start screen, countdown, swiping and tapping baskets, wrong baskets and drops, streak multipliers, pausing, a full round, posting, boards and the game switch, server limits, and the badges |
 | `stork.test.mjs` | Stork Flight: hovering until the first tap, flapping, pausing, crashing, posting, the three-way game switch, server-side limits, offline posting, the Night Flyer badge |
