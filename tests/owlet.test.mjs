@@ -95,7 +95,9 @@ ok('…and it syncs, so the server logs sleep for this family',sql(`select data-
 const row=sql(`select row_to_json(o)::text from cradle_owlet o where household_id='${H}'`);
 ok('stored: encrypted tokens only; no password, email, or raw token',/"enc_refresh":"v1:/.test(row)&&!row.includes(OW.password)&&!row.includes('jules@example.com')&&![...OW.refresh,...OW.access].some(t=>new RegExp('"'+t+'"').test(row))&&/"account_hint":"j•••@example.com"/.test(row)&&/"tz":"America\/New_York"/.test(row),row.slice(0,200));
 ok('the password went only to Owlet’s sign-in',OW.log.filter(l=>l.body.includes(OW.password)).every(l=>l.path==='/google/signin'));
-ok('vitals aren’t stored anywhere',!/131|"hr"|"ox"/.test(row)&&sql(`select count(*) from cradle_items where household_id='${H}' and data::text ~ '"(hr|ox)"'`)==='0');
+// (the encrypted tokens are random text that can contain "131" by chance, so they're left out of this check)
+const plain=JSON.stringify(Object.fromEntries(Object.entries(JSON.parse(row)).filter(([k])=>!/^enc_/.test(k))));
+ok('vitals aren’t stored anywhere',!/131|"hr"|"ox"/.test(plain)&&sql(`select count(*) from cradle_items where household_id='${H}' and data::text ~ '"(hr|ox)"'`)==='0');
 
 // asleep: held 3 minutes before it starts
 OW.ss=15;sql(`update cradle_owlet set polled_at=null where household_id='${H}'`);

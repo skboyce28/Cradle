@@ -4,6 +4,7 @@
 
 - **🧊 on the Log puts pumped milk in Milk storage.** A row with a pump amount shows 🧊 next to it (inside the box on a computer). Tapping it opens Milk storage with Add milk filled in: the row's date and time as when it was pumped, the amount, and **Fridge**. Change the amount to split it into bags, set How many, add a label, or switch to Freezer, then Save. It's a shortcut into the form, so nothing is linked or tracked
 - `tests/pump-only.test.mjs`: 4 new checks
+- `tests/owlet.test.mjs`: the "vitals aren't stored" check no longer fails by chance. It looked for the heart rate (131) in the whole saved row, including the encrypted tokens, which are random text that can contain those digits
 
 ## v1.50
 
