@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.51
+
+- **🧊 on the Log puts pumped milk in Milk storage.** A row with a pump amount shows 🧊 next to it (inside the box on a computer). Tapping it opens Milk storage with Add milk filled in: the row's date and time as when it was pumped, the amount, and **Fridge**. Change the amount to split it into bags, set How many, add a label, or switch to Freezer, then Save. It's a shortcut into the form, so nothing is linked or tracked
+- `tests/pump-only.test.mjs`: 4 new checks
+
 ## v1.50
 
 - **Bottle and Pump amounts in mL or oz.** The unit in the Log's Bottle and Pump boxes is now a button: tap **mL** in either to switch both to **oz**, and back. Every row switches, and the choice is remembered on that phone (it starts on mL, so nothing changes until you switch). Amounts are still saved in mL, so the totals, charts, reports, and family phones see the same numbers; 135 mL shows as 4.6 oz. Typing `4 oz` or `120 ml` works in either unit. Milk storage keeps its own mL / oz switch

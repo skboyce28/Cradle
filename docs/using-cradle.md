@@ -41,7 +41,7 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 | **Minutes** | How long you nursed. Tap ▶ when you start and ■ when you finish to fill it in, or type it. |
 | **Left ↔ Right** | Appears when both sides are on. Slide it toward the side that got more time and it divides the minutes, one minute at a time: 20 minutes can be 15 left and 5 right, and 30 minutes can be 10 left and 20 right. The middle is an even split. Before minutes are entered it shows percentages, in steps of 5%. |
 | **Bottle** | How much was in the top-up. The bar fills toward your bottle target **per feed** (Settings). Like Pump, it can be in mL or oz. |
-| **Pump** | How much you pumped. Tap the **mL** button in the Pump or Bottle box to switch both to **oz** (tap again for mL); every row switches, and the choice is remembered on that phone. Cradle saves it in mL either way, so the day's totals, charts, and reports don't change. Typing `4 oz` or `120 ml` works in either unit. |
+| **Pump** | How much you pumped. Tap the **mL** button in the Pump or Bottle box to switch both to **oz** (tap again for mL); every row switches, and the choice is remembered on that phone. Cradle saves it in mL either way, so the day's totals, charts, and reports don't change. Typing `4 oz` or `120 ml` works in either unit. **🧊** next to a pump amount puts that milk in Milk storage: Add milk opens filled in with the row's date, time, and amount, in the Fridge. |
 | **Wet / Stool** | Mark both if a diaper had both. |
 | **☀️ Vitamin D** | Tap on the feed where you gave the drops. Cradle warns you if it's already logged that day. |
 | **⚖️ Weighted feed** | Enter the baby's weight before and after, in **grams** or in **lb** and **oz** (separate boxes, with the number keyboard). Tap **g** or **lb oz** to switch; what you've typed converts. Cradle shows the estimated transfer (1 gram is about 1 mL). |
@@ -180,7 +180,7 @@ The feed alarm still works here.
 
 In the profile menu, after Weights. It keeps track of pumped milk in the fridge and freezer, so you know what you have and what to use first. Everyone in the family sees the same stash.
 
-**Adding milk.** Fill in the form at the bottom as milk goes in:
+**Adding milk.** Fill in the form at the bottom as milk goes in. Or tap **🧊** next to a pump amount on the Log: the form opens filled in with that row's date, time, and amount, in the Fridge. Change the amount to split it into several containers (save one, then add the next), or tap **+ Add** on today's fridge milk instead:
 - **Pumped:** the date and time it was pumped (now, to start with). For milk already in the freezer, use the date on the bag.
   - **+ Add a time** marks another pumping in the same container on the same day, like 3:00pm and 8:00pm (up to 7 times). There's no date for the extra times, so a container can't span two days. Cradle sorts them, and the CDC limits count from the first. **✕** removes one.
   - Only combine milk pumped the same day, and chill fresh milk before adding it to milk that's already cold.

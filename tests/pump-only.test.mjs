@@ -62,4 +62,15 @@ const after=Object.values((await S(p)).days).flatMap(d=>d.feeds).map(f=>[f.id,f.
 const ch=after.find(([fid,bv])=>{const o=before.find(x=>x[0]===fid);return o&&o[1]!==bv});
 ok('+½ takes 3 oz (89 mL) to 3.5 oz, saved as 104 mL',ch&&ch[0]===id&&ch[1]===104,JSON.stringify(ch));
 await p.keyboard.press('Escape');await p.evaluate(()=>{const n=document.getElementById('night');if(n&&n.classList.contains('open'))document.querySelector('#night [data-n=close], #nightClose')?.click()});await p.clock.runFor(500);
+// 🧊 next to a pump amount opens Milk storage with Add milk filled in (v1.51)
+await p.evaluate(()=>{const n=document.getElementById('night');if(n)n.classList.remove('open');document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open'))});
+const pf=await fd();
+ok('🧊 shows next to a pump amount, and not on rows without one',await (await row()).$eval('[data-store]',e=>!e.classList.contains('hidden'))&&await p.$$eval('#feeds .feed',(rs,id)=>rs.filter(r=>r.dataset.id!==id).every(r=>{const b=r.querySelector('[data-store]');const v=r.querySelector('[data-k=pump]');return !b||!v||v.value!==''||b.classList.contains('hidden')}),id));
+await (await row()).$eval('[data-store]',e=>e.click());await p.clock.runFor(400);
+ok('it opens Milk storage with this row’s day, time, and amount, in the Fridge',await p.isVisible('#milkModal')&&(await p.inputValue('#mkDate'))===K&&(await p.inputValue('#mkTime'))===pf.time&&(await p.inputValue('#mkMl'))!==''&&await p.$eval('#mkPlace [data-mp=fridge]',b=>b.classList.contains('on'))&&/Change the amount to split it/.test(await txt(p,'#toast')),[await p.inputValue('#mkDate'),await p.inputValue('#mkTime'),await p.inputValue('#mkMl'),await txt(p,'#toast')].join(' | '));
+await p.click('#mkAdd');await p.waitForTimeout(250);
+const stored=((await S(p)).milk||[]).find(m=>m.at===K+'T'+pf.time);
+ok('Save stores it: '+pf.pump+' mL in the fridge, pumped at that time',stored&&Math.abs(stored.ml-pf.pump)<=1&&stored.place==='fridge',JSON.stringify(stored));
+await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
+await put('pump','');ok('clearing the pump amount hides 🧊',await (await row()).$eval('[data-store]',e=>e.classList.contains('hidden')));
 console.log('errors',errs);await b.close();
