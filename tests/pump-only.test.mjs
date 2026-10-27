@@ -36,4 +36,30 @@ ok('the pumped amount still counts in the day\'s Pumped total',/Pumped\s+\d+/i.t
 await (await row()).$eval('[data-k="bottle"]',(e)=>{e.value='60';e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(new Event('change',{bubbles:true}))});
 await p.clock.runFor(500);await p.waitForTimeout(200);
 ok('adding a bottle makes it a feed: numbered, counted, and the clock resets',/^#\d+$/.test(await (await row()).$eval('.n',e=>e.textContent.trim()))&&await feeds()===f0+1&&await txt(p,'#sinceVal')!==since0,`${await (await row()).$eval('.n',e=>e.textContent.trim())} · ${await feeds()} · ${await txt(p,'#sinceVal')}`);
+// bottle and pump amounts in mL or oz (v1.50): tap the unit in either box to switch both; always saved in mL
+const fd=async()=>(await S(p)).days[K].feeds.find(f=>f.id===id);
+const put=async(k,v)=>{await (await row()).$eval(`[data-k="${k}"]`,(e,v)=>{e.value=v;e.dispatchEvent(new Event('input',{bubbles:true}))},v);await p.clock.runFor(300);return (await fd())[k]};
+const unitOf=async k=>(await (await row()).$eval(`.c-${k} [data-vu]`,e=>e.textContent));
+const valOf=async k=>(await (await row()).$eval(`[data-k="${k}"]`,e=>e.value));
+ok('the Bottle and Pump boxes start in mL, each with a unit button',await unitOf('bottle')==='mL'&&await unitOf('pump')==='mL'&&await valOf('pump')==='135'&&await valOf('bottle')==='60');
+await (await row()).$eval('.c-pump [data-vu]',e=>e.click());await p.clock.runFor(300);
+ok('tapping the Pump unit switches both to oz: 135 mL shows 4.6, 60 mL shows 2',await unitOf('pump')==='oz'&&await unitOf('bottle')==='oz'&&await valOf('pump')==='4.6'&&await valOf('bottle')==='2',await valOf('pump')+' '+await valOf('bottle'));
+ok('…still saved in mL, and remembered as oz',(await fd()).pump===135&&(await fd()).bottle===60&&(await S(p)).ui.logUnit==='oz');
+ok('every row switches',await p.$$eval('#feeds [data-vu]',bs=>bs.length>2&&bs.every(b=>b.textContent==='oz')));
+ok('typing 5 in the Pump box saves 148 mL',await put('pump','5')===148);
+ok('typing 3 in the Bottle box saves 89 mL',await put('bottle','3')===89);
+ok('typing “120 ml” still means mL',await put('pump','120 ml')===120);
+await p.reload();await p.clock.runFor(2500);await p.waitForTimeout(300);await p.evaluate(()=>document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')));
+ok('oz is remembered on this phone: 120 mL shows 4.1, 89 mL shows 3',await unitOf('pump')==='oz'&&await valOf('pump')==='4.1'&&await valOf('bottle')==='3',await valOf('pump')+' '+await valOf('bottle'));
+ok('the day\'s Pumped total is still in mL',+(await txt(p,'#stats')).match(/Pumped\s+(\d+)/i)[1]>=120);
+// Night shift's bottle buttons follow: half an ounce at a time
+await p.click('#nightBtn');await p.clock.runFor(800);
+const nb=await p.evaluate(()=>[...document.querySelectorAll('#night [data-n="b+"], #night [data-n="b-"]')].map(b=>b.textContent).join(' '));
+ok('Night shift shows the bottle in oz, with −½ and +½',/−½/.test(nb)&&/\+½/.test(nb)&&/ oz/.test(await txt(p,'#night [data-track=bottle].nml')),nb+' | '+await txt(p,'#night [data-track=bottle].nml'));
+const before=Object.values((await S(p)).days).flatMap(d=>d.feeds).map(f=>[f.id,f.bottle]);
+await p.click('#night [data-n="b+"]');await p.clock.runFor(300);
+const after=Object.values((await S(p)).days).flatMap(d=>d.feeds).map(f=>[f.id,f.bottle]);
+const ch=after.find(([fid,bv])=>{const o=before.find(x=>x[0]===fid);return o&&o[1]!==bv});
+ok('+½ takes 3 oz (89 mL) to 3.5 oz, saved as 104 mL',ch&&ch[0]===id&&ch[1]===104,JSON.stringify(ch));
+await p.keyboard.press('Escape');await p.evaluate(()=>{const n=document.getElementById('night');if(n&&n.classList.contains('open'))document.querySelector('#night [data-n=close], #nightClose')?.click()});await p.clock.runFor(500);
 console.log('errors',errs);await b.close();

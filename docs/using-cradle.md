@@ -40,8 +40,8 @@ Tap **+ Log feed now** when a feed starts. Each row has:
 | **L / R** | Which breast. If you nurse on both sides, tap both. The first side you tap gets a dot, so you know where to start next time. |
 | **Minutes** | How long you nursed. Tap ▶ when you start and ■ when you finish to fill it in, or type it. |
 | **Left ↔ Right** | Appears when both sides are on. Slide it toward the side that got more time and it divides the minutes, one minute at a time: 20 minutes can be 15 left and 5 right, and 30 minutes can be 10 left and 20 right. The middle is an even split. Before minutes are entered it shows percentages, in steps of 5%. |
-| **Bottle** | mL of the top-up. The bar fills toward your bottle target **per feed** (Settings). |
-| **Pump** | mL pumped. |
+| **Bottle** | How much was in the top-up. The bar fills toward your bottle target **per feed** (Settings). Like Pump, it can be in mL or oz. |
+| **Pump** | How much you pumped. Tap the **mL** button in the Pump or Bottle box to switch both to **oz** (tap again for mL); every row switches, and the choice is remembered on that phone. Cradle saves it in mL either way, so the day's totals, charts, and reports don't change. Typing `4 oz` or `120 ml` works in either unit. |
 | **Wet / Stool** | Mark both if a diaper had both. |
 | **☀️ Vitamin D** | Tap on the feed where you gave the drops. Cradle warns you if it's already logged that day. |
 | **⚖️ Weighted feed** | Enter the baby's weight before and after, in **grams** or in **lb** and **oz** (separate boxes, with the number keyboard). Tap **g** or **lb oz** to switch; what you've typed converts. Cradle shows the estimated transfer (1 gram is about 1 mL). |
@@ -125,7 +125,7 @@ A dim, low-glare screen with huge buttons, for one-handed feeds in the dark. Ope
 
 1. Tap **Start feed**. It logs the time and starts the timer.
 2. Tap **L** or **R**. With both on, a slider splits the time between them, like on the Log.
-3. Adjust the bottle in 5 mL steps.
+3. Adjust the bottle in 5 mL steps, or half an ounce at a time if the Log is in oz.
 4. Mark wet, stool, or Vitamin D.
 5. Tap **Done**.
 

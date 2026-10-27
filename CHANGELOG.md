@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.50
+
+- **Bottle and Pump amounts in mL or oz.** The unit in the Log's Bottle and Pump boxes is now a button: tap **mL** in either to switch both to **oz**, and back. Every row switches, and the choice is remembered on that phone (it starts on mL, so nothing changes until you switch). Amounts are still saved in mL, so the totals, charts, reports, and family phones see the same numbers; 135 mL shows as 4.6 oz. Typing `4 oz` or `120 ml` works in either unit. Milk storage keeps its own mL / oz switch
+- **Night shift** follows: in oz, the bottle shows ounces and **−½ / +½** change it half an ounce at a time
+- `tests/pump-only.test.mjs`: 11 new checks
+
 ## v1.49
 
 - **Family notes wait while you play.** "Sam updated a feed" and similar notes no longer pop up over Daily Word, the other games, the Fun center menu, or the baby mirror. The changes still sync right away; the notes are held, and when you leave, one note sums them up: "Sam updated a feed at 2:40pm while you were playing" or "Sam made 3 changes while you were playing". Alarms still ring
